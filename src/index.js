@@ -1,14 +1,10 @@
 import * as monaco from 'monaco-editor'
 
 var editor = monaco.editor.create(document.getElementById('container'), {
-  value: [
-    'function x() {',
-    '\tconsole.log("Hello world!");',
-    '}'
-  ].join('\n'),
   language: 'turbo-gherkin',
   scrollBeyondLastLine: false,
-  glyphMargin: true
+  glyphMargin: true,
+  automaticLayout: true
 })
 
 editor.addCommand(monaco.KeyCode.F5, function () {
@@ -54,8 +50,14 @@ var V8Proxy = {
   OnReceiveAction: function (action, arg) {
     console.debug('OnReceiveAction: ' + action + ' : ' + arg)
 
-    if (action === 'revealLine') {
-      editor.revealLine(Number.parseInt(arg))
+    switch (action) {
+      case 'setValue':
+        editor.setValue(arg)
+        break
+      case 'revealLine':
+        editor.revealLine(Number.parseInt(arg))
+        break
+      default:
     }
   }
 }
