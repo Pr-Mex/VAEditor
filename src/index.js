@@ -90,66 +90,67 @@
 // // import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
 // // import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';
 
-import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor'
 
-// self.MonacoEnvironment = {
-// 	getWorkerUrl: function (moduleId, label) {
-// 		if (label === 'json') {
-// 			return './json.worker.bundle.js';
-// 		}
-// 		if (label === 'css') {
-// 			return './css.worker.bundle.js';
-// 		}
-// 		if (label === 'html') {
-// 			return './html.worker.bundle.js';
-// 		}
-// 		if (label === 'typescript' || label === 'javascript') {
-// 			return './ts.worker.bundle.js';
-// 		}
-// 		return './editor.worker.bundle.js';
-// 	}
-// }
+self.MonacoEnvironment = { // eslint-disable-line no-undef
+  getWorkerUrl: function (moduleId, label) {
+    return './editor.worker.bundle.js'
+  }
+}
 
 var editor = monaco.editor.create(document.getElementById('container'), {
-	value: [
-		'function x() {',
-		'\tconsole.log("Hello world!");',
-		'}'
-	].join('\n'),
-	language: 'turbo-gherkin',
-	scrollBeyondLastLine: false,
-	glyphMargin: true,
-	theme: 'vs-dark'
-});
+  value: [
+    'function x() {',
+    '\tconsole.log("Hello world!");',
+    '}'
+  ].join('\n'),
+  language: 'turbo-gherkin',
+  scrollBeyondLastLine: false,
+  glyphMargin: true,
+  theme: 'vs-dark'
+})
 
 editor.addCommand(monaco.KeyCode.F5, function () {
-	alert('F5 pressed!');
-	editor.revealLine(2)
+  SendAction('F5')
 })
 
 var decorations = editor.deltaDecorations([], [
-	{
-		range: new monaco.Range(2, 1, 2, 1),
-		options: {
-			isWholeLine: true,
-			className: 'line-selected',
-			glyphMarginClassName: 'breakpoint'
-		}
-	}
-]);
+  {
+    range: new monaco.Range(2, 1, 2, 1),
+    options: {
+      isWholeLine: true,
+      className: 'line-selected',
+      glyphMarginClassName: 'breakpoint'
+    }
+  }
+])
 
-// features
-
-monaco.languages.register({ id: 'turbo-gherkin' });
+monaco.languages.register({ id: 'turbo-gherkin' })
 
 monaco.languages.registerHoverProvider('turbo-gherkin', {
-	provideHover: function (model, position) {
-		return {
-			range: model.getFullModelRange(),
-			contents: [
-				{ value: '**DESCRIPTION**' },
-				{ value: '```html\n' + 'Шаг применяется' + '\n```' }
-			]
-		};
-	}
-});
+  provideHover: function (model, position) {
+    return {
+      range: model.getFullModelRange(),
+      contents: [
+        { value: '**DESCRIPTION**' },
+        { value: '```html\n' + 'Шаг применяется' + '\n```' }
+      ]
+    }
+  }
+})
+
+// Interaction
+
+function OnReceiveAction (action, param) {
+  alert(action + ' ' + param)
+
+  if (action === 'revealLine') {
+    editor.revealLine(param)
+  }
+}
+
+function SendAction (value) {
+  var interaction = document.getElementById('interaction')
+  interaction.value = value
+  interaction.click()
+}
