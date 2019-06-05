@@ -44,13 +44,15 @@ monaco.languages.registerHoverProvider('turbo-gherkin', {
 
 var V8Proxy = {
   SendAction: function (action, arg) {
+    console.debug('SendAction: ' + action + ' : ' + arg)
+
     var interaction = document.getElementById('interaction')
     interaction.title = action
     interaction.value = arg
     interaction.click()
   },
   OnReceiveAction: function (action, arg) {
-    console.debug(action + ' : ' + arg)
+    console.debug('OnReceiveAction: ' + action + ' : ' + arg)
 
     if (action === 'revealLine') {
       editor.revealLine(Number.parseInt(arg))
