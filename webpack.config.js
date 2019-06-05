@@ -1,17 +1,16 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const path = require('path')
 
 module.exports = {
   entry: {
-    'app': './src/index.js',
-    'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js'
+    app: './src/index.js'
   },
   output: {
     globalObject: 'self',
-    filename: '[name].bundle.js',
+    filename: 'app.js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {
@@ -20,12 +19,6 @@ module.exports = {
       use: ['style-loader', 'css-loader']
     }]
   },
-  resolve: {
-    modules: [
-      __dirname,
-      'node_modules'
-    ]
-  },
   optimization: {
     splitChunks: {
       name: 'common'
@@ -33,15 +26,17 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      output: '',
+      languages: [],
+      features: ['format', 'contextmenu']
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html'
+    }),
+    new UglifyJSPlugin({
+      parallel: true
     })
-    // new ScriptExtHtmlWebpackPlugin({
-    //   inline: ['app', 'editor.worker']
-    // })
-    // new UglifyJSPlugin({
-    //   parallel: true
-    // })
   ],
   devServer: {
     port: 4000,
