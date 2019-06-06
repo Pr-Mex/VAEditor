@@ -1,6 +1,7 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const path = require('path')
 
@@ -17,6 +18,12 @@ module.exports = {
     rules: [{
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
+    }, {
+      test: /\.worker\.js$/,
+      use: {
+        loader: 'worker-loader',
+        options: { inline: true }
+      }
     }]
   },
   optimization: {
@@ -33,6 +40,9 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: './src/index.html'
+    }),
+    new ScriptExtHtmlWebpackPlugin({
+      inline: ['app.js']
     }),
     new UglifyJSPlugin({
       parallel: true
