@@ -12,7 +12,7 @@ Procedure LoadFile(Command)
 	
 	Dialog = New FileDialog(FileDialogMode.Open);
 	If Dialog.Choose() Then 
-		TextReader = New TextReader(Dialog.FullFileName);
+		TextReader = New TextReader(Dialog.FullFileName, TextEncoding.UTF8);
 		Text = TextReader.Read();
 		
 		SendAction("setValue", Text);
