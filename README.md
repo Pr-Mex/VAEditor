@@ -5,7 +5,7 @@ Code editor which powers by [Monaco](https://github.com/Microsoft/monaco-editor)
 Build for [Vanessa Automation](https://github.com/Pr-Mex/vanessa-automation).
 
 
-## Commands
+## Build commands
 
 Install
 ```
@@ -20,4 +20,39 @@ npm run debug
 Build production to `/dist/`
 ```
 npm run build
+```
+
+## API
+
+### Actions
+
+| Action       | Description                        |
+| ------------ | ---------------------------------- |
+| `setValue`   | load `arg` to the editor           |
+| `getValue`   | return editor content              |
+| `revealLine` | scrolling to the `arg` line number |
+
+1C:Enterprise example:
+
+```bsl
+SendAction("setValue", "Text to edit")
+```
+
+### Events
+
+| Event                | Description              |
+| -------------------- | ------------------------ |
+| `START_DEBUGGING`    | on F5 pressed            |
+| `CONTENT_DID_CHANGE` | after content did chenge |
+
+1C:Enterprise example:
+
+```bsl
+Function OnReceiveAction(Event, Arg)
+
+  If Event = "CONTENT_DID_CHANGE" Then
+    ContentDidChange = True;
+  EndIf;
+
+EndFunction
 ```

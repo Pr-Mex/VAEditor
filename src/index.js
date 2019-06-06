@@ -38,7 +38,11 @@ var editor = monaco.editor.create(document.getElementById('container'), {
 })
 
 editor.addCommand(monaco.KeyCode.F5, function () {
-  V8Proxy.SendAction('F5')
+  V8Proxy.SendAction('START_DEBUGGING')
+})
+
+editor.onDidChangeModelContent(function () {
+  V8Proxy.SendAction('CONTENT_DID_CHANGE')
 })
 
 // It shuld be used on 1C:Enterprise Actions
@@ -58,11 +62,11 @@ editor.addCommand(monaco.KeyCode.F5, function () {
 // 1C:Enterprise interactions.
 
 var V8Proxy = {
-  SendAction: function (action, arg) {
-    console.debug('SendAction: ' + action + ' : ' + arg)
+  SendAction: function (event, arg) {
+    console.debug('SendAction: ' + event + ' : ' + arg)
 
     var interaction = document.getElementById('interaction')
-    interaction.title = action
+    interaction.title = event
     interaction.value = arg
     interaction.click()
   },
@@ -72,10 +76,12 @@ var V8Proxy = {
     switch (action) {
       case 'setValue':
         editor.setValue(arg)
-        break
+        return undefined
+      case 'getValue':
+        return editor.getValue()
       case 'revealLine':
         editor.revealLine(Number.parseInt(arg))
-        break
+        return undefined
       default:
     }
   }
