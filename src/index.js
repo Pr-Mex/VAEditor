@@ -45,6 +45,22 @@ editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.F5, function () {
   V8Proxy.SendAction('START_DEBUGGING_AT_STEP', editor.getPosition().lineNumber)
 })
 
+editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.F5, function () {
+  V8Proxy.SendAction('START_DEBUGGING_AT_STEP_AND_CONTINUE', editor.getPosition().lineNumber)
+})
+
+editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F5, function () {
+  V8Proxy.SendAction('START_DEBUGGING_AT_ENTRY')
+})
+
+editor.addCommand(monaco.KeyCode.F9, function () {
+  V8Proxy.SendAction('TOGGLE_BREAKPOINT', editor.getPosition().lineNumber)
+})
+
+editor.addCommand(monaco.KeyCode.F11, function () {
+  V8Proxy.SendAction('STEP_OVER', editor.getPosition().lineNumber)
+})
+
 editor.onDidChangeModelContent(function () {
   V8Proxy.SendAction('CONTENT_DID_CHANGE')
 })
