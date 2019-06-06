@@ -102,6 +102,16 @@ var V8Proxy = {
       case 'revealLine':
         editor.revealLine(Number.parseInt(arg))
         return undefined
+      case 'enableEdit':
+        editor.updateOptions({
+          readOnly: false
+        })
+        return undefined
+      case 'disableEdit':
+        editor.updateOptions({
+          readOnly: true
+        })
+        return undefined
       default:
     }
   }

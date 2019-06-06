@@ -26,11 +26,13 @@ npm run build
 
 ### Actions
 
-| Action       | Description                        |
-| ------------ | ---------------------------------- |
-| `setValue`   | load `arg` to the editor           |
-| `getValue`   | return editor content              |
-| `revealLine` | scrolling to the `arg` line number |
+| Action        | Description                        |
+| ------------- | ---------------------------------- |
+| `setValue`    | load `arg` to the editor           |
+| `getValue`    | return editor content              |
+| `revealLine`  | scrolling to the `arg` line number |
+| `enableEdit`  | disable read only mode             |
+| `disableEdit` | set read only mode                 |
 
 1C:Enterprise example:
 

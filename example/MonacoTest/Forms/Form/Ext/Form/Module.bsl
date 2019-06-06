@@ -36,6 +36,17 @@ Procedure ScrollToLine(Command)
 	
 EndProcedure
 
+&AtClient
+Procedure ReadOnlyModeOnChange(Item)
+	
+	If ReadOnlyMode Then
+		SendAction("disableEdit");
+	Else 
+		SendAction("enableEdit");
+	EndIf;
+	
+EndProcedure
+
 #EndRegion
 
 #Region MonacoInteractions
