@@ -40,10 +40,11 @@ SendAction("setValue", "Text to edit")
 
 ### Events
 
-| Event                | Description              |
-| -------------------- | ------------------------ |
-| `START_DEBUGGING`    | on F5 pressed            |
-| `CONTENT_DID_CHANGE` | after content did chenge |
+| Event                     | Description                              |
+| ------------------------- | ---------------------------------------- |
+| `START_DEBUGGING`         | on F5 pressed                            |
+| `START_DEBUGGING_AT_STEP` | on Ctrl+F5 pressed, `arg` is line number |
+| `CONTENT_DID_CHANGE`      | after content did change                 |
 
 1C:Enterprise example:
 
