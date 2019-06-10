@@ -12,6 +12,63 @@ self.MonacoEnvironment = {
 
 monaco.languages.register({ id: 'turbo-gherkin' })
 
+monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
+  keywords: [
+    'Сценарий',
+    'Функционал',
+    'Контекст',
+    'Допустим',
+    'Когда',
+    'И',
+    'Тогда',
+    'Примеры'
+  ],
+
+  escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+
+  tokenizer: {
+    root: [
+      [/[A-zА-я][A-zА-я]*/, {
+        cases: {
+          '@keywords': 'keyword',
+          '@default': 'identifier'
+        },
+        log: 'test $1'
+      }],
+      { include: '@whitespace' },
+      { include: '@numbers' },
+      [/@.*/, 'annotation'],
+      [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+      [/'([^'\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+      [/"/, 'string', '@string_double'],
+      [/'/, 'string', '@string_single']
+    ],
+
+    whitespace: [
+      [/[ \t\r\n]+/, 'white'],
+      [/(^#.*$)/, 'comment'],
+    ],
+
+    numbers: [
+      [/-?(\d*\.)?\d+([eE][+\-]?\d+)?[jJ]?[lL]?/, 'number']
+    ],
+
+    string_double: [
+      [/[^\\"]+/, 'string'],
+      [/@escapes/, 'string.escape'],
+      [/\\./, 'string.escape.invalid'],
+      [/"/, 'string', '@pop']
+    ],
+
+    string_single: [
+      [/[^\\']+/, 'string'],
+      [/@escapes/, 'string.escape'],
+      [/\\./, 'string.escape.invalid'],
+      [/'/, 'string', '@pop']
+    ]
+  }
+});
+
 monaco.languages.registerHoverProvider('turbo-gherkin', {
   provideHover: function (model, position) {
     return {
