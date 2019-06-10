@@ -1,48 +1,44 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   entry: {
-    app: './src/index.js'
+    'app': './src/index.js'
   },
   output: {
     globalObject: 'self',
-    filename: 'app.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  resolveLoader: {
+    alias: {
+      'blob-url-loader': require.resolve('./loaders/blobUrl'),
+      'compile-loader': require.resolve('./loaders/compile')
+    }
   },
   module: {
     rules: [{
       test: /\.css$/,
       use: ['style-loader', 'css-loader']
-    }, {
-      test: /\.worker\.js$/,
-      use: {
-        loader: 'worker-loader',
-        options: { inline: true }
-      }
     }]
   },
-  optimization: {
-    splitChunks: {
-      name: 'common'
-    }
-  },
   plugins: [
-    new CleanWebpackPlugin(),
-    new MonacoWebpackPlugin({
-      output: '',
-      languages: [],
-      features: ['format', 'contextmenu']
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
     }),
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html'
+      template: './src/index.html',
+      cache: false
     }),
     new ScriptExtHtmlWebpackPlugin({
-      inline: ['app.js']
+      inline: [
+        "app.js"
+      ]
     }),
     new UglifyJSPlugin({
       parallel: true

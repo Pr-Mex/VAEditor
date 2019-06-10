@@ -1,5 +1,13 @@
 import * as monaco from 'monaco-editor'
 
+// Worker loader
+
+self.MonacoEnvironment = {
+  getWorkerUrl: function (moduleId, label) {
+    return require('blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker')
+  }
+}
+
 // Turbo-Gherkin definitions
 
 monaco.languages.register({ id: 'turbo-gherkin' })
