@@ -47,7 +47,8 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
 
     whitespace: [
       [/[ \t\r\n]+/, 'white'],
-      [/(^#.*$)/, 'comment']
+      [/(^#.*$)/, 'comment'],
+      [/(^\/\/.*$)/, 'comment']
     ],
 
     numbers: [
@@ -67,6 +68,12 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
       [/\\./, 'string.escape.invalid'],
       [/'/, 'string', '@pop']
     ]
+  }
+})
+
+monaco.languages.setLanguageConfiguration('turbo-gherkin', {
+  comments: {
+    lineComment: '//'
   }
 })
 
