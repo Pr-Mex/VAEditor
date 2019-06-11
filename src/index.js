@@ -2,8 +2,9 @@ import * as monaco from 'monaco-editor'
 
 // Worker loader
 
-self.MonacoEnvironment = {
+self.MonacoEnvironment = { // eslint-disable-line no-undef
   getWorkerUrl: function (moduleId, label) {
+    // eslint-disable-next-line import/no-webpack-loader-syntax
     return require('blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker')
   }
 }
@@ -17,6 +18,7 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
     'Сценарий',
     'Функционал',
     'Контекст',
+    'Структура сценария',
     'Допустим',
     'Когда',
     'И',
@@ -28,7 +30,7 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
 
   tokenizer: {
     root: [
-      [/[A-zА-я][A-zА-я]*/, {
+      [/[A-zА-я][ A-zА-я]*/, {
         cases: {
           '@keywords': 'keyword',
           '@default': 'identifier'
@@ -38,19 +40,19 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
       { include: '@whitespace' },
       { include: '@numbers' },
       [/@.*/, 'annotation'],
-      [/"([^"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
-      [/'([^'\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
+      [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
+      [/'([^'\\]|\\.)*$/, 'string.invalid'], // non-teminated string
       [/"/, 'string', '@string_double'],
       [/'/, 'string', '@string_single']
     ],
 
     whitespace: [
       [/[ \t\r\n]+/, 'white'],
-      [/(^#.*$)/, 'comment'],
+      [/(^#.*$)/, 'comment']
     ],
 
     numbers: [
-      [/-?(\d*\.)?\d+([eE][+\-]?\d+)?[jJ]?[lL]?/, 'number']
+      [/-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/, 'number']
     ],
 
     string_double: [
@@ -67,7 +69,7 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
       [/'/, 'string', '@pop']
     ]
   }
-});
+})
 
 monaco.languages.registerHoverProvider('turbo-gherkin', {
   provideHover: function (model, position) {
@@ -85,7 +87,7 @@ monaco.languages.registerCompletionItemProvider('turbo-gherkin', {
     var suggestions = [{
       label: 'сцен',
       kind: monaco.languages.CompletionItemKind.Snippet,
-      insertText: 'Сценарий: ${1:condition}\n\tКогда $0',
+      insertText: 'Сценарий: ${1:condition}\n\tКогда $0', // eslint-disable-line no-template-curly-in-string
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       documentation: 'Сценарий'
     }]
