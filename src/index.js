@@ -18,7 +18,6 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
     'Сценарий',
     'Функционал',
     'Контекст',
-    'Структура сценария',
     'Допустим',
     'Когда',
     'И',
@@ -30,7 +29,7 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
 
   tokenizer: {
     root: [
-      [/[A-zА-я][ A-zА-я]*/, {
+      [/[A-zА-я][A-zА-я]*/, {
         cases: {
           '@keywords': 'keyword',
           '@default': 'identifier'
