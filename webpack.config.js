@@ -12,7 +12,7 @@ module.exports = {
   output: {
     globalObject: 'self',
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist')
   },
   resolveLoader: {
     alias: {
@@ -37,7 +37,7 @@ module.exports = {
     }),
     new ScriptExtHtmlWebpackPlugin({
       inline: [
-        "app.js"
+        'app.js'
       ]
     }),
     new UglifyJSPlugin({

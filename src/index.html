@@ -4,6 +4,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<style>
+	::-webkit-scrollbar { display: none; }
 	html, body, #container { width: 100%; height:100%; margin: 0; padding: 0; }
 	.line-selected { background-color: darkgoldenrod; }
 	.breakpoint { background-color: darkred; }
@@ -14,6 +15,14 @@
 
 <div id="container"></div>
 <button id="interaction"></button>
-
+<script>
+// Patch 1C-webkit to be sure that default scrollbar is disabled.
+window.addEventListener('load', function() {
+	let elem = document.getElementById('1C_scrollbar_12704CA4-9C01-461B-8383-F4CD6283CB75')
+	if (elem !== null) {
+		elem.remove()
+	}
+});
+</script>
 </body>
 </html>

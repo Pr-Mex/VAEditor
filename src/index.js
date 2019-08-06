@@ -15,13 +15,13 @@ monaco.languages.register({ id: 'turbo-gherkin' })
 
 monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
   keywords: [
-    'Сценарий',
     'Функционал',
-    'Контекст',
-    'Допустим',
+    'Сценарий',
+    'Контекст', 'Допустим', 'Дано',
     'Когда',
     'И',
-    'Тогда',
+    'Тогда', 'Затем',
+    'Если',
     'Примеры'
   ],
 
@@ -77,16 +77,16 @@ monaco.languages.setLanguageConfiguration('turbo-gherkin', {
   }
 })
 
-monaco.languages.registerHoverProvider('turbo-gherkin', {
-  provideHover: function (model, position) {
-    return {
-      range: model.getFullModelRange(),
-      contents: [
-        { value: '**DESCRIPTION**\n```html\nЭто тестовое описание при наведении.\n```' }
-      ]
-    }
-  }
-})
+// monaco.languages.registerHoverProvider('turbo-gherkin', {
+//   provideHover: function (model, position) {
+//     return {
+//       range: model.getFullModelRange(),
+//       contents: [
+//         { value: '**DESCRIPTION**\n```html\nЭто тестовое описание при наведении.\n```' }
+//       ]
+//     }
+//   }
+// })
 
 monaco.languages.registerCompletionItemProvider('turbo-gherkin', {
   provideCompletionItems: function () {
