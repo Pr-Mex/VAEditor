@@ -1,6 +1,6 @@
-# Turbo-Gherkin editor
+# Vanessa Editor
 
-Code editor which powers by [Monaco](https://github.com/Microsoft/monaco-editor) and interaction with [1C:Enterprise](https://1c-dn.com/) 8.3.14+.
+Code editor which powers by [Monaco](https://github.com/Microsoft/monaco-editor) and interaction with [1C:Enterprise](https://1c-dn.com/) 8.3.15+.
 
 Build for [Vanessa Automation](https://github.com/Pr-Mex/vanessa-automation).
 
