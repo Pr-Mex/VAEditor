@@ -6,21 +6,25 @@
 				<xr:ClassId>c3831ec8-d8d5-4f93-8a22-f9bfae07327f</xr:ClassId>
 				<xr:ObjectId>4a772ba1-59ad-4261-ac9a-aadfc37a1e68</xr:ObjectId>
 			</xr:ContainedObject>
-			<xr:GeneratedType name="ExternalDataProcessorObject.MonacoTest" category="Object">
+			<xr:GeneratedType name="ExternalDataProcessorObject.VanessaEditorSample" category="Object">
 				<xr:TypeId>aff1ec8a-7ee4-46be-9667-cadc8ae97241</xr:TypeId>
 				<xr:ValueId>fe349e51-f1f5-4e3a-916f-4753050d8435</xr:ValueId>
 			</xr:GeneratedType>
 		</InternalInfo>
 		<Properties>
-			<Name>MonacoTest</Name>
+			<Name>VanessaEditorSample</Name>
 			<Synonym>
 				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Vanessa Editor Sample</v8:content>
+				</v8:item>
+				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Monaco test</v8:content>
+					<v8:content>Vanessa Editor Sample</v8:content>
 				</v8:item>
 			</Synonym>
 			<Comment/>
-			<DefaultForm>ExternalDataProcessor.MonacoTest.Form.Form</DefaultForm>
+			<DefaultForm>ExternalDataProcessor.VanessaEditorSample.Form.Form</DefaultForm>
 			<AuxiliaryForm/>
 		</Properties>
 		<ChildObjects>

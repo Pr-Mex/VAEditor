@@ -30,13 +30,6 @@ Procedure GetValue(Command)
 EndProcedure
 
 &AtClient
-Procedure ScrollToLine(Command)
-	
-	SendAction("revealLine", "1");
-	
-EndProcedure
-
-&AtClient
 Procedure ReadOnlyModeOnChange(Item)
 	
 	If ReadOnlyMode Then
@@ -46,6 +39,85 @@ Procedure ReadOnlyModeOnChange(Item)
 	EndIf;
 	
 EndProcedure
+
+&AtClient
+Procedure BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
+	
+	Breakpoints.SortByValue();
+	
+	Value = 0;
+	For Each Row In Breakpoints Do
+		If Value = Row.Value Then
+			Cancel = True;
+			Return;
+		EndIf;
+		Value = Row.Value;
+	EndDo;
+	
+	UpdateBreakpoints();
+	
+EndProcedure
+
+&AtClient
+Procedure BreakpointsOnActivateRow(Item)
+	
+	If Item.CurrentData = Undefined Then
+		Return;
+	EndIf;
+	
+	SendAction("revealLine", Item.CurrentData.Value);
+	
+EndProcedure
+
+#EndRegion
+
+#Region FormEvents
+
+&AtServer
+Procedure ToggleBreakpoint(LineNumber)
+	
+	TypeDescription = New TypeDescription("Number");
+	Number = TypeDescription.AdjustValue(LineNumber);
+	
+	If Number = 0 Then 
+		Return;
+	EndIf;
+	
+	Item = Breakpoints.FindByValue(Number);
+	If Item = Undefined Then
+		Breakpoints.Add(LineNumber,, True);
+	Else 
+		Breakpoints.Delete(Item);
+	EndIf;
+	Breakpoints.SortByValue();
+	
+EndProcedure
+
+&AtClient
+Procedure UpdateBreakpoints()
+	
+	BreakpointsPacket = New Array;
+	
+	For Each Breakpoint In Breakpoints Do
+		BreakpointsPacketChunk = New Structure;
+		BreakpointsPacketChunk.Insert("lineNumber", Breakpoint.Value);
+		BreakpointsPacketChunk.Insert("enable", Breakpoint.Check);
+		BreakpointsPacket.Add(BreakpointsPacketChunk);
+	EndDo;
+	
+	SendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
+	
+EndProcedure
+
+&AtClient
+Function JsonDump(Value)
+	
+	JSONWriter = New JSONWriter;
+	JSONWriter.SetString();
+	WriteJSON(JSONWriter, Value);
+	Return JSONWriter.Close();
+	
+EndFunction
 
 #EndRegion
 
@@ -65,6 +137,9 @@ Procedure OnReceiveAction(Event, Arg)
 	
 	If Event = "CONTENT_DID_CHANGE" Then
 		ContentDidChange = True;
+	ElsIf Event = "TOGGLE_BREAKPOINT" Then
+		ToggleBreakpoint(Arg);
+		UpdateBreakpoints();
 	Else
 		UserMessage = New UserMessage;
 		UserMessage.Text = Event + " : " + Arg;

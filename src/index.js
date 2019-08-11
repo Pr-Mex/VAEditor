@@ -138,19 +138,22 @@ editor.onDidChangeModelContent(function () {
   V8Proxy.SendAction('CONTENT_DID_CHANGE')
 })
 
-// It shuld be used on 1C:Enterprise Actions
-// Need design the decoration types.
-//
-// editor.deltaDecorations([], [
-//   {
-//     range: new monaco.Range(2, 1, 2, 1),
-//     options: {
-//       isWholeLine: true,
-//       className: 'line-selected',
-//       glyphMarginClassName: 'breakpoint'
-//     }
-//   }
-// ])
+// Breakpoints
+
+self.breakpointDecorations = []
+
+function decorateBreakpoints(breakpoints) {
+  let decorationList = []
+  breakpoints.forEach(
+    i=>decorationList.push({
+      range: new monaco.Range(i.lineNumber, 1, i.lineNumber, 1),
+      options: {
+        glyphMarginClassName: i.enable ? 'breakpoint' : 'breakpoint-disabled'
+      }
+    })
+  )
+  self.breakpointDecorations = editor.deltaDecorations(self.breakpointDecorations, decorationList)
+}
 
 // 1C:Enterprise interactions.
 
@@ -184,6 +187,9 @@ var V8Proxy = {
         editor.updateOptions({
           readOnly: true
         })
+        return undefined
+      case 'decorateBreakpoints':
+        decorateBreakpoints(JSON.parse(arg))
         return undefined
       default:
     }

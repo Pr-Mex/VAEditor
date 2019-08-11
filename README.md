@@ -22,23 +22,26 @@ Build production to `/dist/`
 npm run build
 ```
 
+
 ## API
 
 ### Actions
 
-| Action        | Description                        |
-| ------------- | ---------------------------------- |
-| `setValue`    | load `arg` to the editor           |
-| `getValue`    | return editor content              |
-| `revealLine`  | scrolling to the `arg` line number |
-| `enableEdit`  | disable read only mode             |
-| `disableEdit` | set read only mode                 |
+| Action                | Description                                                               |
+| --------------------- | ------------------------------------------------------------------------- |
+| `setValue`            | load `arg` to the editor                                                  |
+| `getValue`            | return editor content                                                     |
+| `revealLine`          | scrolling to the `arg` line number                                        |
+| `enableEdit`          | disable read only mode                                                    |
+| `disableEdit`         | set read only mode                                                        |
+| `decorateBreakpoints` | update breakpoint by json description in  `arg`, see Breakpoints chapter. |
 
-1C:Enterprise example:
+1C:Enterprise script example:
 
 ```bsl
 SendAction("setValue", "Text to edit")
 ```
+
 
 ### Events
 
@@ -52,7 +55,7 @@ SendAction("setValue", "Text to edit")
 | `STEP_OVER`                            | on F11 pressed, `arg` is line number           |
 | `CONTENT_DID_CHANGE`                   | after content did change                       |
 
-1C:Enterprise example:
+1C:Enterprise script example:
 
 ```bsl
 Function OnReceiveAction(Event, Arg)
@@ -60,6 +63,58 @@ Function OnReceiveAction(Event, Arg)
   If Event = "CONTENT_DID_CHANGE" Then
     ContentDidChange = True;
   EndIf;
+
+EndFunction
+```
+
+
+### Breakpoints
+
+The editor in any case if is toggling breakpoint will send `TOGGLE_BREAKPOINT` event without decorate breakpoint in editor.
+You can verify the breakpoint to set, for example set the next non blank line if blank line is toggled or decline set the breakpoint into the end of file.
+To update the editor you must send `decorateBreakpoints` action with the json description of a new state of all breakpoints, after that the editor will delta the decoration of breakpoints.
+
+Sample json breakpoint description:
+
+```json
+[
+  {
+  "lineNumber": 3,
+  "enable": true
+  },
+  {
+  "lineNumber": 27,
+  "enable": false
+  }
+]
+```
+
+To genarate this descripton you can use this 1C:Enterprise script pattern:
+
+```bsl
+&AtClient
+Procedure UpdateBreakpoints()
+
+	BreakpointsPacket = New Array;
+
+	For Each Breakpoint In Breakpoints Do
+		BreakpointsPacketChunk = New Structure;
+		BreakpointsPacketChunk.Insert("lineNumber", Breakpoint.Value);
+		BreakpointsPacketChunk.Insert("enable", Breakpoint.Check);
+		BreakpointsPacket.Add(BreakpointsPacketChunk);
+	EndDo;
+
+	SendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
+
+EndProcedure
+
+&AtClient
+Function JsonDump(Value)
+
+	JSONWriter = New JSONWriter;
+	JSONWriter.SetString();
+	WriteJSON(JSONWriter, Value);
+	Return JSONWriter.Close();
 
 EndFunction
 ```
