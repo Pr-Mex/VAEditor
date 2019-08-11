@@ -1,8 +1,9 @@
+import './style.css'
 import * as monaco from 'monaco-editor'
 
 // Worker loader
 
-self.MonacoEnvironment = { // eslint-disable-line no-undef
+self.MonacoEnvironment = {
   getWorkerUrl: function (moduleId, label) {
     // eslint-disable-next-line import/no-webpack-loader-syntax
     return require('blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker')
@@ -138,21 +139,53 @@ editor.onDidChangeModelContent(function () {
   V8Proxy.SendAction('CONTENT_DID_CHANGE')
 })
 
+editor.onMouseDown(function (e) {
+  if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
+    V8Proxy.SendAction('TOGGLE_BREAKPOINT', e.target.position.lineNumber)
+  }
+})
+
+editor.onMouseMove(function (e) {
+  decorateBreakpointHint(e)
+})
+
 // Breakpoints
 
+self.breakpoints = []
 self.breakpointDecorations = []
 
-function decorateBreakpoints(breakpoints) {
-  let decorationList = []
+function decorateBreakpoints (breakpoints) {
+  const decorationList = []
   breakpoints.forEach(
-    i=>decorationList.push({
+    i => decorationList.push({
       range: new monaco.Range(i.lineNumber, 1, i.lineNumber, 1),
       options: {
-        glyphMarginClassName: i.enable ? 'breakpoint' : 'breakpoint-disabled'
+        stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        glyphMarginClassName: i.enable ? 'debug-breakpoint-glyph' : 'debug-breakpoint-disabled-glyph'
       }
     })
   )
+  self.breakpoints = breakpoints
   self.breakpointDecorations = editor.deltaDecorations(self.breakpointDecorations, decorationList)
+}
+
+self.breakpointHintDecoration = []
+
+function decorateBreakpointHint (e) {
+  const decorationList = []
+  if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
+    const lineNumber = e.target.position.lineNumber
+    if (self.breakpoints.find(i => (i.lineNumber === lineNumber)) === undefined) {
+      decorationList.push({
+        range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+        options: {
+          stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+          glyphMarginClassName: 'debug-breakpoint-hint-glyph'
+        }
+      })
+    }
+  }
+  self.breakpointHintDecoration = editor.deltaDecorations(self.breakpointHintDecoration, decorationList)
 }
 
 // 1C:Enterprise interactions.
@@ -196,4 +229,4 @@ var V8Proxy = {
   }
 }
 
-self.OnReceiveAction = V8Proxy.OnReceiveAction // eslint-disable-line no-undef
+self.OnReceiveAction = V8Proxy.OnReceiveAction
