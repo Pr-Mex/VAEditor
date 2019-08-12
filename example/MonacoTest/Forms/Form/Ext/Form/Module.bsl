@@ -41,6 +41,13 @@ Procedure ReadOnlyModeOnChange(Item)
 EndProcedure
 
 &AtClient
+Procedure BreakpointsOnChange(Item)
+	
+	DecorateBreakpoints();
+	
+EndProcedure
+
+&AtClient
 Procedure BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
 	
 	Breakpoints.SortByValue();
@@ -53,8 +60,6 @@ Procedure BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
 		EndIf;
 		Value = Row.Value;
 	EndDo;
-	
-	UpdateBreakpoints();
 	
 EndProcedure
 
@@ -73,28 +78,26 @@ EndProcedure
 
 #Region FormEvents
 
-&AtServer
-Procedure ToggleBreakpoint(LineNumber)
+&AtClient
+Procedure UpdateBreakpoints(Json)
 	
-	TypeDescription = New TypeDescription("Number");
-	Number = TypeDescription.AdjustValue(LineNumber);
+	BreakpointsPacket = JsonLoad(Json);
 	
-	If Number = 0 Then 
-		Return;
-	EndIf;
+	Breakpoints.Clear();
+	For Each BreakpointsPacketChunk In BreakpointsPacket Do
+		Breakpoint = Breakpoints.Add(
+			BreakpointsPacketChunk.lineNumber,
+			,
+			BreakpointsPacketChunk.enable
+		);
+	EndDo;
 	
-	Item = Breakpoints.FindByValue(Number);
-	If Item = Undefined Then
-		Breakpoints.Add(LineNumber,, True);
-	Else 
-		Breakpoints.Delete(Item);
-	EndIf;
 	Breakpoints.SortByValue();
 	
 EndProcedure
 
 &AtClient
-Procedure UpdateBreakpoints()
+Procedure DecorateBreakpoints()
 	
 	BreakpointsPacket = New Array;
 	
@@ -105,9 +108,22 @@ Procedure UpdateBreakpoints()
 		BreakpointsPacket.Add(BreakpointsPacketChunk);
 	EndDo;
 	
+	RunApp("timeout 2",, True);
+	
 	SendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
 	
 EndProcedure
+
+&AtClient
+Function JsonLoad(Json)
+	
+	JSONReader = New JSONReader;
+	JSONReader.SetString(Json);
+	Value = ReadJSON(JSONReader);
+	JSONReader.Close();
+	Return Value;
+	
+EndFunction
 
 &AtClient
 Function JsonDump(Value)
@@ -137,9 +153,9 @@ Procedure OnReceiveAction(Event, Arg)
 	
 	If Event = "CONTENT_DID_CHANGE" Then
 		ContentDidChange = True;
-	ElsIf Event = "TOGGLE_BREAKPOINT" Then
-		ToggleBreakpoint(Arg);
-		UpdateBreakpoints();
+	ElsIf Event = "UPDATE_BREAKPOINTS" Then
+		UpdateBreakpoints(Arg);
+		DecorateBreakpoints();
 	Else
 		UserMessage = New UserMessage;
 		UserMessage.Text = Event + " : " + Arg;

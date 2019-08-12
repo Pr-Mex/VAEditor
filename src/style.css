@@ -11,3 +11,6 @@
 .debug-breakpoint-hint-glyph {
   background: url('src/media/breakpoint-hint.svg') center center no-repeat;
 }
+.debug-breakpoint-unverified-glyph {
+  background: url('src/media/breakpoint-unverified.svg') center center no-repeat;
+}

@@ -127,6 +127,7 @@
 							<Events>
 								<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
 								<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
+								<Event name="OnChange">BreakpointsOnChange</Event>
 							</Events>
 							<ChildItems>
 								<CheckBoxField name="BreakpointsCheck" id="48">

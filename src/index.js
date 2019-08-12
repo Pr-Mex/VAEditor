@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor'
 
 // Worker loader
 
+// eslint-disable-next-line no-undef
 self.MonacoEnvironment = {
   getWorkerUrl: function (moduleId, label) {
     // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -128,7 +129,7 @@ editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F5, function () {
 })
 
 editor.addCommand(monaco.KeyCode.F9, function () {
-  V8Proxy.SendAction('TOGGLE_BREAKPOINT', editor.getPosition().lineNumber)
+  toggleBreakpoint(editor.getPosition().lineNumber)
 })
 
 editor.addCommand(monaco.KeyCode.F11, function () {
@@ -140,43 +141,58 @@ editor.onDidChangeModelContent(function () {
 })
 
 editor.onMouseDown(function (e) {
-  if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
-    V8Proxy.SendAction('TOGGLE_BREAKPOINT', e.target.position.lineNumber)
-  }
+  breakpointOnMouseDown(e)
 })
 
 editor.onMouseMove(function (e) {
-  decorateBreakpointHint(e)
+  breakpointsOnMouseMove(e)
+})
+
+var model = editor.getModel()
+
+model.onDidChangeDecorations(function (e) {
+  breakpointOnDidChangeDecorations()
 })
 
 // Breakpoints
 
-self.breakpoints = []
-self.breakpointDecorations = []
+var breakpointList = [] // { id, range, enable, verified }
+var breakpointDecorationIds = []
+var breakpointHintDecorationIds = []
+var breakpointUnverifiedDecorationIds = []
+var checkBreakpointChangeDecorations = true
 
 function decorateBreakpoints (breakpoints) {
-  const decorationList = []
-  breakpoints.forEach(
-    i => decorationList.push({
-      range: new monaco.Range(i.lineNumber, 1, i.lineNumber, 1),
+  const decorations = []
+  breakpoints.forEach(breakpoint => {
+    decorations.push({
+      range: new monaco.Range(breakpoint.lineNumber, 1, breakpoint.lineNumber, 1),
       options: {
         stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-        glyphMarginClassName: i.enable ? 'debug-breakpoint-glyph' : 'debug-breakpoint-disabled-glyph'
+        glyphMarginClassName: breakpoint.enable ? 'debug-breakpoint-glyph' : 'debug-breakpoint-disabled-glyph'
       }
     })
-  )
-  self.breakpoints = breakpoints
-  self.breakpointDecorations = editor.deltaDecorations(self.breakpointDecorations, decorationList)
+  })
+
+  checkBreakpointChangeDecorations = false
+  breakpointDecorationIds = editor.deltaDecorations(breakpointDecorationIds, decorations)
+  breakpointUnverifiedDecorationIds = editor.deltaDecorations(breakpointUnverifiedDecorationIds, [])
+  checkBreakpointChangeDecorations = true
+
+  breakpointList = breakpointDecorationIds.map((id, index) => ({
+    id: id,
+    range: decorations[index].range,
+    enable: breakpoints[index].enable,
+    verified: true
+  }))
 }
 
-self.breakpointHintDecoration = []
-
-function decorateBreakpointHint (e) {
-  const decorationList = []
+function breakpointsOnMouseMove (e) {
+  const decorations = []
   if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
     const lineNumber = e.target.position.lineNumber
-    if (self.breakpoints.find(i => (i.lineNumber === lineNumber)) === undefined) {
-      decorationList.push({
+    if (breakpointIndexByLineNumber(lineNumber) === -1) {
+      decorations.push({
         range: new monaco.Range(lineNumber, 1, lineNumber, 1),
         options: {
           stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
@@ -185,7 +201,78 @@ function decorateBreakpointHint (e) {
       })
     }
   }
-  self.breakpointHintDecoration = editor.deltaDecorations(self.breakpointHintDecoration, decorationList)
+  breakpointHintDecorationIds = editor.deltaDecorations(breakpointHintDecorationIds, decorations)
+}
+
+function breakpointOnDidChangeDecorations () {
+  if (!checkBreakpointChangeDecorations) {
+    return
+  }
+  let somethingChanged = false
+  breakpointList.forEach(breakpoint => {
+    if (somethingChanged) {
+      return
+    }
+    if (!breakpoint.verified) {
+      return
+    }
+    const newBreakpointRange = model.getDecorationRange(breakpoint.id)
+    if (newBreakpointRange && (!breakpoint.range.equalsRange(newBreakpointRange))) {
+      somethingChanged = true
+    }
+  })
+  if (somethingChanged) {
+    updateBreakpoints()
+  }
+}
+
+function breakpointOnMouseDown (e) {
+  if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
+    toggleBreakpoint(e.target.position.lineNumber)
+  }
+}
+
+function toggleBreakpoint (lineNumber) {
+  const breakpointIndex = breakpointIndexByLineNumber(lineNumber)
+  if (breakpointIndex === -1) {
+    checkBreakpointChangeDecorations = false
+    breakpointHintDecorationIds = editor.deltaDecorations(breakpointHintDecorationIds, [])
+    breakpointUnverifiedDecorationIds = editor.deltaDecorations(breakpointUnverifiedDecorationIds, [{
+      range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+      options: {
+        stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        glyphMarginClassName: 'debug-breakpoint-unverified-glyph'
+      }
+    }])
+    checkBreakpointChangeDecorations = true
+    breakpointList.push({
+      id: breakpointUnverifiedDecorationIds[0],
+      range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+      enable: true,
+      verified: false
+    })
+  } else {
+    breakpointList.splice(breakpointIndex, 1)
+  }
+  setTimeout(updateBreakpoints, 100)
+}
+
+function updateBreakpoints () {
+  let breakpointPacket = []
+  breakpointList.forEach(breakpoint => {
+    let range = model.getDecorationRange(breakpoint.id)
+    if (range !== null) {
+      breakpointPacket.push({
+        lineNumber: range.startLineNumber,
+        enable: breakpoint.enable
+      })
+    }
+  })
+  V8Proxy.SendAction('UPDATE_BREAKPOINTS', JSON.stringify(breakpointPacket))
+}
+
+function breakpointIndexByLineNumber (lineNumber) {
+  return breakpointList.findIndex(breakpoint => (breakpoint.range.startLineNumber === lineNumber))
 }
 
 // 1C:Enterprise interactions.
@@ -229,4 +316,5 @@ var V8Proxy = {
   }
 }
 
+// eslint-disable-next-line no-undef
 self.OnReceiveAction = V8Proxy.OnReceiveAction
