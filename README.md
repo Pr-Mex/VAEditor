@@ -121,8 +121,7 @@ EndFunction
 
 To parse this descripton you can use this 1C:Enterprise script pattern:
 
-bsl
-```
+```bsl
 &AtClient
 Procedure UpdateBreakpoints(Json)
 
