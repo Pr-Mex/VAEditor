@@ -1,14 +1,14 @@
 {
-	"name": "monaco",
+	"name": "vanessa-editor",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Vanessa Editor",
 	"private": true,
 	"scripts": {
 		"debug": "webpack-dev-server --progress --mode development",
 		"build": "webpack --progress --mode production"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Ingvar Vilkman",
 	"license": "MIT",
 	"dependencies": {
 		"monaco-editor": "^0.17.0"

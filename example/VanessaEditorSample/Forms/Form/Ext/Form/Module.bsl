@@ -84,8 +84,8 @@ Procedure UpdateBreakpoints(Json)
 	BreakpointsPacket = JsonLoad(Json);
 	
 	Breakpoints.Clear();
-	For Each BreakpointsPacketChunk In BreakpointsPacket Do
-		Breakpoints.Add(BreakpointsPacketChunk.lineNumber,, BreakpointsPacketChunk.enable);
+	For Each Chunk In BreakpointsPacket Do
+		Breakpoints.Add(Chunk.lineNumber,, Chunk.enable);
 	EndDo;
 	
 	Breakpoints.SortByValue();
@@ -101,11 +101,11 @@ Procedure DecorateBreakpoints()
 	
 	BreakpointsPacket = New Array;
 	
-	For Each Breakpoint In Breakpoints Do
-		BreakpointsPacketChunk = New Structure;
-		BreakpointsPacketChunk.Insert("lineNumber", Breakpoint.Value);
-		BreakpointsPacketChunk.Insert("enable", Breakpoint.Check);
-		BreakpointsPacket.Add(BreakpointsPacketChunk);
+	For Each Row In Breakpoints Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.Value);
+		Chunk.Insert("enable", Row.Check);
+		BreakpointsPacket.Add(Chunk);
 	EndDo;
 	
 	VanessaEditorSendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));

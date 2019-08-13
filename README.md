@@ -39,7 +39,7 @@ npm run build
 1C:Enterprise script example:
 
 ```bsl
-SendAction("setValue", "Text to edit")
+VanessaEditorSendAction("setValue", "Text to edit")
 ```
 
 
@@ -58,7 +58,7 @@ SendAction("setValue", "Text to edit")
 1C:Enterprise script example:
 
 ```bsl
-Function OnReceiveAction(Event, Arg)
+Function VanessaEditorOnReceiveEvent(Event, Arg)
 
   If Event = "CONTENT_DID_CHANGE" Then
     ContentDidChange = True;
@@ -97,14 +97,14 @@ Procedure DecorateBreakpoints()
 
 	BreakpointsPacket = New Array;
 
-	For Each Breakpoint In Breakpoints Do
-		BreakpointsPacketChunk = New Structure;
-		BreakpointsPacketChunk.Insert("lineNumber", Breakpoint.Value);
-		BreakpointsPacketChunk.Insert("enable", Breakpoint.Check);
-		BreakpointsPacket.Add(BreakpointsPacketChunk);
+	For Each Row In Breakpoints Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.Value);
+		Chunk.Insert("enable", Row.Check);
+		BreakpointsPacket.Add(Chunk);
 	EndDo;
 
-	SendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
+	VanessaEditorSendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
 
 EndProcedure
 
@@ -125,11 +125,11 @@ To parse this descripton you can use this 1C:Enterprise script pattern:
 &AtClient
 Procedure UpdateBreakpoints(Json)
 
-BreakpointsPacket = JsonLoad(Json);
+	BreakpointsPacket = JsonLoad(Json);
 
 	Breakpoints.Clear();
-	For Each BreakpointsPacketChunk In BreakpointsPacket Do
-		Breakpoints.Add(BreakpointsPacketChunk.lineNumber,, BreakpointsPacketChunk.enable);
+	For Each Chunk In BreakpointsPacket Do
+		Breakpoints.Add(Chunk.lineNumber,, Chunk.enable);
 	EndDo;
 
 	Breakpoints.SortByValue();
