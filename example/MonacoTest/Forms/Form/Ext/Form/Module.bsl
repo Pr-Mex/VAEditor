@@ -76,7 +76,7 @@ EndProcedure
 
 #EndRegion
 
-#Region FormEvents
+#Region Breakpoints
 
 &AtClient
 Procedure UpdateBreakpoints(Json)
@@ -85,11 +85,7 @@ Procedure UpdateBreakpoints(Json)
 	
 	Breakpoints.Clear();
 	For Each BreakpointsPacketChunk In BreakpointsPacket Do
-		Breakpoint = Breakpoints.Add(
-			BreakpointsPacketChunk.lineNumber,
-			,
-			BreakpointsPacketChunk.enable
-		);
+		Breakpoints.Add(BreakpointsPacketChunk.lineNumber,, BreakpointsPacketChunk.enable);
 	EndDo;
 	
 	Breakpoints.SortByValue();
@@ -108,7 +104,7 @@ Procedure DecorateBreakpoints()
 		BreakpointsPacket.Add(BreakpointsPacketChunk);
 	EndDo;
 	
-	RunApp("timeout 2",, True);
+	//RunApp("timeout 2",, True);
 	
 	SendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
 	

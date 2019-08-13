@@ -262,10 +262,14 @@ function updateBreakpoints () {
   breakpointList.forEach(breakpoint => {
     const range = model.getDecorationRange(breakpoint.id)
     if (range !== null) {
-      breakpointPacket.push({
-        lineNumber: range.startLineNumber,
-        enable: breakpoint.enable
-      })
+      const breakpointFound = breakpointPacket.find(breakpointChunk =>
+        (breakpointChunk.lineNumber === range.startLineNumber)) !== undefined
+      if (!breakpointFound) {
+        breakpointPacket.push({
+          lineNumber: range.startLineNumber,
+          enable: breakpoint.enable
+        })
+      }
     }
   })
   V8Proxy.SendAction('UPDATE_BREAKPOINTS', JSON.stringify(breakpointPacket))
