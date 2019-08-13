@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Form xmlns="http://v8.1c.ru/8.3/xcf/logform" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:dcscor="http://v8.1c.ru/8.1/data-composition-system/core" xmlns:dcsset="http://v8.1c.ru/8.1/data-composition-system/settings" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.9">
+	<AutoCommandBar name="FormCommandBar" id="-1">
+		<ChildItems>
+			<Button name="LoadFile" id="6">
+				<Type>CommandBarButton</Type>
+				<CommandName>Form.Command.LoadFile</CommandName>
+				<ExtendedTooltip name="LoadFileExtendedTooltip" id="7"/>
+			</Button>
+			<Button name="GetValue" id="8">
+				<Type>CommandBarButton</Type>
+				<CommandName>Form.Command.GetValue</CommandName>
+				<ExtendedTooltip name="GetValueExtendedTooltip" id="9"/>
+			</Button>
+		</ChildItems>
+	</AutoCommandBar>
+	<Events>
+		<Event name="OnCreateAtServer">OnCreateAtServer</Event>
+	</Events>
+	<ChildItems>
+		<UsualGroup name="Body" id="34">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Body</v8:content>
+				</v8:item>
+			</Title>
+			<Group>AlwaysHorizontal</Group>
+			<Representation>None</Representation>
+			<ShowTitle>false</ShowTitle>
+			<ExtendedTooltip name="BodyExtendedTooltip" id="35"/>
+			<ChildItems>
+				<UsualGroup name="LeftSide" id="36">
+					<Title>
+						<v8:item>
+							<v8:lang>en</v8:lang>
+							<v8:content>Left side</v8:content>
+						</v8:item>
+					</Title>
+					<Group>Vertical</Group>
+					<Representation>None</Representation>
+					<ShowTitle>false</ShowTitle>
+					<ExtendedTooltip name="LeftSideExtendedTooltip" id="37"/>
+					<ChildItems>
+						<UsualGroup name="BreakpointsGroup" id="54">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Breakpoints</v8:content>
+								</v8:item>
+							</Title>
+							<Group>Vertical</Group>
+							<ExtendedTooltip name="BreakpointsGroupExtendedTooltip" id="55"/>
+							<ChildItems>
+								<Table name="Breakpoints" id="18">
+									<Representation>List</Representation>
+									<Header>false</Header>
+									<HorizontalLines>false</HorizontalLines>
+									<VerticalLines>false</VerticalLines>
+									<DataPath>Breakpoints</DataPath>
+									<RowPictureDataPath>Breakpoints.Picture</RowPictureDataPath>
+									<CommandSet>
+										<ExcludedCommand>Change</ExcludedCommand>
+										<ExcludedCommand>Copy</ExcludedCommand>
+										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
+										<ExcludedCommand>EndEdit</ExcludedCommand>
+										<ExcludedCommand>MoveDown</ExcludedCommand>
+										<ExcludedCommand>MoveUp</ExcludedCommand>
+										<ExcludedCommand>Pickup</ExcludedCommand>
+										<ExcludedCommand>SearchEverywhere</ExcludedCommand>
+										<ExcludedCommand>SelectAll</ExcludedCommand>
+										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
+										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
+										<ExcludedCommand>SortListAsc</ExcludedCommand>
+										<ExcludedCommand>SortListDesc</ExcludedCommand>
+									</CommandSet>
+									<ContextMenu name="BreakpointsContextMenu" id="19"/>
+									<AutoCommandBar name="BreakpointsCommandBar" id="20">
+										<Autofill>false</Autofill>
+										<ChildItems>
+											<Button name="BreakpointsAdd" id="40">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.Add</CommandName>
+												<LocationInCommandBar>InCommandBar</LocationInCommandBar>
+												<ExtendedTooltip name="BreakpointsAddExtendedTooltip" id="41"/>
+											</Button>
+											<Button name="BreakpointsDelete" id="42">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.Delete</CommandName>
+												<LocationInCommandBar>InCommandBar</LocationInCommandBar>
+												<ExtendedTooltip name="BreakpointsDeleteExtendedTooltip" id="43"/>
+											</Button>
+											<Button name="BreakpointsCheckAll" id="44">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.CheckAll</CommandName>
+												<LocationInCommandBar>InCommandBar</LocationInCommandBar>
+												<ExtendedTooltip name="BreakpointsCheckAllExtendedTooltip" id="45"/>
+											</Button>
+											<Button name="BreakpointsUncheckAll" id="46">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.UncheckAll</CommandName>
+												<LocationInCommandBar>InCommandBar</LocationInCommandBar>
+												<ExtendedTooltip name="BreakpointsUncheckAllExtendedTooltip" id="47"/>
+											</Button>
+										</ChildItems>
+									</AutoCommandBar>
+									<ExtendedTooltip name="BreakpointsExtendedTooltip" id="21"/>
+									<SearchStringAddition name="BreakpointsSearchString" id="22">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsSearchStringContextMenu" id="23"/>
+										<ExtendedTooltip name="BreakpointsSearchStringExtendedTooltip" id="24"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="BreakpointsViewStatus" id="25">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsViewStatusContextMenu" id="26"/>
+										<ExtendedTooltip name="BreakpointsViewStatusExtendedTooltip" id="27"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="BreakpointsSearchControl" id="28">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsSearchControlContextMenu" id="29"/>
+										<ExtendedTooltip name="BreakpointsSearchControlExtendedTooltip" id="30"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
+										<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
+										<Event name="OnChange">BreakpointsOnChange</Event>
+									</Events>
+									<ChildItems>
+										<CheckBoxField name="BreakpointsCheck" id="48">
+											<DataPath>Breakpoints.Check</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<CheckBoxType>Auto</CheckBoxType>
+											<ContextMenu name="BreakpointsCheckContextMenu" id="49"/>
+											<ExtendedTooltip name="BreakpointsCheckExtendedTooltip" id="50"/>
+										</CheckBoxField>
+										<InputField name="BreakpointsValue" id="31">
+											<DataPath>Breakpoints.Value</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<Width>4</Width>
+											<ContextMenu name="BreakpointsValueContextMenu" id="32"/>
+											<ExtendedTooltip name="BreakpointsValueExtendedTooltip" id="33"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+								<CheckBoxField name="EmulateBreakpointUpdateDelay" id="51">
+									<DataPath>EmulateBreakpointUpdateDelay</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="EmulateBreakpointUpdateDelayContextMenu" id="52"/>
+									<ExtendedTooltip name="EmulateBreakpointUpdateDelayExtendedTooltip" id="53"/>
+								</CheckBoxField>
+							</ChildItems>
+						</UsualGroup>
+					</ChildItems>
+				</UsualGroup>
+				<UsualGroup name="RightSide" id="38">
+					<Title>
+						<v8:item>
+							<v8:lang>en</v8:lang>
+							<v8:content>Right side</v8:content>
+						</v8:item>
+					</Title>
+					<Group>Vertical</Group>
+					<Representation>None</Representation>
+					<ShowTitle>false</ShowTitle>
+					<ExtendedTooltip name="RightSideExtendedTooltip" id="39"/>
+					<ChildItems>
+						<HTMLDocumentField name="VanessaEditor" id="1">
+							<DataPath>VanessaEditor</DataPath>
+							<TitleLocation>None</TitleLocation>
+							<ContextMenu name="VanessaEditorContextMenu" id="2"/>
+							<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
+							<Events>
+								<Event name="OnClick">VanessaEditorEventForwaderOnReceiveEvent</Event>
+							</Events>
+						</HTMLDocumentField>
+					</ChildItems>
+				</UsualGroup>
+			</ChildItems>
+		</UsualGroup>
+		<UsualGroup name="StateGroup" id="16">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>State</v8:content>
+				</v8:item>
+			</Title>
+			<Group>AlwaysHorizontal</Group>
+			<Representation>None</Representation>
+			<ExtendedTooltip name="StateGroupExtendedTooltip" id="17"/>
+			<ChildItems>
+				<CheckBoxField name="ContentDidChange" id="10">
+					<DataPath>ContentDidChange</DataPath>
+					<TitleLocation>Right</TitleLocation>
+					<CheckBoxType>Auto</CheckBoxType>
+					<ContextMenu name="ContentDidChangeContextMenu" id="11"/>
+					<ExtendedTooltip name="ContentDidChangeExtendedTooltip" id="12"/>
+				</CheckBoxField>
+				<CheckBoxField name="ReadOnlyMode" id="13">
+					<DataPath>ReadOnlyMode</DataPath>
+					<TitleLocation>Right</TitleLocation>
+					<CheckBoxType>Auto</CheckBoxType>
+					<ContextMenu name="ReadOnlyModeContextMenu" id="14"/>
+					<ExtendedTooltip name="ReadOnlyModeExtendedTooltip" id="15"/>
+					<Events>
+						<Event name="OnChange">ReadOnlyModeOnChange</Event>
+					</Events>
+				</CheckBoxField>
+			</ChildItems>
+		</UsualGroup>
+	</ChildItems>
+	<Attributes>
+		<Attribute name="Object" id="1">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Object</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>cfg:ExternalDataProcessorObject.VanessaEditorSample</v8:Type>
+			</Type>
+			<MainAttribute>true</MainAttribute>
+		</Attribute>
+		<Attribute name="VanessaEditor" id="2">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Vanessa editor</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="ContentDidChange" id="3">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Content did change</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Content did change</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="ReadOnlyMode" id="4">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Read only mode</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Read only mode</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="Breakpoints" id="7">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Breakpoints</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Breakpoints</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueListType</v8:Type>
+			</Type>
+			<Settings xsi:type="v8:TypeDescription">
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>6</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Nonnegative</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Settings>
+		</Attribute>
+		<Attribute name="EmulateBreakpointUpdateDelay" id="5">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Emulate breakpoint update delay</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Emulate breakpoint update delay</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+	</Attributes>
+	<Commands>
+		<Command name="LoadFile" id="2">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Load file</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load file</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load file</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadFile</Action>
+		</Command>
+		<Command name="GetValue" id="3">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Get value</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get value</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get value</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetValue</Action>
+		</Command>
+	</Commands>
+</Form>

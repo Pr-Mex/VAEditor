@@ -3,7 +3,7 @@
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	
-	LoadMonaco();
+	LoadVanessaEditor();
 	
 EndProcedure
 
@@ -15,7 +15,7 @@ Procedure LoadFile(Command)
 		TextReader = New TextReader(Dialog.FullFileName, TextEncoding.UTF8);
 		Text = TextReader.Read();
 		
-		SendAction("setValue", Text);
+		VanessaEditorSendAction("setValue", Text);
 	EndIf;
 	
 EndProcedure
@@ -24,7 +24,7 @@ EndProcedure
 Procedure GetValue(Command)
 	
 	UserMessage = New UserMessage;
-	UserMessage.Text = SendAction("getValue");
+	UserMessage.Text = VanessaEditorSendAction("getValue");
 	UserMessage.Message();
 	
 EndProcedure
@@ -33,12 +33,16 @@ EndProcedure
 Procedure ReadOnlyModeOnChange(Item)
 	
 	If ReadOnlyMode Then
-		SendAction("disableEdit");
+		VanessaEditorSendAction("disableEdit");
 	Else 
-		SendAction("enableEdit");
+		VanessaEditorSendAction("enableEdit");
 	EndIf;
 	
 EndProcedure
+
+#EndRegion
+
+#Region Breakpoints
 
 &AtClient
 Procedure BreakpointsOnChange(Item)
@@ -70,13 +74,9 @@ Procedure BreakpointsOnActivateRow(Item)
 		Return;
 	EndIf;
 	
-	SendAction("revealLine", Item.CurrentData.Value);
+	VanessaEditorSendAction("revealLine", Item.CurrentData.Value);
 	
 EndProcedure
-
-#EndRegion
-
-#Region Breakpoints
 
 &AtClient
 Procedure UpdateBreakpoints(Json)
@@ -89,6 +89,10 @@ Procedure UpdateBreakpoints(Json)
 	EndDo;
 	
 	Breakpoints.SortByValue();
+	
+	If EmulateBreakpointUpdateDelay Then 
+		Sleep();
+	EndIf;
 	
 EndProcedure
 
@@ -104,11 +108,13 @@ Procedure DecorateBreakpoints()
 		BreakpointsPacket.Add(BreakpointsPacketChunk);
 	EndDo;
 	
-	//RunApp("timeout 2",, True);
-	
-	SendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
+	VanessaEditorSendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
 	
 EndProcedure
+
+#EndRegion
+
+#Region Json
 
 &AtClient
 Function JsonLoad(Json)
@@ -133,19 +139,29 @@ EndFunction
 
 #EndRegion
 
-#Region MonacoInteractions
+#Region Utils
+
+Procedure Sleep(Delay = 1)
+	
+	RunApp("timeout " + Delay,, True);
+	
+EndProcedure
+
+#EndRegion
+
+#Region VanessaEditor
 
 #Region Public
 
 &AtClient
-Function SendAction(Action, Arg = Undefined)
+Function VanessaEditorSendAction(Action, Arg = Undefined)
 	
-	Return Items.Monaco.Document.defaultView.OnReceiveAction(Action, Arg);
+	Return Items.VanessaEditor.Document.defaultView.VanessaEditorOnReceiveAction(Action, Arg);
 	
 EndFunction
 
 &AtClient
-Procedure OnReceiveAction(Event, Arg)
+Procedure VanessaEditorOnReceiveEvent(Event, Arg)
 	
 	If Event = "CONTENT_DID_CHANGE" Then
 		ContentDidChange = True;
@@ -165,19 +181,19 @@ EndProcedure
 #Region Private
 
 &AtServer
-Procedure LoadMonaco()
+Procedure LoadVanessaEditor()
 	
-	Monaco = GetInfoBaseURL() + "/" + PutToTempStorage(
-		FormAttributeToValue("Object").GetTemplate("Monaco"), UUID);
+	VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(
+		FormAttributeToValue("Object").GetTemplate("VanessaEditor"), UUID);
 	
 EndProcedure
 
 &AtClient
-Procedure MonacoOnClick(Item, EventData, StandardProcessing)
+Procedure VanessaEditorEventForwaderOnReceiveEvent(Item, EventData, StandardProcessing)
 	
 	Element = EventData.Element;
-	If Element.id = "interaction" Then
-		OnReceiveAction(Element.title, Element.value);
+	If Element.id = "VanessaEditorEventForwader" Then
+		VanessaEditorOnReceiveEvent(Element.title, Element.value);
 	EndIf;
 	
 EndProcedure
