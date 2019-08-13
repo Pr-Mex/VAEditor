@@ -125,15 +125,11 @@ To parse this descripton you can use this 1C:Enterprise script pattern:
 &AtClient
 Procedure UpdateBreakpoints(Json)
 
-	BreakpointsPacket = JsonLoad(Json);
+BreakpointsPacket = JsonLoad(Json);
 
 	Breakpoints.Clear();
 	For Each BreakpointsPacketChunk In BreakpointsPacket Do
-		Breakpoint = Breakpoints.Add(
-			BreakpointsPacketChunk.lineNumber,
-			,
-			BreakpointsPacketChunk.enable
-		);
+		Breakpoints.Add(BreakpointsPacketChunk.lineNumber,, BreakpointsPacketChunk.enable);
 	EndDo;
 
 	Breakpoints.SortByValue();
