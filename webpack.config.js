@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
-const base64 = require('postcss-base64')
 
 module.exports = {
   entry: {
@@ -26,16 +25,7 @@ module.exports = {
       use: [
         'style-loader',
         'css-loader',
-        {
-          loader: 'postcss-loader',
-          options: {
-            plugins: () => [
-              base64({
-                extensions: ['.svg', '.svg']
-              })
-            ]
-          }
-        }
+        'postcss-loader'
       ]
     }]
   },
