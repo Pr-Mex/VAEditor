@@ -199,7 +199,6 @@
 				</v8:item>
 			</Title>
 			<Group>AlwaysHorizontal</Group>
-			<Representation>None</Representation>
 			<ExtendedTooltip name="StateGroupExtendedTooltip" id="17"/>
 			<ChildItems>
 				<CheckBoxField name="ContentDidChange" id="10">
