@@ -258,9 +258,9 @@ function toggleBreakpoint (lineNumber) {
 }
 
 function updateBreakpoints () {
-  let breakpointPacket = []
+  const breakpointPacket = []
   breakpointList.forEach(breakpoint => {
-    let range = model.getDecorationRange(breakpoint.id)
+    const range = model.getDecorationRange(breakpoint.id)
     if (range !== null) {
       breakpointPacket.push({
         lineNumber: range.startLineNumber,
