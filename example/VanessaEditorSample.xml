@@ -29,7 +29,7 @@
 		</Properties>
 		<ChildObjects>
 			<Form>Form</Form>
-			<Template>Monaco</Template>
+			<Template>VanessaEditor</Template>
 		</ChildObjects>
 	</ExternalDataProcessor>
 </MetaDataObject>

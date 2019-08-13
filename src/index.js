@@ -113,19 +113,19 @@ var editor = monaco.editor.create(document.getElementById('container'), {
 })
 
 editor.addCommand(monaco.KeyCode.F5, function () {
-  V8Proxy.SendAction('START_DEBUGGING')
+  VanessaEditor.SendAction('START_DEBUGGING')
 })
 
 editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.F5, function () {
-  V8Proxy.SendAction('START_DEBUGGING_AT_STEP', editor.getPosition().lineNumber)
+  VanessaEditor.SendAction('START_DEBUGGING_AT_STEP', editor.getPosition().lineNumber)
 })
 
 editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.F5, function () {
-  V8Proxy.SendAction('START_DEBUGGING_AT_STEP_AND_CONTINUE', editor.getPosition().lineNumber)
+  VanessaEditor.SendAction('START_DEBUGGING_AT_STEP_AND_CONTINUE', editor.getPosition().lineNumber)
 })
 
 editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F5, function () {
-  V8Proxy.SendAction('START_DEBUGGING_AT_ENTRY')
+  VanessaEditor.SendAction('START_DEBUGGING_AT_ENTRY')
 })
 
 editor.addCommand(monaco.KeyCode.F9, function () {
@@ -133,11 +133,11 @@ editor.addCommand(monaco.KeyCode.F9, function () {
 })
 
 editor.addCommand(monaco.KeyCode.F11, function () {
-  V8Proxy.SendAction('STEP_OVER', editor.getPosition().lineNumber)
+  VanessaEditor.SendAction('STEP_OVER', editor.getPosition().lineNumber)
 })
 
 editor.onDidChangeModelContent(function () {
-  V8Proxy.SendAction('CONTENT_DID_CHANGE')
+  VanessaEditor.SendAction('CONTENT_DID_CHANGE')
 })
 
 editor.onMouseDown(function (e) {
@@ -272,7 +272,7 @@ function updateBreakpoints () {
       }
     }
   })
-  V8Proxy.SendAction('UPDATE_BREAKPOINTS', JSON.stringify(breakpointPacket))
+  VanessaEditor.SendAction('UPDATE_BREAKPOINTS', JSON.stringify(breakpointPacket))
 }
 
 function breakpointIndexByLineNumber (lineNumber) {
@@ -281,11 +281,11 @@ function breakpointIndexByLineNumber (lineNumber) {
 
 // 1C:Enterprise interactions.
 
-var V8Proxy = {
+var VanessaEditor = {
   SendAction: function (event, arg) {
     console.debug('SendAction: ' + event + ' : ' + arg)
 
-    var interaction = document.getElementById('interaction')
+    var interaction = document.getElementById('VanessaEditorEventForwader')
     interaction.title = event
     interaction.value = arg
     interaction.click()
@@ -321,4 +321,4 @@ var V8Proxy = {
 }
 
 // eslint-disable-next-line no-undef
-self.OnReceiveAction = V8Proxy.OnReceiveAction
+self.VanessaEditorOnReceiveAction = VanessaEditor.OnReceiveAction
