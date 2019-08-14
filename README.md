@@ -73,7 +73,7 @@ EndFunction
 
 ### Json
 
-In most of exchenge cases the Vanessa Editor protocol use json message format.
+In most of exchange cases the Vanessa Editor protocol use json message format.
 To dump or load json messages in 1C:Enterprise script you can use pattern:
 
 ```bsl
@@ -120,7 +120,7 @@ Sample json breakpoint description:
 ]
 ```
 
-To genarate this descripton you can use this 1C:Enterprise script pattern:
+To generate this description you can use this 1C:Enterprise script pattern:
 
 ```bsl
 &AtClient
@@ -140,7 +140,7 @@ Procedure DecorateBreakpoints()
 EndProcedure
 ```
 
-To parse this descripton you can use this 1C:Enterprise script pattern:
+To parse this description you can use this 1C:Enterprise script pattern:
 
 ```bsl
 &AtClient
