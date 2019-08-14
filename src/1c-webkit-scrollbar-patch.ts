@@ -5,8 +5,8 @@
     standardScrollbarStyle.remove();
   }
 
-  const nonDisplayScrollbarStyle: HTMLStyleElement = document.createElement("style") as HTMLStyleElement;
-  nonDisplayScrollbarStyle.type = "text/css";
-  nonDisplayScrollbarStyle.innerHTML = "::-webkit-scrollbar { display: none; }";
-  document.head.appendChild(nonDisplayScrollbarStyle);
+  const nonDisplayedScrollbarStyle: HTMLStyleElement = document.createElement("style") as HTMLStyleElement;
+  nonDisplayedScrollbarStyle.type = "text/css";
+  nonDisplayedScrollbarStyle.innerHTML = "::-webkit-scrollbar { display: none; }";
+  document.head.appendChild(nonDisplayedScrollbarStyle);
 })();
