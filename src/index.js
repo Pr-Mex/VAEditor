@@ -294,10 +294,10 @@ var VanessaEditor = {
     console.debug('OnReceiveAction: ' + action + ' : ' + arg)
 
     switch (action) {
-      case 'setValue':
+      case 'setContent':
         editor.setValue(arg)
         return undefined
-      case 'getValue':
+      case 'getContent':
         return editor.getValue()
       case 'revealLine':
         editor.revealLine(Number.parseInt(arg))

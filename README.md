@@ -27,10 +27,12 @@ npm run build
 
 ### Actions
 
+Vanessa Editor can be controlled with send action. If editor get action it update its internal state and render the decoration.
+
 | Action                | Description                                                              |
 | --------------------- | ------------------------------------------------------------------------ |
-| `setValue`            | load `arg` to the editor                                                 |
-| `getValue`            | return editor content                                                    |
+| `setContent`          | load `arg` to the editor                                                 |
+| `getContent`          | return editor content                                                    |
 | `revealLine`          | scrolling to the `arg` line number                                       |
 | `enableEdit`          | disable read only mode                                                   |
 | `disableEdit`         | set read only mode                                                       |
@@ -44,6 +46,8 @@ VanessaEditorSendAction("setValue", "Text to edit")
 
 
 ### Events
+
+Vanessa Editor can fire events that can be handled in 1C:Enterprise script.
 
 | Event                                  | Description                                                                  |
 | -------------------------------------- | ---------------------------------------------------------------------------- |
@@ -67,11 +71,38 @@ Function VanessaEditorOnReceiveEvent(Event, Arg)
 EndFunction
 ```
 
+### Json
+
+In most of exchenge cases the Vanessa Editor protocol use json message format.
+To dump or load json messages in 1C:Enterprise script you can use pattern:
+
+```bsl
+&AtClient
+Function JsonDump(Value)
+
+	JSONWriter = New JSONWriter;
+	JSONWriter.SetString();
+	WriteJSON(JSONWriter, Value);
+	Return JSONWriter.Close();
+
+EndFunction
+
+&AtClient
+Function JsonLoad(Json)
+
+	JSONReader = New JSONReader;
+	JSONReader.SetString(Json);
+	Value = ReadJSON(JSONReader);
+	JSONReader.Close();
+	Return Value;
+
+EndFunction
+```
 
 ### Breakpoints
 
-The editor in any case if is toggling breakpoint will send `UPDATE_BREAKPOINTS` event without decorate breakpoint in editor.
-You can verify the breakpoint to set, for example set the next non blank line if blank line is toggled or decline set the breakpoint into the end of file.
+The editor in any case if is toggling breakpoints will send `UPDATE_BREAKPOINTS` event without decorate breakpoints in editor.
+You can verify the breakpoints, for example set the next non blank line if blank line is toggled or decline set the breakpoint into the end of file.
 To update the editor you must send `decorateBreakpoints` action with the json description of a new state of all breakpoints, after that the editor will delta the decoration of breakpoints.
 
 Sample json breakpoint description:
@@ -107,16 +138,6 @@ Procedure DecorateBreakpoints()
 	VanessaEditorSendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
 
 EndProcedure
-
-&AtClient
-Function JsonDump(Value)
-
-	JSONWriter = New JSONWriter;
-	JSONWriter.SetString();
-	WriteJSON(JSONWriter, Value);
-	Return JSONWriter.Close();
-
-EndFunction
 ```
 
 To parse this descripton you can use this 1C:Enterprise script pattern:
@@ -135,15 +156,4 @@ Procedure UpdateBreakpoints(Json)
 	Breakpoints.SortByValue();
 
 EndProcedure
-
-&AtClient
-Function JsonLoad(Json)
-
-	JSONReader = New JSONReader;
-	JSONReader.SetString(Json);
-	Value = ReadJSON(JSONReader);
-	JSONReader.Close();
-	Return Value;
-
-EndFunction
 ```
