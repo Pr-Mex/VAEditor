@@ -76,7 +76,15 @@ monaco.languages.setMonarchTokensProvider('turbo-gherkin', {
 monaco.languages.setLanguageConfiguration('turbo-gherkin', {
   comments: {
     lineComment: '//'
-  }
+  },
+  autoClosingPairs: [
+    { open: '"', close: '"', notIn: ['string'] },
+    { open: "'", close: "'", notIn: ['string'] }
+  ],
+  surroundingPairs: [
+    { open: '"', close: '"' },
+    { open: "'", close: "'" }
+  ]
 })
 
 // monaco.languages.registerHoverProvider('turbo-gherkin', {
