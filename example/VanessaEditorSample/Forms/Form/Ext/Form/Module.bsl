@@ -156,7 +156,7 @@ EndProcedure
 &AtClient
 Function VanessaEditorSendAction(Action, Arg = Undefined)
 
-	Return Items.VanessaEditor.Document.defaultView.VanessaEditorOnReceiveAction(Action, Arg);
+	Return Items.VanessaEditor.Document.defaultView.VanessaEditor.OnReceiveAction(Action, Arg);
 
 EndFunction
 
@@ -192,7 +192,7 @@ EndProcedure
 Procedure VanessaEditorEventForwaderOnReceiveEvent(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
-	If Element.id = "VanessaEditorEventForwader" Then
+	If Element.id = "VanessaEditorEventForwarder" Then
 		VanessaEditorOnReceiveEvent(Element.title, Element.value);
 	EndIf;
 

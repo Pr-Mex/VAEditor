@@ -9,7 +9,7 @@ module.exports = {
     app: './src/main'
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js', '.css']
   },
   output: {
     globalObject: 'self',

@@ -1,3 +1,5 @@
+import * as monaco from "monaco-editor";
+
 interface ILangImpl {
 	conf: monaco.languages.LanguageConfiguration;
 	language: monaco.languages.IMonarchLanguage;
