@@ -1,7 +1,3 @@
-.monaco-editor .margin-view-overlays .line-numbers {
-  cursor: default;
-}
-
 .debug-breakpoint-glyph {
   background: url('src/media/breakpoint.svg') center center no-repeat;
 }
