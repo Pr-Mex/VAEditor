@@ -6,7 +6,10 @@ const webpack = require('webpack')
 
 module.exports = {
   entry: {
-    app: './src/index.js'
+    app: './src/main'
+  },
+  resolve: {
+    extensions: ['.ts', '.js']
   },
   output: {
     globalObject: 'self',
@@ -21,6 +24,9 @@ module.exports = {
   },
   module: {
     rules: [{
+      test: /\.ts$/,
+      loader: 'ts-loader'
+    }, {
       test: /\.css$/,
       use: [
         'style-loader',
