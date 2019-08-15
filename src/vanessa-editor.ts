@@ -21,7 +21,7 @@ export class VanessaEditor {
   }
 
   public dispose(): void {
-    this.editor.dispose()
+    this.editor.dispose();
   }
 
   public SendAction(event: string, arg: any=undefined): void {
@@ -64,7 +64,7 @@ export class VanessaEditor {
     }
   }
 
-  private subscribeEditorEvents() {
+  private subscribeEditorEvents(): void {
     this.editor.addCommand(monaco.KeyCode.F5,
       () => this.SendAction("START_DEBUGGING")
     );

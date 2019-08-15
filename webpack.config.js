@@ -41,7 +41,6 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
       cache: false
     }),
     new ScriptExtHtmlWebpackPlugin({

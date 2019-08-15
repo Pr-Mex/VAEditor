@@ -1,8 +1,20 @@
-import "./1c-webkit-scrollbar-patch";
+import "./1c-webkit-style-patch";
 import "./languages/turbo-gherkin.contribution";
 import "./media/breakpoint";
 
 import { VanessaEditor } from "./vanessa-editor";
+
+function createDOMNode(tagName: string, id: string, style: string): void {
+  const element: HTMLElement = document.createElement(tagName);
+  element.id = id;
+  element.setAttribute("style", style);
+  document.body.appendChild(element);
+}
+
+(() => {
+  createDOMNode("div", "VanessaEditor", "width: 100%; height:100%;");
+  createDOMNode("button", "VanessaEditorEventForwarder", "display: none");
+})();
 
 // tslint:disable-next-line: no-string-literal
 window["MonacoEnvironment"] = { // worker loader
