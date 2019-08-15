@@ -1,16 +1,25 @@
 import { BreakpointManager } from "./debug";
 import { ProblemManager } from "./problems";
 
+export enum VanessaEditorEvent {
+  START_DEBUGGING = "START_DEBUGGING",
+  START_DEBUGGING_AT_STEP = "START_DEBUGGING_AT_STEP",
+  START_DEBUGGING_AT_STEP_AND_CONTINUE = "START_DEBUGGING_AT_STEP_AND_CONTINUE",
+  START_DEBUGGING_AT_ENTRY = "START_DEBUGGING_AT_ENTRY",
+  UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
+  STEP_OVER = "STEP_OVER",
+  CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE"
+}
+
 export class VanessaEditor {
 
   public OnReceiveAction: Function;
+
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
   private problemManager: ProblemManager;
 
   constructor() {
-    this.OnReceiveAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
-
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
       language: "turbo-gherkin",
       scrollBeyondLastLine: false,
@@ -18,19 +27,20 @@ export class VanessaEditor {
       automaticLayout: true
     });
 
-    this.subscribeEditorEvents();
     this.breakpointManager = new BreakpointManager(this);
     this.problemManager = new ProblemManager(this);
+    this.subscribeEditorEvents();
 
+    this.OnReceiveAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
   }
 
   public dispose(): void {
     this.editor.dispose();
   }
 
-  public SendAction(event: string, arg: any=undefined): void {
+  public fireEvent(event: string, arg: any=undefined): void {
     // tslint:disable-next-line: no-console
-    console.debug("SendAction: " + event + " : " + arg);
+    console.debug("fireEvent: " + event + " : " + arg);
 
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.title = event;
@@ -73,29 +83,41 @@ export class VanessaEditor {
 
   private subscribeEditorEvents(): void {
     this.editor.addCommand(monaco.KeyCode.F5,
-      () => this.SendAction("START_DEBUGGING")
+      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING)
     );
 
     // tslint:disable-next-line: no-bitwise
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.F5,
-      () => this.SendAction("START_DEBUGGING_AT_STEP", this.editor.getPosition().lineNumber)
+      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_STEP, this.editor.getPosition().lineNumber)
     );
 
     // tslint:disable-next-line: no-bitwise
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.F5,
-      () => this.SendAction("START_DEBUGGING_AT_STEP_AND_CONTINUE", this.editor.getPosition().lineNumber));
+      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_STEP_AND_CONTINUE, this.editor.getPosition().lineNumber));
 
     // tslint:disable-next-line: no-bitwise
     this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F5,
-      () => this.SendAction("START_DEBUGGING_AT_ENTRY")
+      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_ENTRY)
     );
 
     this.editor.addCommand(monaco.KeyCode.F11,
-      () => this.SendAction("STEP_OVER", this.editor.getPosition().lineNumber)
+      () => this.fireEvent(VanessaEditorEvent.STEP_OVER, this.editor.getPosition().lineNumber)
     );
 
     this.editor.onDidChangeModelContent(
-      () => this.SendAction("CONTENT_DID_CHANGE")
+      () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
     );
+
+    this.editor.addCommand(monaco.KeyCode.F9,
+      () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber)
+    );
+
+    this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
+
+    this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
+
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+
+    model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
   }
 }
