@@ -1,10 +1,12 @@
 import { BreakpointManager } from "./debug";
+import { ProblemManager } from "./problems";
 
 export class VanessaEditor {
 
   public OnReceiveAction: Function;
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
+  private problemManager: ProblemManager;
 
   constructor() {
     this.OnReceiveAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
@@ -18,6 +20,8 @@ export class VanessaEditor {
 
     this.subscribeEditorEvents();
     this.breakpointManager = new BreakpointManager(this);
+    this.problemManager = new ProblemManager(this);
+
   }
 
   public dispose(): void {
@@ -60,6 +64,9 @@ export class VanessaEditor {
       case "decorateBreakpoints":
         this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
         return undefined;
+      case "decorateProblems":
+          this.problemManager.DecorateProblems(JSON.parse(arg));
+          return undefined;
       default:
     }
   }
