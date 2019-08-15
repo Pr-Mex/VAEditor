@@ -1,6 +1,5 @@
 import "./1c-webkit-style-patch";
-import "./languages/turbo-gherkin.contribution";
-import "./media/breakpoint";
+import "./media/debug";
 
 import { VanessaEditor } from "./vanessa-editor";
 
