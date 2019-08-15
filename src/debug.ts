@@ -1,10 +1,23 @@
-import { VanessaEditor } from "./vanessa-editor";
+import { VanessaEditor, VanessaEditorEvent } from "./vanessa-editor";
+import { IRange } from "monaco-editor";
+
+interface IBreakpoint {
+  lineNumber: number;
+  enable: boolean;
+}
+
+interface IBreakpointDecoration {
+  id: string;
+  range: IRange;
+  enable: boolean;
+  verified: boolean;
+}
 
 export class BreakpointManager {
 
   private VanessaEditor: VanessaEditor;
 
-  private breakpointList: { id: string, range: monaco.IRange, enable: boolean, verified: boolean }[] = [];
+  private breakpointDecorations: IBreakpointDecoration[] = [];
   private breakpointDecorationIds: string[] = [];
   private breakpointHintDecorationIds: string[] = [];
   private breakpointUnverifiedDecorationIds: string[] = [];
@@ -14,18 +27,11 @@ export class BreakpointManager {
     VanessaEditor: VanessaEditor
     ) {
       this.VanessaEditor = VanessaEditor;
-
-      this.VanessaEditor.editor.addCommand(monaco.KeyCode.F9,
-        () => this.toggleBreakpoint(this.VanessaEditor.editor.getPosition().lineNumber)
-      );
-      this.VanessaEditor.editor.onMouseDown((e) => this.breakpointOnMouseDown(e));
-      this.VanessaEditor.editor.onMouseMove((e) => this.breakpointsOnMouseMove(e));
-      this.VanessaEditor.editor.getModel().onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations());
   }
 
-  public DecorateBreakpoints (breakpoints: { enable: boolean; }[]): void {
+  public DecorateBreakpoints (breakpoints: IBreakpoint[]): void {
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
-    breakpoints.forEach((breakpoint: { lineNumber: number; enable: boolean; }) => {
+    breakpoints.forEach(breakpoint => {
       decorations.push({
         range: new monaco.Range(breakpoint.lineNumber, 1, breakpoint.lineNumber, 1),
         options: {
@@ -40,7 +46,7 @@ export class BreakpointManager {
     this.breakpointUnverifiedDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.breakpointUnverifiedDecorationIds, []);
     this.checkBreakpointChangeDecorations = true;
 
-    this.breakpointList = this.breakpointDecorationIds.map((id, index) => ({
+    this.breakpointDecorations = this.breakpointDecorationIds.map((id, index) => ({
       id: id,
       range: decorations[index].range,
       enable: breakpoints[index].enable,
@@ -48,7 +54,7 @@ export class BreakpointManager {
     }));
   }
 
-  private breakpointsOnMouseMove (e: monaco.editor.IEditorMouseEvent): void {
+  public breakpointsOnMouseMove (e: monaco.editor.IEditorMouseEvent): void {
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
       const lineNumber: number = e.target.position.lineNumber;
@@ -65,12 +71,12 @@ export class BreakpointManager {
     this.breakpointHintDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.breakpointHintDecorationIds, decorations);
   }
 
-  private breakpointOnDidChangeDecorations (): void {
+  public breakpointOnDidChangeDecorations (): void {
     if (!this.checkBreakpointChangeDecorations) {
       return;
     }
     let somethingChanged: boolean = false;
-    this.breakpointList.forEach(breakpoint => {
+    this.breakpointDecorations.forEach(breakpoint => {
       if (somethingChanged) {
         return;
       }
@@ -87,13 +93,13 @@ export class BreakpointManager {
     }
   }
 
-  private breakpointOnMouseDown (e: monaco.editor.IEditorMouseEvent): void {
+  public breakpointOnMouseDown (e: monaco.editor.IEditorMouseEvent): void {
     if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
       this.toggleBreakpoint(e.target.position.lineNumber);
     }
   }
 
-  private toggleBreakpoint (lineNumber: number): void {
+  public toggleBreakpoint (lineNumber: number): void {
     const breakpointIndex: number = this.breakpointIndexByLineNumber(lineNumber);
     if (breakpointIndex === -1) {
       this.checkBreakpointChangeDecorations = false;
@@ -106,21 +112,21 @@ export class BreakpointManager {
         }
       }]);
       this.checkBreakpointChangeDecorations = true;
-      this.breakpointList.push({
+      this.breakpointDecorations.push({
         id: this.breakpointUnverifiedDecorationIds[0],
         range: new monaco.Range(lineNumber, 1, lineNumber, 1),
         enable: true,
         verified: false
       });
     } else {
-      this.breakpointList.splice(breakpointIndex, 1);
+      this.breakpointDecorations.splice(breakpointIndex, 1);
     }
-    this.updateBreakpoints();
+    setTimeout(() => this.updateBreakpoints(), 100);
   }
 
   private updateBreakpoints (): void {
-    const breakpointPacket: {lineNumber: number, enable: boolean}[] = [];
-    this.breakpointList.forEach(breakpoint => {
+    const breakpointPacket: IBreakpoint[] = [];
+    this.breakpointDecorations.forEach(breakpoint => {
       const range: monaco.Range = this.VanessaEditor.editor.getModel().getDecorationRange(breakpoint.id);
       if (range !== null) {
         const breakpointFound: Boolean = breakpointPacket.find(breakpointChunk =>
@@ -133,10 +139,10 @@ export class BreakpointManager {
         }
       }
     });
-    this.VanessaEditor.SendAction("UPDATE_BREAKPOINTS", JSON.stringify(breakpointPacket));
+    this.VanessaEditor.fireEvent(VanessaEditorEvent.UPDATE_BREAKPOINTS, JSON.stringify(breakpointPacket));
   }
 
   private breakpointIndexByLineNumber (lineNumber: any): number {
-    return this.breakpointList.findIndex(breakpoint => (breakpoint.range.startLineNumber === lineNumber));
+    return this.breakpointDecorations.findIndex(breakpoint => (breakpoint.range.startLineNumber === lineNumber));
   }
 }
