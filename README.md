@@ -29,14 +29,15 @@ npm run build
 
 Vanessa Editor can be controlled with send action. If editor get action it update its internal state and render the decoration.
 
-| Action                | Description                                                              |
-| --------------------- | ------------------------------------------------------------------------ |
-| `setContent`          | load `arg` to the editor                                                 |
-| `getContent`          | return editor content                                                    |
-| `revealLine`          | scrolling to the `arg` line number                                       |
-| `enableEdit`          | disable read only mode                                                   |
-| `disableEdit`         | set read only mode                                                       |
-| `decorateBreakpoints` | update breakpoint by json description in  `arg`, see Breakpoints chapter |
+| Action                | Description                                                             |
+| --------------------- | ----------------------------------------------------------------------- |
+| `setContent`          | load `arg` to the editor                                                |
+| `getContent`          | return editor content                                                   |
+| `revealLine`          | scrolling to the `arg` line number                                      |
+| `enableEdit`          | disable read only mode                                                  |
+| `disableEdit`         | set read only mode                                                      |
+| `decorateBreakpoints` | update breakpoint by json description in `arg`, see Breakpoints chapter |
+| `decorateProblems`    | update problems by json description in `arg`, see Problems chapter      |
 
 1C:Enterprise script example:
 
@@ -154,6 +155,52 @@ Procedure UpdateBreakpoints(Json)
 	EndDo;
 
 	Breakpoints.SortByValue();
+
+EndProcedure
+```
+
+### Problems
+
+Sample json problems description:
+
+```json
+[
+  {
+  "lineNumber": 3,
+	"severity": "Warning",
+	"message": "Warning! Step was found in the library, but source data process was not found.",
+	"code": "",
+	"source": ""
+  },
+  {
+  "lineNumber": 3,
+	"severity": "Error",
+	"message": "Error! Step have no definitions in the library.",
+	"code": "",
+	"source": ""
+  }
+]
+```
+
+To generate this description you can use this 1C:Enterprise script pattern:
+
+```bsl
+&AtClient
+Procedure DecorateProblems()
+
+	ProblemsPacket = New Array;
+
+	For Each Row In Problems Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.LineNumber);
+		Chunk.Insert("severity", Row.Severity);
+		Chunk.Insert("message", Row.Message);
+		Chunk.Insert("code", Row.Code);
+		Chunk.Insert("source", Row.Source);
+		ProblemsPacket.Add(Chunk);
+	EndDo;
+
+	VanessaEditorSendAction("decorateProblems", JsonDump(ProblemsPacket));
 
 EndProcedure
 ```

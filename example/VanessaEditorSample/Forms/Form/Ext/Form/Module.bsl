@@ -114,6 +114,36 @@ EndProcedure
 
 #EndRegion
 
+#Region Problems
+
+&AtClient
+Procedure ProblemsOnChange(Item)
+
+	DecorateProblems();
+
+EndProcedure
+
+&AtClient
+Procedure DecorateProblems()
+
+	ProblemsPacket = New Array;
+
+	For Each Row In Problems Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.LineNumber);
+		Chunk.Insert("severity", Row.Severity);
+		Chunk.Insert("message", Row.Message);
+		Chunk.Insert("code", Row.Code);
+		Chunk.Insert("source", Row.Source);
+		ProblemsPacket.Add(Chunk);
+	EndDo;
+
+	VanessaEditorSendAction("decorateProblems", JsonDump(ProblemsPacket));
+
+EndProcedure
+
+#EndRegion
+
 #Region Json
 
 &AtClient
