@@ -1,3 +1,7 @@
+import * as monaco from "monaco-editor";
+
+import "./languages/turbo-gherkin.contribution";
+
 import { BreakpointManager } from "./debug";
 import { ProblemManager } from "./problems";
 
