@@ -185,7 +185,7 @@
 							<ContextMenu name="VanessaEditorContextMenu" id="2"/>
 							<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
 							<Events>
-								<Event name="OnClick">VanessaEditorEventForwaderOnReceiveEvent</Event>
+								<Event name="OnClick">VanessaEditorOnClick</Event>
 							</Events>
 						</HTMLDocumentField>
 						<UsualGroup name="ProblemsGroup" id="90">
