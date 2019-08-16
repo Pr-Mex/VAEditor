@@ -5,7 +5,7 @@ Code editor which powers by [Monaco](https://github.com/Microsoft/monaco-editor)
 Build for [Vanessa Automation](https://github.com/Pr-Mex/vanessa-automation).
 
 
-## Build commands
+## Build
 
 Install
 ```
@@ -17,11 +17,84 @@ Debug
 npm run debug
 ```
 
-Build production to `/dist/`
+Build production to `./dist/index.html`
 ```
 npm run build
 ```
 
+## Fast start
+
+1. Create new data processor.
+2. Create new template with name **VanessaEditor** and selected type **Binary data**.
+3. Click **Restore from file** of the binary date template and chose **./dist/index.html**.
+4. Add a new form to the data processor.
+5. Create string attribute **VanessaEditor** into this form.
+6. Drug and drop the attribute to the items panel. The new item shuld have name **VanessaEditor**.
+7. Change type of the form item to **HTML document field**.
+8. Create **VanessaEditorOnClick** item event handler.
+9. Create **OnCreateAtServer** form event handler.
+10. Add the next code to the form module:
+
+```bsl
+#Region FormEvents
+
+&AtServer
+Procedure OnCreateAtServer(Cancel, StandardProcessing)
+
+	VanessaEditorLoad();
+
+EndProcedure
+
+#EndRegion
+
+#Region VanessaEditor
+
+#Region Public
+
+&AtClient
+Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
+
+	// Call your event handlers here.
+
+EndProcedure
+
+#EndRegion
+
+#Region Public
+
+&AtServer
+Procedure VanessaEditorLoad()
+
+	VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(
+		FormAttributeToValue("Object").GetTemplate("VanessaEditor"), UUID);
+
+EndProcedure
+
+&AtClient
+Function VanessaEditorSendAction(Action, Arg = Undefined)
+
+	Return Items.VanessaEditor.Document.defaultView.VanessaEditor.SendAction(Action, Arg);
+
+EndFunction
+
+#EndRegion
+
+#Region Private
+
+&AtClient
+Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
+
+	Element = EventData.Element;
+	If Element.id = "VanessaEditorEventForwarder" Then
+		VanessaEditorOnReceiveEventHandler(Element.title, Element.value);
+	EndIf;
+
+EndProcedure
+
+#EndRegion
+
+#EndRegion
+```
 
 ## API
 
@@ -42,9 +115,8 @@ Vanessa Editor can be controlled with send action. If editor get action it updat
 1C:Enterprise script example:
 
 ```bsl
-VanessaEditorSendAction("setValue", "Text to edit")
+VanessaEditorSendAction("setContent", "Text to edit")
 ```
-
 
 ### Events
 
@@ -63,7 +135,7 @@ Vanessa Editor can fire events that can be handled in 1C:Enterprise script.
 1C:Enterprise script example:
 
 ```bsl
-Function VanessaEditorOnReceiveEvent(Event, Arg)
+Function VanessaEditorOnReceiveEventHandler(Event, Arg)
 
   If Event = "CONTENT_DID_CHANGE" Then
     ContentDidChange = True;
@@ -71,6 +143,8 @@ Function VanessaEditorOnReceiveEvent(Event, Arg)
 
 EndFunction
 ```
+
+## Samples
 
 ### Json
 
@@ -111,12 +185,12 @@ Sample json breakpoint description:
 ```json
 [
   {
-  "lineNumber": 3,
-  "enable": true
+    "lineNumber": 3,
+    "enable": true
   },
   {
-  "lineNumber": 27,
-  "enable": false
+    "lineNumber": 27,
+    "enable": false
   }
 ]
 ```
@@ -166,18 +240,18 @@ Sample json problems description:
 ```json
 [
   {
-  "lineNumber": 3,
-	"severity": "Warning",
-	"message": "Warning! Step was found in the library, but source data process was not found.",
-	"code": "",
-	"source": ""
+    "lineNumber": 3,
+    "severity": "Warning",
+    "message": "Warning! Step was found in the library, but source data process was not found.",
+    "code": "",
+    "source": ""
   },
   {
-  "lineNumber": 3,
-	"severity": "Error",
-	"message": "Error! Step have no definitions in the library.",
-	"code": "",
-	"source": ""
+    "lineNumber": 3,
+    "severity": "Error",
+    "message": "Error! Step have no definitions in the library.",
+    "code": "",
+    "source": ""
   }
 ]
 ```

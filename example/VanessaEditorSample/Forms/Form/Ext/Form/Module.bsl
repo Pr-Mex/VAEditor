@@ -3,7 +3,7 @@
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
-	LoadVanessaEditor();
+	VanessaEditorLoad();
 
 EndProcedure
 
@@ -184,14 +184,7 @@ EndProcedure
 #Region Public
 
 &AtClient
-Function VanessaEditorSendAction(Action, Arg = Undefined)
-
-	Return Items.VanessaEditor.Document.defaultView.VanessaEditor.OnReceiveAction(Action, Arg);
-
-EndFunction
-
-&AtClient
-Procedure VanessaEditorOnReceiveEvent(Event, Arg)
+Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 
 	If Event = "CONTENT_DID_CHANGE" Then
 		ContentDidChange = True;
@@ -208,10 +201,10 @@ EndProcedure
 
 #EndRegion
 
-#Region Private
+#Region Public
 
 &AtServer
-Procedure LoadVanessaEditor()
+Procedure VanessaEditorLoad()
 
 	VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(
 		FormAttributeToValue("Object").GetTemplate("VanessaEditor"), UUID);
@@ -219,11 +212,22 @@ Procedure LoadVanessaEditor()
 EndProcedure
 
 &AtClient
-Procedure VanessaEditorEventForwaderOnReceiveEvent(Item, EventData, StandardProcessing)
+Function VanessaEditorSendAction(Action, Arg = Undefined)
+
+	Return Items.VanessaEditor.Document.defaultView.VanessaEditor.SendAction(Action, Arg);
+
+EndFunction
+
+#EndRegion
+
+#Region Private
+
+&AtClient
+Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
 	If Element.id = "VanessaEditorEventForwarder" Then
-		VanessaEditorOnReceiveEvent(Element.title, Element.value);
+		VanessaEditorOnReceiveEventHandler(Element.title, Element.value);
 	EndIf;
 
 EndProcedure

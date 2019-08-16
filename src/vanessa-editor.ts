@@ -17,7 +17,7 @@ export enum VanessaEditorEvent {
 
 export class VanessaEditor {
 
-  public OnReceiveAction: Function;
+  public SendAction: Function; // 1C:Enterprise interaction call.
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
@@ -35,7 +35,7 @@ export class VanessaEditor {
     this.problemManager = new ProblemManager(this);
     this.subscribeEditorEvents();
 
-    this.OnReceiveAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
+    this.SendAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
   }
 
   public dispose(): void {
