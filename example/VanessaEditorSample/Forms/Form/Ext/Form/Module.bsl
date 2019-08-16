@@ -10,6 +10,11 @@ EndProcedure
 &AtClient
 Procedure LoadFile(Command)
 
+	Breakpoints.Clear();
+	Problems.Clear();
+	VanessaEditorSendAction("decorateBreakpoints", JsonDump(New Array));
+	VanessaEditorSendAction("decorateProblems", JsonDump(New Array));
+
 	Dialog = New FileDialog(FileDialogMode.Open);
 	If Dialog.Choose() Then
 		TextReader = New TextReader(Dialog.FullFileName, TextEncoding.UTF8);
