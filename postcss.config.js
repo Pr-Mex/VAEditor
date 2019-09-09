@@ -10,7 +10,7 @@ module.exports = {
       declarations: {
         // exclude unsupported 1c webkit css modifier
         // to fix non-displayed cursor on mouse over at line numbers
-        'cursor': {
+        cursor: {
           task: 'remove',
           whenRegex: {
             value: '-webkit-image-set'
