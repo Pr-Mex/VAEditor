@@ -278,3 +278,94 @@ Procedure DecorateProblems()
 
 EndProcedure
 ```
+
+### Runtime process
+
+Runtime is showning how the debug process is decorated.
+
+#### Curent step
+
+```bsl
+VanessaEditorSendAction("decorateCurrentStep", CurrentStep);
+```
+
+#### Complete steps
+
+Sample json complete steps description:
+
+```json
+[
+  {
+    "lineNumber": 3
+  },
+  {
+    "lineNumber": 4
+  }
+]
+```
+
+To generate this description you can use this 1C:Enterprise script pattern:
+
+```bsl
+&AtClient
+Procedure SendCompleteSteps(Command)
+
+	CompleteStepsPacket = New Array;
+
+	For Each Row In CompleteSteps Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.LineNumber);
+		CompleteStepsPacket.Add(Chunk);
+	EndDo;
+
+	VanessaEditorSendAction("decorateCompleteSteps", JsonDump(CompleteStepsPacket));
+
+EndProcedure
+```
+
+#### Error steps
+
+Sample json complete steps description:
+
+```json
+[
+  {
+		"lineNumber": 3,
+		"UID": "ID1",
+		"title": "Error description"
+  },
+  {
+    "lineNumber": 6,
+		"UID": "ID2",
+		"title": "Error description"
+  }
+]
+```
+
+To generate this description you can use this 1C:Enterprise script pattern:
+
+```bsl
+&AtClient
+Procedure SendErrorSteps(Command)
+
+	ErrorStepsPacket = New Array;
+
+	For Each Row In ErrorSteps Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.LineNumber);
+		Chunk.Insert("UID", Row.UID);
+		Chunk.Insert("title", Row.Title);
+		ErrorStepsPacket.Add(Chunk);
+	EndDo;
+
+	VanessaEditorSendAction("decorateErrorSteps", JsonDump(ErrorStepsPacket));
+
+EndProcedure
+```
+
+#### Clean runtime progress
+
+```bsl
+VanessaEditorSendAction("cleanDecorateRuntimeProgress");
+
+```

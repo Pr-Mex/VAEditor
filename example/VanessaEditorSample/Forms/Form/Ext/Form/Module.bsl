@@ -149,6 +149,56 @@ EndProcedure
 
 #EndRegion
 
+#Region RuntimeProcess
+
+&AtClient
+Procedure SendCurrentStep(Command)
+	
+	VanessaEditorSendAction("decorateCurrentStep", CurrentStep);
+	
+EndProcedure
+
+&AtClient
+Procedure SendCompleteSteps(Command)
+	
+	CompleteStepsPacket = New Array;
+
+	For Each Row In CompleteSteps Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.LineNumber);
+		CompleteStepsPacket.Add(Chunk);
+	EndDo;
+
+	VanessaEditorSendAction("decorateCompleteSteps", JsonDump(CompleteStepsPacket));
+	
+EndProcedure
+
+&AtClient
+Procedure SendErrorSteps(Command)
+	
+	ErrorStepsPacket = New Array;
+
+	For Each Row In ErrorSteps Do
+		Chunk = New Structure;
+		Chunk.Insert("lineNumber", Row.LineNumber);
+		Chunk.Insert("UID", Row.UID);
+		Chunk.Insert("title", Row.Title);
+		ErrorStepsPacket.Add(Chunk);
+	EndDo;
+
+	VanessaEditorSendAction("decorateErrorSteps", JsonDump(ErrorStepsPacket));
+	
+EndProcedure
+
+&AtClient
+Procedure CleanRuntimeProgress(Command)
+	
+	VanessaEditorSendAction("cleanDecorateRuntimeProgress");
+	
+EndProcedure
+
+#EndRegion
+
 #Region Json
 
 &AtClient
