@@ -469,17 +469,17 @@
 									<ContextMenu name="ErrorStepsLineNumberContextMenu" id="132"/>
 									<ExtendedTooltip name="ErrorStepsLineNumberExtendedTooltip" id="133"/>
 								</InputField>
-								<InputField name="ErrorStepsErrorUID" id="134">
-									<DataPath>ErrorSteps.ErrorUID</DataPath>
+								<InputField name="ErrorStepsUID" id="134">
+									<DataPath>ErrorSteps.UID</DataPath>
 									<EditMode>EnterOnInput</EditMode>
-									<ContextMenu name="ErrorStepsErrorUIDContextMenu" id="135"/>
-									<ExtendedTooltip name="ErrorStepsErrorUIDExtendedTooltip" id="136"/>
+									<ContextMenu name="ErrorStepsUIDContextMenu" id="135"/>
+									<ExtendedTooltip name="ErrorStepsUIDExtendedTooltip" id="136"/>
 								</InputField>
-								<InputField name="ErrorStepsErrorHint" id="156">
-									<DataPath>ErrorSteps.ErrorHint</DataPath>
+								<InputField name="ErrorStepsTitle" id="156">
+									<DataPath>ErrorSteps.Title</DataPath>
 									<EditMode>EnterOnInput</EditMode>
-									<ContextMenu name="ErrorStepsErrorHintContextMenu" id="157"/>
-									<ExtendedTooltip name="ErrorStepsErrorHintExtendedTooltip" id="158"/>
+									<ContextMenu name="ErrorStepsTitleContextMenu" id="157"/>
+									<ExtendedTooltip name="ErrorStepsTitleExtendedTooltip" id="158"/>
 								</InputField>
 							</ChildItems>
 						</Table>
@@ -946,11 +946,11 @@
 						</v8:NumberQualifiers>
 					</Type>
 				</Column>
-				<Column name="ErrorUID" id="2">
+				<Column name="UID" id="2">
 					<Title>
 						<v8:item>
 							<v8:lang>en</v8:lang>
-							<v8:content>Error UID</v8:content>
+							<v8:content>UID</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -961,11 +961,11 @@
 						</v8:StringQualifiers>
 					</Type>
 				</Column>
-				<Column name="ErrorHint" id="3">
+				<Column name="Title" id="3">
 					<Title>
 						<v8:item>
 							<v8:lang>en</v8:lang>
-							<v8:content>Error hint</v8:content>
+							<v8:content>Title</v8:content>
 						</v8:item>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
@@ -1065,6 +1065,7 @@
 				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
+			<Action>SendCompleteSteps</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="SendErrorSteps" id="4">
@@ -1084,6 +1085,7 @@
 				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
+			<Action>SendErrorSteps</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="SendCurrentStep" id="5">
@@ -1103,6 +1105,7 @@
 				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
+			<Action>SendCurrentStep</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="CleanRuntimeProgress" id="6">
@@ -1122,6 +1125,7 @@
 				<xr:Ref>StdPicture.SpreadsheetDeletePageBreak</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
+			<Action>CleanRuntimeProgress</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 	</Commands>
