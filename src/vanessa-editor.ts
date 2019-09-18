@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 
 import "./languages/turbo-gherkin.contribution";
 
-import { BreakpointManager } from "./debug";
+import { BreakpointManager, RuntimeProcessManager } from "./debug";
 import { ProblemManager } from "./problems";
 
 export enum VanessaEditorEvent {
@@ -21,6 +21,7 @@ export class VanessaEditor {
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
+  private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
 
   constructor() {
@@ -32,6 +33,7 @@ export class VanessaEditor {
     });
 
     this.breakpointManager = new BreakpointManager(this);
+    this.runtimeProcessManager = new RuntimeProcessManager(this);
     this.problemManager = new ProblemManager(this);
     this.subscribeEditorEvents();
 
@@ -77,6 +79,18 @@ export class VanessaEditor {
         return undefined;
       case "decorateBreakpoints":
         this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
+        return undefined;
+      case "decorateCurrentStep":
+        this.runtimeProcessManager.DecorateCurrentStep(Number.parseInt(arg, 10));
+        return undefined;
+      case "decorateCompleteSteps":
+        this.runtimeProcessManager.DecorateCompleteSteps(JSON.parse(arg));
+        return undefined;
+      case "decorateErrorSteps":
+        this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
+        return undefined;
+      case "cleanDecorateRuntimeProgress":
+        this.runtimeProcessManager.CleanDecorates();
         return undefined;
       case "decorateProblems":
           this.problemManager.DecorateProblems(JSON.parse(arg));

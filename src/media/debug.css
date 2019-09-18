@@ -10,3 +10,12 @@
 .debug-breakpoint-unverified-glyph {
   background: url('src/media/debug-breakpoint-unverified.svg') center center no-repeat;
 }
+.debug-current-step {
+  background-color: deepskyblue;
+}
+.debug-complete-step {
+  background-color: green;
+}
+.debug-error-step {
+  background-color: red;
+}
