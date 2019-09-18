@@ -146,3 +146,103 @@ export class BreakpointManager {
     return this.breakpointDecorations.findIndex(breakpoint => (breakpoint.range.startLineNumber === lineNumber));
   }
 }
+
+interface ICompleteStep {
+  lineNumber: number;
+}
+
+interface IErrorStep {
+  lineNumber: number;
+  UID: string;
+  title: string;
+}
+
+export class RuntimeProcessManager {
+
+  private VanessaEditor: VanessaEditor;
+
+  private currentStepDecorationIds: string[] = [];
+  private completeStepsDecorationIds: string[] = [];
+  private errorStepsDecorationIds: string[] = [];
+
+  constructor(
+    VanessaEditor: VanessaEditor
+    ) {
+      this.VanessaEditor = VanessaEditor;
+  }
+
+  public DecorateCurrentStep (lineNumber: number) : void {
+
+    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
+
+    this.currentStepDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.currentStepDecorationIds, [{
+      range: new monaco.Range(
+          lineNumber,
+          1,
+          lineNumber,
+          model.getLineLastNonWhitespaceColumn(lineNumber)
+        ),
+      options: {
+        stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+        className: "debug-current-step"
+      }
+    }]);
+  }
+
+  public DecorateCompleteSteps (completeSteps: ICompleteStep[]): void {
+
+    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
+
+    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+    completeSteps.forEach(step => {
+      decorations.push({
+        range: new monaco.Range(
+          step.lineNumber,
+          1,
+          step.lineNumber,
+          model.getLineLastNonWhitespaceColumn(step.lineNumber)),
+        options: {
+          stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+          className: "debug-complete-step"
+        }
+      });
+    });
+
+    this.completeStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(
+      this.completeStepsDecorationIds,
+      decorations
+    );
+  }
+
+  public DecorateErrorSteps (errorSteps: IErrorStep[]): void {
+
+    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
+
+    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+    errorSteps.forEach(step => {
+      decorations.push({
+        range: new monaco.Range(
+          step.lineNumber,
+          1,
+          step.lineNumber,
+          model.getLineLastNonWhitespaceColumn(step.lineNumber)),
+        options: {
+          stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+          className: "debug-error-step"
+        }
+      });
+    });
+
+    this.errorStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(
+      this.errorStepsDecorationIds,
+      decorations
+    );
+
+  }
+
+  public CleanDecorates (): void {
+    this.currentStepDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.currentStepDecorationIds, []);
+    this.completeStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.completeStepsDecorationIds, []);
+    this.errorStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.errorStepsDecorationIds, []);
+  }
+}
