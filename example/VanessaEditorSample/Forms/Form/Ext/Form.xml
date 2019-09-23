@@ -301,12 +301,10 @@
 								<ExcludedCommand>CopyToClipboard</ExcludedCommand>
 								<ExcludedCommand>EndEdit</ExcludedCommand>
 								<ExcludedCommand>Find</ExcludedCommand>
-								<ExcludedCommand>FindByCurrentValue</ExcludedCommand>
 								<ExcludedCommand>MoveDown</ExcludedCommand>
 								<ExcludedCommand>MoveUp</ExcludedCommand>
 								<ExcludedCommand>OutputList</ExcludedCommand>
 								<ExcludedCommand>SearchEverywhere</ExcludedCommand>
-								<ExcludedCommand>SearchHistory</ExcludedCommand>
 								<ExcludedCommand>SelectAll</ExcludedCommand>
 								<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
 								<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
@@ -399,12 +397,10 @@
 								<ExcludedCommand>CopyToClipboard</ExcludedCommand>
 								<ExcludedCommand>EndEdit</ExcludedCommand>
 								<ExcludedCommand>Find</ExcludedCommand>
-								<ExcludedCommand>FindByCurrentValue</ExcludedCommand>
 								<ExcludedCommand>MoveDown</ExcludedCommand>
 								<ExcludedCommand>MoveUp</ExcludedCommand>
 								<ExcludedCommand>OutputList</ExcludedCommand>
 								<ExcludedCommand>SearchEverywhere</ExcludedCommand>
-								<ExcludedCommand>SearchHistory</ExcludedCommand>
 								<ExcludedCommand>SelectAll</ExcludedCommand>
 								<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
 								<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
