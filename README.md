@@ -102,15 +102,19 @@ EndProcedure
 
 Vanessa Editor can be controlled with send action. If editor get action it update its internal state and render the decoration.
 
-| Action                | Description                                                             |
-| --------------------- | ----------------------------------------------------------------------- |
-| `setContent`          | load `arg` to the editor                                                |
-| `getContent`          | return editor content                                                   |
-| `revealLine`          | scrolling to the `arg` line number                                      |
-| `enableEdit`          | disable read only mode                                                  |
-| `disableEdit`         | set read only mode                                                      |
-| `decorateBreakpoints` | update breakpoint by json description in `arg`, see Breakpoints chapter |
-| `decorateProblems`    | update problems by json description in `arg`, see Problems chapter      |
+| Action                         | Description                                                                                     |
+| ------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `setContent`                   | load `arg` to the editor                                                                        |
+| `getContent`                   | return editor content                                                                           |
+| `revealLine`                   | scrolling to the `arg` line number                                                              |
+| `enableEdit`                   | disable read only mode                                                                          |
+| `disableEdit`                  | set read only mode                                                                              |
+| `decorateBreakpoints`          | update breakpoint by json description in `arg`, see Breakpoints chapter                         |
+| `decorateProblems`             | update problems by json description in `arg`, see Problems chapter                              |
+| `decorateCurrentStep`          | update runtime process current step, `arg` line number, see Runtime process chapter             |
+| `decorateCompleteSteps`        | update runtime process complete steps by json description in `arg`, see Runtime process chapter |
+| `decorateErrorSteps`           | update runtime process error steps by json description in `arg`, see Runtime process chapter    |
+| `cleanDecorateRuntimeProgress` | clean runtime process, see Runtime process chapter                                              |
 
 1C:Enterprise script example:
 

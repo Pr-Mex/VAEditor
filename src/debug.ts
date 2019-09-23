@@ -184,6 +184,7 @@ export class RuntimeProcessManager {
         ),
       options: {
         stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+        glyphMarginClassName: "debug-current-step-glyph",
         className: "debug-current-step"
       }
     }]);
