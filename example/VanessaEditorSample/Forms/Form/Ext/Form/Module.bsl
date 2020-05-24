@@ -4,6 +4,7 @@
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
+	ТемаРедактора = "vs";
 
 EndProcedure
 
@@ -286,6 +287,13 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 	EndIf;
 
 EndProcedure
+
+&НаКлиенте
+Процедура ТемаРедактораПриИзменении(Элемент)
+
+	VanessaEditorSendAction("setTheme", ТемаРедактора);
+	
+КонецПроцедуры
 
 #EndRegion
 
