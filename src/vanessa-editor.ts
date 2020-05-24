@@ -62,6 +62,9 @@ export class VanessaEditor {
       case "setContent":
         this.editor.setValue(arg);
         return undefined;
+      case "setTheme":
+        monaco.editor.setTheme(arg);
+        return undefined;
       case "getContent":
         return this.editor.getValue();
       case "revealLine":

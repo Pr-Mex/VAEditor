@@ -243,6 +243,56 @@
 					<ShowTitle>false</ShowTitle>
 					<ExtendedTooltip name="RightSideExtendedTooltip" id="95"/>
 					<ChildItems>
+						<InputField name="ТемаРедактора" id="159">
+							<DataPath>ТемаРедактора</DataPath>
+							<DropListButton>true</DropListButton>
+							<ChoiceList>
+								<xr:Item>
+									<xr:Presentation/>
+									<xr:CheckState>0</xr:CheckState>
+									<xr:Value xsi:type="FormChoiceListDesTimeValue">
+										<Presentation>
+											<v8:item>
+												<v8:lang>ru</v8:lang>
+												<v8:content>Visual Studio</v8:content>
+											</v8:item>
+										</Presentation>
+										<Value xsi:type="xs:string">vs</Value>
+									</xr:Value>
+								</xr:Item>
+								<xr:Item>
+									<xr:Presentation/>
+									<xr:CheckState>0</xr:CheckState>
+									<xr:Value xsi:type="FormChoiceListDesTimeValue">
+										<Presentation>
+											<v8:item>
+												<v8:lang>ru</v8:lang>
+												<v8:content>Visual Studio Dark</v8:content>
+											</v8:item>
+										</Presentation>
+										<Value xsi:type="xs:string">vs-dark</Value>
+									</xr:Value>
+								</xr:Item>
+								<xr:Item>
+									<xr:Presentation/>
+									<xr:CheckState>0</xr:CheckState>
+									<xr:Value xsi:type="FormChoiceListDesTimeValue">
+										<Presentation>
+											<v8:item>
+												<v8:lang>ru</v8:lang>
+												<v8:content>High Contrast Dark</v8:content>
+											</v8:item>
+										</Presentation>
+										<Value xsi:type="xs:string">hc-black</Value>
+									</xr:Value>
+								</xr:Item>
+							</ChoiceList>
+							<ContextMenu name="ТемаРедактораКонтекстноеМеню" id="160"/>
+							<ExtendedTooltip name="ТемаРедактораРасширеннаяПодсказка" id="161"/>
+							<Events>
+								<Event name="OnChange">ТемаРедактораПриИзменении</Event>
+							</Events>
+						</InputField>
 						<UsualGroup name="CurrentStepGroup" id="148">
 							<Title>
 								<v8:item>
@@ -992,6 +1042,21 @@
 					<v8:FractionDigits>0</v8:FractionDigits>
 					<v8:AllowedSign>Any</v8:AllowedSign>
 				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="ТемаРедактора" id="11">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тема</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
 			</Type>
 		</Attribute>
 	</Attributes>
