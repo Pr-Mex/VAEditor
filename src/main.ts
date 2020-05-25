@@ -2,6 +2,7 @@ import "./1c-webkit-style-patch";
 import "./media/debug";
 
 import { VanessaEditor } from "./vanessa-editor";
+import { VanessaDiffEditor } from "./vanessa-diff-editor";
 
 function createDOMNode(tagName: string, id: string, style: string): void {
   const element: HTMLElement = document.createElement(tagName);
@@ -24,4 +25,9 @@ window["MonacoEnvironment"] = { // worker loader
 };
 
 // tslint:disable-next-line: no-string-literal
-window["VanessaEditor"] = new VanessaEditor;
+window["createVanessaEditor"] = () => window["VanessaEditor"] = new VanessaEditor;
+
+// tslint:disable-next-line: no-string-literal
+window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
+    window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
+};

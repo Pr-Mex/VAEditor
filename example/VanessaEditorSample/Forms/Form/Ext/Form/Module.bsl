@@ -154,14 +154,14 @@ EndProcedure
 
 &AtClient
 Procedure SendCurrentStep(Command)
-	
+
 	VanessaEditorSendAction("decorateCurrentStep", CurrentStep);
-	
+
 EndProcedure
 
 &AtClient
 Procedure SendCompleteSteps(Command)
-	
+
 	CompleteStepsPacket = New Array;
 
 	For Each Row In CompleteSteps Do
@@ -171,12 +171,12 @@ Procedure SendCompleteSteps(Command)
 	EndDo;
 
 	VanessaEditorSendAction("decorateCompleteSteps", JsonDump(CompleteStepsPacket));
-	
+
 EndProcedure
 
 &AtClient
 Procedure SendErrorSteps(Command)
-	
+
 	ErrorStepsPacket = New Array;
 
 	For Each Row In ErrorSteps Do
@@ -188,14 +188,14 @@ Procedure SendErrorSteps(Command)
 	EndDo;
 
 	VanessaEditorSendAction("decorateErrorSteps", JsonDump(ErrorStepsPacket));
-	
+
 EndProcedure
 
 &AtClient
 Procedure CleanRuntimeProgress(Command)
-	
+
 	VanessaEditorSendAction("cleanDecorateRuntimeProgress");
-	
+
 EndProcedure
 
 #EndRegion
@@ -244,6 +244,7 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 
 	If Event = "CONTENT_DID_CHANGE" Then
 		ContentDidChange = True;
+		Modified = True;
 	ElsIf Event = "UPDATE_BREAKPOINTS" Then
 		UpdateBreakpoints(Arg);
 		DecorateBreakpoints();
@@ -291,7 +292,35 @@ EndProcedure
 &НаКлиенте
 Процедура ТемаРедактораПриИзменении(Элемент)
 
-	VanessaEditorSendAction("setTheme", ТемаРедактора);
+	Items.VanessaEditor.Document.defaultView.VanessaEditor.SendAction("setTheme", ТемаРедактора);
+	Items.VanessaDiffEditor.Document.defaultView.VanessaEditor.SendAction("setTheme", ТемаРедактора);
+
+КонецПроцедуры
+
+&НаКлиенте
+Процедура VanessaEditorДокументСформирован(Элемент)
+
+	Items.VanessaEditor.Document.defaultView.createVanessaEditor();
+	
+КонецПроцедуры
+
+&НаКлиенте
+Процедура VanessaDiffEditorДокументСформирован(Элемент)
+	
+    text1 = 
+	"const a = 1;
+	|function test(){
+	|	return a + 1;
+	|}";
+	
+    text2 = 
+	"const a = 2;
+	|function test(){
+	|	alert('Привет, мир!');
+	|	return a + 2;
+	|}";
+	
+	Items.VanessaDiffEditor.Document.defaultView.createVanessaDiffEditor(text1, text2, "javascript");
 	
 КонецПроцедуры
 
