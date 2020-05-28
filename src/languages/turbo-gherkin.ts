@@ -16,15 +16,21 @@ export const conf: IRichLanguageConfiguration = {
 };
 
 export const language: ILanguage = <ILanguage>{
+  ignoreCase: true,
+
   keywords: [
     "Функционал",
     "Сценарий",
-    "Контекст", "Допустим", "Дано",
+    "Контекст",
+    "Допустим",
+    "Дано",
     "Когда",
     "И",
-    "Тогда", "Затем",
+    "Не",
+    "Тогда",
+    "Затем",
     "Если",
-    "Примеры"
+    "Примеры",
   ],
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
