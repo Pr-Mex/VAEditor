@@ -53,23 +53,22 @@ window["setVanessaStepList"] = function (arg) {
   function isKeyword(w) {
     return window["VanessaKeywords"].some(e => e.localeCompare(w, 'ru', { sensitivity: 'base' }) == 0);
   }
-  let steps = [];
+  window["VanessaStepList"] = [];
   JSON.parse(arg).forEach(e => {
-    let n = 0;
-    let list = e.ИмяШага.split('\n')[0].replace(/\s\s+/g, ' ').split(' ').filter((s, i) => {
-      if (!s) return false;
-      if (isKeyword(s) && n == 0) return false;
-      n = i; return s;
+    let first = true;
+    let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"');
+    words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => {
+      if (!word) return false;
+      if (word && isKeyword(word)) return false;
+      first = false; return word;
     });
-
-    steps.push({
-      label: list.join(' '),
-      filterText: list.filter(s => s && s[0] != '"').join(' '),
+    window["VanessaStepList"].push({
+      label: words.join(' '),
+      filterText: words.filter(s => s && s[0] != '"').join(' '),
       documentation: e.ОписаниеШага,
       insertText: e.ИмяШага,
     });
   });
-  window["VanessaStepList"] = steps;
 }
 
 window['VanessaCompletion'] = function (line, range) {
