@@ -419,7 +419,7 @@
 								</v8:item>
 							</Title>
 							<CommandSet>
-							<ExcludedCommand>Copy</ExcludedCommand>
+								<ExcludedCommand>Copy</ExcludedCommand>
 								<ExcludedCommand>SortListAsc</ExcludedCommand>
 								<ExcludedCommand>MoveUp</ExcludedCommand>
 								<ExcludedCommand>CancelSearch</ExcludedCommand>
@@ -514,7 +514,7 @@
 								</v8:item>
 							</Title>
 							<CommandSet>
-									<ExcludedCommand>Copy</ExcludedCommand>
+								<ExcludedCommand>Copy</ExcludedCommand>
 								<ExcludedCommand>SortListAsc</ExcludedCommand>
 								<ExcludedCommand>MoveUp</ExcludedCommand>
 								<ExcludedCommand>CancelSearch</ExcludedCommand>
@@ -1119,7 +1119,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Тема</v8:content>
+					<v8:content>Theme</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>en</v8:lang>
