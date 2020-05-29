@@ -4,7 +4,7 @@
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
-	ТемаРедактора = "vs";
+	EditorTheme = "vs";
 
 EndProcedure
 
@@ -43,6 +43,14 @@ Procedure ReadOnlyModeOnChange(Item)
 	Else
 		VanessaEditorSendAction("enableEdit");
 	EndIf;
+
+EndProcedure
+
+&AtClient
+Procedure EditorThemeOnChange(Item)
+
+	VanessaEditorSendAction("setTheme", EditorTheme);
+	VanessaEditorSendAction("setTheme", EditorTheme);
 
 EndProcedure
 
@@ -289,40 +297,45 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 EndProcedure
 
-&НаКлиенте
-Процедура ТемаРедактораПриИзменении(Элемент)
+&AtClient
+Procedure VanessaEditorDocumentComplete(Item)
 
-	Items.VanessaEditor.Document.defaultView.VanessaEditor.SendAction("setTheme", ТемаРедактора);
-	Items.VanessaDiffEditor.Document.defaultView.VanessaEditor.SendAction("setTheme", ТемаРедактора);
+	Items.VanessaEditor.Document.defaultView.setVanessaStepList(VanessaStepList());
+	Items.VanessaEditor.Document.defaultView.createVanessaEditor("", "turbo-gherkin");
 
-КонецПроцедуры
+EndProcedure
 
-&НаКлиенте
-Процедура VanessaEditorДокументСформирован(Элемент)
+&AtServer
+Function VanessaStepList()
 
-	Items.VanessaEditor.Document.defaultView.createVanessaEditor();
-	
-КонецПроцедуры
+	Stream = FormAttributeToValue("Object").GetTemplate("VanessaStepList").OpenStreamForRead();
+	TextReader = New TextReader(Stream, TextEncoding.UTF8);
+	Result = TextReader.Read();
+	Stream.Close();
 
-&НаКлиенте
-Процедура VanessaDiffEditorДокументСформирован(Элемент)
-	
-    text1 = 
-	"const a = 1;
-	|function test(){
-	|	return a + 1;
-	|}";
-	
-    text2 = 
-	"const a = 2;
-	|function test(){
-	|	alert('Привет, мир!');
-	|	return a + 2;
-	|}";
-	
+	Return Result;
+
+EndFunction
+
+&AtClient
+Procedure VanessaDiffEditorDocumentComplete(Item)
+
+	text1 =
+		"const a = 1;
+		|function test(){
+		|	return a + 1;
+		|}";
+
+	text2 =
+		"const a = 2;
+		|function test(){
+		|	alert('Hello world!');
+		|	return a + 2;
+		|}";
+
 	Items.VanessaDiffEditor.Document.defaultView.createVanessaDiffEditor(text1, text2, "javascript");
-	
-КонецПроцедуры
+
+EndProcedure
 
 #EndRegion
 
