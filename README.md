@@ -32,8 +32,9 @@ npm run build
 6. Drug and drop the attribute to the items panel. The new item shuld have name **VanessaEditor**.
 7. Change type of the form item to **HTML document field**.
 8. Create **VanessaEditorOnClick** item event handler.
-9. Create **OnCreateAtServer** form event handler.
-10. Add the next code to the form module:
+9. Create **VanessaEditorDocumentComplete** item event handler.
+10. Create **OnCreateAtServer** form event handler.
+11. Add the next code to the form module:
 
 ```bsl
 #Region FormEvents
@@ -91,6 +92,13 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 EndProcedure
 
+&AtClient
+Procedure VanessaEditorDocumentComplete(Item)
+
+	Items.VanessaEditor.Document.defaultView.createVanessaEditor("", "turbo-gherkin");
+
+EndProcedure
+
 #EndRegion
 
 #EndRegion
@@ -104,6 +112,7 @@ Vanessa Editor can be controlled with send action. If editor get action it updat
 
 | Action                         | Description                                                                                     |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `setTheme`                     | set etitor theme from `arg`, avaliable values: `vs`, `vs-dark`, and `hc-black`                  |
 | `setContent`                   | load `arg` to the editor                                                                        |
 | `getContent`                   | return editor content                                                                           |
 | `revealLine`                   | scrolling to the `arg` line number                                                              |
