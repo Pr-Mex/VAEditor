@@ -129,6 +129,14 @@ export class VanessaEditor {
       () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
     );
 
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z,
+      () => this.editor.trigger('undo…', 'undo', undefined)
+    );
+
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Y,
+      () => this.editor.trigger('redo…', 'redo', undefined)
+    );
+
     this.editor.addCommand(monaco.KeyCode.F9,
       () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber)
     );
