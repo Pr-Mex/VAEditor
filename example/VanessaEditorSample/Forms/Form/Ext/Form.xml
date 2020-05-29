@@ -212,11 +212,15 @@
 					<ShowTitle>false</ShowTitle>
 					<ExtendedTooltip name="CenterExtendedTooltip" id="39"/>
 					<ChildItems>
-						<Pages name="ГруппаСтраницы" id="162">
+						<Pages name="GroupsEditors" id="162">
 							<Title>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
 									<v8:content>Группа страницы</v8:content>
+								</v8:item>
+								<v8:item>
+									<v8:lang>en</v8:lang>
+									<v8:content>Groups editors</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
@@ -225,13 +229,17 @@
 									<v8:content>Группа страницы</v8:content>
 								</v8:item>
 							</ToolTip>
-							<ExtendedTooltip name="ГруппаСтраницыРасширеннаяПодсказка" id="163"/>
+							<ExtendedTooltip name="GroupsEditorsExtendedTooltip" id="163"/>
 							<ChildItems>
 								<Page name="GroupEditor" id="164">
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Vanessa Editor</v8:content>
+											<v8:content>Feature Editor</v8:content>
+										</v8:item>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Feature editor</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
@@ -248,7 +256,7 @@
 											<ContextMenu name="VanessaEditorContextMenu" id="2"/>
 											<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
 											<Events>
-												<Event name="DocumentComplete">VanessaEditorДокументСформирован</Event>
+												<Event name="DocumentComplete">VanessaEditorDocumentComplete</Event>
 												<Event name="OnClick">VanessaEditorOnClick</Event>
 											</Events>
 										</HTMLDocumentField>
@@ -258,7 +266,11 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Vanesssa Diff Editor</v8:content>
+											<v8:content>Diff Editor</v8:content>
+										</v8:item>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Diff editor</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
@@ -275,7 +287,7 @@
 											<ContextMenu name="VanessaDiffEditorКонтекстноеМеню" id="169"/>
 											<ExtendedTooltip name="VanessaDiffEditorРасширеннаяПодсказка" id="170"/>
 											<Events>
-												<Event name="DocumentComplete">VanessaDiffEditorДокументСформирован</Event>
+												<Event name="DocumentComplete">VanessaDiffEditorDocumentComplete</Event>
 												<Event name="OnClick">VanessaEditorOnClick</Event>
 											</Events>
 										</HTMLDocumentField>
@@ -304,8 +316,8 @@
 					<ShowTitle>false</ShowTitle>
 					<ExtendedTooltip name="RightSideExtendedTooltip" id="95"/>
 					<ChildItems>
-						<InputField name="ТемаРедактора" id="159">
-							<DataPath>ТемаРедактора</DataPath>
+						<InputField name="EditorTheme" id="159">
+							<DataPath>EditorTheme</DataPath>
 							<ExtendedEdit>false</ExtendedEdit>
 							<ListChoiceMode>true</ListChoiceMode>
 							<ChoiceList>
@@ -349,10 +361,10 @@
 									</xr:Value>
 								</xr:Item>
 							</ChoiceList>
-							<ContextMenu name="ТемаРедактораКонтекстноеМеню" id="160"/>
-							<ExtendedTooltip name="ТемаРедактораРасширеннаяПодсказка" id="161"/>
+							<ContextMenu name="EditorThemeContextMenu" id="160"/>
+							<ExtendedTooltip name="EditorThemeExtendedTooltip" id="161"/>
 							<Events>
-								<Event name="OnChange">ТемаРедактораПриИзменении</Event>
+								<Event name="OnChange">EditorThemeOnChange</Event>
 							</Events>
 						</InputField>
 						<UsualGroup name="CurrentStepGroup" id="148">
@@ -407,7 +419,7 @@
 								</v8:item>
 							</Title>
 							<CommandSet>
-								<ExcludedCommand>Copy</ExcludedCommand>
+							<ExcludedCommand>Copy</ExcludedCommand>
 								<ExcludedCommand>SortListAsc</ExcludedCommand>
 								<ExcludedCommand>MoveUp</ExcludedCommand>
 								<ExcludedCommand>CancelSearch</ExcludedCommand>
@@ -502,7 +514,7 @@
 								</v8:item>
 							</Title>
 							<CommandSet>
-								<ExcludedCommand>Copy</ExcludedCommand>
+									<ExcludedCommand>Copy</ExcludedCommand>
 								<ExcludedCommand>SortListAsc</ExcludedCommand>
 								<ExcludedCommand>MoveUp</ExcludedCommand>
 								<ExcludedCommand>CancelSearch</ExcludedCommand>
@@ -1103,11 +1115,15 @@
 				</v8:NumberQualifiers>
 			</Type>
 		</Attribute>
-		<Attribute name="ТемаРедактора" id="11">
+		<Attribute name="EditorTheme" id="11">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
 					<v8:content>Тема</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Editor theme</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
