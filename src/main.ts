@@ -66,23 +66,27 @@ class IVanessaGherkinManager {
 
   private steps: Array<IVanessaGherkinStep> = [];
 
-  public setKeywords(list: string): void {
-    this.keywords = JSON.parse(list);
-  }
+  public setKeywords: Function;
+  public setStepList: Function
 
-  public setStepList(list: string): void {
-    this.steps = [];
-    JSON.parse(list).forEach(e => {
-      let first = true;
-      let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"');
-      words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => word && !this.isKeyword(word));
-      this.steps.push({
-        label: words.join(' '),
-        filterText: words.filter(s => s && s[0] != '"').join(' '),
-        documentation: e.ОписаниеШага,
-        insertText: e.ИмяШага,
-      });
-    });
+  constructor() {
+    this.setKeywords = (list: string): void => {
+      this.keywords = JSON.parse(list);
+    }
+    this.setStepList = (list: string): void => {
+      this.steps = [];
+      JSON.parse(list).forEach(e => {
+        let first = true;
+        let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"');
+        words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => word && !this.isKeyword(word));
+        this.steps.push({
+          label: words.join(' '),
+          filterText: words.filter(s => s && s[0] != '"').join(' '),
+          documentation: e.ОписаниеШага,
+          insertText: e.ИмяШага,
+        });
+      })
+    }
   }
 
   public getSuggestions(line: any, range: any): any {
@@ -102,7 +106,3 @@ class IVanessaGherkinManager {
 }
 
 window["VanessaGherkinManager"] = new IVanessaGherkinManager;
-
-window["setVanessaStepList"] = function (list: string) {
-  window["VanessaGherkinManager"].setStepList(list);
-}

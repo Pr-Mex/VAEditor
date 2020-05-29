@@ -298,10 +298,66 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 EndProcedure
 
 &AtClient
+Function GetKeywords()
+
+	TextJSON = "
+	|и
+	|когда
+	|тогда
+	|затем
+	|дано
+	|функция
+	|функционал
+	|функциональность
+	|свойство
+	|предыстория
+	|контекст
+	|сценарий
+	|структура
+	|сценария
+	|примеры
+	|допустим
+	|пусть
+	|если
+	|иначеесли
+	|иначе
+	|то
+	|также
+	|но
+	|а
+	|feature
+	|functionality
+	|business need
+	|ability
+	|background
+	|scenario outline
+	|scenario
+	|examples
+	|given
+	|when
+	|then
+	|and
+	|but
+	|if
+	|elseif
+	|else
+	|";
+	WordList = StrSplit(TextJSON, "
+	|", False);
+	JSONWriter = New JSONWriter;
+	JSONWriter.SetString();
+	WriteJSON(JSONWriter, WordList);
+	return JSONWriter.Close();
+
+EndFunction
+
+&AtClient
 Procedure VanessaEditorDocumentComplete(Item)
 
-	Items.VanessaEditor.Document.defaultView.setVanessaStepList(VanessaStepList());
-	Items.VanessaEditor.Document.defaultView.createVanessaEditor("", "turbo-gherkin");
+	view = Items.VanessaEditor.Document.defaultView;
+	view.VanessaGherkinManager.setKeywords(GetKeywords());
+	view.VanessaGherkinManager.setStepList(VanessaStepList());
+	view.createVanessaEditor("", "turbo-gherkin");
 
 EndProcedure
 
