@@ -57,11 +57,7 @@ window["setVanessaStepList"] = function (arg) {
   JSON.parse(arg).forEach(e => {
     let first = true;
     let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"');
-    words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => {
-      if (!word) return false;
-      if (word && isKeyword(word)) return false;
-      first = false; return word;
-    });
+    words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => word && !isKeyword(word));
     window["VanessaStepList"].push({
       label: words.join(' '),
       filterText: words.filter(s => s && s[0] != '"').join(' '),
