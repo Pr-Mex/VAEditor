@@ -24,13 +24,15 @@ export class VanessaEditor {
   private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
 
-  constructor() {
+  constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
-      language: "turbo-gherkin",
+      language: language,
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true
     });
+
+    this.editor.setValue(content);
 
     this.breakpointManager = new BreakpointManager(this);
     this.runtimeProcessManager = new RuntimeProcessManager(this);
@@ -59,11 +61,11 @@ export class VanessaEditor {
     console.debug("OnReceiveAction: " + action + " : " + arg);
 
     switch (action) {
-      case "setContent":
-        this.editor.setValue(arg);
-        return undefined;
       case "setTheme":
         monaco.editor.setTheme(arg);
+        return undefined;
+      case "setContent":
+        this.editor.setValue(arg);
         return undefined;
       case "getContent":
         return this.editor.getValue();

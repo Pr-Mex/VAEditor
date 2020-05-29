@@ -25,13 +25,20 @@ window["MonacoEnvironment"] = { // worker loader
 };
 
 // tslint:disable-next-line: no-string-literal
-window["createVanessaEditor"] = () => window["VanessaEditor"] = new VanessaEditor;
+window["createVanessaEditor"] = (content: string, language: string) => {
+  window["VanessaEditor"] = new VanessaEditor(content, language);
+};
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
   window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
 };
 
+// FIXME: надо создать VanessaCompletionManager куда вынести все из клобального контекста
+
+
+// FIXME: Надо сделать команду SendAction котрая установит список причем не только сюда но и в languages/turbo-gherkin.ts
+// Потому что этот список может зависеть от языка и должен усаналвиваться ванессой
 window["VanessaKeywords"] = [
   "Функционал",
   "Сценарий",
@@ -49,6 +56,9 @@ window["VanessaKeywords"] = [
 
 window["VanessaStepList"] = [];
 
+// FIXME: Надо сделать команду SendAction котрая установит список причем знать о струткуре json файла ванессы на русском языке плохо
+// Лучше либо конвериторовать в нужный формат на стороне 1С и скарпливать его в этитор либо в принципе передалать формат хранения в ванессе
+//
 window["setVanessaStepList"] = function (arg) {
   function isKeyword(w) {
     return window["VanessaKeywords"].some(e => e.localeCompare(w, 'ru', { sensitivity: 'base' }) == 0);
