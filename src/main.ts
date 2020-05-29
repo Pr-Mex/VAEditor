@@ -34,60 +34,75 @@ window["createVanessaDiffEditor"] = (original: string, modified: string, languag
   window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
 };
 
-// FIXME: надо создать VanessaCompletionManager куда вынести все из клобального контекста
+class IVanessaGherkinStep {
+  public label: string;
+  public insertText: string;
+  public filterText: string;
+  public documentation: string;
+};
 
+class IVanessaGherkinManager {
 
-// FIXME: Надо сделать команду SendAction котрая установит список причем не только сюда но и в languages/turbo-gherkin.ts
-// Потому что этот список может зависеть от языка и должен усаналвиваться ванессой
-window["VanessaKeywords"] = [
-  "Функционал",
-  "Сценарий",
-  "Контекст",
-  "Допустим",
-  "Дано",
-  "Когда",
-  "И",
-  "Не",
-  "Тогда",
-  "Затем",
-  "Если",
-  "Примеры",
-];
+  public keywords: Array<string> = [
+    "Функционал",
+    "Сценарий",
+    "Контекст",
+    "Допустим",
+    "Дано",
+    "Когда",
+    "И",
+    "Не",
+    "Тогда",
+    "Затем",
+    "Если",
+    "Примеры",
+  ];
 
-window["VanessaStepList"] = [];
+  private locales: Array<string> = ['en', 'ru'];
 
-// FIXME: Надо сделать команду SendAction котрая установит список причем знать о струткуре json файла ванессы на русском языке плохо
-// Лучше либо конвериторовать в нужный формат на стороне 1С и скарпливать его в этитор либо в принципе передалать формат хранения в ванессе
-//
-window["setVanessaStepList"] = function (arg) {
-  function isKeyword(w) {
-    return window["VanessaKeywords"].some(e => e.localeCompare(w, 'ru', { sensitivity: 'base' }) == 0);
+  private isKeyword(w: string): boolean {
+    return this.keywords.some(e => e.localeCompare(w, this.locales, { sensitivity: 'base' }) == 0);
   }
-  window["VanessaStepList"] = [];
-  JSON.parse(arg).forEach(e => {
-    let first = true;
-    let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"');
-    words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => word && !isKeyword(word));
-    window["VanessaStepList"].push({
-      label: words.join(' '),
-      filterText: words.filter(s => s && s[0] != '"').join(' '),
-      documentation: e.ОписаниеШага,
-      insertText: e.ИмяШага,
+
+  private steps: Array<IVanessaGherkinStep> = [];
+
+  public setKeywords(list: string): void {
+    this.keywords = JSON.parse(list);
+  }
+
+  public setStepList(list: string): void {
+    this.steps = [];
+    JSON.parse(list).forEach(e => {
+      let first = true;
+      let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"');
+      words = words.match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => word && !this.isKeyword(word));
+      this.steps.push({
+        label: words.join(' '),
+        filterText: words.filter(s => s && s[0] != '"').join(' '),
+        documentation: e.ОписаниеШага,
+        insertText: e.ИмяШага,
+      });
     });
-  });
+  }
+
+  public getSuggestions(line: any, range: any): any {
+    let result = [];
+    this.steps.forEach(e => {
+      result.push({
+        label: e.label,
+        kind: monaco.languages.CompletionItemKind.Function,
+        documentation: e.documentation,
+        insertText: e.insertText,
+        filterText: e.filterText,
+        range: range
+      });
+    });
+    return result;
+  }
 }
 
-window['VanessaCompletion'] = function (line, range) {
-  let result = [];
-  window["VanessaStepList"].forEach(e => {
-    result.push({
-      label: e.label,
-      kind: monaco.languages.CompletionItemKind.Function,
-      documentation: e.documentation,
-      insertText: e.insertText,
-      filterText: e.filterText,
-      range: range
-    });
-  });
-  return result;
+window["VanessaGherkinManager"] = new IVanessaGherkinManager;
+
+window["setVanessaStepList"] = function (list: string) {
+  window["VanessaGherkinManager"].setStepList(list);
 }

@@ -18,20 +18,7 @@ export const conf: IRichLanguageConfiguration = {
 export const language: ILanguage = <ILanguage>{
   ignoreCase: true,
 
-  keywords: [
-    "Функционал",
-    "Сценарий",
-    "Контекст",
-    "Допустим",
-    "Дано",
-    "Когда",
-    "И",
-    "Не",
-    "Тогда",
-    "Затем",
-    "Если",
-    "Примеры",
-  ],
+  keywords: window["VanessaGherkinManager"].keywords,
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 

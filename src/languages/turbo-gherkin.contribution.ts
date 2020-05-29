@@ -13,10 +13,6 @@ monaco.languages.onLanguage(language.id, () => {
   });
 });
 
-window['VanessaCompletion'] = function(line, range) {
-  return [];
-}
-
 monaco.languages.registerCompletionItemProvider(language.id, {
   provideCompletionItems: function (model, position) {
     // find out if we are completing a property in the 'dependencies' object.
@@ -34,7 +30,7 @@ monaco.languages.registerCompletionItemProvider(language.id, {
       endColumn: word.endColumn
     };
     return {
-      suggestions: window['VanessaCompletion'](line, range)
+      suggestions: window["VanessaGherkinManager"].getSuggestions(line, range)
     };
   }
 });
