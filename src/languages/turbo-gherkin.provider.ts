@@ -17,7 +17,7 @@ export class VanessaGherkinProvider {
     let b = true;
     return line.split('\n')[0].replace(/'/g, '"')
       .match(/(?:[^\s"]+|"[^"]*")+/g).filter(w =>
-        (b && this.isKeyword(w)) ? false : (b= false, true)
+        (b && this.isKeyword(w)) ? false : (b = false, true)
       );
   }
 
@@ -26,13 +26,20 @@ export class VanessaGherkinProvider {
   }
 
   private steps: {};
+  private variables: {};
 
   public setKeywords: Function;
   public setStepList: Function;
+  public setVariables: Function;
 
   constructor() {
     this.setKeywords = (list: string): void => {
       this.keywords = JSON.parse(list).map((w: string) => w.toLowerCase());
+    }
+    this.setVariables = (str: string): void => {
+      this.variables = {};
+      let obj = JSON.parse(str);
+      Object.keys(obj).map(key => this.variables[key] = String(obj[key]));
     }
     this.setStepList = (list: string): void => {
       this.steps = {};
@@ -65,11 +72,19 @@ export class VanessaGherkinProvider {
   }
 
   public getHoverContents(line: any): any {
-    let step = this.steps[this.key(this.splitWords(line))];
-    if (step) return [
-      { value: "**" + step.type + "**" },
-      { value: step.documentation },
-    ];
-    return [];
+    let res = [];
+    let words = this.splitWords(line);
+    let step = this.steps[this.key(words)];
+    if (step) {
+      res.push({ value: "**" + step.type + "**" });
+      res.push({ value: step.documentation });
+    } else return [];
+    let values = this.variables;
+    let vars = words.filter(w => w.search(/^"\$.+\$"$/) == 0);
+    vars.forEach(function (part, index, vars) {
+      let name = part.substring(2, part.length - 2);
+      res.push({ value: "**" + name + "** = " +  values[name]});
+    });
+    return res;
   }
 }

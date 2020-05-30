@@ -274,7 +274,7 @@ Procedure VanessaEditorLoad()
 	TempFileName = GetTempFileName();
 	DeleteFiles(TempFileName);
 	CreateDirectory(TempFileName);
-	
+
 	BinaryData = FormAttributeToValue("Object").GetTemplate("VanessaEditor");
 	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
 	For each ZipFileEntry in ZipFileReader.Items do
@@ -283,7 +283,7 @@ Procedure VanessaEditorLoad()
 		VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID);
 	EndDo;
 	DeleteFiles(TempFileName);
-	
+
 EndProcedure
 
 &AtClient
@@ -304,6 +304,26 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 	If Element.id = "VanessaEditorEventForwarder" Then
 		VanessaEditorOnReceiveEventHandler(Element.title, Element.value);
 	EndIf;
+
+EndProcedure
+
+&AtClient
+Procedure VanessaDiffEditorDocumentComplete(Item)
+
+	text1 =
+		"const a = 1;
+		|function test(){
+		|	return a + 1;
+		|}";
+
+	text2 =
+		"const a = 2;
+		|function test(){
+		|	alert('Hello world!');
+		|	return a + 2;
+		|}";
+
+	Items.VanessaDiffEditor.Document.defaultView.createVanessaDiffEditor(text1, text2, "javascript");
 
 EndProcedure
 
@@ -362,14 +382,20 @@ Function GetKeywords()
 EndFunction
 
 &AtClient
-Procedure VanessaEditorDocumentComplete(Item)
+Function GetVariables()
 
-	view = Items.VanessaEditor.Document.defaultView;
-	view.VanessaGherkinProvider.setKeywords(GetKeywords());
-	view.VanessaGherkinProvider.setStepList(VanessaStepList());
-	view.createVanessaEditor("", "turbo-gherkin");
+	Map = New Map;
+	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
+	Map.Insert("ИмяКнопки", "ФормаЗаписать");
+	Map.Insert("ИмяТаблицы", "Номенклатура");
+	Map.Insert("ИмяРеквизита", "Количество");
 
-EndProcedure
+	JSONWriter = New JSONWriter;
+	JSONWriter.SetString();
+	WriteJSON(JSONWriter, Map);
+	return JSONWriter.Close();
+
+EndFunction
 
 &AtServer
 Function VanessaStepList()
@@ -384,22 +410,13 @@ Function VanessaStepList()
 EndFunction
 
 &AtClient
-Procedure VanessaDiffEditorDocumentComplete(Item)
+Procedure VanessaEditorDocumentComplete(Item)
 
-	text1 =
-		"const a = 1;
-		|function test(){
-		|	return a + 1;
-		|}";
-
-	text2 =
-		"const a = 2;
-		|function test(){
-		|	alert('Hello world!');
-		|	return a + 2;
-		|}";
-
-	Items.VanessaDiffEditor.Document.defaultView.createVanessaDiffEditor(text1, text2, "javascript");
+	view = Items.VanessaEditor.Document.defaultView;
+	view.VanessaGherkinProvider.setKeywords(GetKeywords());
+	view.VanessaGherkinProvider.setStepList(VanessaStepList());
+	view.VanessaGherkinProvider.setVariables(GetVariables());
+	view.createVanessaEditor("", "turbo-gherkin");
 
 EndProcedure
 
