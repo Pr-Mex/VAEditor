@@ -64,7 +64,7 @@ export class VanessaGherkinProvider {
     return result;
   }
 
-  public getHoverContents(line: any, word: any, column: any): any {
+  public getHoverContents(line: any): any {
     let step = this.steps[this.key(this.splitWords(line))];
     if (step) return [
       { value: "**" + step.type + "**" },
