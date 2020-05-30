@@ -271,9 +271,19 @@ EndProcedure
 &AtServer
 Procedure VanessaEditorLoad()
 
-	VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(
-		FormAttributeToValue("Object").GetTemplate("VanessaEditor"), UUID);
-
+	TempFileName = GetTempFileName();
+	DeleteFiles(TempFileName);
+	CreateDirectory(TempFileName);
+	
+	BinaryData = FormAttributeToValue("Object").GetTemplate("VanessaEditor");
+	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
+	For each ZipFileEntry in ZipFileReader.Items do
+		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
+		BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
+		VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID);
+	EndDo;
+	DeleteFiles(TempFileName);
+	
 EndProcedure
 
 &AtClient
