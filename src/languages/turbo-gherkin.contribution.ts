@@ -38,7 +38,6 @@ monaco.languages.registerCompletionItemProvider(language.id, {
 monaco.languages.registerHoverProvider(language.id, {
   provideHover: function (model, position) {
     let line = model.getLineContent(position.lineNumber)
-    let word = model.getWordAtPosition(position).word;
     return {
       range: {
         startLineNumber: position.lineNumber,
@@ -46,7 +45,7 @@ monaco.languages.registerHoverProvider(language.id, {
         startColumn: model.getLineMinColumn(position.lineNumber),
         endColumn: model.getLineMaxColumn(position.lineNumber),
       },
-      contents: window["VanessaGherkinProvider"].getHoverContents(line, word, position.column),
+      contents: window["VanessaGherkinProvider"].getHoverContents(line),
     }
   }
 });
