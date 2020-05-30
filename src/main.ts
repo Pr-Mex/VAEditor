@@ -41,22 +41,9 @@ class IVanessaGherkinStep {
   public documentation: string;
 };
 
-class IVanessaGherkinManager {
+class IVanessaGherkinProvider {
 
-  public keywords: Array<string> = [
-    "Функционал",
-    "Сценарий",
-    "Контекст",
-    "Допустим",
-    "Дано",
-    "Когда",
-    "И",
-    "Не",
-    "Тогда",
-    "Затем",
-    "Если",
-    "Примеры",
-  ];
+  public keywords: Array<string> = ["функционал", "сценарий", "контекст", "допустим", "дано", "когда", "и", "не", "тогда", "затем", "если", "примеры"];
 
   private locales: Array<string> = ['en', 'ru'];
 
@@ -71,7 +58,7 @@ class IVanessaGherkinManager {
 
   constructor() {
     this.setKeywords = (list: string): void => {
-      this.keywords = JSON.parse(list);
+      this.keywords = JSON.parse(list).map((w: string) => w.toLowerCase());
     }
     this.setStepList = (list: string): void => {
       this.steps = [];
@@ -105,4 +92,4 @@ class IVanessaGherkinManager {
   }
 }
 
-window["VanessaGherkinManager"] = new IVanessaGherkinManager;
+window["VanessaGherkinProvider"] = new IVanessaGherkinProvider;

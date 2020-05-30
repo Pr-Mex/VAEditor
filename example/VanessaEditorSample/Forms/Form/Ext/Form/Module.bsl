@@ -355,8 +355,8 @@ EndFunction
 Procedure VanessaEditorDocumentComplete(Item)
 
 	view = Items.VanessaEditor.Document.defaultView;
-	view.VanessaGherkinManager.setKeywords(GetKeywords());
-	view.VanessaGherkinManager.setStepList(VanessaStepList());
+	view.VanessaGherkinProvider.setKeywords(GetKeywords());
+	view.VanessaGherkinProvider.setStepList(VanessaStepList());
 	view.createVanessaEditor("", "turbo-gherkin");
 
 EndProcedure

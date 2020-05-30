@@ -30,7 +30,7 @@ monaco.languages.registerCompletionItemProvider(language.id, {
       endColumn: word.endColumn
     };
     return {
-      suggestions: window["VanessaGherkinManager"].getSuggestions(line, range)
+      suggestions: window["VanessaGherkinProvider"].getSuggestions(line, range)
     };
   }
 });
