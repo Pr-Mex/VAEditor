@@ -1,4 +1,7 @@
-﻿#Region FormEvents
+﻿&AtClient
+Var VanessaEditor;
+
+#Region FormEvents
 
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
@@ -20,8 +23,7 @@ Procedure LoadFile(Command)
 	If Dialog.Choose() Then
 		TextReader = New TextReader(Dialog.FullFileName, TextEncoding.UTF8);
 		Text = TextReader.Read();
-
-		VanessaEditorSendAction("setContent", Text);
+		VanessaEditor.setContent(Text);
 	EndIf;
 
 EndProcedure
@@ -30,7 +32,7 @@ EndProcedure
 Procedure GetValue(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = VanessaEditorSendAction("getContent");
+	UserMessage.Text = VanessaEditor.getContent();
 	UserMessage.Message();
 
 EndProcedure
@@ -38,19 +40,14 @@ EndProcedure
 &AtClient
 Procedure ReadOnlyModeOnChange(Item)
 
-	If ReadOnlyMode Then
-		VanessaEditorSendAction("disableEdit");
-	Else
-		VanessaEditorSendAction("enableEdit");
-	EndIf;
+	VanessaEditor.setReadOnly(ReadOnlyMode);
 
 EndProcedure
 
 &AtClient
 Procedure EditorThemeOnChange(Item)
 
-	VanessaEditorSendAction("setTheme", EditorTheme);
-	VanessaEditorSendAction("setTheme", EditorTheme);
+	VanessaEditor.setTheme(EditorTheme);
 
 EndProcedure
 
@@ -280,7 +277,7 @@ Procedure VanessaEditorLoad()
 	For each ZipFileEntry in ZipFileReader.Items do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
 		BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
-		VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID);
+		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID);
 	EndDo;
 	DeleteFiles(TempFileName);
 
@@ -372,12 +369,11 @@ Function GetKeywords()
 	|elseif
 	|else
 	|";
+
 	WordList = StrSplit(TextJSON, "
 	|", False);
-	JSONWriter = New JSONWriter;
-	JSONWriter.SetString();
-	WriteJSON(JSONWriter, WordList);
-	return JSONWriter.Close();
+
+	return JsonDump(WordList);
 
 EndFunction
 
@@ -389,11 +385,7 @@ Function GetVariables()
 	Map.Insert("ИмяКнопки", "ФормаЗаписать");
 	Map.Insert("ИмяТаблицы", "Номенклатура");
 	Map.Insert("ИмяРеквизита", "Количество");
-
-	JSONWriter = New JSONWriter;
-	JSONWriter.SetString();
-	WriteJSON(JSONWriter, Map);
-	return JSONWriter.Close();
+	return JsonDump(Map);
 
 EndFunction
 
@@ -404,7 +396,6 @@ Function VanessaStepList()
 	TextReader = New TextReader(Stream, TextEncoding.UTF8);
 	Result = TextReader.Read();
 	Stream.Close();
-
 	Return Result;
 
 EndFunction
@@ -416,7 +407,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	view.VanessaGherkinProvider.setKeywords(GetKeywords());
 	view.VanessaGherkinProvider.setStepList(VanessaStepList());
 	view.VanessaGherkinProvider.setVariables(GetVariables());
-	view.createVanessaEditor("", "turbo-gherkin");
+	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 
 EndProcedure
 

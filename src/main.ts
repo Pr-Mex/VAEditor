@@ -31,10 +31,10 @@ window["VanessaGherkinProvider"] = new VanessaGherkinProvider;
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaEditor"] = (content: string, language: string) => {
-  window["VanessaEditor"] = new VanessaEditor(content, language);
+  return window["VanessaEditor"] = new VanessaEditor(content, language);
 };
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
-  window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
+  return window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
 };
