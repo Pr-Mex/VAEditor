@@ -12,6 +12,14 @@ window.onload = () => {
     ];
     VanessaGherkinProvider.setStepList(JSON.stringify(steps));
 
+    let variables = {
+      "ИмяКоманды": "ЗаписатьИЗакрыть",
+      "ИмяКнопки": "ФормаЗаписать",
+      "ИмяТаблицы": "Номенклатура",
+      "ИмяРеквизита": "Количество",
+    };
+    VanessaGherkinProvider.setVariables(JSON.stringify(variables));
+
     createVanessaEditor('', 'turbo-gherkin');
   }
 }
