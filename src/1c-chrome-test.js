@@ -20,6 +20,9 @@ window.onload = () => {
     };
     VanessaGherkinProvider.setVariables(JSON.stringify(variables));
 
-    createVanessaEditor('', 'turbo-gherkin');
+    createVanessaEditor('\
+    Если Версия платформы ">=" "8.3.6" Тогда \n\
+    И видеовставка картинки "$ИмяКнопки$" "$ИмяРеквизита$" \n\
+    ', 'turbo-gherkin');
   }
 }
