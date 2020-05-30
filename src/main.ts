@@ -1,4 +1,5 @@
 import "./1c-webkit-style-patch";
+import "./1c-chrome-test";
 import "./media/debug";
 
 import { VanessaEditor } from "./vanessa-editor";

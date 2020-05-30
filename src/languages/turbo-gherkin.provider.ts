@@ -5,7 +5,7 @@ interface IVanessaStep {
 
 export class VanessaGherkinProvider {
 
-  public keywords: Array<string> = ["функционал", "сценарий", "контекст", "допустим", "дано", "когда", "и", "не", "тогда", "затем", "если", "примеры"];
+  public keywords: Array<string> = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
 
   private isKeyword(w: string): boolean {
     let s = w.toLowerCase();
