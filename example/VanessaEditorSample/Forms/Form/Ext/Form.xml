@@ -251,7 +251,7 @@
 									<ExtendedTooltip name="GroupEditorРасширеннаяПодсказка" id="165"/>
 									<ChildItems>
 										<HTMLDocumentField name="VanessaEditor" id="1">
-											<DataPath>VanessaEditor</DataPath>
+											<DataPath>VanessaEditorURL</DataPath>
 											<TitleLocation>None</TitleLocation>
 											<ContextMenu name="VanessaEditorContextMenu" id="2"/>
 											<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
@@ -282,7 +282,7 @@
 									<ExtendedTooltip name="GroupDiffEditorРасширеннаяПодсказка" id="167"/>
 									<ChildItems>
 										<HTMLDocumentField name="VanessaDiffEditor" id="168">
-											<DataPath>VanessaEditor</DataPath>
+											<DataPath>VanessaEditorURL</DataPath>
 											<TitleLocation>None</TitleLocation>
 											<ContextMenu name="VanessaDiffEditorКонтекстноеМеню" id="169"/>
 											<ExtendedTooltip name="VanessaDiffEditorРасширеннаяПодсказка" id="170"/>
@@ -831,11 +831,11 @@
 			</Type>
 			<MainAttribute>true</MainAttribute>
 		</Attribute>
-		<Attribute name="VanessaEditor" id="2">
+		<Attribute name="VanessaEditorURL" id="2">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Vanessa editor</v8:content>
+					<v8:content>Vanessa editor URL</v8:content>
 				</v8:item>
 			</Title>
 			<Type>

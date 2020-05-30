@@ -18,6 +18,10 @@ export enum VanessaEditorEvent {
 export class VanessaEditor {
 
   public SendAction: Function; // 1C:Enterprise interaction call.
+  public getContent: Function;
+  public setContent: Function;
+  public setReadOnly: Function;
+  public setTheme: Function;
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
@@ -40,13 +44,18 @@ export class VanessaEditor {
     this.subscribeEditorEvents();
 
     this.SendAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
+
+    this.getContent = () => this.editor.getValue();
+    this.setContent = (arg: string) => this.editor.setValue(arg);
+    this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
+    this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
   }
 
   public dispose(): void {
     this.editor.dispose();
   }
 
-  public fireEvent(event: string, arg: any=undefined): void {
+  public fireEvent(event: string, arg: any = undefined): void {
     // tslint:disable-next-line: no-console
     console.debug("fireEvent: " + event + " : " + arg);
 
@@ -61,26 +70,8 @@ export class VanessaEditor {
     console.debug("OnReceiveAction: " + action + " : " + arg);
 
     switch (action) {
-      case "setTheme":
-        monaco.editor.setTheme(arg);
-        return undefined;
-      case "setContent":
-        this.editor.setValue(arg);
-        return undefined;
-      case "getContent":
-        return this.editor.getValue();
       case "revealLine":
         this.editor.revealLine(Number.parseInt(arg, 10));
-        return undefined;
-      case "enableEdit":
-        this.editor.updateOptions({
-          readOnly: false
-        });
-        return undefined;
-      case "disableEdit":
-        this.editor.updateOptions({
-          readOnly: true
-        });
         return undefined;
       case "decorateBreakpoints":
         this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
@@ -98,8 +89,8 @@ export class VanessaEditor {
         this.runtimeProcessManager.CleanDecorates();
         return undefined;
       case "decorateProblems":
-          this.problemManager.DecorateProblems(JSON.parse(arg));
-          return undefined;
+        this.problemManager.DecorateProblems(JSON.parse(arg));
+        return undefined;
       default:
     }
   }
