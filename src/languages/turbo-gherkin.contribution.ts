@@ -18,7 +18,7 @@ monaco.languages.registerCompletionItemProvider(language.id, {
     // find out if we are completing a property in the 'dependencies' object.
     var line = model.getValueInRange({
       startLineNumber: position.lineNumber,
-      startColumn: 1,
+      startColumn: model.getLineMinColumn(position.lineNumber),
       endLineNumber: position.lineNumber,
       endColumn: position.column,
     });
@@ -32,5 +32,21 @@ monaco.languages.registerCompletionItemProvider(language.id, {
     return {
       suggestions: window["VanessaGherkinProvider"].getSuggestions(line, range)
     };
+  }
+});
+
+monaco.languages.registerHoverProvider(language.id, {
+  provideHover: function (model, position) {
+    let line = model.getLineContent(position.lineNumber)
+    let word = model.getWordAtPosition(position).word;
+    return {
+      range: {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: model.getLineMinColumn(position.lineNumber),
+        endColumn: model.getLineMaxColumn(position.lineNumber),
+      },
+      contents: window["VanessaGherkinProvider"].getHoverContents(line, word, position.column),
+    }
   }
 });

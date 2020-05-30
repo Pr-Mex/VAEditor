@@ -1,6 +1,7 @@
 interface IVanessaStep {
   ИмяШага: string;
   ОписаниеШага: string;
+  ПолныйТипШага: string;
 }
 
 export class VanessaGherkinProvider {
@@ -10,6 +11,18 @@ export class VanessaGherkinProvider {
   private isKeyword(w: string): boolean {
     let s = w.toLowerCase();
     return this.keywords.some(e => e == s);
+  }
+
+  private splitWords(line: string): Array<string> {
+    let b = true;
+    return line.split('\n')[0].replace(/'/g, '"')
+      .match(/(?:[^\s"]+|"[^"]*")+/g).filter(w =>
+        (b && this.isKeyword(w)) ? false : (b= false, true)
+      );
+  }
+
+  private key(words: Array<string>): string {
+    return words.filter(s => s && s[0] != '"').map((w: string) => w.toLowerCase()).join(' ');
   }
 
   private steps: {};
@@ -24,12 +37,12 @@ export class VanessaGherkinProvider {
     this.setStepList = (list: string): void => {
       this.steps = {};
       JSON.parse(list).forEach((e: IVanessaStep) => {
-        let words = e.ИмяШага.split('\n')[0].replace(/'/g, '"').match(/(?:[^\s"]+|"[^"]*")+/g).filter(word => word && !this.isKeyword(word));
-        let key = words.filter(s => s && s[0] != '"').map((w: string) => w.toLowerCase()).join(' ');
-        this.steps[key] = {
+        let words = this.splitWords(e.ИмяШага);
+        this.steps[this.key(words)] = {
           label: words.join(' '),
           documentation: e.ОписаниеШага,
           insertText: e.ИмяШага,
+          type: e.ПолныйТипШага,
         };
       })
     }
@@ -49,5 +62,14 @@ export class VanessaGherkinProvider {
       });
     });
     return result;
+  }
+
+  public getHoverContents(line: any, word: any, column: any): any {
+    let step = this.steps[this.key(this.splitWords(line))];
+    if (step) return [
+      { value: "**" + step.type + "**" },
+      { value: step.documentation },
+    ];
+    return [];
   }
 }
