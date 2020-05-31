@@ -295,6 +295,9 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 		DecorateBreakpoints();
 	ElsIf Event = "POSITION_DID_CHANGE" Then
 		Position = "(" + Format(Arg.lineNumber, "NG=") + ", " + Format(Arg.column, "NG=") + ")";
+	ElsIf Event = "CHANGE_UNDO_REDO" Then
+		Items.FormEditRedo.Enabled = Arg.redo;
+		Items.FormEditUndo.Enabled = Arg.undo;
 	Else
 		UserMessage = New UserMessage;
 		UserMessage.Text = Event + " : " + Arg;
