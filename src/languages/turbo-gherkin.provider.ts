@@ -12,15 +12,18 @@ export class VanessaGherkinProvider {
   }
 
   private splitWords(line: string): Array<string> {
-    let b = true;
-    return line.split('\n')[0].replace(/'/g, '"')
-      .match(/(?:[^\s"]+|"[^"]*")+/g).filter(w =>
-        (b && this.isKeyword(w)) ? false : (b = false, true)
-      );
+    let b = true, s = true;
+    return (line.split('\n')[0].match(/(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g) || [])
+      .filter(w => (b && this.isKeyword(w)) ? false : (b = false, s && w[0] != '#' ? true : s = false));
   }
 
   private key(words: Array<string>): string {
-    return words.filter(s => s && s[0] != '"').map((w: string) => w.toLowerCase()).join(' ');
+    return words.filter(s => s && !['"', "'"].includes(s[0])).map((w: string) => w.toLowerCase()).join(' ');
+  }
+
+  private lineSyntaxError(line: string): boolean {
+    if ([undefined, '#', '|'].includes(line.trimLeft()[0])) return false;
+    return this.steps[this.key(this.splitWords(line))] == undefined;
   }
 
   public keywords: Array<string>;
@@ -94,5 +97,20 @@ export class VanessaGherkinProvider {
       res.push({ value: "**" + name + "** = " + value });
     });
     return res;
+  }
+
+  public checkSyntax() {
+    let problems = [];
+    let ve = window["VanessaEditor"];
+    let count = ve.editor.getModel().getLineCount();
+    for (let i = 1; i < count; i++) {
+      let error = this.lineSyntaxError(ve.getLineContent(i));
+      if (error) problems.push({
+        lineNumber: i,
+        severity: 'Error',
+        message: 'Syntax error',
+      });
+    }
+    ve.problemManager.DecorateProblems(problems);
   }
 }
