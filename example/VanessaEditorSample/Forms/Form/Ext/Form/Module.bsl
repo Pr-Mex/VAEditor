@@ -8,6 +8,8 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
 	EditorTheme = "vs";
+	LineNumber = 1;
+	Column = 1;
 
 EndProcedure
 
@@ -48,6 +50,25 @@ EndProcedure
 Procedure EditorThemeOnChange(Item)
 
 	VanessaEditor.setTheme(EditorTheme);
+
+EndProcedure
+
+&AtClient
+Procedure PositionOnChange(Item)
+
+	VanessaEditor.setPosition(LineNumber, Column);
+
+EndProcedure
+
+&AtClient
+Procedure GetPosition(Command)
+
+	Arg = VanessaEditor.getPosition();
+	UserMessage = New UserMessage;
+	UserMessage.Text = "Position: lineNumber = "
+		+ Format(Arg.lineNumber, "NG=")	+ ", column = "
+		+ Format(Arg.column, "NG=");
+	UserMessage.Message();
 
 EndProcedure
 
@@ -253,6 +274,8 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 	ElsIf Event = "UPDATE_BREAKPOINTS" Then
 		UpdateBreakpoints(Arg);
 		DecorateBreakpoints();
+	ElsIf Event = "POSITION_DID_CHANGE" Then
+		Position = "(" + Format(Arg.lineNumber, "NG=") + ", " + Format(Arg.column, "NG=") + ")";
 	Else
 		UserMessage = New UserMessage;
 		UserMessage.Text = Event + " : " + Arg;
@@ -274,7 +297,7 @@ Procedure VanessaEditorLoad()
 
 	BinaryData = FormAttributeToValue("Object").GetTemplate("VanessaEditor");
 	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
-	For each ZipFileEntry in ZipFileReader.Items do
+	For each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
 		BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
 		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID);
@@ -292,7 +315,11 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
 	If Element.id = "VanessaEditorEventForwarder" Then
-		VanessaEditorOnReceiveEventHandler(Element.title, Element.value);
+		While (True) Do
+			msg = VanessaEditor.popMessage();
+			If (msg = Undefined) Then Break; EndIf;
+			VanessaEditorOnReceiveEventHandler(msg.type, msg.data);
+		EndDo;
 	EndIf;
 
 EndProcedure
@@ -368,7 +395,7 @@ Function GetKeywords()
 
 	WordList = StrSplit(TextJSON, split, False);
 
-	return JsonDump(WordList);
+	Return JsonDump(WordList);
 
 EndFunction
 
@@ -380,7 +407,7 @@ Function GetVariables()
 	Map.Insert("ИмяКнопки", "ФормаЗаписать");
 	Map.Insert("ИмяТаблицы", "Номенклатура");
 	Map.Insert("ИмяРеквизита", "Количество");
-	return JsonDump(Map);
+	Return JsonDump(Map);
 
 EndFunction
 

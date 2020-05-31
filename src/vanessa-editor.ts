@@ -12,14 +12,23 @@ export enum VanessaEditorEvent {
   START_DEBUGGING_AT_ENTRY = "START_DEBUGGING_AT_ENTRY",
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
   STEP_OVER = "STEP_OVER",
-  CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE"
+  CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
+  POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
+}
+
+export interface VanessaEditorMessage {
+  type: VanessaEditorEvent;
+  data: any;
 }
 
 export class VanessaEditor {
 
   // 1C:Enterprise interaction call.
+  public popMessage: Function;
   public getContent: Function;
+  public getPosition: Function;
   public setContent: Function;
+  public setPosition: Function;
   public setReadOnly: Function;
   public setTheme: Function;
   public revealLine: Function;
@@ -35,6 +44,8 @@ export class VanessaEditor {
   private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
 
+  private messages: Array<VanessaEditorMessage>;
+
   constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
       language: language,
@@ -42,7 +53,7 @@ export class VanessaEditor {
       glyphMargin: true,
       automaticLayout: true
     });
-
+    this.messages = [];
     this.editor.setValue(content);
 
     this.breakpointManager = new BreakpointManager(this);
@@ -50,8 +61,11 @@ export class VanessaEditor {
     this.problemManager = new ProblemManager(this);
     this.subscribeEditorEvents();
 
+    this.popMessage = () => this.messages.shift();
     this.getContent = () => this.editor.getValue();
+    this.getPosition = () => this.editor.getPosition();
     this.setContent = (arg: string) => this.editor.setValue(arg);
+    this.setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
@@ -67,13 +81,11 @@ export class VanessaEditor {
     this.editor.dispose();
   }
 
-  public fireEvent(event: string, arg: any = undefined): void {
+  public fireEvent(event: VanessaEditorEvent, arg: any = undefined): void {
     // tslint:disable-next-line: no-console
     console.debug("fireEvent: " + event + " : " + arg);
-
+    this.messages.push({ type: event, data: arg });
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
-    fakeButtonFireClickEvent.title = event;
-    fakeButtonFireClickEvent.value = arg;
     fakeButtonFireClickEvent.click();
   }
 
@@ -102,6 +114,12 @@ export class VanessaEditor {
 
     this.editor.onDidChangeModelContent(
       () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
+    );
+
+    this.editor.onDidChangeCursorPosition(
+      (e: monaco.editor.ICursorPositionChangedEvent) => {
+        this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
+      }
     );
 
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z,
