@@ -1,7 +1,10 @@
 interface IVanessaStep {
-  ИмяШага: string;
-  ОписаниеШага: string;
-  ПолныйТипШага: string;
+  filterText: string;
+  insertText: string;
+  sortText: string;
+  documentation: string;
+  kind: number;
+  section: string;
 }
 
 export class VanessaGherkinProvider {
@@ -54,12 +57,14 @@ export class VanessaGherkinProvider {
     this.setStepList = (list: string): void => {
       this.steps = {};
       JSON.parse(list).forEach((e: IVanessaStep) => {
-        let words = this.splitWords(e.ИмяШага);
+        let words = this.splitWords(e.filterText);
         this.steps[this.key(words)] = {
           label: words.join(' '),
-          documentation: e.ОписаниеШага,
-          insertText: e.ИмяШага,
-          type: e.ПолныйТипШага,
+          documentation: e.documentation,
+          insertText: e.insertText,
+          sortText: e.sortText,
+          section: e.section,
+          kind: e.kind,
         };
       })
     }
@@ -71,9 +76,10 @@ export class VanessaGherkinProvider {
       var e = this.steps[key];
       result.push({
         label: e.label,
-        kind: monaco.languages.CompletionItemKind.Function,
+        kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
         documentation: e.documentation,
         insertText: e.insertText + "\n",
+        sortText: e.sortText,
         filterText: key,
         range: range
       });
@@ -86,7 +92,7 @@ export class VanessaGherkinProvider {
     let words = this.splitWords(line);
     let step = this.steps[this.key(words)];
     if (step) {
-      res.push({ value: "**" + step.type + "**" });
+      res.push({ value: "**" + step.section + "**" });
       res.push({ value: step.documentation });
     } else return [];
     let values = this.variables;
