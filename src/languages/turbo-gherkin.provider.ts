@@ -6,8 +6,6 @@ interface IVanessaStep {
 
 export class VanessaGherkinProvider {
 
-  public keywords: Array<string> = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
-
   private isKeyword(w: string): boolean {
     let s = w.toLowerCase();
     return this.keywords.some(e => e == s);
@@ -25,6 +23,7 @@ export class VanessaGherkinProvider {
     return words.filter(s => s && s[0] != '"').map((w: string) => w.toLowerCase()).join(' ');
   }
 
+  public keywords: Array<string>;
   private steps: {};
   private variables: {};
 
@@ -33,16 +32,22 @@ export class VanessaGherkinProvider {
   public setVariables: Function;
 
   constructor() {
+    this.steps = {};
+    this.variables = {};
+    this.keywords = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
+
     this.setKeywords = (list: string): void => {
       this.keywords = JSON.parse(list).map((w: string) => w.toLowerCase());
     }
-    this.setVariables = (str: string): void => {
-      this.variables = {};
-      let obj = JSON.parse(str);
+
+    this.setVariables = (values: string, clear: boolean = false): void => {
+      if (clear) this.variables = {};
+      let obj = JSON.parse(values);
       for (let key in obj) {
         this.variables[key.toLowerCase()] = String(obj[key]);
       }
     }
+
     this.setStepList = (list: string): void => {
       this.steps = {};
       JSON.parse(list).forEach((e: IVanessaStep) => {
@@ -82,7 +87,7 @@ export class VanessaGherkinProvider {
       res.push({ value: step.documentation });
     } else return [];
     let values = this.variables;
-    let vars = words.filter(w => w.search(/^"\$.+\$"$/) == 0);
+    let vars = words.filter(w => w.search(/^["']\$.+\$["']$/) == 0);
     vars.forEach(function (part, index, vars) {
       let name = part.substring(2, part.length - 2);
       let value = values[name.toLowerCase()];

@@ -15,13 +15,7 @@ monaco.languages.onLanguage(language.id, () => {
 
 monaco.languages.registerCompletionItemProvider(language.id, {
   provideCompletionItems: function (model, position) {
-    // find out if we are completing a property in the 'dependencies' object.
-    var line = model.getValueInRange({
-      startLineNumber: position.lineNumber,
-      startColumn: model.getLineMinColumn(position.lineNumber),
-      endLineNumber: position.lineNumber,
-      endColumn: position.column,
-    });
+    let line = model.getLineContent(position.lineNumber)
     var word = model.getWordUntilPosition(position);
     var range = {
       startLineNumber: position.lineNumber,
