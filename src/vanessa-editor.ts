@@ -14,6 +14,7 @@ export enum VanessaEditorEvent {
   STEP_OVER = "STEP_OVER",
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
   POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
+  CHANGE_UNDO_REDO = "CHANGE_UNDO_REDO",
 }
 
 export interface VanessaEditorMessage {
@@ -49,6 +50,9 @@ export class VanessaEditor {
   private syntaxTimer: any = 0;
 
   private messages: Array<VanessaEditorMessage>;
+  private initialVersion;
+  private currentVersion;
+  private lastVersion;
 
   constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
@@ -59,6 +63,9 @@ export class VanessaEditor {
     });
     this.messages = [];
     this.editor.setValue(content);
+    this.initialVersion = this.editor.getModel().getAlternativeVersionId();
+    this.currentVersion = this.initialVersion;
+    this.lastVersion = this.initialVersion;
 
     this.breakpointManager = new BreakpointManager(this);
     this.runtimeProcessManager = new RuntimeProcessManager(this);
@@ -146,6 +153,25 @@ export class VanessaEditor {
       this.syntaxTimer = setTimeout(() => {
         window["VanessaGherkinProvider"].checkSyntax();
       }, 1000);
+    });
+
+    this.editor.onDidChangeModelContent(() => {
+      const versionId = this.editor.getModel().getAlternativeVersionId();
+      let buttons = {undo: true, redo: true, version: versionId};
+      if (versionId < this.currentVersion) {
+        if (versionId === this.initialVersion) buttons.undo = false;
+      } else {
+        // redoing
+        if (versionId <= this.lastVersion) {
+          // redoing the last change
+          if (versionId == this.lastVersion) buttons.redo = false;
+        } else { // adding new change, disable redo when adding new changes
+          buttons.redo = false;
+          if (this.currentVersion > this.lastVersion) this.lastVersion = this.currentVersion;
+        }
+      }
+      this.currentVersion = versionId;
+      this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, buttons)
     });
   }
 }
