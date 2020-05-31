@@ -72,6 +72,15 @@ Procedure GetPosition(Command)
 
 EndProcedure
 
+&AtClient
+Procedure GetLineContent(Command)
+
+	UserMessage = New UserMessage;
+	UserMessage.Text = VanessaEditor.getLineContent(lineNumber);
+	UserMessage.Message();
+	
+EndProcedure
+
 #EndRegion
 
 #Region Breakpoints
