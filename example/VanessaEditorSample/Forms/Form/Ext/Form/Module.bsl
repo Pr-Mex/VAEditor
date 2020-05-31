@@ -81,6 +81,16 @@ Procedure GetLineContent(Command)
 	
 EndProcedure
 
+&AtClient
+Procedure EditUndo(Command)
+	VanessaEditor.undo();
+EndProcedure
+
+&AtClient
+Procedure EditRedo(Command)
+	VanessaEditor.redo();
+EndProcedure
+
 #EndRegion
 
 #Region Breakpoints
