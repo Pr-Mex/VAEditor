@@ -62,7 +62,7 @@ export class VanessaGherkinProvider {
     }
   }
 
-  public getSuggestions(line: any, range: any): any {
+  public getSuggestions(line: string, range: any): any {
     let result = [];
     for (let key in this.steps) {
       var e = this.steps[key];
@@ -78,7 +78,7 @@ export class VanessaGherkinProvider {
     return result;
   }
 
-  public getHoverContents(line: any): any {
+  public getHoverContents(line: string): any {
     let res = [];
     let words = this.splitWords(line);
     let step = this.steps[this.key(words)];
@@ -87,8 +87,8 @@ export class VanessaGherkinProvider {
       res.push({ value: step.documentation });
     } else return [];
     let values = this.variables;
-    let vars = words.filter(w => w.search(/^["']\$.+\$["']$/) == 0);
-    vars.forEach(function (part, index, vars) {
+    let vars = line.match(/"\$[^"]+\$"|'\$[^']+\$'/g) || [];
+    vars.forEach(function (part: string) {
       let name = part.substring(2, part.length - 2);
       let value = values[name.toLowerCase()];
       res.push({ value: "**" + name + "** = " + value });
