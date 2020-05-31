@@ -44,6 +44,7 @@ export class VanessaEditor {
   private breakpointManager: BreakpointManager;
   private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
+  private syntaxTimer: any = 0;
 
   private messages: Array<VanessaEditorMessage>;
 
@@ -143,5 +144,12 @@ export class VanessaEditor {
     const model: monaco.editor.ITextModel = this.editor.getModel();
 
     model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
+
+    this.editor.onDidChangeModelContent(() => {
+      clearTimeout(this.syntaxTimer);
+      this.syntaxTimer = setTimeout(() => {
+        window["VanessaGherkinProvider"].checkSyntax();
+      }, 1000);
+    });
   }
 }
