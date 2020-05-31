@@ -17,11 +17,18 @@ export enum VanessaEditorEvent {
 
 export class VanessaEditor {
 
-  public SendAction: Function; // 1C:Enterprise interaction call.
+  // 1C:Enterprise interaction call.
   public getContent: Function;
   public setContent: Function;
   public setReadOnly: Function;
   public setTheme: Function;
+  public revealLine: Function;
+  public decorateBreakpoints: Function;
+  public decorateCompleteSteps: Function;
+  public decorateCurrentStep: Function;
+  public decorateErrorSteps: Function;
+  public decorateProblems: Function;
+  public cleanRuntimeProcess: Function;
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
@@ -43,12 +50,17 @@ export class VanessaEditor {
     this.problemManager = new ProblemManager(this);
     this.subscribeEditorEvents();
 
-    this.SendAction = (action: string, arg: string) => this.onReceiveActionHandler(action, arg);
-
     this.getContent = () => this.editor.getValue();
     this.setContent = (arg: string) => this.editor.setValue(arg);
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
+    this.revealLine = (arg: number) => this.editor.revealLine(arg);
+    this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
+    this.decorateCurrentStep = (arg: number) => this.runtimeProcessManager.DecorateCurrentStep(arg);
+    this.decorateCompleteSteps = (arg: string) => this.runtimeProcessManager.DecorateCompleteSteps(JSON.parse(arg));
+    this.decorateErrorSteps = (arg: string) => this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
+    this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
+    this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
   }
 
   public dispose(): void {
@@ -63,36 +75,6 @@ export class VanessaEditor {
     fakeButtonFireClickEvent.title = event;
     fakeButtonFireClickEvent.value = arg;
     fakeButtonFireClickEvent.click();
-  }
-
-  private onReceiveActionHandler(action: string, arg: string): any {
-    // tslint:disable-next-line: no-console
-    console.debug("OnReceiveAction: " + action + " : " + arg);
-
-    switch (action) {
-      case "revealLine":
-        this.editor.revealLine(Number.parseInt(arg, 10));
-        return undefined;
-      case "decorateBreakpoints":
-        this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
-        return undefined;
-      case "decorateCurrentStep":
-        this.runtimeProcessManager.DecorateCurrentStep(Number.parseInt(arg, 10));
-        return undefined;
-      case "decorateCompleteSteps":
-        this.runtimeProcessManager.DecorateCompleteSteps(JSON.parse(arg));
-        return undefined;
-      case "decorateErrorSteps":
-        this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
-        return undefined;
-      case "cleanDecorateRuntimeProgress":
-        this.runtimeProcessManager.CleanDecorates();
-        return undefined;
-      case "decorateProblems":
-        this.problemManager.DecorateProblems(JSON.parse(arg));
-        return undefined;
-      default:
-    }
   }
 
   private subscribeEditorEvents(): void {
