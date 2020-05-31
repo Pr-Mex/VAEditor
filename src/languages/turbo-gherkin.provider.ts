@@ -39,7 +39,9 @@ export class VanessaGherkinProvider {
     this.setVariables = (str: string): void => {
       this.variables = {};
       let obj = JSON.parse(str);
-      Object.keys(obj).map(key => this.variables[key] = String(obj[key]));
+      for (let key in obj) {
+        this.variables[key.toLowerCase()] = String(obj[key]);
+      }
     }
     this.setStepList = (list: string): void => {
       this.steps = {};
@@ -57,17 +59,17 @@ export class VanessaGherkinProvider {
 
   public getSuggestions(line: any, range: any): any {
     let result = [];
-    Object.keys(this.steps).map(key => {
+    for (let key in this.steps) {
       var e = this.steps[key];
       result.push({
         label: e.label,
         kind: monaco.languages.CompletionItemKind.Function,
         documentation: e.documentation,
-        insertText: e.insertText,
+        insertText: e.insertText + "\n",
         filterText: key,
         range: range
       });
-    });
+    };
     return result;
   }
 
@@ -83,7 +85,8 @@ export class VanessaGherkinProvider {
     let vars = words.filter(w => w.search(/^"\$.+\$"$/) == 0);
     vars.forEach(function (part, index, vars) {
       let name = part.substring(2, part.length - 2);
-      res.push({ value: "**" + name + "** = " +  values[name]});
+      let value = values[name.toLowerCase()];
+      res.push({ value: "**" + name + "** = " + value });
     });
     return res;
   }
