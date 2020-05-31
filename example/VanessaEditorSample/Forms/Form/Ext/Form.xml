@@ -2,16 +2,62 @@
 <Form xmlns="http://v8.1c.ru/8.3/xcf/logform" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:dcscor="http://v8.1c.ru/8.1/data-composition-system/core" xmlns:dcsset="http://v8.1c.ru/8.1/data-composition-system/settings" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4">
 	<AutoCommandBar name="FormCommandBar" id="-1">
 		<ChildItems>
-			<Button name="LoadFile" id="6">
-				<Type>CommandBarButton</Type>
-				<CommandName>Form.Command.LoadFile</CommandName>
-				<ExtendedTooltip name="LoadFileExtendedTooltip" id="7"/>
-			</Button>
-			<Button name="GetValue" id="8">
-				<Type>CommandBarButton</Type>
-				<CommandName>Form.Command.GetValue</CommandName>
-				<ExtendedTooltip name="GetValueExtendedTooltip" id="9"/>
-			</Button>
+			<ButtonGroup name="FormGroupFile" id="192">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group file</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group file</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupFileExtendedTooltip" id="193"/>
+				<ChildItems>
+					<Button name="LoadFile" id="6">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.LoadFile</CommandName>
+						<ExtendedTooltip name="LoadFileExtendedTooltip" id="7"/>
+					</Button>
+					<Button name="GetValue" id="8">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.GetValue</CommandName>
+						<ExtendedTooltip name="GetValueExtendedTooltip" id="9"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<ButtonGroup name="FormGroupEdit" id="194">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group edit</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group edit</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupEditExtendedTooltip" id="195"/>
+				<ChildItems>
+					<Button name="FormEditUndo" id="196">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditUndo</CommandName>
+						<ExtendedTooltip name="FormEditUndoExtendedTooltip" id="197"/>
+					</Button>
+					<Button name="FormEditRedo" id="198">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditRedo</CommandName>
+						<ExtendedTooltip name="FormEditRedoExtendedTooltip" id="199"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
 		</ChildItems>
 	</AutoCommandBar>
 	<Events>
@@ -1469,6 +1515,48 @@
 				</v8:item>
 			</ToolTip>
 			<Action>GetLineContent</Action>
+		</Command>
+		<Command name="EditUndo" id="9">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Undo</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit undo</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+Z</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.MoveLeft</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditUndo</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="EditRedo" id="10">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Redo</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit redo</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+Y</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.MoveRight</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditRedo</Action>
+			<Representation>TextPicture</Representation>
 		</Command>
 	</Commands>
 </Form>

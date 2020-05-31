@@ -24,6 +24,8 @@ export interface VanessaEditorMessage {
 export class VanessaEditor {
 
   // 1C:Enterprise interaction call.
+  public undo: Function;
+  public redo: Function;
   public popMessage: Function;
   public getContent: Function;
   public getLineContent: Function;
@@ -63,6 +65,8 @@ export class VanessaEditor {
     this.problemManager = new ProblemManager(this);
     this.subscribeEditorEvents();
 
+    this.undo = () => this.editor.trigger('undo…', 'undo', undefined);
+    this.redo = () => this.editor.trigger('undo…', 'redo', undefined);
     this.popMessage = () => this.messages.shift();
     this.getContent = () => this.editor.getValue();
     this.getLineContent = (num: number) => this.editor.getModel().getLineContent(num);
@@ -123,14 +127,6 @@ export class VanessaEditor {
       (e: monaco.editor.ICursorPositionChangedEvent) => {
         this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
-    );
-
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z,
-      () => this.editor.trigger('undo…', 'undo', undefined)
-    );
-
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Y,
-      () => this.editor.trigger('redo…', 'redo', undefined)
     );
 
     this.editor.addCommand(monaco.KeyCode.F9,
