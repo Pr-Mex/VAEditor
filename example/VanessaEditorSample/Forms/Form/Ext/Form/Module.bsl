@@ -16,8 +16,8 @@ Procedure LoadFile(Command)
 
 	Breakpoints.Clear();
 	Problems.Clear();
-	VanessaEditorSendAction("decorateBreakpoints", JsonDump(New Array));
-	VanessaEditorSendAction("decorateProblems", JsonDump(New Array));
+	VanessaEditor.decorateBreakpoints(JsonDump(New Array));
+	VanessaEditor.decorateProblems(JsonDump(New Array));
 
 	Dialog = New FileDialog(FileDialogMode.Open);
 	If Dialog.Choose() Then
@@ -85,7 +85,7 @@ Procedure BreakpointsOnActivateRow(Item)
 		Return;
 	EndIf;
 
-	VanessaEditorSendAction("revealLine", Item.CurrentData.Value);
+	VanessaEditor.revealLine(Item.CurrentData.Value);
 
 EndProcedure
 
@@ -96,7 +96,7 @@ Procedure UpdateBreakpoints(Json)
 
 	Breakpoints.Clear();
 	For Each Chunk In BreakpointsPacket Do
-		Breakpoints.Add(Chunk.lineNumber,, Chunk.enable);
+		Breakpoints.Add(Chunk.lineNumber, , Chunk.enable);
 	EndDo;
 
 	Breakpoints.SortByValue();
@@ -119,7 +119,7 @@ Procedure DecorateBreakpoints()
 		BreakpointsPacket.Add(Chunk);
 	EndDo;
 
-	VanessaEditorSendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
+	VanessaEditor.decorateBreakpoints(JsonDump(BreakpointsPacket));
 
 EndProcedure
 
@@ -149,7 +149,7 @@ Procedure DecorateProblems()
 		ProblemsPacket.Add(Chunk);
 	EndDo;
 
-	VanessaEditorSendAction("decorateProblems", JsonDump(ProblemsPacket));
+	VanessaEditor.decorateProblems(JsonDump(ProblemsPacket));
 
 EndProcedure
 
@@ -160,7 +160,7 @@ EndProcedure
 &AtClient
 Procedure SendCurrentStep(Command)
 
-	VanessaEditorSendAction("decorateCurrentStep", CurrentStep);
+	VanessaEditor.decorateCurrentStep(CurrentStep);
 
 EndProcedure
 
@@ -175,7 +175,7 @@ Procedure SendCompleteSteps(Command)
 		CompleteStepsPacket.Add(Chunk);
 	EndDo;
 
-	VanessaEditorSendAction("decorateCompleteSteps", JsonDump(CompleteStepsPacket));
+	VanessaEditor.decorateCompleteSteps(JsonDump(CompleteStepsPacket));
 
 EndProcedure
 
@@ -192,14 +192,14 @@ Procedure SendErrorSteps(Command)
 		ErrorStepsPacket.Add(Chunk);
 	EndDo;
 
-	VanessaEditorSendAction("decorateErrorSteps", JsonDump(ErrorStepsPacket));
+	VanessaEditor.decorateErrorSteps(JsonDump(ErrorStepsPacket));
 
 EndProcedure
 
 &AtClient
 Procedure CleanRuntimeProgress(Command)
 
-	VanessaEditorSendAction("cleanDecorateRuntimeProgress");
+	VanessaEditor.cleanRuntimeProcess();
 
 EndProcedure
 
@@ -234,7 +234,7 @@ EndFunction
 
 Procedure Sleep(Delay = 1)
 
-	RunApp("timeout " + Delay,, True);
+	RunApp("timeout " + Delay, , True);
 
 EndProcedure
 
@@ -283,13 +283,6 @@ Procedure VanessaEditorLoad()
 
 EndProcedure
 
-&AtClient
-Function VanessaEditorSendAction(Action, Arg = Undefined)
-
-	Return Items.VanessaEditor.Document.defaultView.VanessaEditor.SendAction(Action, Arg);
-
-EndFunction
-
 #EndRegion
 
 #Region Private
@@ -328,50 +321,52 @@ EndProcedure
 Function GetKeywords()
 
 	TextJSON = "
-	|и
-	|когда
-	|тогда
-	|затем
-	|дано
-	|функция
-	|функционал
-	|функциональность
-	|свойство
-	|предыстория
-	|контекст
-	|сценарий
-	|структура
-	|сценария
-	|примеры
-	|допустим
-	|пусть
-	|если
-	|иначеесли
-	|иначе
-	|то
-	|также
-	|но
-	|а
-	|feature
-	|functionality
-	|business need
-	|ability
-	|background
-	|scenario outline
-	|scenario
-	|examples
-	|given
-	|when
-	|then
-	|and
-	|but
-	|if
-	|elseif
-	|else
-	|";
+		|и
+		|когда
+		|тогда
+		|затем
+		|дано
+		|функция
+		|функционал
+		|функциональность
+		|свойство
+		|предыстория
+		|контекст
+		|сценарий
+		|структура
+		|сценария
+		|примеры
+		|допустим
+		|пусть
+		|если
+		|иначеесли
+		|иначе
+		|то
+		|также
+		|но
+		|а
+		|feature
+		|functionality
+		|business need
+		|ability
+		|background
+		|scenario outline
+		|scenario
+		|examples
+		|given
+		|when
+		|then
+		|and
+		|but
+		|if
+		|elseif
+		|else
+		|";
 
-	WordList = StrSplit(TextJSON, "
-	|", False);
+	split = "
+		|";
+
+	WordList = StrSplit(TextJSON, split, False);
 
 	return JsonDump(WordList);
 
