@@ -26,6 +26,7 @@ export class VanessaEditor {
   // 1C:Enterprise interaction call.
   public popMessage: Function;
   public getContent: Function;
+  public getLineContent: Function;
   public getPosition: Function;
   public setContent: Function;
   public setPosition: Function;
@@ -63,6 +64,7 @@ export class VanessaEditor {
 
     this.popMessage = () => this.messages.shift();
     this.getContent = () => this.editor.getValue();
+    this.getLineContent = (num: number) => this.editor.getModel().getLineContent(num);
     this.getPosition = () => this.editor.getPosition();
     this.setContent = (arg: string) => this.editor.setValue(arg);
     this.setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });

@@ -238,6 +238,11 @@
 											<CommandName>Form.Command.GetPosition</CommandName>
 											<ExtendedTooltip name="GetPositionExtendedTooltip" id="189"/>
 										</Button>
+										<Button name="GetLineContent" id="190">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.GetLineContent</CommandName>
+											<ExtendedTooltip name="GetLineContentExtendedTooltip" id="191"/>
+										</Button>
 									</ChildItems>
 								</CommandBar>
 								<UsualGroup name="GroupPosition" id="175">
@@ -452,7 +457,7 @@
 								</CheckBoxField>
 							</ChildItems>
 						</Page>
-						<Page name="PageRuntimeProgress" id="94">
+						<Page name="PageRuntime" id="94">
 							<Title>
 								<v8:item>
 									<v8:lang>en</v8:lang>
@@ -460,7 +465,7 @@
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Runtime progress</v8:content>
+									<v8:content>Runtime</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
@@ -470,11 +475,11 @@
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page runtime progress</v8:content>
+									<v8:content>Page runtime</v8:content>
 								</v8:item>
 							</ToolTip>
 							<Width>25</Width>
-							<ExtendedTooltip name="PageRuntimeProgressExtendedTooltip" id="95"/>
+							<ExtendedTooltip name="PageRuntimeExtendedTooltip" id="95"/>
 							<ChildItems>
 								<UsualGroup name="CurrentStepGroup" id="148">
 									<Title>
@@ -1449,6 +1454,21 @@
 			</Picture>
 			<Action>GetPosition</Action>
 			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="GetLineContent" id="8">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get line content</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get line content</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetLineContent</Action>
 		</Command>
 	</Commands>
 </Form>
