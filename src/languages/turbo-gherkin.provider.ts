@@ -93,6 +93,7 @@ export class VanessaGherkinProvider {
         let item = this.variables[name];
         result.push({
           label: '"$' + item.name + '$" = ' + item.value,
+          filterText: variable + '"$' + item.name + '$"',
           kind: monaco.languages.CompletionItemKind.Function,
           insertText: '"$' + item.name + '$"',
           range: wordRange
