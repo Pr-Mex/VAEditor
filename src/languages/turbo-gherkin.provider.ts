@@ -50,7 +50,7 @@ export class VanessaGherkinProvider {
       if (clear) this.variables = {};
       let obj = JSON.parse(values);
       for (let key in obj) {
-        this.variables[key.toLowerCase()] = String(obj[key]);
+        this.variables[key.toLowerCase()] = {name: key, value: String(obj[key])};
       }
     }
 
@@ -70,20 +70,57 @@ export class VanessaGherkinProvider {
     }
   }
 
-  public getSuggestions(line: string, range: any): any {
-    let result = [];
-    for (let key in this.steps) {
-      var e = this.steps[key];
-      result.push({
-        label: e.label,
-        kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
-        documentation: e.documentation,
-        insertText: e.insertText + "\n",
-        sortText: e.sortText,
-        filterText: key,
-        range: range
-      });
+  public getSuggestions(model: monaco.editor.ITextModel, position: monaco.Position): any {
+    let regex = /"\$[^"]+\$"|'\$[^']+\$'/g;
+    let line = {
+      startLineNumber: position.lineNumber,
+      endLineNumber: position.lineNumber,
+      startColumn: model.getLineMinColumn(position.lineNumber),
+      endColumn: model.getLineMaxColumn(position.lineNumber),
     };
+    let wordRange = undefined;
+    model.findMatches(regex.source, line, true, false, null, false).forEach(e => {
+      let variable = model.getValueInRange(e.range);
+      console.log(variable);
+      if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
+        wordRange = e.range;
+      }
+    });
+    let result = [];
+    if (wordRange) {
+      let variable = model.getValueInRange(wordRange);
+      for (let name in this.variables) {
+        let item = this.variables[name];
+        result.push({
+          label: '"$' + item.name + '$" = ' + item.value,
+          kind: monaco.languages.CompletionItemKind.Function,
+          insertText: '"$' + item.name + '$"',
+          range: wordRange
+        });
+      }
+    }
+    else {
+      let word = model.getWordUntilPosition(position);
+      let range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: word.startColumn,
+        endColumn: word.endColumn
+      };
+      for (let key in this.steps) {
+        var e = this.steps[key];
+        result.push({
+          label: e.label,
+          kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
+          detail: e.section,
+          documentation: e.documentation,
+          insertText: e.insertText + "\n",
+          sortText: e.sortText,
+          filterText: key,
+          range: range
+        });
+      };
+    }
     return result;
   }
 
@@ -99,7 +136,7 @@ export class VanessaGherkinProvider {
     let vars = line.match(/"\$[^"]+\$"|'\$[^']+\$'/g) || [];
     vars.forEach(function (part: string) {
       let name = part.substring(2, part.length - 2);
-      let value = values[name.toLowerCase()];
+      let value = values[name.toLowerCase()].value;
       res.push({ value: "**" + name + "** = " + value });
     });
     return res;
