@@ -15,16 +15,8 @@ monaco.languages.onLanguage(language.id, () => {
 
 monaco.languages.registerCompletionItemProvider(language.id, {
   provideCompletionItems: function (model, position) {
-    let line = model.getLineContent(position.lineNumber)
-    var word = model.getWordUntilPosition(position);
-    var range = {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: word.startColumn,
-      endColumn: word.endColumn
-    };
     return {
-      suggestions: window["VanessaGherkinProvider"].getSuggestions(line, range)
+      suggestions: window["VanessaGherkinProvider"].getSuggestions(model, position),
     };
   }
 });
