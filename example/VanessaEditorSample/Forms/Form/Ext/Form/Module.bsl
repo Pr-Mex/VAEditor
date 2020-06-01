@@ -1,5 +1,5 @@
 ﻿&AtClient
-Var VanessaEditor;
+Var VanessaEditor, VanessaGherkinProvider;
 
 #Region FormEvents
 
@@ -448,9 +448,10 @@ EndFunction
 Procedure VanessaEditorDocumentComplete(Item)
 
 	view = Items.VanessaEditor.Document.defaultView;
-	view.VanessaGherkinProvider.setKeywords(GetKeywords());
-	view.VanessaGherkinProvider.setStepList(VanessaStepList());
-	view.VanessaGherkinProvider.setVariables(GetVariables());
+	VanessaGherkinProvider = view.VanessaGherkinProvider;
+	VanessaGherkinProvider.setKeywords(GetKeywords());
+	VanessaGherkinProvider.setVariables(GetVariables());
+	VanessaGherkinProvider.setStepList(VanessaStepList());
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 
 EndProcedure
