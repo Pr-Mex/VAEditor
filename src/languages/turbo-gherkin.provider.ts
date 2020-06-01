@@ -80,8 +80,6 @@ export class VanessaGherkinProvider {
     };
     let wordRange = undefined;
     model.findMatches(regex.source, line, true, false, null, false).forEach(e => {
-      let variable = model.getValueInRange(e.range);
-      console.log(variable);
       if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
         wordRange = e.range;
       }
