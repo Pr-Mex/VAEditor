@@ -199,12 +199,30 @@ export class VanessaGherkinProvider {
     , token: monaco.CancellationToken) {
 
     if (context.markers.length == 0) return [];
-
-    //    if (context == )
-    console.log(range);
-    console.log(context);
-    console.log(token);
-
+    if (context.only == "quickfix") {
+      const actions = context.markers.map(error => {
+        return {
+          title: `Example quick fix`,
+          diagnostics: [error],
+          kind: "quickfix",
+          edit: {
+            edits: [
+              {
+                resource: model.uri,
+                edits: [
+                  {
+                    range: error,
+                    text: "This text replaces the text with the error"
+                  }
+                ]
+              }
+            ]
+          },
+          isPreferred: true
+        };
+      });
+      return actions;
+    }
     let command = {
       id: window["commandIdQuickFix"],
       title: "Some command!",
@@ -214,8 +232,12 @@ export class VanessaGherkinProvider {
     console.log(command);
     return [{
       command: command,
-      title: "Some command action!"
-    }];
+      title: "Create new step!"
+    },
+    {
+      command: command,
+      title: "Some new command!"
+    }, ];
   }
 
   public checkSyntax() {
