@@ -27,3 +27,40 @@ monaco.languages.registerCodeActionProvider(language.id, {
   provideCodeActions: (model, range, context, token) =>
     window["VanessaGherkinProvider"].getCodeAction(model, range, context, token)
 });
+
+monaco.languages.registerCodeActionProvider(language.id + "-", {
+  provideCodeActions: (
+      model /**ITextModel*/,
+      range /**Range*/,
+      context /**CodeActionContext*/,
+      token /**CancellationToken*/
+  ) => {
+      console.log(context);
+      const actions = context.markers.map(error => {
+          return {
+              title: `Example quick fix`,
+              diagnostics: [error],
+              kind: "quickfix",
+              edit: {
+                  edits: [
+                      {
+                          resource: model.uri,
+                          edits: [
+                              {
+                                  range: error,
+                                  text: "This text replaces the text with the error"
+                              }
+                          ]
+                      }
+                  ]
+              },
+              isPreferred: true
+          };
+      });
+      return actions;
+      return [{
+        title: `Example quick fix`,
+        actions: actions,
+      }]
+  }
+});
