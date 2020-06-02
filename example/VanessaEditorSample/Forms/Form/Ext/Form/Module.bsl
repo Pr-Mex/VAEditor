@@ -422,6 +422,18 @@ Function GetKeywords()
 EndFunction
 
 &AtClient
+Function GetElements()
+
+	Map = New Map;
+	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
+	Map.Insert("ИмяКнопки", "ФормаЗаписать");
+	Map.Insert("ИмяТаблицы", "Номенклатура");
+	Map.Insert("ИмяРеквизита", "Количество");
+	Return JsonDump(Map);
+
+EndFunction
+
+&AtClient
 Function GetVariables()
 
 	Map = New Map;
@@ -450,6 +462,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	view = Items.VanessaEditor.Document.defaultView;
 	VanessaGherkinProvider = view.VanessaGherkinProvider;
 	VanessaGherkinProvider.setKeywords(GetKeywords());
+	VanessaGherkinProvider.setElements(GetElements());
 	VanessaGherkinProvider.setVariables(GetVariables());
 	VanessaGherkinProvider.setStepList(VanessaStepList());
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
