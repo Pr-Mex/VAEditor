@@ -795,197 +795,257 @@
 								</CommandBar>
 							</ChildItems>
 						</Page>
+						<Page name="PageProblems" id="200">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Problems</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page problems</v8:content>
+								</v8:item>
+							</ToolTip>
+							<ExtendedTooltip name="PageProblemsРасширеннаяПодсказка" id="201"/>
+							<ChildItems>
+								<Table name="Problems" id="56">
+									<Representation>List</Representation>
+									<TitleLocation>Auto</TitleLocation>
+									<Height>3</Height>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>Problems</DataPath>
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Problems</v8:content>
+										</v8:item>
+									</Title>
+									<CommandSet>
+										<ExcludedCommand>SortListAsc</ExcludedCommand>
+										<ExcludedCommand>MoveUp</ExcludedCommand>
+										<ExcludedCommand>CancelSearch</ExcludedCommand>
+										<ExcludedCommand>OutputList</ExcludedCommand>
+										<ExcludedCommand>SelectAll</ExcludedCommand>
+										<ExcludedCommand>SortListDesc</ExcludedCommand>
+										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
+										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
+										<ExcludedCommand>EndEdit</ExcludedCommand>
+										<ExcludedCommand>Change</ExcludedCommand>
+										<ExcludedCommand>Find</ExcludedCommand>
+										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
+										<ExcludedCommand>MoveDown</ExcludedCommand>
+									</CommandSet>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="ProblemsContextMenu" id="57"/>
+									<AutoCommandBar name="ProblemsCommandBar" id="58">
+										<Autofill>false</Autofill>
+										<ChildItems>
+											<Button name="ProblemsAdd" id="84">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Problems.StandardCommand.Add</CommandName>
+												<ExtendedTooltip name="ProblemsAddExtendedTooltip" id="85"/>
+											</Button>
+											<Button name="ProblemsCopy" id="86">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Problems.StandardCommand.Copy</CommandName>
+												<ExtendedTooltip name="ProblemsCopyExtendedTooltip" id="87"/>
+											</Button>
+											<Button name="ProblemsDelete" id="88">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Problems.StandardCommand.Delete</CommandName>
+												<ExtendedTooltip name="ProblemsDeleteExtendedTooltip" id="89"/>
+											</Button>
+										</ChildItems>
+									</AutoCommandBar>
+									<ExtendedTooltip name="ProblemsExtendedTooltip" id="59"/>
+									<SearchStringAddition name="ProblemsSearchString" id="60">
+										<AdditionSource>
+											<Item>Problems</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ProblemsSearchStringContextMenu" id="61"/>
+										<ExtendedTooltip name="ProblemsSearchStringExtendedTooltip" id="62"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="ProblemsViewStatus" id="63">
+										<AdditionSource>
+											<Item>Problems</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ProblemsViewStatusContextMenu" id="64"/>
+										<ExtendedTooltip name="ProblemsViewStatusExtendedTooltip" id="65"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="ProblemsSearchControl" id="66">
+										<AdditionSource>
+											<Item>Problems</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="ProblemsSearchControlContextMenu" id="67"/>
+										<ExtendedTooltip name="ProblemsSearchControlExtendedTooltip" id="68"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="OnChange">ProblemsOnChange</Event>
+									</Events>
+									<ChildItems>
+										<ColumnGroup name="ProblemsGroupNumbewr" id="202">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group numbewr</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group numbewr</v8:content>
+												</v8:item>
+											</ToolTip>
+											<ExtendedTooltip name="ProblemsGroupNumbewrРасширеннаяПодсказка" id="203"/>
+											<ChildItems>
+												<InputField name="ProblemsLineNumber" id="81">
+													<DataPath>Problems.LineNumber</DataPath>
+													<EditMode>EnterOnInput</EditMode>
+													<Width>4</Width>
+													<MinValue xsi:type="xs:decimal">1</MinValue>
+													<ContextMenu name="ProblemsLineNumberContextMenu" id="82"/>
+													<ExtendedTooltip name="ProblemsLineNumberExtendedTooltip" id="83"/>
+												</InputField>
+												<InputField name="ProblemsSeverity" id="69">
+													<DataPath>Problems.Severity</DataPath>
+													<EditMode>EnterOnInput</EditMode>
+													<Width>4</Width>
+													<ListChoiceMode>true</ListChoiceMode>
+													<TextEdit>false</TextEdit>
+													<ChoiceList>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Hint</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Hint</Value>
+															</xr:Value>
+														</xr:Item>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Info</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Info</Value>
+															</xr:Value>
+														</xr:Item>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Warning</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Warning</Value>
+															</xr:Value>
+														</xr:Item>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Error</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Error</Value>
+															</xr:Value>
+														</xr:Item>
+													</ChoiceList>
+													<ContextMenu name="ProblemsSeverityContextMenu" id="70"/>
+													<ExtendedTooltip name="ProblemsSeverityExtendedTooltip" id="71"/>
+												</InputField>
+											</ChildItems>
+										</ColumnGroup>
+										<ColumnGroup name="ProblemsGroupMessage" id="204">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group message</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group message</v8:content>
+												</v8:item>
+											</ToolTip>
+											<ExtendedTooltip name="ProblemsGroupMessageРасширеннаяПодсказка" id="205"/>
+											<ChildItems>
+												<InputField name="ProblemsMessage" id="72">
+													<DataPath>Problems.Message</DataPath>
+													<EditMode>EnterOnInput</EditMode>
+													<Width>16</Width>
+													<ContextMenu name="ProblemsMessageContextMenu" id="73"/>
+													<ExtendedTooltip name="ProblemsMessageExtendedTooltip" id="74"/>
+												</InputField>
+												<ColumnGroup name="ProblemsGroupCode" id="206">
+													<Title>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Problems group code</v8:content>
+														</v8:item>
+													</Title>
+													<ToolTip>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Problems group code</v8:content>
+														</v8:item>
+													</ToolTip>
+													<Group>Horizontal</Group>
+													<ExtendedTooltip name="ProblemsGroupCodeРасширеннаяПодсказка" id="207"/>
+													<ChildItems>
+														<InputField name="ProblemsCode" id="75">
+															<DataPath>Problems.Code</DataPath>
+															<EditMode>EnterOnInput</EditMode>
+															<Width>8</Width>
+															<ContextMenu name="ProblemsCodeContextMenu" id="76"/>
+															<ExtendedTooltip name="ProblemsCodeExtendedTooltip" id="77"/>
+														</InputField>
+														<InputField name="ProblemsSource" id="78">
+															<DataPath>Problems.Source</DataPath>
+															<EditMode>EnterOnInput</EditMode>
+															<Width>8</Width>
+															<ContextMenu name="ProblemsSourceContextMenu" id="79"/>
+															<ExtendedTooltip name="ProblemsSourceExtendedTooltip" id="80"/>
+														</InputField>
+													</ChildItems>
+												</ColumnGroup>
+											</ChildItems>
+										</ColumnGroup>
+									</ChildItems>
+								</Table>
+							</ChildItems>
+						</Page>
 					</ChildItems>
 				</Pages>
-			</ChildItems>
-		</UsualGroup>
-		<UsualGroup name="Footer" id="92">
-			<Title>
-				<v8:item>
-					<v8:lang>en</v8:lang>
-					<v8:content>Footer</v8:content>
-				</v8:item>
-			</Title>
-			<Group>Vertical</Group>
-			<Representation>None</Representation>
-			<ShowTitle>false</ShowTitle>
-			<ExtendedTooltip name="FooterExtendedTooltip" id="93"/>
-			<ChildItems>
-				<Table name="Problems" id="56">
-					<Representation>List</Representation>
-					<TitleLocation>Auto</TitleLocation>
-					<Height>3</Height>
-					<AutoInsertNewRow>true</AutoInsertNewRow>
-					<EnableStartDrag>true</EnableStartDrag>
-					<EnableDrag>true</EnableDrag>
-					<DataPath>Problems</DataPath>
-					<Title>
-						<v8:item>
-							<v8:lang>en</v8:lang>
-							<v8:content>Problems</v8:content>
-						</v8:item>
-					</Title>
-					<CommandSet>
-						<ExcludedCommand>SortListAsc</ExcludedCommand>
-						<ExcludedCommand>MoveUp</ExcludedCommand>
-						<ExcludedCommand>CancelSearch</ExcludedCommand>
-						<ExcludedCommand>OutputList</ExcludedCommand>
-						<ExcludedCommand>SelectAll</ExcludedCommand>
-						<ExcludedCommand>SortListDesc</ExcludedCommand>
-						<ExcludedCommand>CopyToClipboard</ExcludedCommand>
-						<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
-						<ExcludedCommand>EndEdit</ExcludedCommand>
-						<ExcludedCommand>Change</ExcludedCommand>
-						<ExcludedCommand>Find</ExcludedCommand>
-						<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
-						<ExcludedCommand>MoveDown</ExcludedCommand>
-					</CommandSet>
-					<RowFilter xsi:nil="true"/>
-					<ContextMenu name="ProblemsContextMenu" id="57"/>
-					<AutoCommandBar name="ProblemsCommandBar" id="58">
-						<Autofill>false</Autofill>
-						<ChildItems>
-							<Button name="ProblemsAdd" id="84">
-								<Type>CommandBarButton</Type>
-								<Representation>Picture</Representation>
-								<OnlyInAllActions>true</OnlyInAllActions>
-								<CommandName>Form.Item.Problems.StandardCommand.Add</CommandName>
-								<ExtendedTooltip name="ProblemsAddExtendedTooltip" id="85"/>
-							</Button>
-							<Button name="ProblemsCopy" id="86">
-								<Type>CommandBarButton</Type>
-								<Representation>Picture</Representation>
-								<OnlyInAllActions>true</OnlyInAllActions>
-								<CommandName>Form.Item.Problems.StandardCommand.Copy</CommandName>
-								<ExtendedTooltip name="ProblemsCopyExtendedTooltip" id="87"/>
-							</Button>
-							<Button name="ProblemsDelete" id="88">
-								<Type>CommandBarButton</Type>
-								<Representation>Picture</Representation>
-								<OnlyInAllActions>true</OnlyInAllActions>
-								<CommandName>Form.Item.Problems.StandardCommand.Delete</CommandName>
-								<ExtendedTooltip name="ProblemsDeleteExtendedTooltip" id="89"/>
-							</Button>
-						</ChildItems>
-					</AutoCommandBar>
-					<ExtendedTooltip name="ProblemsExtendedTooltip" id="59"/>
-					<SearchStringAddition name="ProblemsSearchString" id="60">
-						<AdditionSource>
-							<Item>Problems</Item>
-							<Type>SearchStringRepresentation</Type>
-						</AdditionSource>
-						<ContextMenu name="ProblemsSearchStringContextMenu" id="61"/>
-						<ExtendedTooltip name="ProblemsSearchStringExtendedTooltip" id="62"/>
-					</SearchStringAddition>
-					<ViewStatusAddition name="ProblemsViewStatus" id="63">
-						<AdditionSource>
-							<Item>Problems</Item>
-							<Type>ViewStatusRepresentation</Type>
-						</AdditionSource>
-						<ContextMenu name="ProblemsViewStatusContextMenu" id="64"/>
-						<ExtendedTooltip name="ProblemsViewStatusExtendedTooltip" id="65"/>
-					</ViewStatusAddition>
-					<SearchControlAddition name="ProblemsSearchControl" id="66">
-						<AdditionSource>
-							<Item>Problems</Item>
-							<Type>SearchControl</Type>
-						</AdditionSource>
-						<ContextMenu name="ProblemsSearchControlContextMenu" id="67"/>
-						<ExtendedTooltip name="ProblemsSearchControlExtendedTooltip" id="68"/>
-					</SearchControlAddition>
-					<Events>
-						<Event name="OnChange">ProblemsOnChange</Event>
-					</Events>
-					<ChildItems>
-						<InputField name="ProblemsLineNumber" id="81">
-							<DataPath>Problems.LineNumber</DataPath>
-							<EditMode>EnterOnInput</EditMode>
-							<MinValue xsi:type="xs:decimal">1</MinValue>
-							<ContextMenu name="ProblemsLineNumberContextMenu" id="82"/>
-							<ExtendedTooltip name="ProblemsLineNumberExtendedTooltip" id="83"/>
-						</InputField>
-						<InputField name="ProblemsSeverity" id="69">
-							<DataPath>Problems.Severity</DataPath>
-							<EditMode>EnterOnInput</EditMode>
-							<ListChoiceMode>true</ListChoiceMode>
-							<TextEdit>false</TextEdit>
-							<ChoiceList>
-								<xr:Item>
-									<xr:Presentation/>
-									<xr:CheckState>0</xr:CheckState>
-									<xr:Value xsi:type="FormChoiceListDesTimeValue">
-										<Presentation>
-											<v8:item>
-												<v8:lang>ru</v8:lang>
-												<v8:content>Hint</v8:content>
-											</v8:item>
-										</Presentation>
-										<Value xsi:type="xs:string">Hint</Value>
-									</xr:Value>
-								</xr:Item>
-								<xr:Item>
-									<xr:Presentation/>
-									<xr:CheckState>0</xr:CheckState>
-									<xr:Value xsi:type="FormChoiceListDesTimeValue">
-										<Presentation>
-											<v8:item>
-												<v8:lang>ru</v8:lang>
-												<v8:content>Info</v8:content>
-											</v8:item>
-										</Presentation>
-										<Value xsi:type="xs:string">Info</Value>
-									</xr:Value>
-								</xr:Item>
-								<xr:Item>
-									<xr:Presentation/>
-									<xr:CheckState>0</xr:CheckState>
-									<xr:Value xsi:type="FormChoiceListDesTimeValue">
-										<Presentation>
-											<v8:item>
-												<v8:lang>ru</v8:lang>
-												<v8:content>Warning</v8:content>
-											</v8:item>
-										</Presentation>
-										<Value xsi:type="xs:string">Warning</Value>
-									</xr:Value>
-								</xr:Item>
-								<xr:Item>
-									<xr:Presentation/>
-									<xr:CheckState>0</xr:CheckState>
-									<xr:Value xsi:type="FormChoiceListDesTimeValue">
-										<Presentation>
-											<v8:item>
-												<v8:lang>ru</v8:lang>
-												<v8:content>Error</v8:content>
-											</v8:item>
-										</Presentation>
-										<Value xsi:type="xs:string">Error</Value>
-									</xr:Value>
-								</xr:Item>
-							</ChoiceList>
-							<ContextMenu name="ProblemsSeverityContextMenu" id="70"/>
-							<ExtendedTooltip name="ProblemsSeverityExtendedTooltip" id="71"/>
-						</InputField>
-						<InputField name="ProblemsMessage" id="72">
-							<DataPath>Problems.Message</DataPath>
-							<EditMode>EnterOnInput</EditMode>
-							<ContextMenu name="ProblemsMessageContextMenu" id="73"/>
-							<ExtendedTooltip name="ProblemsMessageExtendedTooltip" id="74"/>
-						</InputField>
-						<InputField name="ProblemsCode" id="75">
-							<DataPath>Problems.Code</DataPath>
-							<EditMode>EnterOnInput</EditMode>
-							<ContextMenu name="ProblemsCodeContextMenu" id="76"/>
-							<ExtendedTooltip name="ProblemsCodeExtendedTooltip" id="77"/>
-						</InputField>
-						<InputField name="ProblemsSource" id="78">
-							<DataPath>Problems.Source</DataPath>
-							<EditMode>EnterOnInput</EditMode>
-							<ContextMenu name="ProblemsSourceContextMenu" id="79"/>
-							<ExtendedTooltip name="ProblemsSourceExtendedTooltip" id="80"/>
-						</InputField>
-					</ChildItems>
-				</Table>
 			</ChildItems>
 		</UsualGroup>
 	</ChildItems>

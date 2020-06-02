@@ -15,23 +15,12 @@ monaco.languages.onLanguage(language.id, () => {
 
 monaco.languages.registerCompletionItemProvider(language.id, {
   provideCompletionItems: function (model, position) {
-    return {
-      suggestions: window["VanessaGherkinProvider"].getSuggestions(model, position),
-    };
+    return window["VanessaGherkinProvider"].getSuggestions(model, position);
   }
 });
 
 monaco.languages.registerHoverProvider(language.id, {
   provideHover: function (model, position) {
-    let line = model.getLineContent(position.lineNumber)
-    return {
-      range: {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: model.getLineMinColumn(position.lineNumber),
-        endColumn: model.getLineMaxColumn(position.lineNumber),
-      },
-      contents: window["VanessaGherkinProvider"].getHoverContents(line),
-    }
+    return window["VanessaGherkinProvider"].getHoverContents(model, position);
   }
 });

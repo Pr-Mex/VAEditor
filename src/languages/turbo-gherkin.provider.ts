@@ -15,30 +15,41 @@ export class VanessaGherkinProvider {
   }
 
   private splitWords(line: string): Array<string> {
+    let regexp = /(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g;
+    return line.match(regexp)||[];
+  }
+
+  private filterWords(line: Array<string>): Array<string> {
     let b = true, s = true;
-    return (line.split('\n')[0].match(/(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g) || [])
-      .filter(w => (b && this.isKeyword(w)) ? false : (b = false, s && w[0] != '#' ? true : s = false));
+    let notComment = (w: string) => s && w[0] != '#' && w.substring(0, 2) != '//';
+    return line.filter(w => (b && this.isKeyword(w)) ? b = false : (b = false, notComment(w) ? true : s = false));
   }
 
   private key(words: Array<string>): string {
-    return words.filter(s => s && !['"', "'"].includes(s[0])).map((w: string) => w.toLowerCase()).join(' ');
+    return words.map((w: string) => {
+      let regexp = /(?:^\d*(?:\.\d+)?$|^["][^"]*["]$|^['][^']*[']$)/g;
+      return regexp.test(w) ? "^" : w.toLowerCase();
+    }).join(' ');
   }
 
   private lineSyntaxError(line: string): boolean {
     if ([undefined, '#', '|'].includes(line.trimLeft()[0])) return false;
-    return this.steps[this.key(this.splitWords(line))] == undefined;
+    return this.steps[this.key(this.filterWords(this.splitWords(line)))] == undefined;
   }
 
   public keywords: Array<string>;
   private steps: {};
+  private elements: {};
   private variables: {};
 
+  public setElements: Function;
   public setKeywords: Function;
   public setStepList: Function;
   public setVariables: Function;
 
   constructor() {
     this.steps = {};
+    this.elements = {};
     this.variables = {};
     this.keywords = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
 
@@ -46,32 +57,61 @@ export class VanessaGherkinProvider {
       this.keywords = JSON.parse(list).map((w: string) => w.toLowerCase());
     }
 
+    this.setElements = (values: string, clear: boolean = false): void => {
+      if (clear) this.elements = {};
+      let obj = JSON.parse(values);
+      for (let key in obj) {
+        this.elements[key.toLowerCase()] = obj[key];
+      }
+    }
+
     this.setVariables = (values: string, clear: boolean = false): void => {
       if (clear) this.variables = {};
       let obj = JSON.parse(values);
       for (let key in obj) {
-        this.variables[key.toLowerCase()] = {name: key, value: String(obj[key])};
+        this.variables[key.toLowerCase()] = { name: key, value: String(obj[key]) };
       }
+      this.setStepLabels();
     }
 
     this.setStepList = (list: string): void => {
       this.steps = {};
       JSON.parse(list).forEach((e: IVanessaStep) => {
-        let words = this.splitWords(e.filterText);
-        this.steps[this.key(words)] = {
-          label: words.join(' '),
+        let body = e.insertText.split('\n');
+        let line = body.shift();
+        let words = this.splitWords(line);
+        let key = this.key(this.filterWords(words));
+        this.steps[key] = {
+          head: words,
+          body: body,
           documentation: e.documentation,
           insertText: e.insertText,
           sortText: e.sortText,
           section: e.section,
           kind: e.kind,
         };
-      })
+      });
+      this.setStepLabels();
+    }
+  }
+
+  private setStepLabels() {
+    for (let key in this.steps) {
+      let e = this.steps[key];
+      let words = e.head.map((word: string) => {
+        let regexp = /^"[^"]*"$|^'[^']*'$/g;
+        if (!regexp.test(word)) return word;
+        let name = word.substring(1, word.length - 1).toLowerCase();
+        let elem = this.elements[name];
+        return elem ? '"' + elem + '"' : word;
+      });
+      e.label = this.filterWords(words).join(' ');
+      e.insertText = words.join(' ');
+      if (e.body.length) e.insertText += '\n' + e.body.join('\n');
     }
   }
 
   public getSuggestions(model: monaco.editor.ITextModel, position: monaco.Position): any {
-    let regex = /"\$[^"]+\$"|'\$[^']+\$'/g;
     let line = {
       startLineNumber: position.lineNumber,
       endLineNumber: position.lineNumber,
@@ -79,7 +119,9 @@ export class VanessaGherkinProvider {
       endColumn: model.getLineMaxColumn(position.lineNumber),
     };
     let wordRange = undefined;
-    model.findMatches(regex.source, line, true, false, null, false).forEach(e => {
+    let regexp = /"\$[^"]*"|'\$[^']*'/g;
+    let words = model.findMatches(regexp.source, line, true, false, null, false)||[];
+    words.forEach(e => {
       if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
         wordRange = e.range;
       }
@@ -120,25 +162,33 @@ export class VanessaGherkinProvider {
         });
       };
     }
-    return result;
+    return { suggestions: result };
   }
 
-  public getHoverContents(line: string): any {
-    let res = [];
+  public getHoverContents(model: monaco.editor.ITextModel, position: monaco.Position): any {
+    let contents = [];
+    let line = model.getLineContent(position.lineNumber)
     let words = this.splitWords(line);
-    let step = this.steps[this.key(words)];
+    let key = this.key(this.filterWords(words));
+    let step = this.steps[key];
     if (step) {
-      res.push({ value: "**" + step.section + "**" });
-      res.push({ value: step.documentation });
-    } else return [];
-    let values = this.variables;
-    let vars = line.match(/"\$[^"]+\$"|'\$[^']+\$'/g) || [];
-    vars.forEach(function (part: string) {
-      let name = part.substring(2, part.length - 2);
-      let value = values[name.toLowerCase()].value;
-      res.push({ value: "**" + name + "** = " + value });
-    });
-    return res;
+      contents.push({ value: "**" + step.section + "**" });
+      contents.push({ value: step.documentation });
+      let values = this.variables;
+      let vars = line.match(/"\$[^"]+\$"|'\$[^']+\$'/g) || [];
+      vars.forEach(function (part: string) {
+        let name = part.substring(2, part.length - 2);
+        let value = values[name.toLowerCase()].value;
+        contents.push({ value: "**" + name + "** = " + value });
+      });
+    }
+    let range = {
+      startLineNumber: position.lineNumber,
+      endLineNumber: position.lineNumber,
+      startColumn: model.getLineMinColumn(position.lineNumber),
+      endColumn: model.getLineMaxColumn(position.lineNumber),
+    };
+    return { range: range, contents: contents }
   }
 
   public checkSyntax() {
