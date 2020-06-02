@@ -157,7 +157,7 @@ export class VanessaEditor {
 
     this.editor.onDidChangeModelContent(() => {
       const versionId = this.editor.getModel().getAlternativeVersionId();
-      let buttons = {undo: true, redo: true, version: versionId};
+      let buttons = { undo: true, redo: true, version: versionId };
       if (versionId < this.currentVersion) {
         if (versionId === this.initialVersion) buttons.undo = false;
       } else {

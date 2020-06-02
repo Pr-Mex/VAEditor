@@ -16,7 +16,7 @@ export class VanessaGherkinProvider {
 
   private splitWords(line: string): Array<string> {
     let regexp = /(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g;
-    return line.match(regexp)||[];
+    return line.match(regexp) || [];
   }
 
   private filterWords(line: Array<string>): Array<string> {
@@ -120,7 +120,7 @@ export class VanessaGherkinProvider {
     };
     let wordRange = undefined;
     let regexp = /"\$[^"]*"|'\$[^']*'/g;
-    let words = model.findMatches(regexp.source, line, true, false, null, false)||[];
+    let words = model.findMatches(regexp.source, line, true, false, null, false) || [];
     words.forEach(e => {
       if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
         wordRange = e.range;
