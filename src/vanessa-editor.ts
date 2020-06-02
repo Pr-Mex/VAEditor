@@ -59,7 +59,8 @@ export class VanessaEditor {
       language: language,
       scrollBeyondLastLine: false,
       glyphMargin: true,
-      automaticLayout: true
+      automaticLayout: true,
+      lightbulb: { enabled: true }
     });
     this.messages = [];
     this.editor.setValue(content);
@@ -89,6 +90,7 @@ export class VanessaEditor {
     this.decorateErrorSteps = (arg: string) => this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
+    window["commandIdQuickFix"] = this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F8, () => alert('my command is executing!'));
   }
 
   public dispose(): void {
