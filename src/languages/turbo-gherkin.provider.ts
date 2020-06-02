@@ -34,7 +34,7 @@ export class VanessaGherkinProvider {
 
   private lineSyntaxError(line: string): boolean {
     let res = line.match(/[^\s"']+\:/s); // Top-level keywords
-    if (res && this.isKeyword(res[0].substring(0, res[0].length -1))) return false;
+    if (res && this.isKeyword(res[0].substring(0, res[0].length - 1))) return false;
     if ([undefined, '#', '|', '@'].includes(line.trimLeft()[0])) return false;
     return this.steps[this.key(this.filterWords(this.splitWords(line)))] == undefined;
   }
@@ -193,6 +193,31 @@ export class VanessaGherkinProvider {
     return { range: range, contents: contents }
   }
 
+  public getCodeAction(model: monaco.editor.ITextModel
+    , range: monaco.Range
+    , context: monaco.languages.CodeActionContext
+    , token: monaco.CancellationToken) {
+
+    if (context.markers.length == 0) return [];
+
+    //    if (context == )
+    console.log(range);
+    console.log(context);
+    console.log(token);
+
+    let command = {
+      id: window["commandIdQuickFix"],
+      title: "Some command!",
+      isPreferred: true,
+      kind: "quickfix",
+    };
+    console.log(command);
+    return [{
+      command: command,
+      title: "Some command action!"
+    }];
+  }
+
   public checkSyntax() {
     let problems = [];
     let ve = window["VanessaEditor"];
@@ -201,8 +226,9 @@ export class VanessaGherkinProvider {
       let error = this.lineSyntaxError(ve.getLineContent(i));
       if (error) problems.push({
         lineNumber: i,
+        code: "0x01",
         severity: 'Error',
-        message: 'Syntax error',
+        message: 'Syntax error: step not found',
       });
     }
     ve.problemManager.DecorateProblems(problems);

@@ -14,13 +14,16 @@ monaco.languages.onLanguage(language.id, () => {
 });
 
 monaco.languages.registerCompletionItemProvider(language.id, {
-  provideCompletionItems: function (model, position) {
-    return window["VanessaGherkinProvider"].getSuggestions(model, position);
-  }
+  provideCompletionItems: (model, position) =>
+    window["VanessaGherkinProvider"].getSuggestions(model, position)
 });
 
 monaco.languages.registerHoverProvider(language.id, {
-  provideHover: function (model, position) {
-    return window["VanessaGherkinProvider"].getHoverContents(model, position);
-  }
+  provideHover: (model, position) =>
+    window["VanessaGherkinProvider"].getHoverContents(model, position)
+});
+
+monaco.languages.registerCodeActionProvider(language.id, {
+  provideCodeActions: (model, range, context, token) =>
+    window["VanessaGherkinProvider"].getCodeAction(model, range, context, token)
 });
