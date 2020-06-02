@@ -33,7 +33,9 @@ export class VanessaGherkinProvider {
   }
 
   private lineSyntaxError(line: string): boolean {
-    if ([undefined, '#', '|'].includes(line.trimLeft()[0])) return false;
+    let res = line.match(/[^\s"']+\:/s); // Top-level keywords
+    if (res && this.isKeyword(res[0].substring(0, res[0].length -1))) return false;
+    if ([undefined, '#', '|', '@'].includes(line.trimLeft()[0])) return false;
     return this.steps[this.key(this.filterWords(this.splitWords(line)))] == undefined;
   }
 
@@ -71,7 +73,7 @@ export class VanessaGherkinProvider {
       for (let key in obj) {
         this.variables[key.toLowerCase()] = { name: key, value: String(obj[key]) };
       }
-      this.setStepLabels();
+      this.updateStepLabels();
     }
 
     this.setStepList = (list: string): void => {
@@ -91,11 +93,11 @@ export class VanessaGherkinProvider {
           kind: e.kind,
         };
       });
-      this.setStepLabels();
+      this.updateStepLabels();
     }
   }
 
-  private setStepLabels() {
+  private updateStepLabels() {
     for (let key in this.steps) {
       let e = this.steps[key];
       let words = e.head.map((word: string) => {

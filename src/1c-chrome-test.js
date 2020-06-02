@@ -1,4 +1,15 @@
 window.onload = () => {
+
+    let content = '\
+# language: ru\n\# encoding: utf-8\n\@UA30_Прочие_макеты\n\n\
+Функциональность: Браузер\n\n\Контекст:\n\
+\tДано Я запускаю сценарий открытия TestClient или подключаю уже существующий\n\n\
+Сценарий:\n\t*Открытие формы элемента\n\
+\t\tЕсли Версия платформы ">=" "8.3.6" Тогда \n\
+\t\tИ видеовставка картинки "$ИмяКнопки$" \'$ИмяРеквизита$\' \n\
+\t\tЕсли в таблице "$ИмяТаблицы$" есть колонка с именем \'$ИмяРеквизита$\' Тогда\
+\n';
+
     if (!(['file:', 'http:'].includes(window.location.protocol))) return;
     VanessaGherkinProvider.setKeywords('["и","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]');
 
@@ -58,6 +69,14 @@ window.onload = () => {
         "kind": 0,
         "section": "UI.Таблицы.Колонки"
     },
+    {
+        "filterText": "видеовставка картинки \"ИмяКартинки\" \"ТекстДиктора\"",
+        "insertText": "И видеовставка картинки \"ИмяКартинки\" \"ТекстДиктора\"",
+        "sortText": "",
+        "documentation": "Добавляет в видео вставку из указанной картинки с указанным текстом диктора.",
+        "kind": 4,
+        "section": "Прочее.SikuliX"
+    },
     ];
     VanessaGherkinProvider.setStepList(JSON.stringify(steps));
 
@@ -77,9 +96,5 @@ window.onload = () => {
     };
     VanessaGherkinProvider.setVariables(JSON.stringify(variables));
 
-    createVanessaEditor('\
-    Если Версия платформы ">=" "8.3.6" Тогда \n\
-    И видеовставка картинки "$ИмяКнопки$" \'$ИмяРеквизита$\' \n\
-    Если в таблице "$ИмяТаблицы$" есть колонка с именем \'$ИмяРеквизита$\' Тогда\
-    ', 'turbo-gherkin');
+    createVanessaEditor(content, 'turbo-gherkin');
 }
