@@ -22,11 +22,19 @@ export interface VanessaEditorMessage {
   data: any;
 }
 
+export interface VanessaCommandItem {
+  eventId: string;
+  keyCode: string;
+  keyMod: Array<string>;
+  script: string;
+}
+
 export class VanessaEditor {
 
   // 1C:Enterprise interaction call.
   public undo: Function;
   public redo: Function;
+  public addCommands: Function;
   public checkSyntax: Function;
   public popMessage: Function;
   public getContent: Function;
@@ -43,6 +51,8 @@ export class VanessaEditor {
   public decorateErrorSteps: Function;
   public decorateProblems: Function;
   public cleanRuntimeProcess: Function;
+  public toggleBreakpoint: Function;
+  public fireEvent: Function;
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointManager: BreakpointManager;
@@ -51,9 +61,9 @@ export class VanessaEditor {
   private syntaxTimer: any = 0;
 
   private messages: Array<VanessaEditorMessage>;
-  private initialVersion;
-  private currentVersion;
-  private lastVersion;
+  private initialVersion: number;
+  private currentVersion: number;
+  private lastVersion: number;
 
   constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
@@ -88,24 +98,34 @@ export class VanessaEditor {
     this.decorateErrorSteps = (arg: string) => this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
+    this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.setContent = (arg: string) => {
       this.editor.setValue(arg);
       this.resetHistory();
       this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, { undo: false, redo: false })
     };
+    this.fireEvent = (event: VanessaEditorEvent, arg: any = undefined) => {
+      // tslint:disable-next-line: no-console
+      console.debug("fireEvent: " + event + " : " + arg);
+      this.messages.push({ type: event, data: arg });
+      let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
+      fakeButtonFireClickEvent.click();
+    }
+    this.addCommands = (arg: string) => {
+      let list: Array<VanessaCommandItem> = JSON.parse(arg);
+      list.forEach((e: any) => {
+        let keybinding: number = Number(monaco.KeyCode[e.keyCode]);
+        e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
+        this.editor.addCommand(keybinding, () => eval(
+          `window["VanessaEditor"].fireEvent("${e.eventId}", window["VanessaEditor"].getPosition().lineNumber)`
+        ));
+      });
+    }
     window["commandIdQuickFix"] = this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F8, () => alert('Create new step!'));
   }
 
   public dispose(): void {
     this.editor.dispose();
-  }
-
-  public fireEvent(event: VanessaEditorEvent, arg: any = undefined): void {
-    // tslint:disable-next-line: no-console
-    console.debug("fireEvent: " + event + " : " + arg);
-    this.messages.push({ type: event, data: arg });
-    let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
-    fakeButtonFireClickEvent.click();
   }
 
   private resetHistory() {
@@ -115,6 +135,7 @@ export class VanessaEditor {
   }
 
   private subscribeEditorEvents(): void {
+/*
     this.editor.addCommand(monaco.KeyCode.F5,
       () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING)
     );
@@ -133,10 +154,14 @@ export class VanessaEditor {
       () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_ENTRY)
     );
 
+    this.editor.addCommand(monaco.KeyCode.F9,
+      () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber)
+    );
+
     this.editor.addCommand(monaco.KeyCode.F11,
       () => this.fireEvent(VanessaEditorEvent.STEP_OVER, this.editor.getPosition().lineNumber)
     );
-
+*/
     this.editor.onDidChangeModelContent(
       () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
     );
@@ -145,10 +170,6 @@ export class VanessaEditor {
       (e: monaco.editor.ICursorPositionChangedEvent) => {
         this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
-    );
-
-    this.editor.addCommand(monaco.KeyCode.F9,
-      () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber)
     );
 
     this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
