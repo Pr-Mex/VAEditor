@@ -6,12 +6,7 @@ import { BreakpointManager, RuntimeProcessManager } from "./debug";
 import { ProblemManager } from "./problems";
 
 export enum VanessaEditorEvent {
-  START_DEBUGGING = "START_DEBUGGING",
-  START_DEBUGGING_AT_STEP = "START_DEBUGGING_AT_STEP",
-  START_DEBUGGING_AT_STEP_AND_CONTINUE = "START_DEBUGGING_AT_STEP_AND_CONTINUE",
-  START_DEBUGGING_AT_ENTRY = "START_DEBUGGING_AT_ENTRY",
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
-  STEP_OVER = "STEP_OVER",
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
   POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
   CHANGE_UNDO_REDO = "CHANGE_UNDO_REDO",
@@ -135,33 +130,7 @@ export class VanessaEditor {
   }
 
   private subscribeEditorEvents(): void {
-/*
-    this.editor.addCommand(monaco.KeyCode.F5,
-      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING)
-    );
 
-    // tslint:disable-next-line: no-bitwise
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.F5,
-      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_STEP, this.editor.getPosition().lineNumber)
-    );
-
-    // tslint:disable-next-line: no-bitwise
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.F5,
-      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_STEP_AND_CONTINUE, this.editor.getPosition().lineNumber));
-
-    // tslint:disable-next-line: no-bitwise
-    this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F5,
-      () => this.fireEvent(VanessaEditorEvent.START_DEBUGGING_AT_ENTRY)
-    );
-
-    this.editor.addCommand(monaco.KeyCode.F9,
-      () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber)
-    );
-
-    this.editor.addCommand(monaco.KeyCode.F11,
-      () => this.fireEvent(VanessaEditorEvent.STEP_OVER, this.editor.getPosition().lineNumber)
-    );
-*/
     this.editor.onDidChangeModelContent(
       () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
     );
