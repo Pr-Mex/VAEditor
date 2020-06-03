@@ -65,9 +65,7 @@ export class VanessaEditor {
     });
     this.messages = [];
     this.editor.setValue(content);
-    this.initialVersion = this.editor.getModel().getAlternativeVersionId();
-    this.currentVersion = this.initialVersion;
-    this.lastVersion = this.initialVersion;
+    this.resetHistory();
 
     this.breakpointManager = new BreakpointManager(this);
     this.runtimeProcessManager = new RuntimeProcessManager(this);
@@ -80,7 +78,6 @@ export class VanessaEditor {
     this.getContent = () => this.editor.getValue();
     this.getLineContent = (num: number) => this.editor.getModel().getLineContent(num);
     this.getPosition = () => this.editor.getPosition();
-    this.setContent = (arg: string) => this.editor.setValue(arg);
     this.setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
@@ -91,6 +88,11 @@ export class VanessaEditor {
     this.decorateErrorSteps = (arg: string) => this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
+    this.setContent = (arg: string) => {
+      this.editor.setValue(arg);
+      this.resetHistory();
+      this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, { undo: false, redo: false })
+    };
     window["commandIdQuickFix"] = this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F8, () => alert('Create new step!'));
   }
 
@@ -104,6 +106,12 @@ export class VanessaEditor {
     this.messages.push({ type: event, data: arg });
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.click();
+  }
+
+  private resetHistory() {
+    this.initialVersion = this.editor.getModel().getAlternativeVersionId();
+    this.currentVersion = this.initialVersion;
+    this.lastVersion = this.initialVersion;
   }
 
   private subscribeEditorEvents(): void {
