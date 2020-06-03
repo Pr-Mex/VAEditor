@@ -322,6 +322,9 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 		Items.FormEditUndo.Enabled = Arg.undo;
 	ElsIf Event = "F9" Then
 		VanessaEditor.toggleBreakpoint();
+		UserMessage = New UserMessage;
+		UserMessage.Text = Event + " : " + Arg;
+		UserMessage.Message();
 	Else
 		UserMessage = New UserMessage;
 		UserMessage.Text = Event + " : " + Arg;
@@ -497,6 +500,9 @@ EndFunction
 Function GetCommands()
 
 	CmdList = New Array;
+	
+	KeyMod = New Array;
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F5", "F5", KeyMod));
 	
 	KeyMod = New Array;
 	KeyMod.Add("Alt");
