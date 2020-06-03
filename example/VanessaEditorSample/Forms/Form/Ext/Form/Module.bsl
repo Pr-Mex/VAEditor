@@ -320,6 +320,8 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 	ElsIf Event = "CHANGE_UNDO_REDO" Then
 		Items.FormEditRedo.Enabled = Arg.redo;
 		Items.FormEditUndo.Enabled = Arg.undo;
+	ElsIf Event = "F9" Then
+		VanessaEditor.toggleBreakpoint();
 	Else
 		UserMessage = New UserMessage;
 		UserMessage.Text = Event + " : " + Arg;
@@ -492,6 +494,53 @@ Function VanessaStepList(language)
 EndFunction
 
 &AtClient
+Function GetCommands()
+
+	CmdList = New Array;
+	
+	KeyMod = New Array;
+	KeyMod.Add("Alt");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Alt+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	KeyMod.Add("WinCtrl");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Win+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	KeyMod.Add("CtrlCmd");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	KeyMod.Add("Shift");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Shift+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	KeyMod.Add("Shift");
+	KeyMod.Add("CtrlCmd");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Shift+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	KeyMod.Add("Alt");
+	KeyMod.Add("CtrlCmd");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Alt+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	KeyMod.Add("Alt");
+	KeyMod.Add("Shift");
+	KeyMod.Add("CtrlCmd");
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Alt+Shift+F5", "F5", KeyMod));
+	
+	KeyMod = New Array;
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F9", "F9", KeyMod));
+	
+	KeyMod = New Array;
+	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
+	
+	Return JsonDump(CmdList);
+
+EndFunction
+
+&AtClient
 Procedure VanessaEditorDocumentComplete(Item)
 
 	view = Items.VanessaEditor.Document.defaultView;
@@ -501,6 +550,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	VanessaGherkinProvider.setVariables(GetVariables());
 	VanessaGherkinProvider.setStepList(VanessaStepList("ru"));
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
+	VanessaEditor.addCommands(GetCommands());
 
 EndProcedure
 

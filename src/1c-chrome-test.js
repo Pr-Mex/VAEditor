@@ -113,4 +113,12 @@ window.onload = () => {
     VanessaGherkinProvider.setVariables(JSON.stringify(variables));
 
     createVanessaEditor(content, 'turbo-gherkin');
+
+    let commands = [
+        { eventId: "Win+F6", keyCode: "F6", keyMod: ["WinCtrl"] },
+        { eventId: "Ctrl+F6", keyCode: "F6", keyMod: ["CtrlCmd"] },
+        { eventId: "Shift+F6", keyCode: "F6", keyMod: ["Shift"] },
+        { eventId: "Ctrl+Alt+F6", keyCode: "F6", keyMod: ["CtrlCmd", "Alt"] },
+    ];
+    VanessaEditor.addCommands(JSON.stringify(commands))
 }
