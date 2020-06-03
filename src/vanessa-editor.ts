@@ -27,6 +27,7 @@ export class VanessaEditor {
   // 1C:Enterprise interaction call.
   public undo: Function;
   public redo: Function;
+  public checkSyntax: Function;
   public popMessage: Function;
   public getContent: Function;
   public getLineContent: Function;
@@ -150,14 +151,17 @@ export class VanessaEditor {
 
     model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
 
-    this.editor.onDidChangeModelContent(() => {
+    this.checkSyntax = () => {
       clearTimeout(this.syntaxTimer);
       this.syntaxTimer = setTimeout(() => {
         window["VanessaGherkinProvider"].checkSyntax();
       }, 1000);
-    });
+    }
+
+    this.checkSyntax();
 
     this.editor.onDidChangeModelContent(() => {
+      this.checkSyntax();
       const versionId = this.editor.getModel().getAlternativeVersionId();
       let buttons = { undo: true, redo: true, version: versionId };
       if (versionId < this.currentVersion) {

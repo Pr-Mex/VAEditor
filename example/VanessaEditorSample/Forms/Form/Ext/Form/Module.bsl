@@ -91,6 +91,28 @@ Procedure EditRedo(Command)
 	VanessaEditor.redo();
 EndProcedure
 
+&AtClient
+Procedure LoadStepsEn(Command)
+	
+	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
+	
+EndProcedure
+
+&AtClient
+Procedure LoadStepsRu(Command)
+
+	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), True);
+	
+EndProcedure
+
+&AtClient
+Procedure LoadStepsAll(Command)
+
+	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
+	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), False);
+	
+EndProcedure
+
 #EndRegion
 
 #Region Breakpoints
@@ -446,12 +468,25 @@ Function GetVariables()
 EndFunction
 
 &AtServer
-Function VanessaStepList()
+Function VanessaStepList(language)
+	
+	Var Result;
+	TempFileName = GetTempFileName();
+	DeleteFiles(TempFileName);
+	CreateDirectory(TempFileName);
 
-	Stream = FormAttributeToValue("Object").GetTemplate("VanessaStepList").OpenStreamForRead();
-	TextReader = New TextReader(Stream, TextEncoding.UTF8);
-	Result = TextReader.Read();
-	Stream.Close();
+	BinaryData = FormAttributeToValue("Object").GetTemplate("VanessaStepList");
+	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
+	For each ZipFileEntry In ZipFileReader.Items Do
+		If ZipFileEntry.BaseName = language Then
+			ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
+			BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
+			TextReader = New TextReader(BinaryData.OpenStreamForRead(), TextEncoding.UTF8);
+			Result = TextReader.Read();
+		EndIf;
+	EndDo;
+	DeleteFiles(TempFileName);
+	
 	Return Result;
 
 EndFunction
@@ -464,7 +499,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	VanessaGherkinProvider.setKeywords(GetKeywords());
 	VanessaGherkinProvider.setElements(GetElements());
 	VanessaGherkinProvider.setVariables(GetVariables());
-	VanessaGherkinProvider.setStepList(VanessaStepList());
+	VanessaGherkinProvider.setStepList(VanessaStepList("ru"));
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 
 EndProcedure

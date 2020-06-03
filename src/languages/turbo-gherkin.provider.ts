@@ -36,7 +36,10 @@ export class VanessaGherkinProvider {
     let res = line.match(/[^\s"']+\:/s); // Top-level keywords
     if (res && this.isKeyword(res[0].substring(0, res[0].length - 1))) return false;
     if ([undefined, '#', '|', '@'].includes(line.trimLeft()[0])) return false;
-    return this.steps[this.key(this.filterWords(this.splitWords(line)))] == undefined;
+    let words = this.splitWords(line);
+    if (!this.isKeyword(words[0])) return false;
+    words = this.filterWords(words);
+    return this.steps[this.key(words)] == undefined;
   }
 
   public keywords: Array<string>;
@@ -76,8 +79,8 @@ export class VanessaGherkinProvider {
       this.updateStepLabels();
     }
 
-    this.setStepList = (list: string): void => {
-      this.steps = {};
+    this.setStepList = (list: string, clear: boolean = false): void => {
+      if (clear) this.steps = {};
       JSON.parse(list).forEach((e: IVanessaStep) => {
         let body = e.insertText.split('\n');
         let line = body.shift();
@@ -94,6 +97,7 @@ export class VanessaGherkinProvider {
         };
       });
       this.updateStepLabels();
+      this.checkSyntax();
     }
   }
 
@@ -237,22 +241,24 @@ export class VanessaGherkinProvider {
     {
       command: command,
       title: "Some new command!"
-    }, ];
+    },];
   }
 
   public checkSyntax() {
-    let problems = [];
     let ve = window["VanessaEditor"];
-    let count = ve.editor.getModel().getLineCount();
-    for (let i = 1; i < count; i++) {
-      let error = this.lineSyntaxError(ve.getLineContent(i));
-      if (error) problems.push({
-        lineNumber: i,
-        code: "0x01",
-        severity: 'Error',
-        message: 'Syntax error: step not found',
-      });
+    if (ve && ve.editor) {
+      let problems = [];
+      let count = ve.editor.getModel().getLineCount();
+      for (let i = 1; i < count; i++) {
+        let error = this.lineSyntaxError(ve.getLineContent(i));
+        if (error) problems.push({
+          lineNumber: i,
+          code: "0x01",
+          severity: 'Error',
+          message: 'Syntax error: step not found',
+        });
+      }
+      ve.problemManager.DecorateProblems(problems);
     }
-    ve.problemManager.DecorateProblems(problems);
   }
 }

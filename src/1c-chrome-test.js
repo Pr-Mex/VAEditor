@@ -77,6 +77,22 @@ window.onload = () => {
         "kind": 4,
         "section": "Прочее.SikuliX"
     },
+    {
+        "filterText": "Я запускаю сценарий открытия TestClient или подключаю уже существующий",
+        "insertText": "Дано Я запускаю сценарий открытия TestClient или подключаю уже существующий",
+        "sortText": "",
+        "documentation": "Подсценарий. Подключает новый TestClient если необходимо и закрывает в нём все окна",
+        "kind": 17,
+        "section": "Подключение TestClient.Новое подключение к базе.Текущая база"
+    },
+    {
+        "filterText": "Я запускаю сценарий открытия TestClient или подключаю уже существующий",
+        "insertText": "Дано Я запускаю сценарий открытия TestClient или подключаю уже существующий",
+        "sortText": "",
+        "documentation": "Подсценарий. Подключает новый TestClient если необходимо и закрывает в нём все окна",
+        "kind": 17,
+        "section": "Подключение TestClient.Новое подключение к базе.Текущая база"
+    },
     ];
     VanessaGherkinProvider.setStepList(JSON.stringify(steps));
 

@@ -364,6 +364,59 @@
 										</CheckBoxField>
 									</ChildItems>
 								</UsualGroup>
+								<CommandBar name="GroupProvider" id="218">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group provider</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group provider</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="GroupProviderExtendedTooltip" id="219"/>
+									<ChildItems>
+										<Popup name="GroupSteps" id="210">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Load step list</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group steps</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Picture>
+												<xr:Ref>StdPicture.CreateInitialImage</xr:Ref>
+												<xr:LoadTransparent>true</xr:LoadTransparent>
+											</Picture>
+											<ExtendedTooltip name="GroupStepsРасширеннаяПодсказка" id="211"/>
+											<ChildItems>
+												<Button name="LoadStepsAll" id="216">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadStepsAll</CommandName>
+													<ExtendedTooltip name="LoadStepsAllРасширеннаяПодсказка" id="217"/>
+												</Button>
+												<Button name="LoadStepsEn" id="212">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadStepsEn</CommandName>
+													<ExtendedTooltip name="LoadStepsEnРасширеннаяПодсказка" id="213"/>
+												</Button>
+												<Button name="LoadStepsRu" id="214">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadStepsRu</CommandName>
+													<ExtendedTooltip name="LoadStepsRuРасширеннаяПодсказка" id="215"/>
+												</Button>
+											</ChildItems>
+										</Popup>
+									</ChildItems>
+								</CommandBar>
 							</ChildItems>
 						</Page>
 						<Page name="PageBreakpoints" id="36">
@@ -1619,6 +1672,51 @@
 			</Picture>
 			<Action>EditRedo</Action>
 			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="LoadStepsEn" id="11">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>English</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load steps en</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadStepsEn</Action>
+		</Command>
+		<Command name="LoadStepsRu" id="12">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Russian</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load steps ru</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadStepsRu</Action>
+		</Command>
+		<Command name="LoadStepsAll" id="13">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>EN + RU</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load steps all</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadStepsAll</Action>
 		</Command>
 	</Commands>
 </Form>
