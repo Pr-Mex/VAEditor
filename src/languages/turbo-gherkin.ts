@@ -7,7 +7,8 @@ export const conf: IRichLanguageConfiguration = {
   },
   autoClosingPairs: [
     { open: "\"", close: "\"", notIn: ["string"] },
-    { open: "'", close: "'", notIn: ["string"] }
+    { open: "'", close: "'", notIn: ["string"] },
+    { open: "$", close: "$" },
   ],
   surroundingPairs: [
     { open: "\"", close: "\"" },
