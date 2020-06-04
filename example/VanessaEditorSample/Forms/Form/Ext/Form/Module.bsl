@@ -1,6 +1,10 @@
 ﻿&AtClient
 Var VanessaEditor, VanessaGherkinProvider;
 
+&AtClient
+Var KeyCodeMap;
+
+
 #Region FormEvents
 
 &AtServer
@@ -12,6 +16,11 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	LineNumber = 1;
 	Column = 1;
 
+EndProcedure
+
+&AtClient
+Procedure OnOpen(Cancel)
+	KeyCodeMap = GetKeyCodeMap();
 EndProcedure
 
 &AtClient
@@ -118,6 +127,127 @@ EndProcedure
 Procedure ShowMessage(Command)
 	VanessaEditor.showMessage(MessageText);
 EndProcedure
+
+&AtClient
+Function GetKeyCodeMap()
+	
+	Map = New Map;
+	Map.Insert(0, "Unknown");
+	Map.Insert(1, "Backspace");
+	Map.Insert(2, "Tab");
+	Map.Insert(3, "Enter");
+	Map.Insert(4, "Shift");
+	Map.Insert(5, "Ctrl");
+	Map.Insert(6, "Alt");
+	Map.Insert(7, "PauseBreak");
+	Map.Insert(8, "CapsLock");
+	Map.Insert(9, "Escape");
+	Map.Insert(10, "Space");
+	Map.Insert(11, "PageUp");
+	Map.Insert(12, "PageDown");
+	Map.Insert(13, "End");
+	Map.Insert(14, "Home");
+	Map.Insert(15, "LeftArrow");
+	Map.Insert(16, "UpArrow");
+	Map.Insert(17, "RightArrow");
+	Map.Insert(18, "DownArrow");
+	Map.Insert(19, "Insert");
+	Map.Insert(20, "Delete");
+	Map.Insert(21, "KEY_0");
+	Map.Insert(22, "KEY_1");
+	Map.Insert(23, "KEY_2");
+	Map.Insert(24, "KEY_3");
+	Map.Insert(25, "KEY_4");
+	Map.Insert(26, "KEY_5");
+	Map.Insert(27, "KEY_6");
+	Map.Insert(28, "KEY_7");
+	Map.Insert(29, "KEY_8");
+	Map.Insert(30, "KEY_9");
+	Map.Insert(31, "KEY_A");
+	Map.Insert(32, "KEY_B");
+	Map.Insert(33, "KEY_C");
+	Map.Insert(34, "KEY_D");
+	Map.Insert(35, "KEY_E");
+	Map.Insert(36, "KEY_F");
+	Map.Insert(37, "KEY_G");
+	Map.Insert(38, "KEY_H");
+	Map.Insert(39, "KEY_I");
+	Map.Insert(40, "KEY_J");
+	Map.Insert(41, "KEY_K");
+	Map.Insert(42, "KEY_L");
+	Map.Insert(43, "KEY_M");
+	Map.Insert(44, "KEY_N");
+	Map.Insert(45, "KEY_O");
+	Map.Insert(46, "KEY_P");
+	Map.Insert(47, "KEY_Q");
+	Map.Insert(48, "KEY_R");
+	Map.Insert(49, "KEY_S");
+	Map.Insert(50, "KEY_T");
+	Map.Insert(51, "KEY_U");
+	Map.Insert(52, "KEY_V");
+	Map.Insert(53, "KEY_W");
+	Map.Insert(54, "KEY_X");
+	Map.Insert(55, "KEY_Y");
+	Map.Insert(56, "KEY_Z");
+	Map.Insert(57, "Meta");
+	Map.Insert(58, "ContextMenu");
+	Map.Insert(59, "F1");
+	Map.Insert(60, "F2");
+	Map.Insert(61, "F3");
+	Map.Insert(62, "F4");
+	Map.Insert(63, "F5");
+	Map.Insert(64, "F6");
+	Map.Insert(65, "F7");
+	Map.Insert(66, "F8");
+	Map.Insert(67, "F9");
+	Map.Insert(68, "F10");
+	Map.Insert(69, "F11");
+	Map.Insert(70, "F12");
+	Map.Insert(71, "F13");
+	Map.Insert(72, "F14");
+	Map.Insert(73, "F15");
+	Map.Insert(74, "F16");
+	Map.Insert(75, "F17");
+	Map.Insert(76, "F18");
+	Map.Insert(77, "F19");
+	Map.Insert(78, "NumLock");
+	Map.Insert(79, "ScrollLock");
+	Map.Insert(80, "US_SEMICOLON");
+	Map.Insert(81, "US_EQUAL");
+	Map.Insert(82, "US_COMMA");
+	Map.Insert(83, "US_MINUS");
+	Map.Insert(84, "US_DOT");
+	Map.Insert(85, "US_SLASH");
+	Map.Insert(86, "US_BACKTICK");
+	Map.Insert(87, "US_OPEN_SQUARE_BRACKET");
+	Map.Insert(88, "US_BACKSLASH");
+	Map.Insert(89, "US_CLOSE_SQUARE_BRACKET");
+	Map.Insert(90, "US_QUOTE");
+	Map.Insert(91, "OEM_8");
+	Map.Insert(92, "OEM_102");
+	Map.Insert(93, "NUMPAD_0");
+	Map.Insert(94, "NUMPAD_1");
+	Map.Insert(95, "NUMPAD_2");
+	Map.Insert(96, "NUMPAD_3");
+	Map.Insert(97, "NUMPAD_4");
+	Map.Insert(98, "NUMPAD_5");
+	Map.Insert(99, "NUMPAD_6");
+	Map.Insert(100, "NUMPAD_7");
+	Map.Insert(101, "NUMPAD_8");
+	Map.Insert(102, "NUMPAD_9");
+	Map.Insert(103, "NUMPAD_MULTIPLY");
+	Map.Insert(104, "NUMPAD_ADD");
+	Map.Insert(105, "NUMPAD_SEPARATOR");
+	Map.Insert(106, "NUMPAD_SUBTRACT");
+	Map.Insert(107, "NUMPAD_DECIMAL");
+	Map.Insert(108, "NUMPAD_DIVIDE");
+	Map.Insert(109, "KEY_IN_COMPOSITION");
+	Map.Insert(110, "ABNT_C1");
+	Map.Insert(111, "ABNT_C2");
+	Map.Insert(112, "MAX_VALUE");
+	return Map;
+	
+EndFunction
 
 &AtClient
 Procedure TraceKeyboardOnChange(Item)
@@ -341,7 +471,7 @@ Function GetKeyInfo(Data)
 	If Data.ctrlKey  then res = res + "Ctrl+"  ; EndIf;
 	If Data.altKey   then res = res + "Alt+"   ; EndIf;
 	If Data.shiftKey then res = res + "Shift+" ; EndIf;
-	return res + " (" +  Data.keyCode + ")";
+	return res + KeyCodeMap[Data.keyCode] +  " (" +  Data.keyCode + ")";
 	
 EndFunction
 
