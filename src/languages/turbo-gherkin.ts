@@ -25,9 +25,9 @@ export const language: ILanguage = <ILanguage>{
 
   tokenizer: {
     root: [
-      [/[A-zА-я]+/, {
+      [/^[\s\s]*([A-zА-я]+)/, {
         cases: {
-          "@keywords": "keyword",
+          "$1@keywords": "keyword",
           "@default": "identifier"
         },
         log: "test $1"
