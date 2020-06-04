@@ -156,16 +156,18 @@ export class VanessaGherkinProvider {
       };
       for (let key in this.steps) {
         var e = this.steps[key];
-        result.push({
-          label: e.label,
-          kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
-          detail: e.section,
-          documentation: e.documentation,
-          insertText: e.insertText + "\n",
-          sortText: e.sortText,
-          filterText: key,
-          range: range
-        });
+        if (e.documentation) {
+          result.push({
+            label: e.label,
+            kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
+            detail: e.section,
+            documentation: e.documentation,
+            insertText: e.insertText + "\n",
+            sortText: e.sortText,
+            filterText: key,
+            range: range
+          });
+        };
       };
     }
     return { suggestions: result };
