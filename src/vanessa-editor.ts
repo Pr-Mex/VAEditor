@@ -34,6 +34,7 @@ export class VanessaEditor {
   public addCommands: Function;
   public checkSyntax: Function;
   public popMessage: Function;
+  public getActions: Function;
   public getContent: Function;
   public getLineContent: Function;
   public getPosition: Function;
@@ -100,11 +101,20 @@ export class VanessaEditor {
     this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
     this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
+    this.getActions = () => {
+      let result = [];
+      let actions: Object = this.editor["_actions"];
+      for (let key in actions) {
+        let e = actions[key];
+        result.push({ id: e.id, label: e.label })
+      };
+      return JSON.stringify(result);
+    }
     this.setContent = (arg: string) => {
       this.editor.setValue(arg);
       this.resetHistory();
       this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, { undo: false, redo: false })
-    };
+    }
     this.fireEvent = (event: VanessaEditorEvent, arg: any = undefined) => {
       // tslint:disable-next-line: no-console
       console.debug("fireEvent: " + event + " : " + arg);
@@ -149,8 +159,8 @@ export class VanessaEditor {
 
     this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
     this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
-    this.editor.onKeyDown(e => {if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e)});
-    this.editor.onKeyUp(e => {if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e)});
+    this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
+    this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
 
     const model: monaco.editor.ITextModel = this.editor.getModel();
 

@@ -716,6 +716,21 @@ Function GetCommands()
 EndFunction
 
 &AtClient
+Procedure FillEditorActions();
+	
+	TextJSON = VanessaEditor.getActions();
+	JSONReader = New JSONReader;
+	JSONReader.SetString(TextJSON);
+	ActionArray = ReadJSON(JSONReader);
+	For Each Action in ActionArray do
+		FillPropertyValues(Actions.Add(), Action);
+	EndDo;
+	Actions.Sort("Id");
+	
+EndProcedure	
+
+
+&AtClient
 Procedure VanessaEditorDocumentComplete(Item)
 
 	view = Items.VanessaEditor.Document.defaultView;
@@ -726,7 +741,17 @@ Procedure VanessaEditorDocumentComplete(Item)
 	VanessaGherkinProvider.setStepList(VanessaStepList("ru"));
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 	VanessaEditor.addCommands(GetCommands());
+	FillEditorActions();
 
+EndProcedure
+
+&AtClient
+Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
+	
+	Data = Items.Actions.CurrentData;
+	If Data = Undefined Then Return; EndIf;
+	VanessaEditor.editor.trigger("", Data.Id);
+	
 EndProcedure
 
 #EndRegion
