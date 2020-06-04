@@ -7,6 +7,7 @@ Var VanessaEditor, VanessaGherkinProvider;
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
+	MessageText = "Hello, world!";
 	EditorTheme = "vs";
 	LineNumber = 1;
 	Column = 1;
@@ -78,7 +79,7 @@ Procedure GetLineContent(Command)
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor.getLineContent(lineNumber);
 	UserMessage.Message();
-	
+
 EndProcedure
 
 &AtClient
@@ -93,16 +94,16 @@ EndProcedure
 
 &AtClient
 Procedure LoadStepsEn(Command)
-	
+
 	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
-	
+
 EndProcedure
 
 &AtClient
 Procedure LoadStepsRu(Command)
 
 	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), True);
-	
+
 EndProcedure
 
 &AtClient
@@ -110,7 +111,22 @@ Procedure LoadStepsAll(Command)
 
 	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
 	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), False);
-	
+
+EndProcedure
+
+&AtClient
+Procedure ShowMessage(Command)
+	VanessaEditor.showMessage(MessageText);
+EndProcedure
+
+&AtClient
+Procedure TraceKeyboardOnChange(Item)
+	VanessaEditor.useKeyboardTracer = TraceKeyboard;
+EndProcedure
+
+&AtClient
+Procedure ClearEventLog(Command)
+	EventLog.Clear();
 EndProcedure
 
 #EndRegion
@@ -307,6 +323,17 @@ EndProcedure
 #Region Public
 
 &AtClient
+Procedure AppendEventLog(Event, Data)
+	
+	EventRecord = EventLog.Insert(0);
+	EventRecord.Date = CurrentDate();
+	EventRecord.Type = Event;
+	EventRecord.Data = Data;
+	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
+	
+EndProcedure
+
+&AtClient
 Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 
 	If Event = "CONTENT_DID_CHANGE" Then
@@ -321,14 +348,17 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 		Items.FormEditRedo.Enabled = Arg.redo;
 		Items.FormEditUndo.Enabled = Arg.undo;
 	ElsIf Event = "F9" Then
+		AppendEventLog(Event, Arg);
 		VanessaEditor.toggleBreakpoint();
-		UserMessage = New UserMessage;
-		UserMessage.Text = Event + " : " + Arg;
-		UserMessage.Message();
+	ElsIf Event = "-ON_KEY_DOWN" Then
+		//ctrlKey	False	Boolean
+		//keyCode	63	Number
+		//metaKey	False	Boolean
+		//shiftKey	False	Boolean
+		//altKey	False	Boolean		
+	ElsIf Event = "-ON_KEY_UP" Then
 	Else
-		UserMessage = New UserMessage;
-		UserMessage.Text = Event + " : " + Arg;
-		UserMessage.Message();
+		AppendEventLog(Event, Arg);
 	EndIf;
 
 EndProcedure
@@ -474,7 +504,7 @@ EndFunction
 
 &AtServer
 Function VanessaStepList(language)
-	
+
 	Var Result;
 	TempFileName = GetTempFileName();
 	DeleteFiles(TempFileName);
@@ -491,7 +521,7 @@ Function VanessaStepList(language)
 		EndIf;
 	EndDo;
 	DeleteFiles(TempFileName);
-	
+
 	Return Result;
 
 EndFunction
@@ -500,48 +530,48 @@ EndFunction
 Function GetCommands()
 
 	CmdList = New Array;
-	
+
 	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("Alt");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Alt+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("WinCtrl");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Win+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("CtrlCmd");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("Shift");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Shift+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("Shift");
 	KeyMod.Add("CtrlCmd");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Shift+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("Alt");
 	KeyMod.Add("CtrlCmd");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Alt+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	KeyMod.Add("Alt");
 	KeyMod.Add("Shift");
 	KeyMod.Add("CtrlCmd");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Alt+Shift+F5", "F5", KeyMod));
-	
+
 	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F9", "F9", KeyMod));
-	
+
 	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
-	
+
 	Return JsonDump(CmdList);
 
 EndFunction
