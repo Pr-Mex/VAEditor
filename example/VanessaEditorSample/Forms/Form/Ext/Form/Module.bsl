@@ -334,6 +334,18 @@ Procedure AppendEventLog(Event, Data)
 EndProcedure
 
 &AtClient
+Function GetKeyInfo(Data)
+	
+	res = "";
+	If Data.metaKey  then res = res + "Win+"   ; EndIf;
+	If Data.ctrlKey  then res = res + "Ctrl+"  ; EndIf;
+	If Data.altKey   then res = res + "Alt+"   ; EndIf;
+	If Data.shiftKey then res = res + "Shift+" ; EndIf;
+	return res + " (" +  Data.keyCode + ")";
+	
+EndFunction
+
+&AtClient
 Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 
 	If Event = "CONTENT_DID_CHANGE" Then
@@ -350,13 +362,10 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 	ElsIf Event = "F9" Then
 		AppendEventLog(Event, Arg);
 		VanessaEditor.toggleBreakpoint();
-	ElsIf Event = "-ON_KEY_DOWN" Then
-		//ctrlKey	False	Boolean
-		//keyCode	63	Number
-		//metaKey	False	Boolean
-		//shiftKey	False	Boolean
-		//altKey	False	Boolean		
-	ElsIf Event = "-ON_KEY_UP" Then
+	ElsIf Event = "ON_KEY_DOWN" Then
+		AppendEventLog(Event, GetKeyInfo(Arg));
+	ElsIf Event = "ON_KEY_UP" Then
+		AppendEventLog(Event, GetKeyInfo(Arg));
 	Else
 		AppendEventLog(Event, Arg);
 	EndIf;
