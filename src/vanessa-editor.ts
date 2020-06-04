@@ -10,6 +10,8 @@ export enum VanessaEditorEvent {
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
   POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
   CHANGE_UNDO_REDO = "CHANGE_UNDO_REDO",
+  ON_KEY_DOWN = "ON_KEY_DOWN",
+  ON_KEY_UP = "ON_KEY_UP",
 }
 
 export interface VanessaEditorMessage {
@@ -47,9 +49,12 @@ export class VanessaEditor {
   public decorateProblems: Function;
   public cleanRuntimeProcess: Function;
   public toggleBreakpoint: Function;
+  public showMessage: Function;
   public fireEvent: Function;
 
   public editor: monaco.editor.IStandaloneCodeEditor;
+  public useKeyboardTracer: boolean;
+
   private breakpointManager: BreakpointManager;
   private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
@@ -94,6 +99,7 @@ export class VanessaEditor {
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
     this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
+    this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
     this.setContent = (arg: string) => {
       this.editor.setValue(arg);
       this.resetHistory();
@@ -111,9 +117,9 @@ export class VanessaEditor {
       list.forEach((e: any) => {
         let keybinding: number = Number(monaco.KeyCode[e.keyCode]);
         e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
-        this.editor.addCommand(keybinding, () => eval(
-          `window["VanessaEditor"].fireEvent("${e.eventId}", window["VanessaEditor"].getPosition().lineNumber)`
-        ));
+        this.editor.addCommand(keybinding, () => eval.apply(null, [
+          `VanessaEditor.fireEvent("${e.eventId}", VanessaEditor.getPosition().lineNumber)`, e.script
+        ]));
       });
     }
     window["commandIdQuickFix"] = this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F8, () => alert('Create new step!'));
@@ -142,8 +148,9 @@ export class VanessaEditor {
     );
 
     this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
-
     this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
+    this.editor.onKeyDown(e => {if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e)});
+    this.editor.onKeyUp(e => {if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e)});
 
     const model: monaco.editor.ITextModel = this.editor.getModel();
 
