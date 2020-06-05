@@ -99,6 +99,7 @@ export class VanessaGherkinProvider {
       this.updateStepLabels();
       this.checkSyntax();
     }
+    this.createTheme1C();
   }
 
   private updateStepLabels() {
@@ -283,5 +284,30 @@ export class VanessaGherkinProvider {
       }
       ve.problemManager.DecorateProblems(problems);
     }
+  }
+
+  private createTheme1C() {
+    monaco.editor.defineTheme('1c', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: '', foreground: '000000' },
+        { token: 'invalid', foreground: 'ff3333' },
+        { token: 'variable', foreground: '5c6773' },
+        { token: 'constant', foreground: 'f08c36' },
+        { token: 'comment', foreground: '007f00' },
+        { token: 'number', foreground: '0000ff' },
+        { token: 'tag', foreground: 'e7c547' },
+        { token: 'string', foreground: '963200' },
+        { token: 'keyword', foreground: 'ff0000' },
+      ],
+      colors: {
+        'editor.background': '#ffffff',
+        'editor.foreground': '#5c6773',
+        'editorIndentGuide.background': '#ecebec',
+        'editorIndentGuide.activeBackground': '#e0e0e0',
+      },
+    });
+    monaco.editor.setTheme('1c');
   }
 }
