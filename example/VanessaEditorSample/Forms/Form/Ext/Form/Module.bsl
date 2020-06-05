@@ -95,83 +95,32 @@ EndProcedure
 #Region FormActiond
 
 &AtClient
-Procedure ClipboardCut(Command)
-	VanessaEditor.editor.trigger("", "editor.action.clipboardCutAction");
-EndProcedure
-
-&AtClient
-Procedure ClipboardCopy(Command)
-	VanessaEditor.editor.trigger("", "editor.action.clipboardCopyAction");
-EndProcedure
-
-&AtClient
-Procedure ClipboardPaste(Command)
-	VanessaEditor.editor.trigger("", "editor.action.clipboardPasteAction");
-EndProcedure
-
-&AtClient
-Procedure EditUndo(Command)
-	VanessaEditor.editor.trigger("", "undo");
-EndProcedure
-
-&AtClient
-Procedure EditRedo(Command)
-	VanessaEditor.editor.trigger("", "redo");
-EndProcedure
-
-&AtClient
-Procedure EditFind(Command)
-	VanessaEditor.editor.trigger("", "actions.find");
-EndProcedure
-
-&AtClient
-Procedure EditReplace(Command)
-	VanessaEditor.editor.trigger("", "editor.action.startFindReplaceAction");
-EndProcedure
-
-&AtClient
-Procedure EditFindNext(Command)
-	VanessaEditor.editor.trigger("", "editor.action.nextMatchFindAction");
-EndProcedure
-
-&AtClient
-Procedure EditFindPrevious(Command)
-	VanessaEditor.editor.trigger("", "editor.action.previousMatchFindAction");
-EndProcedure
-
-&AtClient
-Procedure ViewFoldAll(Command)
-	VanessaEditor.editor.trigger("", "editor.foldAll");
-EndProcedure
-
-&AtClient
-Procedure ViewUnfoldAll(Command)
-	VanessaEditor.editor.trigger("", "editor.unfoldAll");
-EndProcedure
-
-&AtClient
-Procedure ViewUnfold1(Command)
-	VanessaEditor.editor.trigger("", "editor.foldLevel1");
-EndProcedure
-
-&AtClient
-Procedure ViewUnfold2(Command)
-	VanessaEditor.editor.trigger("", "editor.foldLevel2");
-EndProcedure
-
-&AtClient
-Procedure ViewZoomIn(Command)
-	VanessaEditor.editor.trigger("", "editor.action.fontZoomIn");
-EndProcedure
-
-&AtClient
-Procedure ViewZoomOut(Command)
-	VanessaEditor.editor.trigger("", "editor.action.fontZoomOut");
-EndProcedure
-
-&AtClient
-Procedure ViewZoomReset(Command)
-	VanessaEditor.editor.trigger("", "editor.action.fontZoomReset");
+Procedure EditorAction(Command)
+	
+	Map = New Map;
+	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
+	Map.Insert("ClipboardCopy", "editor.action.clipboardCopyAction");
+	Map.Insert("ClipboardPaste", "editor.action.clipboardPasteAction");
+	Map.Insert("EditFind", "actions.find");
+	Map.Insert("EditFindNext", "editor.action.nextMatchFindAction");
+	Map.Insert("EditFindPrevious", "editor.action.previousMatchFindAction");
+	Map.Insert("EditUndo", "undo");
+	Map.Insert("EditRedo", "redo");
+	Map.Insert("EditReplace", "editor.action.startFindReplaceAction");
+	Map.Insert("ViewFoldAll", "editor.foldAll");
+	Map.Insert("ViewUnfold1", "editor.foldLevel1");
+	Map.Insert("ViewUnfold2", "editor.foldLevel2");
+	Map.Insert("ViewUnfold3", "editor.foldLevel3");
+	Map.Insert("ViewUnfold4", "editor.foldLevel4");
+	Map.Insert("ViewUnfold5", "editor.foldLevel5");
+	Map.Insert("ViewUnfold6", "editor.foldLevel6");
+	Map.Insert("ViewUnfold7", "editor.foldLevel7");
+	Map.Insert("ViewUnfoldAll", "editor.unfoldAll");
+	Map.Insert("ViewZoomIn", "editor.action.fontZoomIn");
+	Map.Insert("ViewZoomOut", "editor.action.fontZoomOut");
+	Map.Insert("ViewZoomReset", "editor.action.fontZoomReset");
+	VanessaEditor.editor.trigger("", Map[Command.Name]);
+	
 EndProcedure
 
 &AtClient

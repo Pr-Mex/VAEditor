@@ -162,6 +162,11 @@
 						<CommandName>Form.Command.ViewUnfold2</CommandName>
 						<ExtendedTooltip name="FormViewUnfold2ExtendedTooltip" id="308"/>
 					</Button>
+					<Button name="FormViewUnfold3" id="317">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewUnfold3</CommandName>
+						<ExtendedTooltip name="FormViewUnfold3ExtendedTooltip" id="318"/>
+					</Button>
 					<Button name="FormEditFoldAll" id="293">
 						<Type>CommandBarButton</Type>
 						<CommandName>Form.Command.ViewFoldAll</CommandName>
@@ -2139,7 +2144,7 @@
 				<xr:Ref>StdPicture.MoveLeft</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditUndo</Action>
+			<Action>EditorAction</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="EditRedo" id="10">
@@ -2160,7 +2165,7 @@
 				<xr:Ref>StdPicture.MoveRight</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditRedo</Action>
+			<Action>EditorAction</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="LoadStepsEn" id="11">
@@ -2261,7 +2266,7 @@
 				<xr:Ref>StdPicture.Replace</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditReplace</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="EditFind" id="17">
 			<Title>
@@ -2281,7 +2286,7 @@
 				<xr:Ref>StdPicture.Find</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditFind</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="EditFindNext" id="18">
 			<Title>
@@ -2300,7 +2305,7 @@
 				<xr:Ref>StdPicture.FindNext</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditFindNext</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="EditFindPrevious" id="19">
 			<Title>
@@ -2319,7 +2324,7 @@
 				<xr:Ref>StdPicture.FindPrevious</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditFindPrevious</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewFoldAll" id="20">
 			<Title>
@@ -2338,7 +2343,7 @@
 				<xr:Ref>StdPicture.CollapseAll</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ViewFoldAll</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewUnfoldAll" id="21">
 			<Title>
@@ -2357,7 +2362,7 @@
 				<xr:Ref>StdPicture.ExpandAll</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ViewUnfoldAll</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewZoomIn" id="22">
 			<Title>
@@ -2376,7 +2381,7 @@
 				<xr:Ref>-16</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ViewZoomIn</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewZoomOut" id="23">
 			<Title>
@@ -2395,7 +2400,7 @@
 				<xr:Ref>-15</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ViewZoomOut</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewZoomReset" id="24">
 			<Title>
@@ -2410,7 +2415,7 @@
 					<v8:content>View zoom reset</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ViewZoomReset</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewUnfold1" id="25">
 			<Title>
@@ -2425,7 +2430,7 @@
 					<v8:content>View unfold1</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ViewUnfold1</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ViewUnfold2" id="26">
 			<Title>
@@ -2440,7 +2445,7 @@
 					<v8:content>View unfold2</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ViewUnfold2</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ClipboardPaste" id="27">
 			<Title>
@@ -2455,7 +2460,7 @@
 					<v8:content>Clipboard paste</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ClipboardPaste</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ClipboardCut" id="28">
 			<Title>
@@ -2470,7 +2475,7 @@
 					<v8:content>Clipboard cut</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ClipboardCut</Action>
+			<Action>EditorAction</Action>
 		</Command>
 		<Command name="ClipboardCopy" id="29">
 			<Title>
@@ -2485,7 +2490,22 @@
 					<v8:content>Clipboard copy</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ClipboardCopy</Action>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewUnfold3" id="30">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>3</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View unfold3</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
 		</Command>
 	</Commands>
 </Form>
