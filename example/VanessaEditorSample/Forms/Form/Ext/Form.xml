@@ -147,10 +147,10 @@
 				<Representation>Compact</Representation>
 				<ExtendedTooltip name="FormGroupFoldExtendedTooltip" id="292"/>
 				<ChildItems>
-					<Button name="FormEditUnfoldAll" id="295">
+					<Button name="FormEditFoldAll" id="293">
 						<Type>CommandBarButton</Type>
-						<CommandName>Form.Command.ViewUnfoldAll</CommandName>
-						<ExtendedTooltip name="FormEditUnfoldAllExtendedTooltip" id="296"/>
+						<CommandName>Form.Command.ViewFoldAll</CommandName>
+						<ExtendedTooltip name="FormEditFoldAllExtendedTooltip" id="294"/>
 					</Button>
 					<Button name="FormViewUnfold1" id="305">
 						<Type>CommandBarButton</Type>
@@ -167,10 +167,10 @@
 						<CommandName>Form.Command.ViewUnfold3</CommandName>
 						<ExtendedTooltip name="FormViewUnfold3ExtendedTooltip" id="318"/>
 					</Button>
-					<Button name="FormEditFoldAll" id="293">
+					<Button name="FormEditUnfoldAll" id="295">
 						<Type>CommandBarButton</Type>
-						<CommandName>Form.Command.ViewFoldAll</CommandName>
-						<ExtendedTooltip name="FormEditFoldAllExtendedTooltip" id="294"/>
+						<CommandName>Form.Command.ViewUnfoldAll</CommandName>
+						<ExtendedTooltip name="FormEditUnfoldAllExtendedTooltip" id="296"/>
 					</Button>
 				</ChildItems>
 			</ButtonGroup>
