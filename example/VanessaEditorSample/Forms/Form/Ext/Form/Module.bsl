@@ -11,7 +11,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
 	MessageText = "Hello, world!";
-	EditorTheme = "vs";
+	EditorTheme = "1c";
 	LineNumber = 1;
 	Column = 1;
 
