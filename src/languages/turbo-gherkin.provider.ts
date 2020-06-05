@@ -147,12 +147,16 @@ export class VanessaGherkinProvider {
       }
     }
     else {
+      let maxColumn = model.getLineMaxColumn(position.lineNumber);
+      if (position.column != maxColumn) return undefined;
       let word = model.getWordUntilPosition(position);
+      let prev = model.findNextMatch(/[^\s]/.source, { lineNumber: position.lineNumber, column: 0 }, true, false, null, false);
+      let minColumn = prev ? Math.min(prev.range.startColumn, word.startColumn) : word.startColumn;
       let range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn
+        startColumn: minColumn,
+        endColumn: maxColumn
       };
       for (let key in this.steps) {
         var e = this.steps[key];
@@ -167,8 +171,8 @@ export class VanessaGherkinProvider {
             filterText: key,
             range: range
           });
-        };
-      };
+        }
+      }
     }
     return { suggestions: result };
   }
@@ -199,51 +203,68 @@ export class VanessaGherkinProvider {
     return { range: range, contents: contents }
   }
 
+  private addQuickFix(list: any, error: monaco.editor.IMarkerData) {
+    let range = {
+      startLineNumber: error.startLineNumber,
+      endLineNumber: error.endLineNumber,
+      startColumn: error.startColumn,
+      endColumn: error.endColumn,
+    };
+    let editor: monaco.editor.IStandaloneCodeEditor = window["VanessaEditor"].editor;
+    let value = editor.getModel().getValueInRange(range);
+    let words = this.key(this.filterWords(this.splitWords(value))).split(' ');
+    for (let key in this.steps) {
+      let sum = 0; let k = {};
+      var step = key.split(' ');
+      words.forEach((w: string) => k[w] ? k[w] += 1 : k[w] = 1);
+      step.forEach((w: string) => k[w] ? k[w] -= 1 : k[w] = -1);
+      for (let i in k) sum = sum + Math.abs(k[i]);
+      if (sum < 3) list.push({ key: key, sum: sum, error: error });
+    }
+  }
+
+  // FIX ERROR !!! https://github.com/microsoft/monaco-editor/issues/1548
+  private getQuickFix(model: monaco.editor.ITextModel, markers: monaco.editor.IMarkerData[]) {
+    let list = [];
+    let actions = [];
+    markers.forEach(e => this.addQuickFix(list, e));
+    list.sort((a, b) => a.sum - b.sum);
+    list.forEach((e, i) => {
+      if (i > 6) return;
+      let step = this.steps[e.key];
+      actions.push({
+        title: step.label,
+        diagnostics: [e.error],
+        kind: "quickfix",
+        edit: {
+          edits: [{
+            resource: model.uri,
+            edits: [{ range: e.error, text: step.insertText }]
+          }]
+        },
+        isPreferred: true
+      });
+    });
+    return actions;
+  }
+
   public getCodeAction(model: monaco.editor.ITextModel
     , range: monaco.Range
     , context: monaco.languages.CodeActionContext
     , token: monaco.CancellationToken) {
-
     if (context.markers.length == 0) return [];
-    if (context.only == "quickfix") {
-      const actions = context.markers.map(error => {
-        return {
-          title: `Example quick fix`,
-          diagnostics: [error],
-          kind: "quickfix",
-          edit: {
-            edits: [
-              {
-                resource: model.uri,
-                edits: [
-                  {
-                    range: error,
-                    text: "This text replaces the text with the error"
-                  }
-                ]
-              }
-            ]
-          },
-          isPreferred: true
-        };
-      });
-      return actions;
-    }
+    if (context.only == "quickfix") return this.getQuickFix(model, context.markers);
     let command = {
       id: window["commandIdQuickFix"],
       title: "Some command!",
       isPreferred: true,
       kind: "quickfix",
     };
-    console.log(command);
-    return [{
-      command: command,
-      title: "Create new step!"
-    },
-    {
-      command: command,
-      title: "Some new command!"
-    },];
+    console.debug(command);
+    return [
+      { command: command, title: "Create new step!" },
+      { command: command, title: "Some new command!" },
+    ];
   }
 
   public checkSyntax() {

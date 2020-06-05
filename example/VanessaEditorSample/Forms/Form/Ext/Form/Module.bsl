@@ -4,7 +4,6 @@ Var VanessaEditor, VanessaGherkinProvider;
 &AtClient
 Var KeyCodeMap;
 
-
 #Region FormEvents
 
 &AtServer
@@ -91,14 +90,88 @@ Procedure GetLineContent(Command)
 
 EndProcedure
 
+#EndRegion
+
+#Region FormActiond
+
+&AtClient
+Procedure ClipboardCut(Command)
+	VanessaEditor.editor.trigger("", "editor.action.clipboardCutAction");
+EndProcedure
+
+&AtClient
+Procedure ClipboardCopy(Command)
+	VanessaEditor.editor.trigger("", "editor.action.clipboardCopyAction");
+EndProcedure
+
+&AtClient
+Procedure ClipboardPaste(Command)
+	VanessaEditor.editor.trigger("", "editor.action.clipboardPasteAction");
+EndProcedure
+
 &AtClient
 Procedure EditUndo(Command)
-	VanessaEditor.undo();
+	VanessaEditor.editor.trigger("", "undo");
 EndProcedure
 
 &AtClient
 Procedure EditRedo(Command)
-	VanessaEditor.redo();
+	VanessaEditor.editor.trigger("", "redo");
+EndProcedure
+
+&AtClient
+Procedure EditFind(Command)
+	VanessaEditor.editor.trigger("", "actions.find");
+EndProcedure
+
+&AtClient
+Procedure EditReplace(Command)
+	VanessaEditor.editor.trigger("", "editor.action.startFindReplaceAction");
+EndProcedure
+
+&AtClient
+Procedure EditFindNext(Command)
+	VanessaEditor.editor.trigger("", "editor.action.nextMatchFindAction");
+EndProcedure
+
+&AtClient
+Procedure EditFindPrevious(Command)
+	VanessaEditor.editor.trigger("", "editor.action.previousMatchFindAction");
+EndProcedure
+
+&AtClient
+Procedure ViewFoldAll(Command)
+	VanessaEditor.editor.trigger("", "editor.foldAll");
+EndProcedure
+
+&AtClient
+Procedure ViewUnfoldAll(Command)
+	VanessaEditor.editor.trigger("", "editor.unfoldAll");
+EndProcedure
+
+&AtClient
+Procedure ViewUnfold1(Command)
+	VanessaEditor.editor.trigger("", "editor.foldLevel1");
+EndProcedure
+
+&AtClient
+Procedure ViewUnfold2(Command)
+	VanessaEditor.editor.trigger("", "editor.foldLevel2");
+EndProcedure
+
+&AtClient
+Procedure ViewZoomIn(Command)
+	VanessaEditor.editor.trigger("", "editor.action.fontZoomIn");
+EndProcedure
+
+&AtClient
+Procedure ViewZoomOut(Command)
+	VanessaEditor.editor.trigger("", "editor.action.fontZoomOut");
+EndProcedure
+
+&AtClient
+Procedure ViewZoomReset(Command)
+	VanessaEditor.editor.trigger("", "editor.action.fontZoomReset");
 EndProcedure
 
 &AtClient
