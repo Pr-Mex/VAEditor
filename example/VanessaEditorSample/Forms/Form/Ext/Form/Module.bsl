@@ -98,7 +98,7 @@ EndProcedure
 &AtClient
 Procedure ReplaceText(Command)
 	
-	Map = New Map;
+	Map = new Map;
 	Map.Insert("startLineNumber", LineNumber);
 	Map.Insert("startColumn", 1);
 	Map.Insert("endLineNumber", LineNumber);
@@ -113,7 +113,7 @@ EndProcedure
 
 &AtClient
 Procedure EditorAction(Command)
-
+	
 	Map = New Map;
 	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
 	Map.Insert("ClipboardCopy", "editor.action.clipboardCopyAction");
@@ -137,6 +137,14 @@ Procedure EditorAction(Command)
 	Map.Insert("ViewZoomOut", "editor.action.fontZoomOut");
 	Map.Insert("ViewZoomReset", "editor.action.fontZoomReset");
 	VanessaEditor.editor.trigger("", Map[Command.Name]);
+	
+EndProcedure
+
+&AtClient
+Procedure LoadStepsAll(Command)
+
+	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
+	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), False);
 
 EndProcedure
 
@@ -155,11 +163,18 @@ Procedure LoadStepsRu(Command)
 EndProcedure
 
 &AtClient
-Procedure LoadStepsAll(Command)
+Procedure LoadKeywordsAll(Command)
+	VanessaGherkinProvider.setKeywords(GetKeywords());
+EndProcedure
 
-	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
-	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), False);
+&AtClient
+Procedure LoadKeywordsEn(Command)
+	VanessaGherkinProvider.setKeywords(GetKeywords("en"));
+EndProcedure
 
+&AtClient
+Procedure LoadKeywordsRu(Command)
+	VanessaGherkinProvider.setKeywords(GetKeywords("ru"));
 EndProcedure
 
 &AtClient
@@ -169,7 +184,7 @@ EndProcedure
 
 &AtClient
 Function GetKeyCodeMap()
-
+	
 	Map = New Map;
 	Map.Insert(0, "Unknown");
 	Map.Insert(1, "Backspace");
@@ -285,7 +300,7 @@ Function GetKeyCodeMap()
 	Map.Insert(111, "ABNT_C2");
 	Map.Insert(112, "MAX_VALUE");
 	return Map;
-
+	
 EndFunction
 
 &AtClient
@@ -493,25 +508,25 @@ EndProcedure
 
 &AtClient
 Procedure AppendEventLog(Event, Data)
-
+	
 	EventRecord = EventLog.Insert(0);
 	EventRecord.Date = CurrentDate();
 	EventRecord.Type = Event;
 	EventRecord.Data = Data;
 	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
-
+	
 EndProcedure
 
 &AtClient
 Function GetKeyInfo(Data)
-
+	
 	res = "";
 	If Data.metaKey  then res = res + "Win+"   ; EndIf;
 	If Data.ctrlKey  then res = res + "Ctrl+"  ; EndIf;
 	If Data.altKey   then res = res + "Alt+"   ; EndIf;
 	If Data.shiftKey then res = res + "Shift+" ; EndIf;
 	return res + KeyCodeMap[Data.keyCode] +  " (" +  Data.keyCode + ")";
-
+	
 EndFunction
 
 &AtClient
@@ -602,9 +617,9 @@ Procedure VanessaDiffEditorDocumentComplete(Item)
 EndProcedure
 
 &AtClient
-Function GetKeywords()
+Function GetKeywords(Language = "")
 
-	TextJSON = "
+	WordsRu = "
 		|и
 		|когда
 		|тогда
@@ -629,6 +644,9 @@ Function GetKeywords()
 		|также
 		|но
 		|а
+		|";
+	
+	WordsEn = "
 		|feature
 		|functionality
 		|business need
@@ -649,8 +667,16 @@ Function GetKeywords()
 
 	split = "
 		|";
+	
+	If Language = "en" then
+		words = WordsEn;
+	ElsIf Language = "ru" then 
+		words = WordsRu;
+	Else 
+		words = WordsRu + WordsEn;
+	EndIf;
 
-	WordList = StrSplit(TextJSON, split, False);
+	WordList = StrSplit(words, split, False);
 
 	Return JsonDump(WordList);
 
@@ -749,6 +775,9 @@ Function GetCommands()
 
 	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
+	
+	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Create new step!"));
+	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Ignore this error"));
 
 	Return JsonDump(CmdList);
 
@@ -756,7 +785,7 @@ EndFunction
 
 &AtClient
 Procedure FillEditorActions();
-
+	
 	TextJSON = VanessaEditor.getActions();
 	JSONReader = New JSONReader;
 	JSONReader.SetString(TextJSON);
@@ -765,9 +794,8 @@ Procedure FillEditorActions();
 		FillPropertyValues(Actions.Add(), Action);
 	EndDo;
 	Actions.Sort("Id");
-
-EndProcedure
-
+	
+EndProcedure	
 
 &AtClient
 Procedure VanessaEditorDocumentComplete(Item)
@@ -786,11 +814,11 @@ EndProcedure
 
 &AtClient
 Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
-
+	
 	Data = Items.Actions.CurrentData;
 	If Data = Undefined Then Return; EndIf;
 	VanessaEditor.editor.trigger("", Data.Id);
-
+	
 EndProcedure
 
 #EndRegion
