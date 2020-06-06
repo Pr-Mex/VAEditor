@@ -98,7 +98,7 @@ EndProcedure
 &AtClient
 Procedure ReplaceText(Command)
 	
-	Map = new Map;
+	Map = New Map;
 	Map.Insert("startLineNumber", LineNumber);
 	Map.Insert("startColumn", 1);
 	Map.Insert("endLineNumber", LineNumber);
@@ -113,7 +113,7 @@ EndProcedure
 
 &AtClient
 Procedure EditorAction(Command)
-	
+
 	Map = New Map;
 	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
 	Map.Insert("ClipboardCopy", "editor.action.clipboardCopyAction");
@@ -137,7 +137,7 @@ Procedure EditorAction(Command)
 	Map.Insert("ViewZoomOut", "editor.action.fontZoomOut");
 	Map.Insert("ViewZoomReset", "editor.action.fontZoomReset");
 	VanessaEditor.editor.trigger("", Map[Command.Name]);
-	
+
 EndProcedure
 
 &AtClient
@@ -169,7 +169,7 @@ EndProcedure
 
 &AtClient
 Function GetKeyCodeMap()
-	
+
 	Map = New Map;
 	Map.Insert(0, "Unknown");
 	Map.Insert(1, "Backspace");
@@ -285,7 +285,7 @@ Function GetKeyCodeMap()
 	Map.Insert(111, "ABNT_C2");
 	Map.Insert(112, "MAX_VALUE");
 	return Map;
-	
+
 EndFunction
 
 &AtClient
@@ -493,25 +493,25 @@ EndProcedure
 
 &AtClient
 Procedure AppendEventLog(Event, Data)
-	
+
 	EventRecord = EventLog.Insert(0);
 	EventRecord.Date = CurrentDate();
 	EventRecord.Type = Event;
 	EventRecord.Data = Data;
 	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
-	
+
 EndProcedure
 
 &AtClient
 Function GetKeyInfo(Data)
-	
+
 	res = "";
 	If Data.metaKey  then res = res + "Win+"   ; EndIf;
 	If Data.ctrlKey  then res = res + "Ctrl+"  ; EndIf;
 	If Data.altKey   then res = res + "Alt+"   ; EndIf;
 	If Data.shiftKey then res = res + "Shift+" ; EndIf;
 	return res + KeyCodeMap[Data.keyCode] +  " (" +  Data.keyCode + ")";
-	
+
 EndFunction
 
 &AtClient
@@ -756,7 +756,7 @@ EndFunction
 
 &AtClient
 Procedure FillEditorActions();
-	
+
 	TextJSON = VanessaEditor.getActions();
 	JSONReader = New JSONReader;
 	JSONReader.SetString(TextJSON);
@@ -765,8 +765,8 @@ Procedure FillEditorActions();
 		FillPropertyValues(Actions.Add(), Action);
 	EndDo;
 	Actions.Sort("Id");
-	
-EndProcedure	
+
+EndProcedure
 
 
 &AtClient
@@ -786,11 +786,11 @@ EndProcedure
 
 &AtClient
 Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
-	
+
 	Data = Items.Actions.CurrentData;
 	If Data = Undefined Then Return; EndIf;
 	VanessaEditor.editor.trigger("", Data.Id);
-	
+
 EndProcedure
 
 #EndRegion
