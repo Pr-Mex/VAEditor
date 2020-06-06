@@ -204,15 +204,14 @@ export class VanessaGherkinProvider {
     return { range: range, contents: contents }
   }
 
-  private addQuickFix(list: any, error: monaco.editor.IMarkerData) {
+  private addQuickFix(model: monaco.editor.ITextModel, list: any, error: monaco.editor.IMarkerData) {
     let range = {
       startLineNumber: error.startLineNumber,
       endLineNumber: error.endLineNumber,
       startColumn: error.startColumn,
       endColumn: error.endColumn,
     };
-    let editor: monaco.editor.IStandaloneCodeEditor = window["VanessaEditor"].editor;
-    let value = editor.getModel().getValueInRange(range);
+    let value = model.getValueInRange(range);
     let words = this.key(this.filterWords(this.splitWords(value))).split(' ');
     for (let key in this.steps) {
       let sum = 0; let k = {};
@@ -228,7 +227,8 @@ export class VanessaGherkinProvider {
   private getQuickFix(model: monaco.editor.ITextModel, markers: monaco.editor.IMarkerData[]) {
     let list = [];
     let actions = [];
-    markers.forEach(e => this.addQuickFix(list, e));
+    let editor: monaco.editor.IStandaloneCodeEditor = window["VanessaEditor"].editor;
+    markers.forEach(e => this.addQuickFix(editor.getModel(), list, e));
     list.sort((a, b) => a.sum - b.sum);
     list.forEach((e, i) => {
       if (i > 6) return;
@@ -255,17 +255,12 @@ export class VanessaGherkinProvider {
     , token: monaco.CancellationToken) {
     if (context.markers.length == 0) return [];
     if (context.only == "quickfix") return this.getQuickFix(model, context.markers);
-    let command = {
-      id: window["commandIdQuickFix"],
-      title: "Some command!",
-      isPreferred: true,
-      kind: "quickfix",
-    };
-    console.debug(command);
-    return [
-      { command: command, title: "Create new step!" },
-      { command: command, title: "Some new command!" },
-    ];
+    let actions = [];
+    let ve = window["VanessaEditor"];
+    if (ve) ve.codeActions.forEach((e: any) => {
+      actions.push({ command: { id: e.id }, title: e.title });
+    });
+    return actions;
   }
 
   public checkSyntax() {

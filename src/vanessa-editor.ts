@@ -4,6 +4,7 @@ import "./languages/turbo-gherkin.contribution";
 
 import { BreakpointManager, RuntimeProcessManager } from "./debug";
 import { ProblemManager } from "./problems";
+import { Entry } from "webpack";
 
 export enum VanessaEditorEvent {
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
@@ -24,6 +25,11 @@ export interface VanessaCommandItem {
   keyCode: string;
   keyMod: Array<string>;
   script: string;
+}
+
+export interface VanessaCodeAction {
+  id: string;
+  title: string;
 }
 
 export class VanessaEditor {
@@ -62,6 +68,7 @@ export class VanessaEditor {
   private problemManager: ProblemManager;
   private syntaxTimer: any = 0;
 
+  public codeActions: Array<VanessaCodeAction>;
   private messages: Array<VanessaEditorMessage>;
   private initialVersion: number;
   private currentVersion: number;
@@ -76,6 +83,7 @@ export class VanessaEditor {
       lightbulb: { enabled: true }
     });
     this.messages = [];
+    this.codeActions = [];
     this.editor.setValue(content);
     this.resetHistory();
 
@@ -132,14 +140,14 @@ export class VanessaEditor {
     this.addCommands = (arg: string) => {
       let list: Array<VanessaCommandItem> = JSON.parse(arg);
       list.forEach((e: any) => {
-        let keybinding: number = Number(monaco.KeyCode[e.keyCode]);
-        e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
-        this.editor.addCommand(keybinding, () => eval.apply(null, [
-          `VanessaEditor.fireEvent("${e.eventId}", VanessaEditor.getPosition().lineNumber)`, e.script
+        let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
+        if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
+        let id: string = this.editor.addCommand(keybinding, () => eval.apply(null, [
+          `VanessaEditor.fireEvent("${e.eventId}", VanessaEditor.getPosition().lineNumber); ${e.script}`
         ]));
+        if (e.title) { this.codeActions.push({id: id, title: e.title});}
       });
     }
-    window["commandIdQuickFix"] = this.editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.F8, () => alert('Create new step!'));
   }
 
   public dispose(): void {
