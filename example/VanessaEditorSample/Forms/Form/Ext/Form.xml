@@ -653,6 +653,38 @@
 												</Button>
 											</ChildItems>
 										</Popup>
+										<Popup name="GroupKeywords" id="327">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Load keywords</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group keywords</v8:content>
+												</v8:item>
+											</ToolTip>
+											<ExtendedTooltip name="GroupKeywordsExtendedTooltip" id="328"/>
+											<ChildItems>
+												<Button name="LoadKeywordsAll" id="333">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadKeywordsAll</CommandName>
+													<ExtendedTooltip name="LoadKeywordsAllExtendedTooltip" id="334"/>
+												</Button>
+												<Button name="LoadKeywordsEn" id="329">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadKeywordsEn</CommandName>
+													<ExtendedTooltip name="LoadKeywordsEnExtendedTooltip" id="330"/>
+												</Button>
+												<Button name="LoadKeywordsRu" id="331">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadKeywordsRu</CommandName>
+													<ExtendedTooltip name="LoadKeywordsRuExtendedTooltip" id="332"/>
+												</Button>
+											</ChildItems>
+										</Popup>
 									</ChildItems>
 								</CommandBar>
 							</ChildItems>
@@ -2599,6 +2631,51 @@
 				</v8:item>
 			</ToolTip>
 			<Action>ReplaceText</Action>
+		</Command>
+		<Command name="LoadKeywordsRu" id="33">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Russian</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load keywords ru</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadKeywordsRu</Action>
+		</Command>
+		<Command name="LoadKeywordsEn" id="34">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>English</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load keywords en</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadKeywordsEn</Action>
+		</Command>
+		<Command name="LoadKeywordsAll" id="35">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>EN+RU</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load keywords all</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadKeywordsAll</Action>
 		</Command>
 	</Commands>
 </Form>
