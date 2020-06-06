@@ -116,9 +116,9 @@ window.onload = () => {
 
     let commands = [
         { eventId: "Win+F6", keyCode: "F6", keyMod: ["WinCtrl"] },
-        { eventId: "Ctrl+F6", keyCode: "F6", keyMod: ["CtrlCmd"] },
-        { eventId: "Shift+F6", keyCode: "F6", keyMod: ["Shift"] },
+        { eventId: "Shift+F6", keyCode: "F6", keyMod: ["Shift"], title: "Some new command!" },
         { eventId: "Ctrl+Alt+F6", keyCode: "F6", keyMod: ["CtrlCmd", "Alt"] },
+        { eventId: "CREATE_STEP", title: "Create new step!", script: "alert('New step!')" },
     ];
     VanessaEditor.addCommands(JSON.stringify(commands))
 }
