@@ -436,6 +436,70 @@
 									<ContextMenu name="MessageContextMenu" id="221"/>
 									<ExtendedTooltip name="MessageExtendedTooltip" id="222"/>
 								</InputField>
+								<CommandBar name="GroupText" id="319">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group text</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group text</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="GroupTextExtendedTooltip" id="320"/>
+									<ChildItems>
+										<Button name="InsertText" id="321">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.InsertText</CommandName>
+											<ExtendedTooltip name="InsertTextExtendedTooltip" id="322"/>
+										</Button>
+										<Button name="ShowMessage" id="225">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.ShowMessage</CommandName>
+											<ExtendedTooltip name="ShowMessageExtendedTooltip" id="226"/>
+										</Button>
+									</ChildItems>
+								</CommandBar>
+								<UsualGroup name="GroupPosition" id="175">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Set cursor position</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group position</v8:content>
+										</v8:item>
+									</ToolTip>
+									<Group>Vertical</Group>
+									<Representation>None</Representation>
+									<ExtendedTooltip name="GroupPositionExtendedTooltip" id="176"/>
+									<ChildItems>
+										<InputField name="LineNumber" id="180">
+											<DataPath>LineNumber</DataPath>
+											<SpinButton>true</SpinButton>
+											<ContextMenu name="LineNumberContextMenu" id="181"/>
+											<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
+											<Events>
+												<Event name="OnChange">PositionOnChange</Event>
+											</Events>
+										</InputField>
+										<InputField name="Column" id="177">
+											<DataPath>Column</DataPath>
+											<SpinButton>true</SpinButton>
+											<ContextMenu name="ColumnContextMenu" id="178"/>
+											<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
+											<Events>
+												<Event name="OnChange">PositionOnChange</Event>
+											</Events>
+										</InputField>
+									</ChildItems>
+								</UsualGroup>
 								<CommandBar name="PanelPosition" id="186">
 									<Title>
 										<v8:item>
@@ -477,52 +541,10 @@
 													<CommandName>Form.Command.GetLineContent</CommandName>
 													<ExtendedTooltip name="GetLineContentExtendedTooltip" id="191"/>
 												</Button>
-												<Button name="ShowMessage" id="225">
-													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.ShowMessage</CommandName>
-													<ExtendedTooltip name="ShowMessageExtendedTooltip" id="226"/>
-												</Button>
 											</ChildItems>
 										</ButtonGroup>
 									</ChildItems>
 								</CommandBar>
-								<UsualGroup name="GroupPosition" id="175">
-									<Title>
-										<v8:item>
-											<v8:lang>ru</v8:lang>
-											<v8:content>Set cursor position</v8:content>
-										</v8:item>
-									</Title>
-									<ToolTip>
-										<v8:item>
-											<v8:lang>ru</v8:lang>
-											<v8:content>Group position</v8:content>
-										</v8:item>
-									</ToolTip>
-									<Group>Vertical</Group>
-									<Representation>None</Representation>
-									<ExtendedTooltip name="GroupPositionExtendedTooltip" id="176"/>
-									<ChildItems>
-										<InputField name="LineNumber" id="180">
-											<DataPath>LineNumber</DataPath>
-											<SpinButton>true</SpinButton>
-											<ContextMenu name="LineNumberContextMenu" id="181"/>
-											<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
-											<Events>
-												<Event name="OnChange">PositionOnChange</Event>
-											</Events>
-										</InputField>
-										<InputField name="Column" id="177">
-											<DataPath>Column</DataPath>
-											<SpinButton>true</SpinButton>
-											<ContextMenu name="ColumnContextMenu" id="178"/>
-											<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
-											<Events>
-												<Event name="OnChange">PositionOnChange</Event>
-											</Events>
-										</InputField>
-									</ChildItems>
-								</UsualGroup>
 								<UsualGroup name="State" id="16">
 									<Title>
 										<v8:item>
@@ -2519,6 +2541,26 @@
 				</v8:item>
 			</ToolTip>
 			<Action>EditorAction</Action>
+		</Command>
+		<Command name="InsertText" id="31">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Insert text</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Insert text</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.Rename</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>InsertText</Action>
+			<Representation>TextPicture</Representation>
 		</Command>
 	</Commands>
 </Form>

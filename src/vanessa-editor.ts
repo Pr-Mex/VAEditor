@@ -38,6 +38,7 @@ export class VanessaEditor {
   public getContent: Function;
   public getLineContent: Function;
   public getPosition: Function;
+  public insertText: Function;
   public setContent: Function;
   public setPosition: Function;
   public setReadOnly: Function;
@@ -109,6 +110,13 @@ export class VanessaEditor {
         result.push({ id: e.id, label: e.label })
       };
       return JSON.stringify(result);
+    }
+    this.insertText = (text: string) => {
+      var position = this.editor.getPosition();
+      var range = new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column);
+      var id = { major: 1, minor: 1 };
+      var op = { identifier: id, range: range, text: text, forceMoveMarkers: true };
+      this.editor.executeEdits("vanessa-editor", [op]);
     }
     this.setContent = (arg: string) => {
       this.editor.setValue(arg);

@@ -90,6 +90,12 @@ Procedure GetLineContent(Command)
 
 EndProcedure
 
+&AtClient
+Procedure InsertText(Command)
+	VanessaEditor.insertText(MessageText);
+EndProcedure
+
+
 #EndRegion
 
 #Region FormActiond
