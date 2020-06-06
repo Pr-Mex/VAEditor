@@ -95,6 +95,17 @@ Procedure InsertText(Command)
 	VanessaEditor.insertText(MessageText);
 EndProcedure
 
+&AtClient
+Procedure ReplaceText(Command)
+	
+	Map = new Map;
+	Map.Insert("startLineNumber", LineNumber);
+	Map.Insert("startColumn", 1);
+	Map.Insert("endLineNumber", LineNumber);
+	Map.Insert("endColumn", Column);
+	VanessaEditor.insertText(MessageText, JsonDump(Map));
+
+EndProcedure
 
 #EndRegion
 

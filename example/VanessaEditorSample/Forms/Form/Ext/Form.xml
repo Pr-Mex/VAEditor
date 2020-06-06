@@ -451,11 +451,34 @@
 									</ToolTip>
 									<ExtendedTooltip name="GroupTextExtendedTooltip" id="320"/>
 									<ChildItems>
-										<Button name="InsertText" id="321">
-											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.InsertText</CommandName>
-											<ExtendedTooltip name="InsertTextExtendedTooltip" id="322"/>
-										</Button>
+										<ButtonGroup name="GroupEditText" id="323">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group edit text</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group edit text</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Representation>Compact</Representation>
+											<ExtendedTooltip name="GroupEditTextExtendedTooltip" id="324"/>
+											<ChildItems>
+												<Button name="InsertText" id="321">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.InsertText</CommandName>
+													<ExtendedTooltip name="InsertTextExtendedTooltip" id="322"/>
+												</Button>
+												<Button name="ReplaceText" id="325">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.ReplaceText</CommandName>
+													<ExtendedTooltip name="ReplaceTextExtendedTooltip" id="326"/>
+												</Button>
+											</ChildItems>
+										</ButtonGroup>
 										<Button name="ShowMessage" id="225">
 											<Type>CommandBarButton</Type>
 											<CommandName>Form.Command.ShowMessage</CommandName>
@@ -2561,6 +2584,21 @@
 			</Picture>
 			<Action>InsertText</Action>
 			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ReplaceText" id="32">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Replace text</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Replace text</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ReplaceText</Action>
 		</Command>
 	</Commands>
 </Form>

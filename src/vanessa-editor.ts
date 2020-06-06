@@ -111,10 +111,10 @@ export class VanessaEditor {
       };
       return JSON.stringify(result);
     }
-    this.insertText = (text: string) => {
-      var position = this.editor.getPosition();
-      var range = new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column);
-      var op = { range: range, text: text, forceMoveMarkers: true };
+    this.insertText = (text: string, arg: string = undefined) => {
+      let position = this.editor.getPosition();
+      let range = arg ? JSON.parse(arg) : new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column);
+      let op = { range: range, text: text, forceMoveMarkers: true };
       this.editor.executeEdits("vanessa-editor", [op]);
     }
     this.setContent = (arg: string) => {
