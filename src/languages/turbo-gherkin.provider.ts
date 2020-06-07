@@ -20,9 +20,10 @@ export class VanessaGherkinProvider {
   }
 
   private filterWords(line: Array<string>): Array<string> {
-    let b = true, s = true;
+    let s = true;
     let notComment = (w: string) => s && w[0] != '#' && w.substring(0, 2) != '//';
-    return line.filter(w => (b && this.isKeyword(w)) ? b = false : (b = false, notComment(w) ? true : s = false));
+    let keyword = this.keywords.find(item => item.every((w: string, i: number) => w == line[i].toLowerCase()));
+    return line.filter((w, i) => (keyword && i <= keyword.length) ? false : (notComment(w) ? true : s = false));
   }
 
   private key(words: Array<string>): string {
@@ -42,7 +43,7 @@ export class VanessaGherkinProvider {
     return this.steps[this.key(words)] == undefined;
   }
 
-  public keywords: Array<string>;
+  public keywords: any;
   private steps: {};
   private elements: {};
   private variables: {};
@@ -56,10 +57,15 @@ export class VanessaGherkinProvider {
     this.steps = {};
     this.elements = {};
     this.variables = {};
-    this.keywords = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
 
-    this.setKeywords = (list: string): void => {
-      this.keywords = JSON.parse(list).map((w: string) => w.toLowerCase());
+    window["VanessaGherkinKeywords"] = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
+
+    this.setKeywords = (arg: string): void => {
+      this.keywords = [];
+      let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
+      window["VanessaGherkinKeywords"] = list;
+      list.forEach((w: string) => this.keywords.push(w.split(" ")));
+      this.keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
     }
 
     this.setElements = (values: string, clear: boolean = false): void => {
