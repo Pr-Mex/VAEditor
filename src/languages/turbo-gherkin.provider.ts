@@ -15,6 +15,7 @@ export class VanessaGherkinProvider {
   }
 
   private splitWords(line: string): Array<string> {
+//    let regexp = /[^\s"':]+|:|["][^"]*["]|['][^']*[']/g;
     let regexp = /(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g;
     return line.match(regexp) || [];
   }

@@ -50,12 +50,10 @@ export class VanessaEditor {
   public setReadOnly: Function;
   public setTheme: Function;
   public revealLine: Function;
+  public setRuntimeProcess: Function;
+  public clearRuntimeProcess: Function;
   public decorateBreakpoints: Function;
-  public decorateCompleteSteps: Function;
-  public decorateCurrentStep: Function;
-  public decorateErrorSteps: Function;
   public decorateProblems: Function;
-  public cleanRuntimeProcess: Function;
   public toggleBreakpoint: Function;
   public showMessage: Function;
   public fireEvent: Function;
@@ -102,12 +100,10 @@ export class VanessaEditor {
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
+    this.setRuntimeProcess = (arg: string, status: string = undefined) => this.runtimeProcessManager.set(JSON.parse(arg), status);
+    this.clearRuntimeProcess = (arg: string, status: string) => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
-    this.decorateCurrentStep = (arg: number) => this.runtimeProcessManager.DecorateCurrentStep(arg);
-    this.decorateCompleteSteps = (arg: string) => this.runtimeProcessManager.DecorateCompleteSteps(JSON.parse(arg));
-    this.decorateErrorSteps = (arg: string) => this.runtimeProcessManager.DecorateErrorSteps(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
-    this.cleanRuntimeProcess = () => this.runtimeProcessManager.CleanDecorates();
     this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
     this.getActions = () => {

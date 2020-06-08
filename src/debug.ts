@@ -25,11 +25,11 @@ export class BreakpointManager {
 
   constructor(
     VanessaEditor: VanessaEditor
-    ) {
-      this.VanessaEditor = VanessaEditor;
+  ) {
+    this.VanessaEditor = VanessaEditor;
   }
 
-  public DecorateBreakpoints (breakpoints: IBreakpoint[]): void {
+  public DecorateBreakpoints(breakpoints: IBreakpoint[]): void {
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     breakpoints.forEach(breakpoint => {
       decorations.push({
@@ -54,7 +54,7 @@ export class BreakpointManager {
     }));
   }
 
-  public breakpointsOnMouseMove (e: monaco.editor.IEditorMouseEvent): void {
+  public breakpointsOnMouseMove(e: monaco.editor.IEditorMouseEvent): void {
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
       const lineNumber: number = e.target.position.lineNumber;
@@ -71,7 +71,7 @@ export class BreakpointManager {
     this.breakpointHintDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.breakpointHintDecorationIds, decorations);
   }
 
-  public breakpointOnDidChangeDecorations (): void {
+  public breakpointOnDidChangeDecorations(): void {
     if (!this.checkBreakpointChangeDecorations) {
       return;
     }
@@ -93,13 +93,13 @@ export class BreakpointManager {
     }
   }
 
-  public breakpointOnMouseDown (e: monaco.editor.IEditorMouseEvent): void {
+  public breakpointOnMouseDown(e: monaco.editor.IEditorMouseEvent): void {
     if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
       this.toggleBreakpoint(e.target.position.lineNumber);
     }
   }
 
-  public toggleBreakpoint (lineNumber: number): void {
+  public toggleBreakpoint(lineNumber: number): void {
     const breakpointIndex: number = this.breakpointIndexByLineNumber(lineNumber);
     if (breakpointIndex === -1) {
       this.checkBreakpointChangeDecorations = false;
@@ -124,7 +124,7 @@ export class BreakpointManager {
     setTimeout(() => this.updateBreakpoints(), 100);
   }
 
-  private updateBreakpoints (): void {
+  private updateBreakpoints(): void {
     const breakpointPacket: IBreakpoint[] = [];
     this.breakpointDecorations.forEach(breakpoint => {
       const range: monaco.Range = this.VanessaEditor.editor.getModel().getDecorationRange(breakpoint.id);
@@ -142,108 +142,49 @@ export class BreakpointManager {
     this.VanessaEditor.fireEvent(VanessaEditorEvent.UPDATE_BREAKPOINTS, JSON.stringify(breakpointPacket));
   }
 
-  private breakpointIndexByLineNumber (lineNumber: any): number {
+  private breakpointIndexByLineNumber(lineNumber: any): number {
     return this.breakpointDecorations.findIndex(breakpoint => (breakpoint.range.startLineNumber === lineNumber));
   }
-}
-
-interface ICompleteStep {
-  lineNumber: number;
-}
-
-interface IErrorStep {
-  lineNumber: number;
-  UID: string;
-  title: string;
 }
 
 export class RuntimeProcessManager {
 
   private VanessaEditor: VanessaEditor;
-
+  private stepDecorationIds: string[] = [];
   private currentStepDecorationIds: string[] = [];
-  private completeStepsDecorationIds: string[] = [];
-  private errorStepsDecorationIds: string[] = [];
 
-  constructor(
-    VanessaEditor: VanessaEditor
-    ) {
-      this.VanessaEditor = VanessaEditor;
+  constructor(VanessaEditor: VanessaEditor) {
+    this.VanessaEditor = VanessaEditor;
   }
 
-  public DecorateCurrentStep (lineNumber: number) : void {
-
+  public set(lines: Array<number>, status: string): void {
     const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
-
-    this.currentStepDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.currentStepDecorationIds, [{
-      range: new monaco.Range(
-          lineNumber,
-          1,
-          lineNumber,
-          model.getLineLastNonWhitespaceColumn(lineNumber)
-        ),
-      options: {
-        stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-        glyphMarginClassName: "debug-current-step-glyph",
-        className: "debug-current-step"
-      }
-    }]);
-  }
-
-  public DecorateCompleteSteps (completeSteps: ICompleteStep[]): void {
-
-    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
-
+    const oldDecorations: Array<string> = [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
-    completeSteps.forEach(step => {
-      decorations.push({
-        range: new monaco.Range(
-          step.lineNumber,
-          1,
-          step.lineNumber,
-          model.getLineLastNonWhitespaceColumn(step.lineNumber)),
+    lines.forEach(line => {
+      model.getLinesDecorations(line, line).forEach(d => {
+        if (d.options.className) oldDecorations.push(d.id);
+      });
+      if (status) decorations.push({
+        range: new monaco.Range(line, 1, line, model.getLineLastNonWhitespaceColumn(line)),
         options: {
           stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-          className: "debug-complete-step"
+          glyphMarginClassName: status == "current" ? "debug-current-step-glyph" : undefined,
+          className: `debug-${status}-step`,
         }
       });
     });
-
-    this.completeStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(
-      this.completeStepsDecorationIds,
-      decorations
-    );
+    const newDecorations = this.VanessaEditor.editor.deltaDecorations(oldDecorations, decorations)
+    if (status == "debug-current-step") {
+      this.currentStepDecorationIds = newDecorations;
+    } else {
+      newDecorations.forEach(s => this.stepDecorationIds.push(s));
+    }
   }
 
-  public DecorateErrorSteps (errorSteps: IErrorStep[]): void {
-
-    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
-
-    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
-    errorSteps.forEach(step => {
-      decorations.push({
-        range: new monaco.Range(
-          step.lineNumber,
-          1,
-          step.lineNumber,
-          model.getLineLastNonWhitespaceColumn(step.lineNumber)),
-        options: {
-          stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-          className: "debug-error-step"
-        }
-      });
-    });
-
-    this.errorStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(
-      this.errorStepsDecorationIds,
-      decorations
-    );
-
-  }
-
-  public CleanDecorates (): void {
-    this.currentStepDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.currentStepDecorationIds, []);
-    this.completeStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.completeStepsDecorationIds, []);
-    this.errorStepsDecorationIds = this.VanessaEditor.editor.deltaDecorations(this.errorStepsDecorationIds, []);
+  public clear(): void {
+    this.VanessaEditor.editor.deltaDecorations(this.currentStepDecorationIds, []);
+    this.VanessaEditor.editor.deltaDecorations(this.stepDecorationIds, []);
+    this.stepDecorationIds = [];
   }
 }
