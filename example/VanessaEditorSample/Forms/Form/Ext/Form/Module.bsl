@@ -11,6 +11,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
 	MessageText = "Hello, world!";
+	RuntimeStatus = "complete";
 	EditorTheme = "1c";
 	LineNumber = 1;
 	Column = 1;
@@ -97,7 +98,7 @@ EndProcedure
 
 &AtClient
 Procedure ReplaceText(Command)
-	
+
 	Map = new Map;
 	Map.Insert("startLineNumber", LineNumber);
 	Map.Insert("startColumn", 1);
@@ -113,7 +114,7 @@ EndProcedure
 
 &AtClient
 Procedure EditorAction(Command)
-	
+
 	Map = New Map;
 	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
 	Map.Insert("ClipboardCopy", "editor.action.clipboardCopyAction");
@@ -137,7 +138,7 @@ Procedure EditorAction(Command)
 	Map.Insert("ViewZoomOut", "editor.action.fontZoomOut");
 	Map.Insert("ViewZoomReset", "editor.action.fontZoomReset");
 	VanessaEditor.editor.trigger("", Map[Command.Name]);
-	
+
 EndProcedure
 
 &AtClient
@@ -184,7 +185,7 @@ EndProcedure
 
 &AtClient
 Function GetKeyCodeMap()
-	
+
 	Map = New Map;
 	Map.Insert(0, "Unknown");
 	Map.Insert(1, "Backspace");
@@ -300,7 +301,7 @@ Function GetKeyCodeMap()
 	Map.Insert(111, "ABNT_C2");
 	Map.Insert(112, "MAX_VALUE");
 	return Map;
-	
+
 EndFunction
 
 &AtClient
@@ -422,46 +423,28 @@ EndProcedure
 &AtClient
 Procedure SendCurrentStep(Command)
 
-	VanessaEditor.decorateCurrentStep(CurrentStep);
+	Steps = New Array;
+	Steps.Add(CurrentStep);
+	VanessaEditor.setRuntimeProcess(JsonDump(Steps), "current");
 
 EndProcedure
 
 &AtClient
 Procedure SendCompleteSteps(Command)
 
-	CompleteStepsPacket = New Array;
-
+	Steps = New Array;
 	For Each Row In CompleteSteps Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.LineNumber);
-		CompleteStepsPacket.Add(Chunk);
+		Steps.Add(Row.LineNumber);
 	EndDo;
-
-	VanessaEditor.decorateCompleteSteps(JsonDump(CompleteStepsPacket));
+	VanessaEditor.setRuntimeProcess(JsonDump(Steps), RuntimeStatus);
 
 EndProcedure
 
-&AtClient
-Procedure SendErrorSteps(Command)
-
-	ErrorStepsPacket = New Array;
-
-	For Each Row In ErrorSteps Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.LineNumber);
-		Chunk.Insert("UID", Row.UID);
-		Chunk.Insert("title", Row.Title);
-		ErrorStepsPacket.Add(Chunk);
-	EndDo;
-
-	VanessaEditor.decorateErrorSteps(JsonDump(ErrorStepsPacket));
-
-EndProcedure
 
 &AtClient
 Procedure CleanRuntimeProgress(Command)
 
-	VanessaEditor.cleanRuntimeProcess();
+	VanessaEditor.clearRuntimeProcess();
 
 EndProcedure
 
@@ -508,25 +491,25 @@ EndProcedure
 
 &AtClient
 Procedure AppendEventLog(Event, Data)
-	
+
 	EventRecord = EventLog.Insert(0);
 	EventRecord.Date = CurrentDate();
 	EventRecord.Type = Event;
 	EventRecord.Data = Data;
 	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
-	
+
 EndProcedure
 
 &AtClient
 Function GetKeyInfo(Data)
-	
+
 	res = "";
 	If Data.metaKey  then res = res + "Win+"   ; EndIf;
 	If Data.ctrlKey  then res = res + "Ctrl+"  ; EndIf;
 	If Data.altKey   then res = res + "Alt+"   ; EndIf;
 	If Data.shiftKey then res = res + "Shift+" ; EndIf;
 	return res + KeyCodeMap[Data.keyCode] +  " (" +  Data.keyCode + ")";
-	
+
 EndFunction
 
 &AtClient
@@ -645,7 +628,7 @@ Function GetKeywords(Language = "")
 		|но
 		|а
 		|";
-	
+
 	WordsEn = "
 		|feature
 		|functionality
@@ -667,12 +650,12 @@ Function GetKeywords(Language = "")
 
 	split = "
 		|";
-	
+
 	If Language = "en" then
 		words = WordsEn;
-	ElsIf Language = "ru" then 
+	ElsIf Language = "ru" then
 		words = WordsRu;
-	Else 
+	Else
 		words = WordsRu + WordsEn;
 	EndIf;
 
@@ -775,7 +758,7 @@ Function GetCommands()
 
 	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
-	
+
 	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Create new step!"));
 	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Ignore this error"));
 
@@ -785,7 +768,7 @@ EndFunction
 
 &AtClient
 Procedure FillEditorActions();
-	
+
 	TextJSON = VanessaEditor.getActions();
 	JSONReader = New JSONReader;
 	JSONReader.SetString(TextJSON);
@@ -794,8 +777,8 @@ Procedure FillEditorActions();
 		FillPropertyValues(Actions.Add(), Action);
 	EndDo;
 	Actions.Sort("Id");
-	
-EndProcedure	
+
+EndProcedure
 
 &AtClient
 Procedure VanessaEditorDocumentComplete(Item)
@@ -814,11 +797,11 @@ EndProcedure
 
 &AtClient
 Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
-	
+
 	Data = Items.Actions.CurrentData;
 	If Data = Undefined Then Return; EndIf;
 	VanessaEditor.editor.trigger("", Data.Id);
-	
+
 EndProcedure
 
 #EndRegion
