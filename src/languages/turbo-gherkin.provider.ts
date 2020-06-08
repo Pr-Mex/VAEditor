@@ -22,7 +22,7 @@ export class VanessaGherkinProvider {
   private filterWords(line: Array<string>): Array<string> {
     let s = true;
     let notComment = (w: string) => s && w[0] != '#' && w.substring(0, 2) != '//';
-    let keyword = this.keywords.find(item => item.every((w: string, i: number) => w == line[i].toLowerCase()));
+    let keyword = this.keywords.find(item => item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase()));
     return line.filter((w, i) => (keyword && i <= keyword.length) ? false : (notComment(w) ? true : s = false));
   }
 
