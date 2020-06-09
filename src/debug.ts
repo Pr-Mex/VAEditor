@@ -171,6 +171,7 @@ export class RuntimeProcessManager {
           stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
           glyphMarginClassName: status == "current" ? "debug-current-step-glyph" : undefined,
           className: `debug-${status}-step`,
+          isWholeLine: true,
         }
       });
     });
