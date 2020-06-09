@@ -149,17 +149,17 @@ export class BreakpointManager {
 
 export class RuntimeProcessManager {
 
-  private VanessaEditor: VanessaEditor;
+  private editor: monaco.editor.IStandaloneCodeEditor;
   private stepDecorationIds: string[] = [];
   private currentStepDecorationIds: string[] = [];
 
   constructor(VanessaEditor: VanessaEditor) {
-    this.VanessaEditor = VanessaEditor;
+    this.editor = VanessaEditor.editor;
   }
 
-  public set(lines: Array<number>, status: string): void {
-    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
-    const oldDecorations: Array<string> = [];
+  public set(status: string, lines: Array<number>): void {
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    const oldDecorations = status == "current" ? this.currentStepDecorationIds : [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     lines.forEach(line => {
       model.getLinesDecorations(line, line).forEach(d => {
@@ -174,17 +174,28 @@ export class RuntimeProcessManager {
         }
       });
     });
-    const newDecorations = this.VanessaEditor.editor.deltaDecorations(oldDecorations, decorations)
-    if (status == "debug-current-step") {
+    const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations)
+    if (status == "current") {
       this.currentStepDecorationIds = newDecorations;
     } else {
       newDecorations.forEach(s => this.stepDecorationIds.push(s));
     }
   }
 
+  public get(status: string): string {
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    const lines = [];
+    let lineCount = model.getLineCount();
+    for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
+      if (model.getLinesDecorations(lineNumber, lineNumber).some(d =>
+        d.options.className == `debug-${status}-step`
+      )) lines.push(lineNumber);
+    };
+    return JSON.stringify(lines);
+  }
+
   public clear(): void {
-    this.VanessaEditor.editor.deltaDecorations(this.currentStepDecorationIds, []);
-    this.VanessaEditor.editor.deltaDecorations(this.stepDecorationIds, []);
-    this.stepDecorationIds = [];
+    this.currentStepDecorationIds = this.editor.deltaDecorations(this.currentStepDecorationIds, []);
+    this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
   }
 }

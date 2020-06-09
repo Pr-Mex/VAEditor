@@ -43,6 +43,7 @@ export class VanessaEditor {
   public getActions: Function;
   public getContent: Function;
   public getLineContent: Function;
+  public getSelectedContent: Function;
   public getPosition: Function;
   public insertText: Function;
   public setContent: Function;
@@ -50,8 +51,9 @@ export class VanessaEditor {
   public setReadOnly: Function;
   public setTheme: Function;
   public revealLine: Function;
-  public setRuntimeProcess: Function;
-  public clearRuntimeProcess: Function;
+  public setRuntimeProgress: Function;
+  public getRuntimeProgress: Function;
+  public clearRuntimeProgress: Function;
   public decorateBreakpoints: Function;
   public decorateProblems: Function;
   public toggleBreakpoint: Function;
@@ -95,13 +97,15 @@ export class VanessaEditor {
     this.popMessage = () => this.messages.shift();
     this.getContent = () => this.editor.getValue();
     this.getLineContent = (num: number) => this.editor.getModel().getLineContent(num);
+    this.getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
     this.getPosition = () => this.editor.getPosition();
     this.setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
-    this.setRuntimeProcess = (arg: string, status: string = undefined) => this.runtimeProcessManager.set(JSON.parse(arg), status);
-    this.clearRuntimeProcess = (arg: string, status: string) => this.runtimeProcessManager.clear();
+    this.setRuntimeProgress = (status: string, arg: string) => this.runtimeProcessManager.set(status, JSON.parse(arg));
+    this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
+    this.clearRuntimeProgress = (arg: string, status: string) => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);

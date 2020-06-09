@@ -15,7 +15,7 @@ export class VanessaGherkinProvider {
   }
 
   private splitWords(line: string): Array<string> {
-//    let regexp = /[^\s"':]+|:|["][^"]*["]|['][^']*[']/g;
+    //    let regexp = /[^\s"':]+|:|["][^"]*["]|['][^']*[']/g;
     let regexp = /(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g;
     return line.match(regexp) || [];
   }
@@ -273,18 +273,22 @@ export class VanessaGherkinProvider {
   public checkSyntax() {
     let ve = window["VanessaEditor"];
     if (ve && ve.editor) {
-      let problems = [];
-      let count = ve.editor.getModel().getLineCount();
-      for (let i = 1; i < count; i++) {
-        let error = this.lineSyntaxError(ve.getLineContent(i));
+      const model: monaco.editor.ITextModel = ve.editor.getModel();
+      let problems: monaco.editor.IMarkerData[] = [];
+      let lineCount = ve.editor.getModel().getLineCount();
+      for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
+        let error = this.lineSyntaxError(ve.getLineContent(lineNumber));
         if (error) problems.push({
-          lineNumber: i,
           code: "0x01",
-          severity: 'Error',
-          message: 'Syntax error: step not found',
+          severity: monaco.MarkerSeverity.Error,
+          message: "Syntax error: step not found",
+          startLineNumber: lineNumber,
+          startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
+          endLineNumber: lineNumber,
+          endColumn: model.getLineLastNonWhitespaceColumn(lineNumber),
         });
       }
-      ve.problemManager.DecorateProblems(problems);
+      monaco.editor.setModelMarkers(model, "problems", problems);
     }
   }
 
