@@ -920,10 +920,10 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Error</v8:content>
+														<v8:content>Complete</v8:content>
 													</v8:item>
 												</Presentation>
-												<Value xsi:type="xs:string">error</Value>
+												<Value xsi:type="xs:string">complete</Value>
 											</xr:Value>
 										</xr:Item>
 										<xr:Item>
@@ -933,10 +933,23 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Complete</v8:content>
+														<v8:content>Pending</v8:content>
 													</v8:item>
 												</Presentation>
-												<Value xsi:type="xs:string">complete</Value>
+												<Value xsi:type="xs:string">pending</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Error</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">error</Value>
 											</xr:Value>
 										</xr:Item>
 										<xr:Item>
