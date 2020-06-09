@@ -564,6 +564,11 @@
 													<CommandName>Form.Command.GetLineContent</CommandName>
 													<ExtendedTooltip name="GetLineContentExtendedTooltip" id="191"/>
 												</Button>
+												<Button name="GetSelectedContent" id="338">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.GetSelectedContent</CommandName>
+													<ExtendedTooltip name="GetSelectedContentExtendedTooltip" id="339"/>
+												</Button>
 											</ChildItems>
 										</ButtonGroup>
 									</ChildItems>
@@ -876,6 +881,9 @@
 											<MinValue xsi:type="xs:decimal">1</MinValue>
 											<ContextMenu name="CurrentStepContextMenu" id="144"/>
 											<ExtendedTooltip name="CurrentStepExtendedTooltip" id="145"/>
+											<Events>
+												<Event name="OnChange">CurrentStepOnChange</Event>
+											</Events>
 										</InputField>
 										<CommandBar name="CurrentStepBar" id="150">
 											<Title>
@@ -886,10 +894,10 @@
 											</Title>
 											<ExtendedTooltip name="CurrentStepBarExtendedTooltip" id="151"/>
 											<ChildItems>
-												<Button name="SendCurrentStep" id="146">
+												<Button name="GetCurrentStep" id="340">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.SendCurrentStep</CommandName>
-													<ExtendedTooltip name="SendCurrentStepExtendedTooltip" id="147"/>
+													<CommandName>Form.Command.GetCurrentStep</CommandName>
+													<ExtendedTooltip name="GetCurrentStepExtendedTooltip" id="341"/>
 												</Button>
 											</ChildItems>
 										</CommandBar>
@@ -997,11 +1005,15 @@
 												<CommandName>Form.Item.CompleteSteps.StandardCommand.Delete</CommandName>
 												<ExtendedTooltip name="CompleteStepsDeleteExtendedTooltip" id="115"/>
 											</Button>
-											<Button name="CompleteStepsSendCompleteSteps" id="116">
+											<Button name="CompleteStepsSetProgress" id="342">
 												<Type>CommandBarButton</Type>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Command.SendCompleteSteps</CommandName>
-												<ExtendedTooltip name="CompleteStepsSendCompleteStepsExtendedTooltip" id="117"/>
+												<CommandName>Form.Command.SetProgress</CommandName>
+												<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
+											</Button>
+											<Button name="CompleteStepsGetProgress" id="344">
+												<Type>CommandBarButton</Type>
+												<CommandName>Form.Command.GetProgress</CommandName>
+												<ExtendedTooltip name="CompleteStepsGetProgressExtendedTooltip" id="345"/>
 											</Button>
 										</ChildItems>
 									</AutoCommandBar>
@@ -2000,11 +2012,15 @@
 			<Action>GetValue</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="SendCompleteSteps" id="1">
+		<Command name="SetProgress" id="1">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
 					<v8:content>Send complete steps</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Set progress</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
@@ -2012,33 +2028,17 @@
 					<v8:lang>en</v8:lang>
 					<v8:content>Send complete steps</v8:content>
 				</v8:item>
-			</ToolTip>
-			<Picture>
-				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
-				<xr:LoadTransparent>true</xr:LoadTransparent>
-			</Picture>
-			<Action>SendCompleteSteps</Action>
-			<Representation>Picture</Representation>
-		</Command>
-		<Command name="SendCurrentStep" id="5">
-			<Title>
 				<v8:item>
-					<v8:lang>en</v8:lang>
-					<v8:content>Send current step</v8:content>
-				</v8:item>
-			</Title>
-			<ToolTip>
-				<v8:item>
-					<v8:lang>en</v8:lang>
-					<v8:content>Send current step</v8:content>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Set progress</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>SendCurrentStep</Action>
-			<Representation>Picture</Representation>
+			<Action>SetProgress</Action>
+			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="CleanRuntimeProgress" id="6">
 			<Title>
@@ -2555,6 +2555,51 @@
 				</v8:item>
 			</ToolTip>
 			<Action>LoadKeywordsAll</Action>
+		</Command>
+		<Command name="GetSelectedContent" id="4">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Selected content</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get selected content</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetSelectedContent</Action>
+		</Command>
+		<Command name="GetCurrentStep" id="5">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get current step</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get current step</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetCurrentStep</Action>
+		</Command>
+		<Command name="GetProgress" id="36">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get progress</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get progress</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetProgress</Action>
 		</Command>
 	</Commands>
 </Form>

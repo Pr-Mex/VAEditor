@@ -67,6 +67,7 @@ EndProcedure
 Procedure PositionOnChange(Item)
 
 	VanessaEditor.setPosition(LineNumber, Column);
+	VanessaEditor.revealLine(LineNumber);
 
 EndProcedure
 
@@ -87,6 +88,33 @@ Procedure GetLineContent(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor.getLineContent(lineNumber);
+	UserMessage.Message();
+
+EndProcedure
+
+&AtClient
+Procedure GetSelectedContent(Command)
+
+	UserMessage = New UserMessage;
+	UserMessage.Text = VanessaEditor.getSelectedContent();
+	UserMessage.Message();
+
+EndProcedure
+
+&AtClient
+Procedure GetCurrentStep(Command)
+
+	UserMessage = New UserMessage;
+	UserMessage.Text = "Current step: " + VanessaEditor.getRuntimeProgress("current");
+	UserMessage.Message();
+
+EndProcedure
+
+&AtClient
+Procedure GetProgress(Command)
+
+	UserMessage = New UserMessage;
+	UserMessage.Text = "Steps " + RuntimeStatus + ": " + VanessaEditor.getRuntimeProgress(RuntimeStatus);
 	UserMessage.Message();
 
 EndProcedure
@@ -418,34 +446,29 @@ EndProcedure
 
 #EndRegion
 
-#Region RuntimeProcess
+#Region RuntimeProgress
 
 &AtClient
-Procedure SendCurrentStep(Command)
-
+Procedure CurrentStepOnChange(Item)
 	Steps = New Array;
 	Steps.Add(CurrentStep);
-	VanessaEditor.setRuntimeProcess(JsonDump(Steps), "current");
-
+	VanessaEditor.setRuntimeProgress("current", JsonDump(Steps));
+	VanessaEditor.revealLine(CurrentStep);
 EndProcedure
 
 &AtClient
-Procedure SendCompleteSteps(Command)
-
+Procedure SetProgress(Command)
 	Steps = New Array;
 	For Each Row In CompleteSteps Do
 		Steps.Add(Row.LineNumber);
 	EndDo;
-	VanessaEditor.setRuntimeProcess(JsonDump(Steps), RuntimeStatus);
-
+	VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(Steps));
 EndProcedure
 
 
 &AtClient
 Procedure CleanRuntimeProgress(Command)
-
-	VanessaEditor.clearRuntimeProcess();
-
+	VanessaEditor.clearRuntimeProgress();
 EndProcedure
 
 #EndRegion
