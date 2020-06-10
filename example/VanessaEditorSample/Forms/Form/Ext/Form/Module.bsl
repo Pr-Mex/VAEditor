@@ -10,6 +10,7 @@ Var KeyCodeMap;
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
+	ErrorText = "First line<br/>Second line";
 	MessageText = "Hello, world!";
 	RuntimeStatus = "complete";
 	EditorTheme = "1c";
@@ -825,6 +826,16 @@ Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
 	If Data = Undefined Then Return; EndIf;
 	VanessaEditor.editor.trigger("", Data.Id);
 
+EndProcedure
+
+&AtClient
+Procedure ShowError(Command)
+	
+	Steps = New Array;
+	Steps.Add(CurrentStep);
+	VanessaEditor.setRuntimeProgress("error", JsonDump(Steps));
+	VanessaEditor.showRuntimeError(CurrentStep, 3, ErrorText);
+	
 EndProcedure
 
 #EndRegion
