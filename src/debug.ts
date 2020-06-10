@@ -1,6 +1,22 @@
 import { VanessaEditor, VanessaEditorEvent } from "./vanessa-editor";
 import { IRange } from "monaco-editor";
 
+import * as monaco from "monaco-editor"
+import { renderMarkdown } from "monaco-editor/esm/vs/base/browser/htmlContentRenderer.js"
+
+const markdownToHTML = (value) => {
+    const result = renderMarkdown({
+        value
+    }, {
+        inline: false,
+        codeBlockRenderer: async function (languageAlias, value) {
+            return await monaco.editor.colorize(value, "markdown", {});
+        }
+
+    })
+    return result
+}
+
 interface IBreakpoint {
   lineNumber: number;
   enable: boolean;
@@ -152,6 +168,7 @@ export class RuntimeProcessManager {
   private editor: monaco.editor.IStandaloneCodeEditor;
   private stepDecorationIds: string[] = [];
   private currentStepDecorationIds: string[] = [];
+  private errorViewZoneIds: Array<number> = [];
 
   constructor(VanessaEditor: VanessaEditor) {
     this.editor = VanessaEditor.editor;
@@ -195,8 +212,34 @@ export class RuntimeProcessManager {
     return JSON.stringify(lines);
   }
 
+  public showError(lineNumber: number, height: number, text: string) {
+    let owner = this;
+    let style = (document.querySelector('div.view-lines') as HTMLElement).style;
+    this.editor.changeViewZones(changeAccessor => {
+      var domNode = document.createElement('div');
+      domNode.classList.add('vanessa-error-widget');
+      domNode.style.fontFamily = style.fontFamily;
+      domNode.style.lineHeight = style.lineHeight;
+      domNode.style.fontSize = style.fontSize;
+      domNode.innerHTML = text;
+      owner.errorViewZoneIds.push(changeAccessor.addZone({
+        afterLineNumber: lineNumber,
+        heightInLines: height,
+        domNode: domNode
+      }));
+    });
+  }
+
+  public clearErrors(): void {
+    let owner = this;
+    this.editor.changeViewZones(changeAccessor =>
+      owner.errorViewZoneIds.forEach(id => changeAccessor.removeZone(id)
+    ));
+  }
+
   public clear(): void {
     this.currentStepDecorationIds = this.editor.deltaDecorations(this.currentStepDecorationIds, []);
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
+    this.clearErrors();
   }
 }
