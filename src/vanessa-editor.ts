@@ -45,6 +45,7 @@ export class VanessaEditor {
   public getLineContent: Function;
   public getSelectedContent: Function;
   public getPosition: Function;
+  public getSelection: Function;
   public insertText: Function;
   public setContent: Function;
   public setPosition: Function;
@@ -102,6 +103,7 @@ export class VanessaEditor {
     this.getLineContent = (num: number) => this.editor.getModel().getLineContent(num);
     this.getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
     this.getPosition = () => this.editor.getPosition();
+    this.getSelection = () => this.editor.getSelection();
     this.setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
