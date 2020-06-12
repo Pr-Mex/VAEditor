@@ -314,6 +314,5 @@ export class VanessaGherkinProvider {
         'editorIndentGuide.activeBackground': '#e0e0e0',
       },
     });
-    monaco.editor.setTheme('1c');
   }
 }

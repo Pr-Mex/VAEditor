@@ -13,7 +13,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	ErrorText = "First line<br/>Second line";
 	MessageText = "Hello, world!";
 	RuntimeStatus = "complete";
-	EditorTheme = "1c";
+	EditorTheme = "vs";
 	LineNumber = 1;
 	Column = 1;
 
@@ -830,12 +830,12 @@ EndProcedure
 
 &AtClient
 Procedure ShowError(Command)
-	
+
 	Steps = New Array;
 	Steps.Add(CurrentStep);
 	VanessaEditor.setRuntimeProgress("error", JsonDump(Steps));
 	VanessaEditor.showRuntimeError(CurrentStep, 3, ErrorText);
-	
+
 EndProcedure
 
 #EndRegion
