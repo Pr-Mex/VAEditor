@@ -73,6 +73,7 @@ export class VanessaEditor {
   private syntaxTimer: any = 0;
 
   public codeActions: Array<VanessaCodeAction>;
+  public codeLens: Array<VanessaCodeAction>;
   private messages: Array<VanessaEditorMessage>;
   private initialVersion: number;
   private currentVersion: number;
@@ -88,6 +89,7 @@ export class VanessaEditor {
     });
     this.messages = [];
     this.codeActions = [];
+    this.codeLens = [];
     this.editor.setValue(content);
     this.resetHistory();
 
@@ -152,7 +154,8 @@ export class VanessaEditor {
         let id: string = this.editor.addCommand(keybinding, () => eval.apply(null, [
           `VanessaEditor.fireEvent("${e.eventId}", VanessaEditor.getPosition().lineNumber); ${e.script}`
         ]));
-        if (e.title) { this.codeActions.push({id: id, title: e.title});}
+        if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
+        if (e.codeLens) { this.codeLens.push({ id: id, title: e.codeLens }); }
       });
     }
     this.setSuggestWidgetWidth = (arg: any) => {
@@ -164,7 +167,7 @@ export class VanessaEditor {
         style.id = id;
         document.head.appendChild(style)
       }
-      let width = typeof(arg) == "number" ? String(arg) + 'px' : arg;
+      let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
       style.innerHTML = `.suggest-widget{width:${width} !important}`;
     }
   }

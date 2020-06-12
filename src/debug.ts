@@ -223,6 +223,7 @@ export class RuntimeProcessManager {
       domNode.style.fontSize = style.fontSize;
       domNode.innerHTML = text;
       owner.errorViewZoneIds.push(changeAccessor.addZone({
+        afterColumn: this.editor.getModel().getLineFirstNonWhitespaceColumn(lineNumber),
         afterLineNumber: lineNumber,
         heightInLines: height,
         domNode: domNode

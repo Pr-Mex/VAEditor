@@ -261,6 +261,7 @@ export class VanessaGherkinProvider {
     , context: monaco.languages.CodeActionContext
     , token: monaco.CancellationToken) {
     if (context.markers.length == 0) return [];
+    if (context.markers.every(e => e.severity != monaco.MarkerSeverity.Error)) return [];
     if (context.only == "quickfix") return this.getQuickFix(model, context.markers);
     let actions = [];
     let ve = window["VanessaEditor"];
@@ -279,7 +280,6 @@ export class VanessaGherkinProvider {
       for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
         let error = this.lineSyntaxError(ve.getLineContent(lineNumber));
         if (error) problems.push({
-          code: "0x01",
           severity: monaco.MarkerSeverity.Error,
           message: "Syntax error: step not found",
           startLineNumber: lineNumber,
@@ -288,7 +288,7 @@ export class VanessaGherkinProvider {
           endColumn: model.getLineLastNonWhitespaceColumn(lineNumber),
         });
       }
-      monaco.editor.setModelMarkers(model, "problems", problems);
+      monaco.editor.setModelMarkers(model, "syntax", problems);
     }
   }
 

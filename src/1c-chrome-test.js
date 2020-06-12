@@ -114,11 +114,25 @@ window.onload = () => {
 
     createVanessaEditor(content, 'turbo-gherkin');
 
+
     let commands = [
         { eventId: "Win+F6", keyCode: "F6", keyMod: ["WinCtrl"] },
         { eventId: "Shift+F6", keyCode: "F6", keyMod: ["Shift"], title: "Some new command!" },
         { eventId: "Ctrl+Alt+F6", keyCode: "F6", keyMod: ["CtrlCmd", "Alt"] },
         { eventId: "CREATE_STEP", title: "Create new step!", script: "alert('New step!')" },
+        { eventId: "CODE_LENS_DATA", codeLens: "Details", script: "alert('Details!')" },
+        { eventId: "CODE_LENS_COPY", codeLens: "Copy error", script: "alert('Copy error!')" },
     ];
-    VanessaEditor.addCommands(JSON.stringify(commands))
+    VanessaEditor.addCommands(JSON.stringify(commands));
+
+    let problems = [{
+		"lineNumber": 11,
+		"severity": "Hint",
+		"message": "Runtime error",
+		"code": "0x1005",
+		"source": "Data info",
+    }];
+    VanessaEditor.decorateProblems(JSON.stringify(problems));
+
+    VanessaEditor.setRuntimeProgress("error", "[13]");
 }
