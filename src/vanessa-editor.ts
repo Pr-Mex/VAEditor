@@ -56,6 +56,7 @@ export class VanessaEditor {
   public clearRuntimeProgress: Function;
   public showRuntimeError: Function;
   public clearRuntimeErrors: Function;
+  public setSuggestWidgetWidth: Function;
   public decorateBreakpoints: Function;
   public decorateProblems: Function;
   public toggleBreakpoint: Function;
@@ -151,6 +152,18 @@ export class VanessaEditor {
         ]));
         if (e.title) { this.codeActions.push({id: id, title: e.title});}
       });
+    }
+    this.setSuggestWidgetWidth = (arg: any) => {
+      const id = 'vanessa-suggest-widget-style';
+      let style = document.getElementById(id) as HTMLElement;
+      if (style == null) {
+        style = document.createElement('style');
+        style.setAttribute("type", "text/css");
+        style.id = id;
+        document.head.appendChild(style)
+      }
+      let width = typeof(arg) == "number" ? String(arg) + 'px' : arg;
+      style.innerHTML = `.suggest-widget{width:${width} !important}`;
     }
   }
 
