@@ -63,6 +63,7 @@ export class VanessaEditor {
   public toggleBreakpoint: Function;
   public showMessage: Function;
   public fireEvent: Function;
+  public refresh: Function;
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   public useKeyboardTracer: boolean;
@@ -151,9 +152,12 @@ export class VanessaEditor {
       list.forEach((e: any) => {
         let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
         if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
-        let id: string = this.editor.addCommand(keybinding, () => eval.apply(null, [
-          `VanessaEditor.fireEvent("${e.eventId}", VanessaEditor.getPosition().lineNumber); ${e.script}`
-        ]));
+        let id: string = this.editor.addCommand(keybinding, (c, a) => {
+          let v: VanessaEditor = window["VanessaEditor"];
+          let n = a ? a : v.getPosition().lineNumber;
+          v.fireEvent(`${e.eventId}`, n);
+          eval.apply(null, [`${e.script}`]);
+        });
         if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
         if (e.codeLens) { this.codeLens.push({ id: id, title: e.codeLens }); }
       });
@@ -169,6 +173,12 @@ export class VanessaEditor {
       }
       let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
       style.innerHTML = `.suggest-widget{width:${width} !important}`;
+    }
+    this.refresh = () => {
+      let model = this.editor.getModel();
+      let range = new monaco.Range(1, 1, 2, 1);
+      let value = model.getValueInRange(range);
+      model.applyEdits([{ range: range, text: value }]);
     }
   }
 

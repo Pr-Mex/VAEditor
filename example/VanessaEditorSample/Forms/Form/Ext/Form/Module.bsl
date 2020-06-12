@@ -464,6 +464,7 @@ Procedure SetProgress(Command)
 		Steps.Add(Row.LineNumber);
 	EndDo;
 	VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(Steps));
+	VanessaEditor.refresh();
 EndProcedure
 
 
@@ -785,6 +786,9 @@ Function GetCommands()
 
 	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Create new step!"));
 	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Ignore this error"));
+
+	CmdList.Add(New Structure("eventId, codeLens", "CODE_LENS_DATA", "Details"));
+	CmdList.Add(New Structure("eventId, codeLens", "CODE_LENS_COPY", "Copy error"));
 
 	Return JsonDump(CmdList);
 
