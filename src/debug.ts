@@ -5,16 +5,16 @@ import * as monaco from "monaco-editor"
 import { renderMarkdown } from "monaco-editor/esm/vs/base/browser/htmlContentRenderer.js"
 
 const markdownToHTML = (value) => {
-    const result = renderMarkdown({
-        value
-    }, {
-        inline: false,
-        codeBlockRenderer: async function (languageAlias, value) {
-            return await monaco.editor.colorize(value, "markdown", {});
-        }
+  const result = renderMarkdown({
+    value
+  }, {
+    inline: false,
+    codeBlockRenderer: async function (languageAlias, value) {
+      return await monaco.editor.colorize(value, "markdown", {});
+    }
 
-    })
-    return result
+  })
+  return result
 }
 
 interface IBreakpoint {
@@ -175,6 +175,7 @@ export class RuntimeProcessManager {
   }
 
   public set(status: string, lines: Array<number>): void {
+    this.editor.setSelection(new monaco.Range(1, 1, 1, 1));
     const model: monaco.editor.ITextModel = this.editor.getModel();
     const oldDecorations = status == "current" ? this.currentStepDecorationIds : [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -183,7 +184,7 @@ export class RuntimeProcessManager {
         if (d.options.className) oldDecorations.push(d.id);
       });
       if (status) decorations.push({
-        range: new monaco.Range(line, 1, line, model.getLineLastNonWhitespaceColumn(line)),
+        range: new monaco.Range(line, 1, line, 1),
         options: {
           stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
           glyphMarginClassName: status == "current" ? "debug-current-step-glyph" : undefined,
@@ -235,7 +236,7 @@ export class RuntimeProcessManager {
     let owner = this;
     this.editor.changeViewZones(changeAccessor =>
       owner.errorViewZoneIds.forEach(id => changeAccessor.removeZone(id)
-    ));
+      ));
   }
 
   public clear(): void {
