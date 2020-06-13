@@ -134,5 +134,5 @@ window.onload = () => {
     }];
     VanessaEditor.decorateProblems(JSON.stringify(problems));
 
-//    VanessaEditor.setRuntimeProgress("error", "[13]");
+    VanessaEditor.setRuntimeProgress("error", "[13]");
 }
