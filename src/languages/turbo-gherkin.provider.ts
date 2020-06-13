@@ -24,7 +24,7 @@ export class VanessaGherkinProvider {
     let s = true;
     let notComment = (w: string) => s && w[0] != '#' && w.substring(0, 2) != '//';
     let keyword = this.keywords.find(item => item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase()));
-    return line.filter((w, i) => (keyword && i <= keyword.length) ? false : (notComment(w) ? true : s = false));
+    return line.filter((w, i) => (keyword && i < keyword.length) ? false : (notComment(w) ? true : s = false));
   }
 
   private key(words: Array<string>): string {
