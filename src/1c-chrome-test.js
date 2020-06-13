@@ -114,7 +114,6 @@ window.onload = () => {
 
     createVanessaEditor(content, 'turbo-gherkin');
 
-
     let commands = [
         { eventId: "Win+F6", keyCode: "F6", keyMod: ["WinCtrl"] },
         { eventId: "Shift+F6", keyCode: "F6", keyMod: ["Shift"], title: "Some new command!" },
@@ -134,5 +133,7 @@ window.onload = () => {
     }];
     VanessaEditor.decorateProblems(JSON.stringify(problems));
 
+    let error = "Runtime error info";
     VanessaEditor.setRuntimeProgress("error", "[13]");
+	VanessaEditor.showRuntimeError(13, 2, error);
 }

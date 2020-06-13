@@ -219,10 +219,16 @@ export class RuntimeProcessManager {
     this.editor.changeViewZones(changeAccessor => {
       var domNode = document.createElement('div');
       domNode.classList.add('vanessa-error-widget');
+      domNode.style.zIndex = "9999";
       domNode.style.fontFamily = style.fontFamily;
       domNode.style.lineHeight = style.lineHeight;
       domNode.style.fontSize = style.fontSize;
-      domNode.innerHTML = text;
+      var subNode = document.createElement('span');
+      subNode.innerHTML = text;
+      domNode.appendChild(subNode);
+      var subNode = document.createElement('span');
+      subNode.innerHTML = "<div><a href='#'>Details</a><span>&nbsp;|&nbsp;</span><a href='#'>Copy error</a></div>";
+      domNode.appendChild(subNode);
       owner.errorViewZoneIds.push(changeAccessor.addZone({
         afterColumn: this.editor.getModel().getLineFirstNonWhitespaceColumn(lineNumber),
         afterLineNumber: lineNumber,
