@@ -115,7 +115,7 @@ export class VanessaEditor {
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
-    this.setRuntimeProgress = (status: string, arg: string) => this.runtimeProcessManager.set(status, JSON.parse(arg));
+    this.setRuntimeProgress = (status: string, arg: string) => this.runtimeProcessManager.set(status, typeof (arg) == "string" ? JSON.parse(arg) : arg);
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
     this.showRuntimeError = (lineNumber: number, code: string, text: string) => this.runtimeProcessManager.showError(lineNumber, code, text);
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
@@ -169,85 +169,85 @@ export class VanessaEditor {
           if (e.codeLens) { this.codeLens.push({ id: id, title: e.codeLens }); }
         }
       });
-  }
-  this.setSuggestWidgetWidth = (arg: any) => {
-  const id = 'vanessa-suggest-widget-style';
-  let style = document.getElementById(id) as HTMLElement;
-  if (style == null) {
-    style = document.createElement('style');
-    style.setAttribute("type", "text/css");
-    style.id = id;
-    document.head.appendChild(style)
-  }
-  let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
-  style.innerHTML = `.suggest-widget{width:${width} !important}`;
-}
-this.refresh = () => {
-  let model = this.editor.getModel();
-  let range = new monaco.Range(1, 1, 2, 1);
-  let value = model.getValueInRange(range);
-  model.applyEdits([{ range: range, text: value }]);
-}
+    }
+    this.setSuggestWidgetWidth = (arg: any) => {
+      const id = 'vanessa-suggest-widget-style';
+      let style = document.getElementById(id) as HTMLElement;
+      if (style == null) {
+        style = document.createElement('style');
+        style.setAttribute("type", "text/css");
+        style.id = id;
+        document.head.appendChild(style)
+      }
+      let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
+      style.innerHTML = `.suggest-widget{width:${width} !important}`;
+    }
+    this.refresh = () => {
+      let model = this.editor.getModel();
+      let range = new monaco.Range(1, 1, 2, 1);
+      let value = model.getValueInRange(range);
+      model.applyEdits([{ range: range, text: value }]);
+    }
   }
 
   public dispose(): void {
-  this.editor.dispose();
-}
+    this.editor.dispose();
+  }
 
   private resetHistory() {
-  this.initialVersion = this.editor.getModel().getAlternativeVersionId();
-  this.currentVersion = this.initialVersion;
-  this.lastVersion = this.initialVersion;
-}
+    this.initialVersion = this.editor.getModel().getAlternativeVersionId();
+    this.currentVersion = this.initialVersion;
+    this.lastVersion = this.initialVersion;
+  }
 
   private subscribeEditorEvents(): void {
 
-  this.editor.onDidChangeModelContent(
-    () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
-  );
+    this.editor.onDidChangeModelContent(
+      () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
+    );
 
-  this.editor.onDidChangeCursorPosition(
-    (e: monaco.editor.ICursorPositionChangedEvent) => {
-      this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
-    }
-  );
-
-  this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
-  this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
-  this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
-  this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
-
-  const model: monaco.editor.ITextModel = this.editor.getModel();
-
-  model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
-
-  this.checkSyntax = () => {
-    clearTimeout(this.syntaxTimer);
-    this.syntaxTimer = setTimeout(() => {
-      window["VanessaGherkinProvider"].checkSyntax();
-    }, 1000);
-  }
-
-    this.checkSyntax();
-
-  this.editor.onDidChangeModelContent(() => {
-    this.checkSyntax();
-    const versionId = this.editor.getModel().getAlternativeVersionId();
-    let buttons = { undo: true, redo: true, version: versionId };
-    if (versionId < this.currentVersion) {
-      if (versionId === this.initialVersion) buttons.undo = false;
-    } else {
-      // redoing
-      if (versionId <= this.lastVersion) {
-        // redoing the last change
-        if (versionId == this.lastVersion) buttons.redo = false;
-      } else { // adding new change, disable redo when adding new changes
-        buttons.redo = false;
-        if (this.currentVersion > this.lastVersion) this.lastVersion = this.currentVersion;
+    this.editor.onDidChangeCursorPosition(
+      (e: monaco.editor.ICursorPositionChangedEvent) => {
+        this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
+    );
+
+    this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
+    this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
+    this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
+    this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
+
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+
+    model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
+
+    this.checkSyntax = () => {
+      clearTimeout(this.syntaxTimer);
+      this.syntaxTimer = setTimeout(() => {
+        window["VanessaGherkinProvider"].checkSyntax();
+      }, 1000);
     }
-    this.currentVersion = versionId;
-    this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, buttons)
-  });
-}
+
+    this.checkSyntax();
+
+    this.editor.onDidChangeModelContent(() => {
+      this.checkSyntax();
+      const versionId = this.editor.getModel().getAlternativeVersionId();
+      let buttons = { undo: true, redo: true, version: versionId };
+      if (versionId < this.currentVersion) {
+        if (versionId === this.initialVersion) buttons.undo = false;
+      } else {
+        // redoing
+        if (versionId <= this.lastVersion) {
+          // redoing the last change
+          if (versionId == this.lastVersion) buttons.redo = false;
+        } else { // adding new change, disable redo when adding new changes
+          buttons.redo = false;
+          if (this.currentVersion > this.lastVersion) this.lastVersion = this.currentVersion;
+        }
+      }
+      this.currentVersion = versionId;
+      this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, buttons)
+    });
+  }
 }

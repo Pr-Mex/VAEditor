@@ -176,12 +176,12 @@ export class RuntimeProcessManager {
     this.editor = VanessaEditor.editor;
   }
 
-  public set(status: string, lines: Array<number>): void {
+  public set(status: string, lines: Array<number> | number): void {
     this.editor.setSelection(new monaco.Range(1, 1, 1, 1));
     const model: monaco.editor.ITextModel = this.editor.getModel();
     const oldDecorations = status == "current" ? this.currentStepDecorationIds : [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
-    lines.forEach(line => {
+    (typeof (lines) == "number" ? [lines] : lines).forEach(line => {
       model.getLinesDecorations(line, line).forEach(d => {
         if (d.options.className) oldDecorations.push(d.id);
       });
@@ -229,6 +229,7 @@ export class RuntimeProcessManager {
       supNode.innerText = text;
       domNode.appendChild(supNode);
       var subNode = document.createElement('div');
+      subNode.classList.add('vanessa-error-links');
       this.VanessaEditor.errorLinks.forEach((e, i) => {
         if (i) {
           let textNode = document.createElement('span');

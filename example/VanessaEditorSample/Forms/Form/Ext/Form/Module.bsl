@@ -141,9 +141,7 @@ EndProcedure
 &AtClient
 Procedure ShowError(Command)
 
-	Steps = New Array;
-	Steps.Add(CurrentStep);
-	VanessaEditor.setRuntimeProgress("error", JsonDump(Steps));
+	VanessaEditor.setRuntimeProgress("error", CurrentStep);
 	VanessaEditor.showRuntimeError(CurrentStep, ErrorCode, ErrorText);
 
 EndProcedure
@@ -471,9 +469,7 @@ EndProcedure
 
 &AtClient
 Procedure CurrentStepOnChange(Item)
-	Steps = New Array;
-	Steps.Add(CurrentStep);
-	VanessaEditor.setRuntimeProgress("current", JsonDump(Steps));
+	VanessaEditor.setRuntimeProgress("current", CurrentStep);
 	VanessaEditor.revealLine(CurrentStep);
 EndProcedure
 
@@ -784,18 +780,6 @@ Function GetCommands()
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Alt+F5", "F5", KeyMod));
 
 	KeyMod = New Array;
-	KeyMod.Add("WinCtrl");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Win+F5", "F5", KeyMod));
-
-	KeyMod = New Array;
-	KeyMod.Add("CtrlCmd");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+F5", "F5", KeyMod));
-
-	KeyMod = New Array;
-	KeyMod.Add("Shift");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Shift+F5", "F5", KeyMod));
-
-	KeyMod = New Array;
 	KeyMod.Add("Shift");
 	KeyMod.Add("CtrlCmd");
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Shift+F5", "F5", KeyMod));
@@ -809,8 +793,8 @@ Function GetCommands()
 	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Create new step!"));
 	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Ignore this error"));
 
-	CmdList.Add(New Structure("eventId, errorLinks", "ERROR_DATA", "Details"));
-	CmdList.Add(New Structure("eventId, errorLinks", "ERROR_COPY", "Copy error"));
+	CmdList.Add(New Structure("eventId, errorLink", "ERROR_DATA", "Details"));
+	CmdList.Add(New Structure("eventId, errorLink", "ERROR_COPY", "Copy error"));
 
 	Return JsonDump(CmdList);
 
