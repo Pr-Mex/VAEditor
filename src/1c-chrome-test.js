@@ -134,6 +134,6 @@ window.onload = () => {
     VanessaEditor.decorateProblems(JSON.stringify(problems));
 
     let error = "Runtime error info";
-    VanessaEditor.setRuntimeProgress("error", "[13]");
+    VanessaEditor.setRuntimeProgress("error", 13);
 	VanessaEditor.showRuntimeError(13, "0x01", error);
 }
