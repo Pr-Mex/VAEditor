@@ -68,6 +68,7 @@ export class VanessaEditor {
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   public useKeyboardTracer: boolean;
+  public doErrorLink: Function;
 
   private breakpointManager: BreakpointManager;
   private runtimeProcessManager: RuntimeProcessManager;
@@ -124,6 +125,7 @@ export class VanessaEditor {
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
+    this.doErrorLink = (e: HTMLElement) => this.fireEvent(e.getAttribute("data-id"), e.getAttribute("data-value"));
     this.getActions = () => {
       let result = [];
       let actions: Object = this.editor["_actions"];

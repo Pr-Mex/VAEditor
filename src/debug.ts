@@ -238,7 +238,9 @@ export class RuntimeProcessManager {
         }
         let linkNode = document.createElement('a');
         linkNode.setAttribute("href", "#");
-        linkNode.setAttribute('onclick', `VanessaEditor.fireEvent("${e.id}", "${code}")`);
+        linkNode.setAttribute("data-id", e.id);
+        linkNode.setAttribute("data-value", code);
+        linkNode.setAttribute("onclick", "VanessaEditor.doErrorLink(this)");
         linkNode.innerText = e.title;
         subNode.appendChild(linkNode);
       });
