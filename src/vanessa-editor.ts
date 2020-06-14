@@ -75,6 +75,7 @@ export class VanessaEditor {
   private syntaxTimer: any = 0;
 
   public codeActions: Array<VanessaCodeAction>;
+  public errorLinks: Array<VanessaCodeAction>;
   public codeLens: Array<VanessaCodeAction>;
   private messages: Array<VanessaEditorMessage>;
   private initialVersion: number;
@@ -91,6 +92,7 @@ export class VanessaEditor {
     });
     this.messages = [];
     this.codeActions = [];
+    this.errorLinks = [];
     this.codeLens = [];
     this.editor.setValue(content);
     this.resetHistory();
@@ -115,7 +117,7 @@ export class VanessaEditor {
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
     this.setRuntimeProgress = (status: string, arg: string) => this.runtimeProcessManager.set(status, JSON.parse(arg));
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
-    this.showRuntimeError = (lineNumber: number, height: number, text: string) => this.runtimeProcessManager.showError(lineNumber, height, text);
+    this.showRuntimeError = (lineNumber: number, code: string, text: string) => this.runtimeProcessManager.showError(lineNumber, code, text);
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
@@ -152,96 +154,100 @@ export class VanessaEditor {
     this.addCommands = (arg: string) => {
       let list: Array<VanessaCommandItem> = JSON.parse(arg);
       list.forEach((e: any) => {
-        let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
-        if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
-        let id: string = this.editor.addCommand(keybinding, (c, a) => {
-          let v: VanessaEditor = window["VanessaEditor"];
-          let n = a ? a : v.getPosition().lineNumber;
-          v.fireEvent(`${e.eventId}`, n);
-          eval.apply(null, [`${e.script}`]);
-        });
-        if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
-        if (e.codeLens) { this.codeLens.push({ id: id, title: e.codeLens }); }
+        if (e.errorLink) {
+          this.errorLinks.push({ id: e.eventId, title: e.errorLink });
+        } else {
+          let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
+          if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
+          let id: string = this.editor.addCommand(keybinding, (c, a) => {
+            let v: VanessaEditor = window["VanessaEditor"];
+            let n = a ? a : v.getPosition().lineNumber;
+            v.fireEvent(`${e.eventId}`, n);
+            eval.apply(null, [`${e.script}`]);
+          });
+          if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
+          if (e.codeLens) { this.codeLens.push({ id: id, title: e.codeLens }); }
+        }
       });
-    }
-    this.setSuggestWidgetWidth = (arg: any) => {
-      const id = 'vanessa-suggest-widget-style';
-      let style = document.getElementById(id) as HTMLElement;
-      if (style == null) {
-        style = document.createElement('style');
-        style.setAttribute("type", "text/css");
-        style.id = id;
-        document.head.appendChild(style)
-      }
-      let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
-      style.innerHTML = `.suggest-widget{width:${width} !important}`;
-    }
-    this.refresh = () => {
-      let model = this.editor.getModel();
-      let range = new monaco.Range(1, 1, 2, 1);
-      let value = model.getValueInRange(range);
-      model.applyEdits([{ range: range, text: value }]);
-    }
+  }
+  this.setSuggestWidgetWidth = (arg: any) => {
+  const id = 'vanessa-suggest-widget-style';
+  let style = document.getElementById(id) as HTMLElement;
+  if (style == null) {
+    style = document.createElement('style');
+    style.setAttribute("type", "text/css");
+    style.id = id;
+    document.head.appendChild(style)
+  }
+  let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
+  style.innerHTML = `.suggest-widget{width:${width} !important}`;
+}
+this.refresh = () => {
+  let model = this.editor.getModel();
+  let range = new monaco.Range(1, 1, 2, 1);
+  let value = model.getValueInRange(range);
+  model.applyEdits([{ range: range, text: value }]);
+}
   }
 
   public dispose(): void {
-    this.editor.dispose();
-  }
+  this.editor.dispose();
+}
 
   private resetHistory() {
-    this.initialVersion = this.editor.getModel().getAlternativeVersionId();
-    this.currentVersion = this.initialVersion;
-    this.lastVersion = this.initialVersion;
-  }
+  this.initialVersion = this.editor.getModel().getAlternativeVersionId();
+  this.currentVersion = this.initialVersion;
+  this.lastVersion = this.initialVersion;
+}
 
   private subscribeEditorEvents(): void {
 
-    this.editor.onDidChangeModelContent(
-      () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
-    );
+  this.editor.onDidChangeModelContent(
+    () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
+  );
 
-    this.editor.onDidChangeCursorPosition(
-      (e: monaco.editor.ICursorPositionChangedEvent) => {
-        this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
-      }
-    );
-
-    this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
-    this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
-    this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
-    this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
-
-    const model: monaco.editor.ITextModel = this.editor.getModel();
-
-    model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
-
-    this.checkSyntax = () => {
-      clearTimeout(this.syntaxTimer);
-      this.syntaxTimer = setTimeout(() => {
-        window["VanessaGherkinProvider"].checkSyntax();
-      }, 1000);
+  this.editor.onDidChangeCursorPosition(
+    (e: monaco.editor.ICursorPositionChangedEvent) => {
+      this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
     }
+  );
+
+  this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
+  this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
+  this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
+  this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
+
+  const model: monaco.editor.ITextModel = this.editor.getModel();
+
+  model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
+
+  this.checkSyntax = () => {
+    clearTimeout(this.syntaxTimer);
+    this.syntaxTimer = setTimeout(() => {
+      window["VanessaGherkinProvider"].checkSyntax();
+    }, 1000);
+  }
 
     this.checkSyntax();
 
-    this.editor.onDidChangeModelContent(() => {
-      this.checkSyntax();
-      const versionId = this.editor.getModel().getAlternativeVersionId();
-      let buttons = { undo: true, redo: true, version: versionId };
-      if (versionId < this.currentVersion) {
-        if (versionId === this.initialVersion) buttons.undo = false;
-      } else {
-        // redoing
-        if (versionId <= this.lastVersion) {
-          // redoing the last change
-          if (versionId == this.lastVersion) buttons.redo = false;
-        } else { // adding new change, disable redo when adding new changes
-          buttons.redo = false;
-          if (this.currentVersion > this.lastVersion) this.lastVersion = this.currentVersion;
-        }
+  this.editor.onDidChangeModelContent(() => {
+    this.checkSyntax();
+    const versionId = this.editor.getModel().getAlternativeVersionId();
+    let buttons = { undo: true, redo: true, version: versionId };
+    if (versionId < this.currentVersion) {
+      if (versionId === this.initialVersion) buttons.undo = false;
+    } else {
+      // redoing
+      if (versionId <= this.lastVersion) {
+        // redoing the last change
+        if (versionId == this.lastVersion) buttons.redo = false;
+      } else { // adding new change, disable redo when adding new changes
+        buttons.redo = false;
+        if (this.currentVersion > this.lastVersion) this.lastVersion = this.currentVersion;
       }
-      this.currentVersion = versionId;
-      this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, buttons)
-    });
-  }
+    }
+    this.currentVersion = versionId;
+    this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, buttons)
+  });
+}
 }

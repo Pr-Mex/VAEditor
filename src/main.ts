@@ -38,3 +38,4 @@ window["createVanessaEditor"] = (content: string, language: string) => {
 window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
   return window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
 };
+

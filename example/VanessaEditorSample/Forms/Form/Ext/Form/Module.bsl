@@ -10,7 +10,8 @@ Var KeyCodeMap;
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	VanessaEditorLoad();
-	ErrorText = "First line<br/>Second line";
+	ErrorCode = New UUID;
+	ErrorText = "Runtime error info";
 	MessageText = "Hello, world!";
 	RuntimeStatus = "complete";
 	EditorTheme = "vs";
@@ -134,6 +135,25 @@ Procedure ReplaceText(Command)
 	Map.Insert("endLineNumber", LineNumber);
 	Map.Insert("endColumn", Column);
 	VanessaEditor.insertText(MessageText, JsonDump(Map));
+
+EndProcedure
+
+&AtClient
+Procedure ShowError(Command)
+
+	Steps = New Array;
+	Steps.Add(CurrentStep);
+	VanessaEditor.setRuntimeProgress("error", JsonDump(Steps));
+	VanessaEditor.showRuntimeError(CurrentStep, ErrorCode, ErrorText);
+
+EndProcedure
+
+&AtClient
+Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
+
+	Data = Items.Actions.CurrentData;
+	If Data = Undefined Then Return; EndIf;
+	VanessaEditor.editor.trigger("", Data.Id);
 
 EndProcedure
 
@@ -464,7 +484,6 @@ Procedure SetProgress(Command)
 		Steps.Add(Row.LineNumber);
 	EndDo;
 	VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(Steps));
-	VanessaEditor.refresh();
 EndProcedure
 
 
@@ -625,6 +644,20 @@ Procedure VanessaDiffEditorDocumentComplete(Item)
 EndProcedure
 
 &AtClient
+Procedure FillEditorActions();
+
+	TextJSON = VanessaEditor.getActions();
+	JSONReader = New JSONReader;
+	JSONReader.SetString(TextJSON);
+	ActionArray = ReadJSON(JSONReader);
+	For Each Action in ActionArray do
+		FillPropertyValues(Actions.Add(), Action);
+	EndDo;
+	Actions.Sort("Id");
+
+EndProcedure
+
+&AtClient
 Function GetKeywords(Language = "")
 
 	WordsRu = "
@@ -768,17 +801,6 @@ Function GetCommands()
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Shift+F5", "F5", KeyMod));
 
 	KeyMod = New Array;
-	KeyMod.Add("Alt");
-	KeyMod.Add("CtrlCmd");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Alt+F5", "F5", KeyMod));
-
-	KeyMod = New Array;
-	KeyMod.Add("Alt");
-	KeyMod.Add("Shift");
-	KeyMod.Add("CtrlCmd");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Alt+Shift+F5", "F5", KeyMod));
-
-	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F9", "F9", KeyMod));
 
 	KeyMod = New Array;
@@ -787,26 +809,12 @@ Function GetCommands()
 	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Create new step!"));
 	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Ignore this error"));
 
-	CmdList.Add(New Structure("eventId, codeLens", "CODE_LENS_DATA", "Details"));
-	CmdList.Add(New Structure("eventId, codeLens", "CODE_LENS_COPY", "Copy error"));
+	CmdList.Add(New Structure("eventId, errorLinks", "ERROR_DATA", "Details"));
+	CmdList.Add(New Structure("eventId, errorLinks", "ERROR_COPY", "Copy error"));
 
 	Return JsonDump(CmdList);
 
 EndFunction
-
-&AtClient
-Procedure FillEditorActions();
-
-	TextJSON = VanessaEditor.getActions();
-	JSONReader = New JSONReader;
-	JSONReader.SetString(TextJSON);
-	ActionArray = ReadJSON(JSONReader);
-	For Each Action in ActionArray do
-		FillPropertyValues(Actions.Add(), Action);
-	EndDo;
-	Actions.Sort("Id");
-
-EndProcedure
 
 &AtClient
 Procedure VanessaEditorDocumentComplete(Item)
@@ -820,25 +828,6 @@ Procedure VanessaEditorDocumentComplete(Item)
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 	VanessaEditor.addCommands(GetCommands());
 	FillEditorActions();
-
-EndProcedure
-
-&AtClient
-Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
-
-	Data = Items.Actions.CurrentData;
-	If Data = Undefined Then Return; EndIf;
-	VanessaEditor.editor.trigger("", Data.Id);
-
-EndProcedure
-
-&AtClient
-Procedure ShowError(Command)
-
-	Steps = New Array;
-	Steps.Add(CurrentStep);
-	VanessaEditor.setRuntimeProgress("error", JsonDump(Steps));
-	VanessaEditor.showRuntimeError(CurrentStep, 3, ErrorText);
 
 EndProcedure
 

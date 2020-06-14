@@ -31,9 +31,9 @@ monaco.languages.registerCodeActionProvider(language.id, {
 monaco.languages.registerCodeLensProvider(language.id, {
   provideCodeLenses: function (model, token) {
     let result = [];
-    model.getLinesDecorations(1, model.getLineCount()).forEach(d => {
-      if (d.options.className == "debug-error-step") {
-        window["VanessaEditor"].codeLens.forEach((e: any) => {
+    window["VanessaEditor"].codeLens.forEach((e: any) => {
+      model.getLinesDecorations(1, model.getLineCount()).forEach(d => {
+        if (d.options.className == "debug-error-step") {
           result.push({
             range: d.range,
             command: {
@@ -42,8 +42,8 @@ monaco.languages.registerCodeLensProvider(language.id, {
               arguments: [d.range.startLineNumber],
             }
           });
-        });
-      }
+        }
+      });
     });
     return result;
   },
