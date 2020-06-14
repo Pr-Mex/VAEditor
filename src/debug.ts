@@ -165,12 +165,14 @@ export class BreakpointManager {
 
 export class RuntimeProcessManager {
 
+  private VanessaEditor: VanessaEditor;
   private editor: monaco.editor.IStandaloneCodeEditor;
   private stepDecorationIds: string[] = [];
   private currentStepDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
 
   constructor(VanessaEditor: VanessaEditor) {
+    this.VanessaEditor = VanessaEditor;
     this.editor = VanessaEditor.editor;
   }
 
@@ -213,7 +215,7 @@ export class RuntimeProcessManager {
     return JSON.stringify(lines);
   }
 
-  public showError(lineNumber: number, height: number, text: string) {
+  public showError(lineNumber: number, code: string, text: string) {
     let owner = this;
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.editor.changeViewZones(changeAccessor => {
@@ -223,16 +225,27 @@ export class RuntimeProcessManager {
       domNode.style.fontFamily = style.fontFamily;
       domNode.style.lineHeight = style.lineHeight;
       domNode.style.fontSize = style.fontSize;
-      var subNode = document.createElement('span');
-      subNode.innerHTML = text;
-      domNode.appendChild(subNode);
-      var subNode = document.createElement('span');
-      subNode.innerHTML = "<div><a href='#'>Details</a><span>&nbsp;|&nbsp;</span><a href='#'>Copy error</a></div>";
+      var supNode = document.createElement('span');
+      supNode.innerText = text;
+      domNode.appendChild(supNode);
+      var subNode = document.createElement('div');
+      this.VanessaEditor.errorLinks.forEach((e, i) => {
+        if (i) {
+          let textNode = document.createElement('span');
+          textNode.innerHTML = '&nbsp;|&nbsp;';
+          subNode.appendChild(textNode);
+        }
+        let linkNode = document.createElement('a');
+        linkNode.setAttribute("href", "#");
+        linkNode.setAttribute('onclick', `VanessaEditor.fireEvent("${e.id}", "${code}")`);
+        linkNode.innerText = e.title;
+        subNode.appendChild(linkNode);
+      });
       domNode.appendChild(subNode);
       owner.errorViewZoneIds.push(changeAccessor.addZone({
         afterColumn: this.editor.getModel().getLineFirstNonWhitespaceColumn(lineNumber),
         afterLineNumber: lineNumber,
-        heightInLines: height,
+        heightInLines: 2,
         domNode: domNode
       }));
     });

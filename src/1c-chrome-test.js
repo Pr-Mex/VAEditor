@@ -119,14 +119,14 @@ window.onload = () => {
         { eventId: "Shift+F6", keyCode: "F6", keyMod: ["Shift"], title: "Some new command!" },
         { eventId: "Ctrl+Alt+F6", keyCode: "F6", keyMod: ["CtrlCmd", "Alt"] },
         { eventId: "CREATE_STEP", title: "Create new step!", script: "alert('New step!')" },
-        { eventId: "CODE_LENS_DATA", codeLens: "Details", script: "alert('Details!')" },
-        { eventId: "CODE_LENS_COPY", codeLens: "Copy error", script: "alert('Copy error!')" },
+        { eventId: "CODE_LENS_DATA", errorLink: "Details", script: "alert('Details!')" },
+        { eventId: "CODE_LENS_COPY", errorLink: "Copy error", script: "alert('Copy error!')" },
     ];
     VanessaEditor.addCommands(JSON.stringify(commands));
 
     let problems = [{
 		"lineNumber": 11,
-		"severity": "Hint",
+		"severity": "Warning",
 		"message": "Runtime error",
 		"code": "0x1005",
 		"source": "Data info",
@@ -135,5 +135,5 @@ window.onload = () => {
 
     let error = "Runtime error info";
     VanessaEditor.setRuntimeProgress("error", "[13]");
-	VanessaEditor.showRuntimeError(13, 2, error);
+	VanessaEditor.showRuntimeError(13, "0x01", error);
 }
