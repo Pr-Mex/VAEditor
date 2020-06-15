@@ -4,7 +4,7 @@ window.onload = () => {
 # language: ru\n\# encoding: utf-8\n\@UA30_Прочие_макеты\n\n\
 Функциональность: Браузер\n\n\Контекст:\n\
 \tДано Я запускаю сценарий открытия TestClient или подключаю уже существующий\n\n\
-Сценарий:\n\t*Открытие формы элемента\n\
+Сценарий:\n\t* Открытие формы элемента\n\
 \t\tЕсли Версия платформы ">=" "8.3.6" Тогда \n\
 \t\tИ видеовставка картинки "$ИмяКнопки$" \'$ИмяРеквизита$\' \n\
 \t\tИ это значит что в таблице "$ИмяТаблицы$" есть колонка с именем \'$ИмяРеквизита$\' Тогда\
@@ -125,15 +125,15 @@ window.onload = () => {
     VanessaEditor.addCommands(JSON.stringify(commands));
 
     let problems = [{
-		"lineNumber": 11,
-		"severity": "Warning",
-		"message": "Runtime error",
-		"code": "0x1005",
-		"source": "Data info",
+        "lineNumber": 12,
+        "severity": "Warning",
+        "message": "Runtime error",
+        "code": "0x1005",
+        "source": "Data info",
     }];
     VanessaEditor.decorateProblems(JSON.stringify(problems));
 
     let error = "Runtime error info";
     VanessaEditor.setRuntimeProgress("error", 13);
-	VanessaEditor.showRuntimeError(13, "0x01", error);
+    VanessaEditor.showRuntimeError(13, "0x01", error);
 }

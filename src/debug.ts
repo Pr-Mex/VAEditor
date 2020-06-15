@@ -215,41 +215,41 @@ export class RuntimeProcessManager {
     return JSON.stringify(lines);
   }
 
-  public showError(lineNumber: number, code: string, text: string) {
-    let owner = this;
+  public showError(lineNumber: number, data: string, text: string) {
+    let errorIds = this.errorViewZoneIds;
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.editor.changeViewZones(changeAccessor => {
       var domNode = document.createElement('div');
       domNode.classList.add('vanessa-error-widget');
-      domNode.style.zIndex = "9999";
       domNode.style.fontFamily = style.fontFamily;
       domNode.style.lineHeight = style.lineHeight;
       domNode.style.fontSize = style.fontSize;
-      var supNode = document.createElement('span');
-      supNode.innerText = text;
-      domNode.appendChild(supNode);
-      var subNode = document.createElement('div');
-      subNode.classList.add('vanessa-error-links');
+      domNode.style.zIndex = "9999";
+      var textNode = document.createElement('span');
+      textNode.innerText = text;
+      domNode.appendChild(textNode);
+      var linkNode = document.createElement('div');
+      linkNode.classList.add('vanessa-error-links');
+      linkNode.dataset.value = data;
       this.VanessaEditor.errorLinks.forEach((e, i) => {
         if (i) {
-          let textNode = document.createElement('span');
-          textNode.innerHTML = '&nbsp;|&nbsp;';
-          subNode.appendChild(textNode);
+          let sNode = document.createElement('span');
+          sNode.innerHTML = '&nbsp;|&nbsp;';
+          linkNode.appendChild(sNode);
         }
-        let linkNode = document.createElement('a');
-        linkNode.setAttribute("href", "#");
-        linkNode.setAttribute("data-id", e.id);
-        linkNode.setAttribute("data-value", code);
-        linkNode.setAttribute("onclick", "VanessaEditor.doErrorLink(this)");
-        linkNode.innerText = e.title;
-        subNode.appendChild(linkNode);
+        let aNode = document.createElement('a');
+        aNode.href = "#";
+        aNode.dataset.id = e.id;
+        aNode.innerText = e.title;
+        aNode.setAttribute("onclick", "VanessaEditor.onErrorLink(this)");
+        linkNode.appendChild(aNode);
       });
-      domNode.appendChild(subNode);
-      owner.errorViewZoneIds.push(changeAccessor.addZone({
-        afterColumn: this.editor.getModel().getLineFirstNonWhitespaceColumn(lineNumber),
+      domNode.appendChild(linkNode);
+      errorIds.push(changeAccessor.addZone({
         afterLineNumber: lineNumber,
+        afterColumn: 1,
         heightInLines: 2,
-        domNode: domNode
+        domNode: domNode,
       }));
     });
   }

@@ -68,7 +68,7 @@ export class VanessaEditor {
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   public useKeyboardTracer: boolean;
-  public doErrorLink: Function;
+  public onErrorLink: Function;
 
   private breakpointManager: BreakpointManager;
   private runtimeProcessManager: RuntimeProcessManager;
@@ -118,14 +118,14 @@ export class VanessaEditor {
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
     this.setRuntimeProgress = (status: string, arg: string) => this.runtimeProcessManager.set(status, typeof (arg) == "string" ? JSON.parse(arg) : arg);
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
-    this.showRuntimeError = (lineNumber: number, code: string, text: string) => this.runtimeProcessManager.showError(lineNumber, code, text);
+    this.showRuntimeError = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, data, text);
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
-    this.doErrorLink = (e: HTMLElement) => this.fireEvent(e.getAttribute("data-id"), e.getAttribute("data-value"));
+    this.onErrorLink = (e: HTMLElement) => this.fireEvent(e.dataset.id, e.parentElement.dataset.value);
     this.getActions = () => {
       let result = [];
       let actions: Object = this.editor["_actions"];
