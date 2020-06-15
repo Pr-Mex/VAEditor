@@ -195,6 +195,10 @@ export class RuntimeProcessManager {
         }
       });
     });
+    oldDecorations.forEach(s => {
+      let i = this.stepDecorationIds.indexOf(s);
+      if (i >= 0) this.stepDecorationIds.splice(i, 1);
+    });
     const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations)
     if (status == "current") {
       this.currentStepDecorationIds = newDecorations;
