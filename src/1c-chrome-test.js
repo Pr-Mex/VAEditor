@@ -2,8 +2,9 @@ window.onload = () => {
 
     let content = '\
 # language: ru\n\# encoding: utf-8\n\@UA30_Прочие_макеты\n\n\
-Функциональность: Браузер\n\n\Контекст:\n\
-\tДано Я запускаю сценарий открытия TestClient или подключаю уже существующий\n\n\
+Функциональность: Браузер\n\tКак специалист по тестированию\n\nКонтекст:\n\
+\tДано Я запускаю сценарий открытия TestClient или подключаю уже существующий\n\
+\tОткрывается тест-клиент\n\n\
 Сценарий:\n\t* Открытие формы элемента\n\
 \t\tЕсли Версия платформы ">=" "8.3.6" Тогда \n\
 \t\tИ видеовставка картинки "$ИмяКнопки$" \'$ИмяРеквизита$\' \n\
@@ -124,6 +125,7 @@ window.onload = () => {
     ];
     VanessaEditor.addCommands(JSON.stringify(commands));
 
+    /*
     let problems = [{
         "lineNumber": 12,
         "severity": "Warning",
@@ -136,4 +138,5 @@ window.onload = () => {
     let error = "Runtime error info";
     VanessaEditor.setRuntimeProgress("error", 13);
     VanessaEditor.showRuntimeError(13, "0x01", error);
+    */
 }
