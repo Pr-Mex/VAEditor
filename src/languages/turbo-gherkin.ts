@@ -25,21 +25,54 @@ export const language: ILanguage = <ILanguage>{
 
   tokenizer: {
     root: [
+      { include: "@section" },
+      { include: "@common" },
+      [/.*$/, "emphasis"],
+    ],
+
+    common: [
+      [/@.*/, "annotation"],
       [/^\s*\*.*$/, "strong"],
-      [/^\s*([A-zА-я]+)/, {
-        cases: {
-          "$1@keywords": "keyword",
-          "@default": "identifier"
-        },
-        log: "test $1"
-      }],
+      [/^\s*\|/, { token: "operator", next: "@params" }],
       { include: "@whitespace" },
       { include: "@numbers" },
-      [/@.*/, "annotation"],
       [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
       [/'([^'\\]|\\.)*$/, "string.invalid"], // non-teminated string
       [/"/, "string", "@string_double"],
-      [/'/, "string", "@string_single"]
+      [/'/, "string", "@string_single"],
+    ],
+
+    section: [
+      [/^\s*([A-zА-я]+)(?:\:)/, {
+        cases: {
+          "$1@keywords": { token: "metatag.php", next: "@metatag" },
+          "@default": { token: "identifier", next: "@metatag" },
+        },
+      }],
+    ],
+
+    metatag: [
+      { include: "@section" },
+      [/^\s*([A-zА-я]+)/, {
+        cases: {
+          "$1@keywords": { token: "keyword", next: "@operator" },
+          "@default": { token: "emphasis" },
+        },
+        log: "test $1"
+      }],
+      { include: "@common" },
+      [/.*$/, "emphasis"],
+    ],
+
+    operator: [
+      [/^/, { token: "white", next: "@pop" }],
+      [/\s*([A-zА-я]+)/, "identifier"],
+      { include: "@common" },
+    ],
+
+    params: [
+      [/^/, { token: "white", next: "@pop" }],
+      { include: "@common" },
     ],
 
     whitespace: [

@@ -177,6 +177,7 @@ export class RuntimeProcessManager {
   }
 
   public set(status: string, lines: Array<number> | number): void {
+    let position = this.editor.getPosition();
     this.editor.setSelection(new monaco.Range(1, 1, 1, 1));
     const model: monaco.editor.ITextModel = this.editor.getModel();
     const oldDecorations = status == "current" ? this.currentStepDecorationIds : [];
@@ -196,6 +197,10 @@ export class RuntimeProcessManager {
       });
     });
     oldDecorations.forEach(s => {
+      if (status != "current") {
+        let i = this.currentStepDecorationIds.indexOf(s);
+        if (i >= 0) this.stepDecorationIds.splice(i, 1);
+      }
       let i = this.stepDecorationIds.indexOf(s);
       if (i >= 0) this.stepDecorationIds.splice(i, 1);
     });
@@ -205,6 +210,7 @@ export class RuntimeProcessManager {
     } else {
       newDecorations.forEach(s => this.stepDecorationIds.push(s));
     }
+    this.editor.setPosition(position);
   }
 
   public get(status: string): string {

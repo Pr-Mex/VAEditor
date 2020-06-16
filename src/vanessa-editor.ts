@@ -148,7 +148,7 @@ export class VanessaEditor {
     }
     this.fireEvent = (event: VanessaEditorEvent, arg: any = undefined) => {
       // tslint:disable-next-line: no-console
-      console.debug("fireEvent: " + event + " : " + arg);
+      console.debug("fireEvent: ", event, " : ", arg);
       this.messages.push({ type: event, data: arg });
       let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
       fakeButtonFireClickEvent.click();
