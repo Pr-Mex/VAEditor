@@ -75,6 +75,7 @@ export class VanessaGherkinProvider {
       for (let key in obj) {
         this.elements[key.toLowerCase()] = obj[key];
       }
+      this.updateStepLabels();
     }
 
     this.setVariables = (values: string, clear: boolean = false): void => {
@@ -133,7 +134,7 @@ export class VanessaGherkinProvider {
       endColumn: model.getLineMaxColumn(position.lineNumber),
     };
     let wordRange = undefined;
-    let regexp = /"\$[^"]*"|'\$[^']*'/g;
+    let regexp = /"[^"]*"|'[^']*'/g;
     let words = model.findMatches(regexp.source, line, true, false, null, false) || [];
     words.forEach(e => {
       if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
@@ -143,15 +144,16 @@ export class VanessaGherkinProvider {
     let result = [];
     if (wordRange) {
       let variable = model.getValueInRange(wordRange);
+      let S = /^.\$.+\$.$/.test(variable) ? "$" : "";
       for (let name in this.variables) {
         let item = this.variables[name];
         result.push({
-          label: '"$' + item.name + '$" = ' + item.value,
-          filterText: variable + '"$' + item.name + '$"',
-          kind: monaco.languages.CompletionItemKind.Function,
-          insertText: '"$' + item.name + '$"',
+          label: `"${S}${item.name}${S}" = ${item.value}`,
+          filterText: variable + `${S}${item.name}${S}`,
+          insertText: `"${S}${item.name}${S}"`,
+          kind: monaco.languages.CompletionItemKind.Variable,
           range: wordRange
-        });
+        })
       }
     }
     else {
@@ -195,11 +197,11 @@ export class VanessaGherkinProvider {
       contents.push({ value: "**" + step.section + "**" });
       contents.push({ value: step.documentation });
       let values = this.variables;
-      let vars = line.match(/"\$[^"]+\$"|'\$[^']+\$'/g) || [];
+      let vars = line.match(/"[^"]+"|'[^']+'/g) || [];
       vars.forEach(function (part: string) {
-        let name = part.substring(2, part.length - 2);
-        let value = values[name.toLowerCase()].value;
-        contents.push({ value: "**" + name + "** = " + value });
+        let d = /^.\$.+\$.$/.test(part) ? 2 : 1;
+        let v = values[part.substring(d, part.length - d).toLowerCase()];
+        if (v) contents.push({ value: "**" + v.name + "** = " + v.value });
       });
     }
     let range = {
