@@ -25,3 +25,28 @@
 .debug-error-step {
   background: rgba(247, 96, 96, 0.788);
 }
+.debug-pending-step {
+  background: lightblue;
+}
+.vanessa-error-widget {
+  background: #FFCCCC;
+  color: #333333;
+  padding: 0 0.5em 0 0.5em;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.vanessa-error-widget .vanessa-error-links {
+  position: absolute;
+  bottom: 0;
+  vertical-align: sub;
+  font-size: 85%;
+}
+.vanessa-error-widget .vanessa-error-links a {
+  text-decoration: none;
+  color: #333333;
+}
+.vanessa-error-widget .vanessa-error-links a:hover {
+  color: #ff0000 !important;
+}
