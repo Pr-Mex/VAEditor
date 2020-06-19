@@ -15,8 +15,7 @@ export class VanessaGherkinProvider {
   }
 
   private splitWords(line: string): Array<string> {
-    //    let regexp = /[^\s"':]+|:|["][^"]*["]|['][^']*[']/g;
-    let regexp = /(?:[^\s"']+|["][^"]*["]|['][^']*['])+/g;
+    let regexp = /([^\s"']+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
     return line.match(regexp) || [];
   }
 
@@ -29,7 +28,7 @@ export class VanessaGherkinProvider {
 
   private key(words: Array<string>): string {
     return words.map((w: string) => {
-      let regexp = /(?:^\d*(?:\.\d+)?$|^["][^"]*["]$|^['][^']*[']$)/g;
+      let regexp = /(^\d+(?:\.\d+)?$|^"([^"]|[\\"])*"$|^'([^']|[\\'])*'$)/g;
       return regexp.test(w) ? "^" : w.toLowerCase();
     }).join(' ');
   }
