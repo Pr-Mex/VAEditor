@@ -79,7 +79,7 @@ Procedure GetPosition(Command)
 	Arg = VanessaEditor.getPosition();
 	UserMessage = New UserMessage;
 	UserMessage.Text = "Position: lineNumber = "
-		+ Format(Arg.lineNumber, "NG=")	+ ", column = "
+		+ Format(Arg.lineNumber, "NG=") + ", column = "
 		+ Format(Arg.column, "NG=");
 	UserMessage.Message();
 
@@ -544,11 +544,11 @@ EndProcedure
 Function GetKeyInfo(Data)
 
 	res = "";
-	If Data.metaKey  then res = res + "Win+"   ; EndIf;
-	If Data.ctrlKey  then res = res + "Ctrl+"  ; EndIf;
-	If Data.altKey   then res = res + "Alt+"   ; EndIf;
-	If Data.shiftKey then res = res + "Shift+" ; EndIf;
-	return res + KeyCodeMap[Data.keyCode] +  " (" +  Data.keyCode + ")";
+	If Data.metaKey then res = res + "Win+"; EndIf;
+	If Data.ctrlKey then res = res + "Ctrl+"; EndIf;
+	If Data.altKey then res = res + "Alt+"; EndIf;
+	If Data.shiftKey then res = res + "Shift+"; EndIf;
+	return res + KeyCodeMap[Data.keyCode] + " (" + Data.keyCode + ")";
 
 EndFunction
 
@@ -557,7 +557,7 @@ EndFunction
 Procedure CreateStep(lineNumber)
 	
 	Text = VanessaEditor.getLineContent(lineNumber);
-	
+
 	Map = New Map;
 	Map.Insert("filterText", Text);
 	Map.Insert("insertText", Text);
@@ -565,10 +565,10 @@ Procedure CreateStep(lineNumber)
 	Map.Insert("documentation", "New step, created by user");
 	Map.Insert("kind", 0);
 	Map.Insert("section", "Custom user step");
-	
+
 	Array = New Array;
 	Array.Add(Map);
-	
+
 	VanessaGherkinProvider.setStepList(JsonDump(Array), False);
 
 EndProcedure
@@ -585,9 +585,6 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 		DecorateBreakpoints();
 	ElsIf Event = "POSITION_DID_CHANGE" Then
 		Position = "(" + Format(Arg.lineNumber, "NG=") + ", " + Format(Arg.column, "NG=") + ")";
-	ElsIf Event = "CHANGE_UNDO_REDO" Then
-		Items.FormEditRedo.Enabled = Arg.redo;
-		Items.FormEditUndo.Enabled = Arg.undo;
 	ElsIf Event = "F9" Then
 		AppendEventLog(Event, Arg);
 		VanessaEditor.toggleBreakpoint();
