@@ -8,8 +8,8 @@
 		"build": "webpack --progress --mode production"
 	},
 	"keywords": [],
-	"author": "Ingvar Vilkman",
-	"license": "MIT",
+	"author": "Pautov Leonid",
+	"license": "BSD 3-Clause License",
 	"dependencies": {
 		"monaco-editor": "^0.17.0"
 	},
