@@ -57,7 +57,7 @@ export class VanessaGherkinProvider {
     this.steps = {};
     this.elements = {};
     this.variables = {};
-
+    this.createTheme1C();
     window["VanessaGherkinKeywords"] = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
 
     this.setKeywords = (arg: string): void => {
@@ -106,7 +106,6 @@ export class VanessaGherkinProvider {
       this.updateStepLabels();
       this.checkSyntax();
     }
-    this.createTheme1C();
   }
 
   private updateStepLabels() {

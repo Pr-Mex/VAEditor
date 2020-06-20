@@ -552,6 +552,28 @@ Function GetKeyInfo(Data)
 
 EndFunction
 
+
+&AtClient
+Procedure CreateStep(lineNumber)
+	
+	Text = VanessaEditor.getLineContent(lineNumber);
+	
+	Map = New Map;
+	Map.Insert("filterText", Text);
+	Map.Insert("insertText", Text);
+	Map.Insert("sortText", Text);
+	Map.Insert("documentation", "New step, created by user");
+	Map.Insert("kind", 0);
+	Map.Insert("section", "Custom user step");
+	
+	Array = New Array;
+	Array.Add(Map);
+	
+	VanessaGherkinProvider.setStepList(JsonDump(Array), False);
+
+EndProcedure
+
+
 &AtClient
 Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 
@@ -573,6 +595,9 @@ Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
 		AppendEventLog(Event, GetKeyInfo(Arg));
 	ElsIf Event = "ON_KEY_UP" Then
 		AppendEventLog(Event, GetKeyInfo(Arg));
+	ElsIf Event = "CREATE_STEP" Then
+		AppendEventLog(Event, Arg);
+		CreateStep(Arg);
 	Else
 		AppendEventLog(Event, Arg);
 	EndIf;
