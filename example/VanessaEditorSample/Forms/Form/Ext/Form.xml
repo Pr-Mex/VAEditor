@@ -81,13 +81,11 @@
 				<ChildItems>
 					<Button name="FormEditUndo" id="196">
 						<Type>CommandBarButton</Type>
-						<Enabled>false</Enabled>
 						<CommandName>Form.Command.EditUndo</CommandName>
 						<ExtendedTooltip name="FormEditUndoExtendedTooltip" id="197"/>
 					</Button>
 					<Button name="FormEditRedo" id="198">
 						<Type>CommandBarButton</Type>
-						<Enabled>false</Enabled>
 						<CommandName>Form.Command.EditRedo</CommandName>
 						<ExtendedTooltip name="FormEditRedoExtendedTooltip" id="199"/>
 					</Button>

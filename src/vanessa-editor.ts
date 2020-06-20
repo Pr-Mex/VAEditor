@@ -10,7 +10,6 @@ export enum VanessaEditorEvent {
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
   POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
-  CHANGE_UNDO_REDO = "CHANGE_UNDO_REDO",
   ON_KEY_DOWN = "ON_KEY_DOWN",
   ON_KEY_UP = "ON_KEY_UP",
 }
@@ -79,9 +78,6 @@ export class VanessaEditor {
   public errorLinks: Array<VanessaCodeAction>;
   public codeLens: Array<VanessaCodeAction>;
   private messages: Array<VanessaEditorMessage>;
-  private initialVersion: number;
-  private currentVersion: number;
-  private lastVersion: number;
 
   constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
@@ -96,7 +92,6 @@ export class VanessaEditor {
     this.errorLinks = [];
     this.codeLens = [];
     this.editor.setValue(content);
-    this.resetHistory();
 
     this.breakpointManager = new BreakpointManager(this);
     this.runtimeProcessManager = new RuntimeProcessManager(this);
@@ -143,8 +138,6 @@ export class VanessaEditor {
     }
     this.setContent = (arg: string) => {
       this.editor.setValue(arg);
-      this.resetHistory();
-      this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, { undo: false, redo: false })
     }
     this.fireEvent = (event: VanessaEditorEvent, arg: any = undefined) => {
       // tslint:disable-next-line: no-console
@@ -194,12 +187,6 @@ export class VanessaEditor {
 
   public dispose(): void {
     this.editor.dispose();
-  }
-
-  private resetHistory() {
-    this.initialVersion = this.editor.getModel().getAlternativeVersionId();
-    this.currentVersion = this.initialVersion;
-    this.lastVersion = this.initialVersion;
   }
 
   private updateReadonly() {
@@ -257,24 +244,6 @@ export class VanessaEditor {
 
     this.checkSyntax();
 
-    this.editor.onDidChangeModelContent(() => {
-      this.checkSyntax();
-      const versionId = this.editor.getModel().getAlternativeVersionId();
-      let buttons = { undo: true, redo: true, version: versionId };
-      if (versionId < this.currentVersion) {
-        if (versionId === this.initialVersion) buttons.undo = false;
-      } else {
-        // redoing
-        if (versionId <= this.lastVersion) {
-          // redoing the last change
-          if (versionId == this.lastVersion) buttons.redo = false;
-        } else { // adding new change, disable redo when adding new changes
-          buttons.redo = false;
-          if (this.currentVersion > this.lastVersion) this.lastVersion = this.currentVersion;
-        }
-      }
-      this.currentVersion = versionId;
-      this.fireEvent(VanessaEditorEvent.CHANGE_UNDO_REDO, buttons)
-    });
+    this.editor.onDidChangeModelContent(() => this.checkSyntax());
   }
 }
