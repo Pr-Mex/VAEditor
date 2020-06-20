@@ -202,10 +202,35 @@ export class VanessaEditor {
     this.lastVersion = this.initialVersion;
   }
 
+  private updateReadonly() {
+    let f = (d: any) => d.options.className == "debug-disabled-step";
+    let model = this.editor.getModel();
+    let s = this.editor.getSelection();
+    let lineNumber = s.positionLineNumber;
+    this.setReadOnly(model.getLinesDecorations(lineNumber, lineNumber).some(f)
+      && model.getLinesDecorations(s.startLineNumber, s.endLineNumber).some(f)
+    );
+  }
+
   private subscribeEditorEvents(): void {
+
+    this.editor.onDidChangeModelContent(() => this.updateReadonly());
+    this.editor.onDidChangeCursorPosition(() => this.updateReadonly());
+    this.editor.onDidChangeCursorSelection(() => this.updateReadonly());
 
     this.editor.onDidChangeModelContent(
       () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
+    );
+
+    this.editor.onDidChangeCursorPosition(
+      (e: monaco.editor.ICursorPositionChangedEvent) => this.setReadOnly(
+        model.getLinesDecorations(e.position.lineNumber, e.position.lineNumber).some(d => d.options.className == "debug-disabled-step")
+      )
+    );
+
+    this.editor.onDidChangeCursorSelection(
+      (e: monaco.editor.ICursorSelectionChangedEvent) => {
+      }
     );
 
     this.editor.onDidChangeCursorPosition(
