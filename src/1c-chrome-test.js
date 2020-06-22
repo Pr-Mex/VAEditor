@@ -125,6 +125,9 @@ window.onload = () => {
     ];
     VanessaEditor.addCommands(JSON.stringify(commands));
 
+    VanessaEditor.showRuntimeCode(15, '', '\t\tИ шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\tИ шаг подсценария 3\n\t\tИ шаг подсценария 3');
+
+
     /*
     let problems = [{
         "lineNumber": 12,

@@ -26,6 +26,12 @@ Procedure OnOpen(Cancel)
 EndProcedure
 
 &AtClient
+Procedure OnClose(Exit)
+	VanessaEditor = Undefined;
+	VanessaGherkinProvider = Undefined;
+EndProcedure
+
+&AtClient
 Procedure LoadFile(Command)
 
 	Breakpoints.Clear();
