@@ -170,6 +170,7 @@ export class RuntimeProcessManager {
   private stepDecorationIds: string[] = [];
   private currentStepDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
+  private codeViewZoneIds: Array<number> = [];
 
   constructor(VanessaEditor: VanessaEditor) {
     this.VanessaEditor = VanessaEditor;
@@ -226,7 +227,7 @@ export class RuntimeProcessManager {
   }
 
   public showError(lineNumber: number, data: string, text: string) {
-    let errorIds = this.errorViewZoneIds;
+    let ids = this.errorViewZoneIds;
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.editor.changeViewZones(changeAccessor => {
       var domNode = document.createElement('div');
@@ -255,10 +256,45 @@ export class RuntimeProcessManager {
         linkNode.appendChild(aNode);
       });
       domNode.appendChild(linkNode);
-      errorIds.push(changeAccessor.addZone({
+      ids.push(changeAccessor.addZone({
         afterLineNumber: lineNumber,
         afterColumn: 1,
         heightInLines: 2,
+        domNode: domNode,
+      }));
+    });
+  }
+
+  public showCode(lineNumber: number, data: string, text: string) {
+    let ids = this.codeViewZoneIds;
+    let style = (document.querySelector('div.view-lines') as HTMLElement).style;
+    this.editor.changeViewZones(changeAccessor => {
+      var domNode = document.createElement('div');
+      domNode.classList.add('vanessa-code-widget');
+      domNode.style.fontFamily = style.fontFamily;
+      domNode.style.lineHeight = style.lineHeight;
+      domNode.style.fontSize = style.fontSize;
+      domNode.style.zIndex = "9999";
+      var leftNode = document.createElement('div');
+      leftNode.classList.add('vanessa-code-border');
+      domNode.appendChild(leftNode);
+      var gligNode = document.createElement('div');
+      gligNode.classList.add('debug-current-step-glyph');
+      gligNode.classList.add('cgmr');
+      leftNode.appendChild(gligNode);
+      var textNode = document.createElement('div');
+      textNode.classList.add('vanessa-code-lines');
+      var render = function (str) {
+        textNode.innerHTML = str;
+        document.querySelectorAll(".vanessa-code-lines > span")[1].classList.add("debug-current-step");
+      };
+      monaco.editor.colorize(text, "turbo-gherkin", {}).then(render);
+      domNode.appendChild(textNode);
+      domNode.dataset.lang = "turbo-gherkin";
+      ids.push(changeAccessor.addZone({
+        afterLineNumber: lineNumber,
+        afterColumn: 1,
+        heightInLines: 4,
         domNode: domNode,
       }));
     });

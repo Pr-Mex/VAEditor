@@ -31,6 +31,42 @@
 .debug-disabled-step {
   background-color: silver;
 }
+.vanessa-code-widget {
+  background: #DDEEEE;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.vanessa-code-widget .vanessa-code-border {
+  background: #BBCCCC;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 19px;
+}
+.vanessa-code-widget .vanessa-code-border .cgmr {
+  position: absolute;
+  top: 19px;
+  left: 0;
+  width: 19px;
+  height: 19px;
+}
+.vanessa-code-widget .vanessa-code-lines {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 19px;
+  right: 0;
+}
+.vanessa-code-widget .debug-current-step {
+  background-color: rgba(255, 210, 80);
+}
+.vanessa-code-widget .vanessa-code-lines > span {
+  display: block;
+}
+.vanessa-code-widget .vanessa-code-lines br {
+  display: none;
+}
 .vanessa-error-widget {
   background: #FFCCCC;
   color: #333333;

@@ -26,6 +26,7 @@ export const language: ILanguage = <ILanguage>{
   tokenizer: {
     root: [
       { include: "@section" },
+      { include: "@keyword" },
       { include: "@common" },
       [/.*$/, "emphasis"],
     ],
@@ -53,6 +54,12 @@ export const language: ILanguage = <ILanguage>{
 
     metatag: [
       { include: "@section" },
+      { include: "@keyword" },
+      { include: "@common" },
+      [/.*$/, "emphasis"],
+    ],
+
+    keyword: [
       [/^\s*([A-zА-я]+)/, {
         cases: {
           "$1@keywords": { token: "keyword", next: "@operator" },
@@ -60,8 +67,6 @@ export const language: ILanguage = <ILanguage>{
         },
         log: "test $1"
       }],
-      { include: "@common" },
-      [/.*$/, "emphasis"],
     ],
 
     operator: [
