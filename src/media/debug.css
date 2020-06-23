@@ -17,7 +17,7 @@
   background: url('src/media/debug-current-and-breakpoint.svg') center center no-repeat;
 }
 .debug-current-step {
-  background-color: rgba(255, 246, 0, .8);
+  background-color: rgba(255, 214, 92, 0.8);
 }
 .debug-complete-step {
   background: rgba(67, 228, 94, 0.45);
@@ -54,7 +54,7 @@
   right: 0;
 }
 .vanessa-code-widget .debug-current-step {
-  background-color: rgba(255, 210, 80);
+  background-color: rgba(255, 214, 92, 0.8);
 }
 .vanessa-code-widget .vanessa-code-lines > span {
   display: block;
