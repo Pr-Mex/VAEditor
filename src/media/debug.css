@@ -32,7 +32,7 @@
   background-color: silver;
 }
 .vanessa-code-widget {
-  background: #DDEEEE;
+  background: #CCDDDD80;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -42,20 +42,15 @@
   top: 0;
   bottom: 0;
   left: 0;
-  width: 19px;
 }
-.vanessa-code-widget .vanessa-code-border .cgmr {
-  position: absolute;
-  top: 19px;
+.vanessa-code-widget .vanessa-code-border div {
   left: 0;
-  width: 19px;
-  height: 19px;
+  width: 100%;
 }
 .vanessa-code-widget .vanessa-code-lines {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 19px;
   right: 0;
 }
 .vanessa-code-widget .debug-current-step {
@@ -63,6 +58,8 @@
 }
 .vanessa-code-widget .vanessa-code-lines > span {
   display: block;
+  user-select: all;
+  -webkit-user-select: all;
 }
 .vanessa-code-widget .vanessa-code-lines br {
   display: none;

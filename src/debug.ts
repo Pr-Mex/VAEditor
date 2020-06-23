@@ -268,35 +268,38 @@ export class RuntimeProcessManager {
   public showCode(lineNumber: number, data: string, text: string) {
     let ids = this.codeViewZoneIds;
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
-    this.editor.changeViewZones(changeAccessor => {
-      var domNode = document.createElement('div');
-      domNode.classList.add('vanessa-code-widget');
-      domNode.style.fontFamily = style.fontFamily;
-      domNode.style.lineHeight = style.lineHeight;
-      domNode.style.fontSize = style.fontSize;
-      domNode.style.zIndex = "9999";
-      var leftNode = document.createElement('div');
-      leftNode.classList.add('vanessa-code-border');
-      domNode.appendChild(leftNode);
-      var gligNode = document.createElement('div');
-      gligNode.classList.add('debug-current-step-glyph');
-      gligNode.classList.add('cgmr');
-      leftNode.appendChild(gligNode);
-      var textNode = document.createElement('div');
-      textNode.classList.add('vanessa-code-lines');
-      var render = function (str) {
-        textNode.innerHTML = str;
+    var domNode = document.createElement('div');
+    domNode.classList.add('vanessa-code-widget');
+    domNode.style.fontFamily = style.fontFamily;
+    domNode.style.lineHeight = style.lineHeight;
+    domNode.style.fontSize = style.fontSize;
+    domNode.style.zIndex = "9999";
+    var leftNode = document.createElement('div');
+    leftNode.classList.add('vanessa-code-border');
+    leftNode.style.width = style.lineHeight;
+    domNode.appendChild(leftNode);
+    var textNode = document.createElement('div');
+    textNode.classList.add('vanessa-code-lines');
+    textNode.style.left = style.lineHeight;
+    domNode.appendChild(textNode);
+    monaco.editor.colorize(text, "turbo-gherkin", {}).then((html: string) => {
+      textNode.innerHTML = html;
+      let linesCount = textNode.querySelectorAll('div>span').length;
+      for (let i = 0; i < linesCount; i++) {
+        var glyphNode = document.createElement('div');
+        leftNode.appendChild(glyphNode);
+        glyphNode.style.height = style.lineHeight;
+        if (i == 1) glyphNode.classList.add('debug-current-step-glyph');
+      }
+      this.editor.changeViewZones(changeAccessor => {
+        ids.push(changeAccessor.addZone({
+          heightInLines: linesCount,
+          afterLineNumber: lineNumber,
+          afterColumn: 1,
+          domNode: domNode,
+        }));
         document.querySelectorAll(".vanessa-code-lines > span")[1].classList.add("debug-current-step");
-      };
-      monaco.editor.colorize(text, "turbo-gherkin", {}).then(render);
-      domNode.appendChild(textNode);
-      domNode.dataset.lang = "turbo-gherkin";
-      ids.push(changeAccessor.addZone({
-        afterLineNumber: lineNumber,
-        afterColumn: 1,
-        heightInLines: 4,
-        domNode: domNode,
-      }));
+      });
     });
   }
 
