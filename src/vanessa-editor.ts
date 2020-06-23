@@ -54,6 +54,8 @@ export class VanessaEditor {
   public revealLine: Function;
   public setRuntimeProgress: Function;
   public getRuntimeProgress: Function;
+  public getCurrentProgress: Function;
+  public setSubcodeProgress: Function;
   public clearRuntimeProgress: Function;
   public showRuntimeError: Function;
   public showRuntimeCode: Function;
@@ -112,10 +114,12 @@ export class VanessaEditor {
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
-    this.setRuntimeProgress = (status: string, arg: string) => this.runtimeProcessManager.set(status, typeof (arg) == "string" ? JSON.parse(arg) : arg);
+    this.setRuntimeProgress = (status: string, lines: any) => this.runtimeProcessManager.set(status, lines);
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
+    this.setSubcodeProgress = (status: string, id: string, lines: any) => this.runtimeProcessManager.setSubcode(status, id, lines);
+    this.getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
     this.showRuntimeError = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, data, text);
-    this.showRuntimeCode = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showCode(lineNumber, data, text);
+    this.showRuntimeCode = (lineNumber: number, id: string, text: string) => this.runtimeProcessManager.showCode(lineNumber, id, text);
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
