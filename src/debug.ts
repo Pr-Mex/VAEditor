@@ -265,6 +265,7 @@ export class RuntimeProcessManager {
           return { lineNumber: 1, codeWidget: codeWidget };
         } else {
           this.set("current", lineNumber);
+          this.editor.revealLine(lineNumber);
           return { lineNumber: lineNumber, codeWidget: undefined };
         }
       } else {
@@ -288,6 +289,7 @@ export class RuntimeProcessManager {
       }
     }
     this.set("current", 1);
+    this.editor.revealLine(1);
     return { lineNumber: 1, codeWidget: undefined };
   }
 
