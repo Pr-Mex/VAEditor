@@ -261,7 +261,7 @@ export class RuntimeProcessManager {
           if (prev < top && top < next) codeWidget = node.dataset.id;
         })
         if (codeWidget) {
-          this.setSubcode("current", codeWidget, 1);
+          this.setSubcodeProgress("current", codeWidget, 1);
           return { lineNumber: 1, codeWidget: codeWidget };
         } else {
           this.set("current", lineNumber);
@@ -272,7 +272,7 @@ export class RuntimeProcessManager {
         let line = step.lineNumber;
         let node = document.querySelector(`.vanessa-code-border[data-id="${code}"]`) as HTMLElement;
         if (step.lineNumber < node.querySelectorAll('div').length) {
-          this.setSubcode("current", code, ++line);
+           this.setSubcodeProgress("current", code, ++line);
           return { lineNumber: line, codeWidget: code };
         } else {
           this.clearCurrentSubcode();
@@ -297,7 +297,7 @@ export class RuntimeProcessManager {
     document.querySelectorAll(".vanessa-code-lines > span.debug-current-step").forEach(e => e.classList.remove("debug-current-step"));
   }
 
-  public setSubcode(status: string, id: string, arg: any): void {
+  public setSubcodeProgress(status: string, id: string, arg: any): void {
     if (status == "current") this.clearCurrentSubcode();
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];

@@ -117,7 +117,7 @@ export class VanessaEditor {
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
     this.setRuntimeProgress = (status: string, lines: any) => this.runtimeProcessManager.set(status, lines);
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
-    this.setSubcodeProgress = (status: string, id: string, lines: any) => this.runtimeProcessManager.setSubcode(status, id, lines);
+    this.setSubcodeProgress = (status: string, id: string, lines: any) => this.runtimeProcessManager.setSubcodeProgress(status, id, lines);
     this.getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
     this.showRuntimeError = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, data, text);
     this.showRuntimeCode = (lineNumber: number, id: string, text: string) => this.runtimeProcessManager.showCode(lineNumber, id, text);
