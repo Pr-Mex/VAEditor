@@ -561,7 +561,7 @@ EndFunction
 
 &AtClient
 Procedure CreateStep(lineNumber)
-	
+
 	Text = VanessaEditor.getLineContent(lineNumber);
 
 	Map = New Map;
@@ -841,6 +841,63 @@ Procedure VanessaEditorDocumentComplete(Item)
 	VanessaEditor.addCommands(GetCommands());
 	FillEditorActions();
 
+EndProcedure
+
+&AtClient
+Procedure ShowSubcode(Command)
+
+	Cоntent =
+	"Функционал: Проверка формирования отчета Allure
+	|
+	|Как разработчик
+	|Я хочу чтобы корректно формировался отчет Allure
+	|Чтобы я мог видеть результат работы сценариев
+	|
+	|Контекст:
+	|	Дано подсценарий первого уровня номер один
+	|	Дано подсценарий первого уровня номер два
+	|Сценарий: Прикрепление скриншота, когда используется VanessaExt. Одно окно. Весь экран.
+	|	Дано подсценарий первого уровня номер один
+	|	Дано подсценарий первого уровня номер два
+	|	И нормальная строка
+	|";
+
+	Cоntent1 =
+	"	И шаг подсценария 1
+	|	И шаг подсценария 2
+	|	И шаг подсценария 3
+	|";
+
+	Cоntent2 =
+	"	И подсценрий второго уровня
+	|		И шаг подсценария 4
+	|		И шаг подсценария 5
+	|		И шаг подсценария 6
+	|";
+
+	VanessaEditor.setContent(Cоntent);
+	VanessaEditor.showRuntimeCode(8, "Cоntent1", Cоntent1);
+	VanessaEditor.showRuntimeCode(9, "Cоntent2", Cоntent2);
+	VanessaEditor.showRuntimeCode(11, "Cоntent3", Cоntent1);
+	VanessaEditor.showRuntimeCode(12, "Cоntent4", Cоntent2);
+
+EndProcedure
+
+&AtClient
+Procedure RunSubcode(Command)
+	AttachIdleHandler("NextRuntimeStep", 1, False);
+EndProcedure
+
+&AtClient
+Procedure StopSubcode(Command)
+	DetachIdleHandler("NextRuntimeStep");
+EndProcedure
+
+&AtClient
+Procedure NextRuntimeStep()
+	Pos = VanessaEditor.nextRuntimeProgress();
+	RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
+	RuntimeCode = VanessaEditor.getLineContent(Pos.lineNumber, Pos.codeWidget);
 EndProcedure
 
 #EndRegion
