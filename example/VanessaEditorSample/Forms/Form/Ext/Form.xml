@@ -342,6 +342,7 @@
 							<v8:content>Group pages</v8:content>
 						</v8:item>
 					</ToolTip>
+					<PagesRepresentation>TabsOnRightHorizontal</PagesRepresentation>
 					<ExtendedTooltip name="GroupPagesExtendedTooltip" id="172"/>
 					<ChildItems>
 						<Page name="PageContent" id="173">
@@ -1016,30 +1017,75 @@
 									<AutoCommandBar name="CompleteStepsCommandBar" id="98">
 										<Autofill>false</Autofill>
 										<ChildItems>
-											<Button name="CompleteStepsAdd" id="112">
-												<Type>CommandBarButton</Type>
-												<Representation>Picture</Representation>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Item.CompleteSteps.StandardCommand.Add</CommandName>
-												<ExtendedTooltip name="CompleteStepsAddExtendedTooltip" id="113"/>
-											</Button>
-											<Button name="CompleteStepsDelete" id="114">
-												<Type>CommandBarButton</Type>
-												<Representation>Picture</Representation>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Item.CompleteSteps.StandardCommand.Delete</CommandName>
-												<ExtendedTooltip name="CompleteStepsDeleteExtendedTooltip" id="115"/>
-											</Button>
-											<Button name="CompleteStepsSetProgress" id="342">
-												<Type>CommandBarButton</Type>
-												<CommandName>Form.Command.SetProgress</CommandName>
-												<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
-											</Button>
-											<Button name="CompleteStepsGetProgress" id="344">
-												<Type>CommandBarButton</Type>
-												<CommandName>Form.Command.GetProgress</CommandName>
-												<ExtendedTooltip name="CompleteStepsGetProgressExtendedTooltip" id="345"/>
-											</Button>
+											<ButtonGroup name="CompleteStepsGroup" id="356">
+												<Title>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps group</v8:content>
+													</v8:item>
+												</Title>
+												<ToolTip>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps group</v8:content>
+													</v8:item>
+												</ToolTip>
+												<Representation>Compact</Representation>
+												<ExtendedTooltip name="CompleteStepsGroupExtendedTooltip" id="357"/>
+												<ChildItems>
+													<Button name="CompleteStepsAdd" id="112">
+														<Type>CommandBarButton</Type>
+														<Representation>Picture</Representation>
+														<OnlyInAllActions>true</OnlyInAllActions>
+														<CommandName>Form.Item.CompleteSteps.StandardCommand.Add</CommandName>
+														<ExtendedTooltip name="CompleteStepsAddExtendedTooltip" id="113"/>
+													</Button>
+													<Button name="CompleteStepsDelete" id="114">
+														<Type>CommandBarButton</Type>
+														<Representation>Picture</Representation>
+														<OnlyInAllActions>true</OnlyInAllActions>
+														<CommandName>Form.Item.CompleteSteps.StandardCommand.Delete</CommandName>
+														<ExtendedTooltip name="CompleteStepsDeleteExtendedTooltip" id="115"/>
+													</Button>
+													<Button name="CompleteStepsSetProgress" id="342">
+														<Type>CommandBarButton</Type>
+														<CommandName>Form.Command.SetProgress</CommandName>
+														<Title>
+															<v8:item>
+																<v8:lang>ru</v8:lang>
+																<v8:content>Set</v8:content>
+															</v8:item>
+														</Title>
+														<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
+													</Button>
+													<Button name="CompleteStepsGetProgress" id="344">
+														<Type>CommandBarButton</Type>
+														<CommandName>Form.Command.GetProgress</CommandName>
+														<Title>
+															<v8:item>
+																<v8:lang>ru</v8:lang>
+																<v8:content>Get</v8:content>
+															</v8:item>
+														</Title>
+														<ExtendedTooltip name="CompleteStepsGetProgressExtendedTooltip" id="345"/>
+													</Button>
+												</ChildItems>
+											</ButtonGroup>
+											<ButtonGroup name="CompleteStepsSubcode" id="360">
+												<Title>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps subcode</v8:content>
+													</v8:item>
+												</Title>
+												<ToolTip>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps subcode</v8:content>
+													</v8:item>
+												</ToolTip>
+												<ExtendedTooltip name="CompleteStepsSubcodeExtendedTooltip" id="361"/>
+											</ButtonGroup>
 										</ChildItems>
 									</AutoCommandBar>
 									<ExtendedTooltip name="CompleteStepsExtendedTooltip" id="99"/>
@@ -1116,19 +1162,99 @@
 									</ToolTip>
 									<ExtendedTooltip name="CleanRuntimeProgressBarExtendedTooltip" id="155"/>
 									<ChildItems>
+										<Button name="ShowError" id="349">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.ShowError</CommandName>
+											<ExtendedTooltip name="ShowErrorExtendedTooltip" id="350"/>
+										</Button>
 										<Button name="CleanRuntimeProgress" id="152">
 											<Type>CommandBarButton</Type>
 											<OnlyInAllActions>true</OnlyInAllActions>
 											<CommandName>Form.Command.CleanRuntimeProgress</CommandName>
 											<ExtendedTooltip name="CleanRuntimeProgressExtendedTooltip" id="153"/>
 										</Button>
-										<Button name="ShowError" id="349">
-											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.ShowError</CommandName>
-											<ExtendedTooltip name="ShowErrorExtendedTooltip" id="350"/>
-										</Button>
 									</ChildItems>
 								</CommandBar>
+								<CommandBar name="GroupSubcode" id="362">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group subcode</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group subcode</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="GroupSubcodeExtendedTooltip" id="363"/>
+									<ChildItems>
+										<Button name="ShowSubcode" id="358">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.SubcodeExample</CommandName>
+											<ExtendedTooltip name="ShowSubcodeExtendedTooltip" id="359"/>
+										</Button>
+										<ButtonGroup name="GroupSubcodeRun" id="368">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group subcode run</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group subcode run</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Representation>Compact</Representation>
+											<ExtendedTooltip name="GroupSubcodeRunExtendedTooltip" id="369"/>
+											<ChildItems>
+												<Button name="RunSubcode" id="364">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.RunSubcode</CommandName>
+													<Title>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Run</v8:content>
+														</v8:item>
+													</Title>
+													<ExtendedTooltip name="RunSubcodeExtendedTooltip" id="365"/>
+												</Button>
+												<Button name="StopSubcode" id="366">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.StopSubcode</CommandName>
+													<Title>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Stop</v8:content>
+														</v8:item>
+													</Title>
+													<ExtendedTooltip name="StopSubcodeExtendedTooltip" id="367"/>
+												</Button>
+											</ChildItems>
+										</ButtonGroup>
+									</ChildItems>
+								</CommandBar>
+								<InputField name="RuntimePosition" id="373">
+									<DataPath>RuntimePosition</DataPath>
+									<ReadOnly>true</ReadOnly>
+									<ContextMenu name="RuntimePositionContextMenu" id="374"/>
+									<ExtendedTooltip name="RuntimePositionExtendedTooltip" id="375"/>
+								</InputField>
+								<InputField name="RuntimeCode" id="376">
+									<DataPath>RuntimeCode</DataPath>
+									<ReadOnly>true</ReadOnly>
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Code</v8:content>
+										</v8:item>
+									</Title>
+									<ContextMenu name="RuntimeCodeContextMenu" id="377"/>
+									<ExtendedTooltip name="RuntimeCodeExtendedTooltip" id="378"/>
+								</InputField>
 							</ChildItems>
 						</Page>
 						<Page name="PageProblems" id="200">
@@ -2045,6 +2171,36 @@
 				</v8:StringQualifiers>
 			</Type>
 		</Attribute>
+		<Attribute name="RuntimePosition" id="21">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Position</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="RuntimeCode" id="22">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Runtime code</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
 	</Attributes>
 	<Commands>
 		<Command name="LoadFile" id="2">
@@ -2699,6 +2855,66 @@
 				</v8:item>
 			</ToolTip>
 			<Action>ShowError</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="SubcodeExample" id="38">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Subcode example</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Subcode example</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.ExternalDataSourceFunction</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>ShowSubcode</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="RunSubcode" id="39">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Run subcode</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Run subcode</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.GenerateReport</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>RunSubcode</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="StopSubcode" id="40">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Stop subcode</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Stop subcode</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.Stop</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>StopSubcode</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 	</Commands>

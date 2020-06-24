@@ -56,6 +56,7 @@ export class VanessaEditor {
   public getRuntimeProgress: Function;
   public getCurrentProgress: Function;
   public setSubcodeProgress: Function;
+  public nextRuntimeProgress: Function;
   public clearRuntimeProgress: Function;
   public showRuntimeError: Function;
   public showRuntimeCode: Function;
@@ -105,7 +106,7 @@ export class VanessaEditor {
     this.redo = () => this.editor.trigger('undo…', 'redo', undefined);
     this.popMessage = () => this.messages.shift();
     this.getContent = () => this.editor.getValue();
-    this.getLineContent = (num: number) => this.editor.getModel().getLineContent(num);
+    this.getLineContent = (lineNumber: number, codeWidget: string = undefined) => this.editor.getModel().getLineContent(lineNumber);
     this.getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
     this.getPosition = () => this.editor.getPosition();
     this.getSelection = () => this.editor.getSelection();
@@ -120,6 +121,7 @@ export class VanessaEditor {
     this.getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
     this.showRuntimeError = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, data, text);
     this.showRuntimeCode = (lineNumber: number, id: string, text: string) => this.runtimeProcessManager.showCode(lineNumber, id, text);
+    this.nextRuntimeProgress = () => this.runtimeProcessManager.next();
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
