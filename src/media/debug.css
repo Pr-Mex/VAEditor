@@ -36,7 +36,10 @@
   overflow: hidden;
   white-space: nowrap;
 }
-.vanessa-code-widget .vanessa-code-border {
+.vanessa-code-margin {
+  background: #CCDDDD80;
+}
+.vanessa-code-border {
   background: #BBCCCC;
   position: absolute;
   top: 0;
@@ -45,13 +48,14 @@
   user-select: none;
   -webkit-user-select: none;
 }
-.vanessa-code-widget .vanessa-code-border div {
+.vanessa-code-border div {
   left: 0;
   width: 100%;
 }
 .vanessa-code-widget .vanessa-code-lines {
   position: absolute;
   top: 0;
+  left: 0;
   bottom: 0;
   right: 0;
 }

@@ -3,6 +3,8 @@ import { IRange } from "monaco-editor";
 
 import * as monaco from "monaco-editor"
 import { renderMarkdown } from "monaco-editor/esm/vs/base/browser/htmlContentRenderer.js"
+import { SubcodeWidget } from "./widgets/subcode";
+import { ErrorWidget } from "./widgets/error";
 
 const markdownToHTML = (value) => {
   const result = renderMarkdown({
@@ -273,11 +275,11 @@ export class RuntimeProcessManager {
         let line = step.lineNumber;
         let node = document.querySelector(`.vanessa-code-border[data-id="${code}"]`) as HTMLElement;
         if (step.lineNumber < node.querySelectorAll('div').length) {
-           this.setSubcodeProgress("current", code, ++line);
+          this.setSubcodeProgress("current", code, ++line);
           return { lineNumber: line, codeWidget: code };
         } else {
           this.clearCurrentSubcode();
-          let top = node.getBoundingClientRect().top;
+          let top = parseInt(node.parentElement.style.top.replace('px', ''));
           let lineCount = this.editor.getModel().getLineCount();
           for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
             if (this.editor.getTopForLineNumber(lineNumber) > top) {
@@ -310,7 +312,8 @@ export class RuntimeProcessManager {
         e.className = status == "current" ? "debug-current-step-glyph" : "";
       }
     });
-    domNode.parentElement.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
+    var domNode = document.querySelector(`.vanessa-code-widget[data-id="${id}"]`);
+    domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
       if (lines.indexOf(i + 1) >= 0) {
         e.className = `debug-${status}-step`;
       }
@@ -319,76 +322,20 @@ export class RuntimeProcessManager {
 
   public showError(lineNumber: number, data: string, text: string) {
     let ids = this.errorViewZoneIds;
-    let style = (document.querySelector('div.view-lines') as HTMLElement).style;
-    var domNode = document.createElement('div');
-    domNode.classList.add('vanessa-error-widget');
-    domNode.style.fontFamily = style.fontFamily;
-    domNode.style.lineHeight = style.lineHeight;
-    domNode.style.fontSize = style.fontSize;
-    domNode.style.zIndex = "9999";
-    var textNode = document.createElement('span');
-    textNode.innerText = text;
-    domNode.appendChild(textNode);
-    var linkNode = document.createElement('div');
-    linkNode.classList.add('vanessa-error-links');
-    linkNode.dataset.value = data;
-    this.VanessaEditor.errorLinks.forEach((e, i) => {
-      if (i) {
-        let sNode = document.createElement('span');
-        sNode.innerHTML = '&nbsp;|&nbsp;';
-        linkNode.appendChild(sNode);
-      }
-      let aNode = document.createElement('a');
-      aNode.href = "#";
-      aNode.dataset.id = e.id;
-      aNode.innerText = e.title;
-      aNode.setAttribute("onclick", "VanessaEditor.onErrorLink(this)");
-      linkNode.appendChild(aNode);
-    });
-    domNode.appendChild(linkNode);
+    let widget = new ErrorWidget(data, text);
+    let zone = widget.create(lineNumber);
     this.editor.changeViewZones(changeAccessor =>
-      ids.push(changeAccessor.addZone({
-        afterLineNumber: lineNumber,
-        afterColumn: 1,
-        heightInLines: 2,
-        domNode: domNode,
-      }))
+      ids.push(changeAccessor.addZone(zone))
     );
   }
 
   public showCode(lineNumber: number, id: string, text: string) {
     let ids = this.codeViewZoneIds;
-    let style = (document.querySelector('div.view-lines') as HTMLElement).style;
-    var domNode = document.createElement('div');
-    domNode.classList.add('vanessa-code-widget');
-    domNode.style.fontFamily = style.fontFamily;
-    domNode.style.lineHeight = style.lineHeight;
-    domNode.style.fontSize = style.fontSize;
-    domNode.style.zIndex = "9999";
-    var leftNode = document.createElement('div');
-    leftNode.classList.add('vanessa-code-border');
-    leftNode.style.width = style.lineHeight;
-    leftNode.dataset.id = id;
-    domNode.appendChild(leftNode);
-    var textNode = document.createElement('div');
-    textNode.classList.add('vanessa-code-lines');
-    textNode.style.left = style.lineHeight;
-    domNode.appendChild(textNode);
+    let widget = new SubcodeWidget(id);
     monaco.editor.colorize(text, "turbo-gherkin", {}).then((html: string) => {
-      textNode.innerHTML = html;
-      let linesCount = textNode.querySelectorAll('div>span').length;
-      for (let i = 0; i < linesCount; i++) {
-        var glyphNode = document.createElement('div');
-        leftNode.appendChild(glyphNode);
-        glyphNode.style.height = style.lineHeight;
-      }
+      let zone = widget.create(html, lineNumber);
       this.editor.changeViewZones(changeAccessor =>
-        ids.push(changeAccessor.addZone({
-          heightInLines: linesCount,
-          afterLineNumber: lineNumber,
-          afterColumn: 1,
-          domNode: domNode,
-        })));
+        ids.push(changeAccessor.addZone(zone)));
     });
   }
 
