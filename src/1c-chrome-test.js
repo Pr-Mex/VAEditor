@@ -135,12 +135,11 @@ window.onload = () => {
 
     let subcode = '\t\tИ шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\tИ шаг подсценария 3\n\t\tИ шаг подсценария 4';
     VanessaEditor.showRuntimeCode(15, '0x001', subcode);
-    VanessaEditor.showRuntimeCode(19, '0x002', subcode);
-    VanessaEditor.showRuntimeCode(21, '0x003', subcode);
+    VanessaEditor.showRuntimeCode(20, '0x002', subcode);
+    VanessaEditor.showRuntimeCode(22, '0x003', subcode);
 
     setInterval(() => VanessaEditor.runtimeProcessManager.next(), 500);
-
-    /*
+/*
     let problems = [{
         "lineNumber": 12,
         "severity": "Warning",
@@ -153,5 +152,5 @@ window.onload = () => {
     let error = "Runtime error info";
     VanessaEditor.setRuntimeProgress("error", 13);
     VanessaEditor.showRuntimeError(13, "0x01", error);
-    */
+*/
 }
