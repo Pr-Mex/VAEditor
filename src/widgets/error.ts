@@ -1,7 +1,11 @@
-export class ErrorWidget {
-  private domNode: HTMLElement;
+export class ErrorWidget implements monaco.editor.IViewZone {
+  public domNode: HTMLElement;
+  public afterLineNumber: number;
+  public afterColumn: number;
+  public heightInLines: number;
+  public marginDomNode: HTMLElement;
 
-  constructor(data: string, text: string) {
+  constructor(data: string, text: string, lineNumber: number) {
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.domNode = document.createElement('div');
     this.domNode.classList.add('vanessa-error-widget');
@@ -29,13 +33,8 @@ export class ErrorWidget {
       linkNode.appendChild(aNode);
     });
     this.domNode.appendChild(linkNode);
-  }
-  public create(lineNumber: number): monaco.editor.IViewZone {
-    return {
-      domNode: this.domNode,
-      afterLineNumber: lineNumber,
-      afterColumn: 1,
-      heightInLines: 2,
-    }
+    this.afterLineNumber = lineNumber;
+    this.afterColumn = 1;
+    this.heightInLines = 2;
   }
 }
