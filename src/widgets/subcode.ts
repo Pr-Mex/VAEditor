@@ -1,31 +1,23 @@
-class SubcodeZone implements monaco.editor.IViewZone {
-  top: number;
-  afterLineNumber: number;
-  heightInLines: number;
-  domNode: HTMLElement;
-  marginDomNode: HTMLElement;
-  afterColumn: number = 1;
-  suppressMouseDown: boolean = true;
-  onDomNodeTop(top: number): void {
+export class SubcodeWidget implements monaco.editor.IViewZone {
+
+  public domNode: HTMLElement;
+  public afterLineNumber: number;
+  public heightInLines: number;
+  public marginDomNode: HTMLElement;
+  public afterColumn: number = 1;
+  public suppressMouseDown: boolean = true;
+  public onDomNodeTop(top: number): void {
     this.top = top;
   }
-  constructor(domNode: HTMLElement, marginDomNode: HTMLElement, afterLineNumber: number, heightInLines: number) {
-    this.domNode = domNode;
-    this.marginDomNode = marginDomNode;
-    this.afterLineNumber = afterLineNumber;
-    this.heightInLines = heightInLines;
-  }
-}
 
-export class SubcodeWidget {
-
-  private domNode: HTMLElement;
+  public id: string;
+  public top: number;
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
-  private marginNode: HTMLElement;
   private lineHeight: string;
 
   constructor(id: string) {
+    this.id = id;
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.domNode = document.createElement('div');
     this.domNode.classList.add('vanessa-code-widget');
@@ -47,19 +39,31 @@ export class SubcodeWidget {
     this.textNode.style.left = this.lineHeight;
     this.domNode.appendChild(this.textNode);
 
-    let marginNode = document.createElement('div');
-    marginNode.classList.add('vanessa-code-margin');
-    marginNode.style.background = '#CCDDDD80';
+    this.marginDomNode = document.createElement('div');
   }
 
-   public create(html: string, lineNumber: number): SubcodeZone {
+  public setContent(content: string, lineNumber: number, then: Function): void {
+    monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
+      this.textNode.innerHTML = html;
+      this.afterLineNumber = lineNumber;
+      this.heightInLines = this.textNode.querySelectorAll('div>span').length;
+      for (let i = 0; i < this.heightInLines; i++) {
+        var glyphNode = document.createElement('div');
+        this.leftNode.appendChild(glyphNode);
+        glyphNode.style.height = this.lineHeight;
+      }
+      then();
+    });
+  }
+
+   public setText(html: string, lineNumber: number): void {
     this.textNode.innerHTML = html;
-    let linesCount = this.textNode.querySelectorAll('div>span').length;
-    for (let i = 0; i < linesCount; i++) {
+    this.afterLineNumber = lineNumber;
+    this.heightInLines = this.textNode.querySelectorAll('div>span').length;
+    for (let i = 0; i < this.heightInLines; i++) {
       var glyphNode = document.createElement('div');
       this.leftNode.appendChild(glyphNode);
       glyphNode.style.height = this.lineHeight;
     }
-    return new SubcodeZone(this.domNode, this.marginNode, lineNumber, linesCount);
   }
 }

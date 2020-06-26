@@ -322,28 +322,27 @@ export class RuntimeProcessManager {
 
   public showError(lineNumber: number, data: string, text: string) {
     let ids = this.errorViewZoneIds;
-    let widget = new ErrorWidget(data, text);
-    let zone = widget.create(lineNumber);
+    let widget = new ErrorWidget(data, text, lineNumber);
     this.editor.changeViewZones(changeAccessor =>
-      ids.push(changeAccessor.addZone(zone))
+      ids.push(changeAccessor.addZone(widget))
     );
   }
 
   public showCode(lineNumber: number, id: string, text: string) {
     let ids = this.codeViewZoneIds;
     let widget = new SubcodeWidget(id);
-    monaco.editor.colorize(text, "turbo-gherkin", {}).then((html: string) => {
-      let zone = widget.create(html, lineNumber);
+    widget.setContent(text, lineNumber, () =>
       this.editor.changeViewZones(changeAccessor =>
-        ids.push(changeAccessor.addZone(zone)));
-    });
+        ids.push(changeAccessor.addZone(widget))
+      )
+    );
   }
 
   public clearErrors(): void {
     let ids = this.errorViewZoneIds;
     this.editor.changeViewZones(changeAccessor =>
-      ids.forEach(id => changeAccessor.removeZone(id)
-      ));
+      ids.forEach(id => changeAccessor.removeZone(id))
+    );
     ids.length = 0;
   }
 
