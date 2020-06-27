@@ -220,11 +220,9 @@ export class RuntimeProcessManager {
     `;
   }
 
-  public set(status: string, arg: any): void {
+  public setStatus(status: string, arg: any): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
-    let position = this.editor.getPosition();
-    this.editor.setSelection(new monaco.Range(1, 1, 1, 1));
     const model: monaco.editor.ITextModel = this.editor.getModel();
     const oldDecorations = [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -247,10 +245,9 @@ export class RuntimeProcessManager {
     });
     const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
     newDecorations.forEach(s => this.stepDecorationIds.push(s));
-    this.editor.setPosition(position);
   }
 
-  public get(status: string): string {
+  public getStatus(status: string): string {
     const model: monaco.editor.ITextModel = this.editor.getModel();
     const lines = [];
     let lineCount = model.getLineCount();
