@@ -70,7 +70,7 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   }
 
   public lineNumber(editor: monaco.editor.IStandaloneCodeEditor): number {
-    return editor.getModel().getDecorationRange(this.decoration).startLineNumber;
+    return editor.getModel().getDecorationRange(this.decoration).endLineNumber;
   }
 
   public getContent(): string {
