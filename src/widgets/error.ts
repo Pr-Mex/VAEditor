@@ -11,10 +11,6 @@ export class ErrorWidget implements monaco.editor.IViewZone {
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.domNode = document.createElement('div');
     this.domNode.classList.add('vanessa-error-widget');
-    this.domNode.style.fontFamily = style.fontFamily;
-    this.domNode.style.lineHeight = style.lineHeight;
-    this.domNode.style.fontSize = style.fontSize;
-    this.domNode.style.zIndex = "9999";
     var textNode = document.createElement('span');
     textNode.innerText = text;
     this.domNode.appendChild(textNode);
