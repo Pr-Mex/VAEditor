@@ -1,3 +1,7 @@
+const glyphClassBreakpoint: string = "debug-breakpoint-glyph";
+const glyphClassUnverified: string = "debug-breakpoint-unverified-glyph";
+const glyphClassCurrent: string = "debug-current-step-glyph";
+
 export class SubcodeWidget implements monaco.editor.IViewZone {
 
   public domNode: HTMLElement;
@@ -12,6 +16,23 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
 
+  private onBreakpointClick(e: MouseEvent) {
+    let node = e.target as HTMLElement;
+    if (node.classList.contains(glyphClassBreakpoint)) {
+      node.classList.remove(glyphClassBreakpoint);
+      node.classList.add(glyphClassUnverified);
+      setTimeout(() => {
+        node.classList.remove(glyphClassUnverified);
+      }, 400);
+    } else {
+      node.classList.add(glyphClassUnverified);
+      setTimeout(() => {
+        node.classList.remove(glyphClassUnverified);
+        node.classList.add(glyphClassBreakpoint);
+      }, 400);
+    }
+  }
+
   constructor(content: string) {
     this.content = content.split(/\r\n|\r|\n/);
     this.domNode = this.div('vanessa-code-widget');
@@ -20,7 +41,8 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     this.marginDomNode = this.div('vanessa-code-margin', this.domNode);
     this.heightInLines = this.content.length;
     for (let i = 0; i < this.heightInLines; i++) {
-      this.div("", this.leftNode);
+      let node = this.div("", this.leftNode);
+      node.addEventListener("click", this.onBreakpointClick);
     }
     monaco.editor.colorize(content, "turbo-gherkin", {})
       .then((html: string) => this.textNode.innerHTML = html);
@@ -61,7 +83,7 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
 
   public getCurrent(): number {
     let lineNumber = 0;
-    let glyphNode = this.leftNode.querySelector("div.debug-current-step-glyph");
+    let glyphNode = this.leftNode.querySelector("div." + glyphClassCurrent);
     this.leftNode.childNodes.forEach((e, i) => { if (e == glyphNode) lineNumber = i + 1; });
     return lineNumber;
   }
@@ -76,9 +98,9 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   public setCurrent(lineNumber: number) {
     this.leftNode.childNodes.forEach((e: HTMLElement, i) => {
       if (i + 1 == lineNumber) {
-        e.classList.add("debug-current-step-glyph");
+        e.classList.add(glyphClassCurrent);
       } else {
-        e.classList.remove("debug-current-step-glyph");
+        e.classList.remove(glyphClassCurrent);
       }
     });
     this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
