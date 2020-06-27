@@ -896,8 +896,13 @@ EndProcedure
 &AtClient
 Procedure NextRuntimeStep()
 	Pos = VanessaEditor.nextRuntimeProgress();
-	RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
-	RuntimeCode = VanessaEditor.getLineContent(Pos.lineNumber, Pos.codeWidget);
+	If Pos = Undefined Then
+		RuntimePosition = Undefined;
+		RuntimeCode = Undefined;
+	Else
+		RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
+		RuntimeCode = VanessaEditor.getLineContent(Pos.lineNumber, Pos.codeWidget);
+	EndIf;
 EndProcedure
 
 #EndRegion
