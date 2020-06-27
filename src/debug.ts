@@ -170,11 +170,20 @@ interface IRuntimePosition {
   codeWidget: number;
 }
 
+class RuntimePosition implements IRuntimePosition {
+  public lineNumber: number;
+  public codeWidget: number;
+  constructor(lineNumber: number, codeWidget: number = 0) {
+    this.lineNumber = lineNumber;
+    this.codeWidget = codeWidget;
+  }
+}
+
 export class RuntimeProcessManager {
 
   private editor: monaco.editor.IStandaloneCodeEditor;
   private stepDecorationIds: string[] = [];
-  private currentStepDecorationIds: string[] = [];
+  private currentDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
   private lineHeight: number = 0;
   private codeWidgets = {};
@@ -217,36 +226,27 @@ export class RuntimeProcessManager {
     let position = this.editor.getPosition();
     this.editor.setSelection(new monaco.Range(1, 1, 1, 1));
     const model: monaco.editor.ITextModel = this.editor.getModel();
-    const oldDecorations = status == "current" ? this.currentStepDecorationIds : [];
+    const oldDecorations = [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     lines.forEach((line: number) => {
       model.getLinesDecorations(line, line).forEach(d => {
-        if (d.options.className) oldDecorations.push(d.id);
+        let i = this.stepDecorationIds.indexOf(d.id);
+        if (i >= 0) {
+          this.stepDecorationIds.slice(i, 1);
+          oldDecorations.push(d.id);
+        }
       });
       if (status) decorations.push({
         range: new monaco.Range(line, 1, line, 1),
         options: {
           stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-          glyphMarginClassName: status == "current" ? "debug-current-step-glyph" : undefined,
           className: `debug-${status}-step`,
           isWholeLine: true,
         }
       });
     });
-    oldDecorations.forEach(s => {
-      if (status != "current") {
-        let i = this.currentStepDecorationIds.indexOf(s);
-        if (i >= 0) this.stepDecorationIds.splice(i, 1);
-      }
-      let i = this.stepDecorationIds.indexOf(s);
-      if (i >= 0) this.stepDecorationIds.splice(i, 1);
-    });
-    const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations)
-    if (status == "current") {
-      this.currentStepDecorationIds = newDecorations;
-    } else {
-      newDecorations.forEach(s => this.stepDecorationIds.push(s));
-    }
+    const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
+    newDecorations.forEach(s => this.stepDecorationIds.push(s));
     this.editor.setPosition(position);
   }
 
@@ -280,72 +280,75 @@ export class RuntimeProcessManager {
 
   public getCurrent(): IRuntimePosition {
     const model = this.editor.getModel();
-    let decoration = this.currentStepDecorationIds[0];
+    let decoration = this.currentDecorationIds[0];
     let range = decoration ? model.getDecorationRange(decoration) : undefined;
-    if (range) return { lineNumber: range.startLineNumber, codeWidget: 0 };
+    if (range) return new RuntimePosition(range.startLineNumber);
     let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
     let lineNumber = widget ? widget.getCurrent() : undefined;
-    if (lineNumber) return { lineNumber: lineNumber, codeWidget: widget.id };
+    if (lineNumber) return new RuntimePosition(lineNumber, widget.id);
+  }
+
+  public setCurrent(lineNumber: number, codeWidget: number = 0): IRuntimePosition {
+    const model = this.editor.getModel();
+    this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
+    let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
+    if (widget) widget.setCurrent(0);
+    this.currentCodeWidget = 0;
+    if (codeWidget) {
+      this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
+      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      if (widget) {
+        this.currentCodeWidget = codeWidget;
+        widget.setCurrent(lineNumber);
+        return new RuntimePosition(lineNumber, codeWidget);
+      }
+    } else {
+      if (lineNumber > model.getLineCount()) return undefined;
+      const oldDecorations = [];
+      model.getLinesDecorations(lineNumber, lineNumber).forEach(d => {
+        let i = this.stepDecorationIds.indexOf(d.id);
+        if (i >= 0) {
+          this.stepDecorationIds.slice(i, 1);
+          oldDecorations.push(d.id);
+        }
+      });
+      this.currentDecorationIds = model.deltaDecorations(oldDecorations, [{
+        range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+        options: {
+          stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+          glyphMarginClassName: "debug-current-step-glyph",
+          className: "debug-current-step",
+          isWholeLine: true,
+        }
+      }]);
+      this.editor.revealLine(lineNumber);
+      return new RuntimePosition(lineNumber);
+    }
   }
 
   public next(): IRuntimePosition {
     let step = this.getCurrent();
-    if (step) {
-      if (step.codeWidget == 0) {
-        let decorations = this.editor.getLineDecorations(step.lineNumber);
-        for (let id in this.codeWidgets) {
-          let widget = this.codeWidgets[id] as SubcodeWidget;
-          if (decorations.some(d => d.id == widget.decoration)) {
-            widget.setCurrent(1);
-            this.currentCodeWidget = widget.id;
-            this.currentStepDecorationIds = this.editor.deltaDecorations(this.currentStepDecorationIds, []);
-            return { lineNumber: 1, codeWidget: widget.id };
-          }
-        }
-        let lineNumber = step.lineNumber + 1;
-        this.set("current", lineNumber);
-        this.editor.revealLine(lineNumber);
-        return { lineNumber: lineNumber, codeWidget: 0 };
-      } else {
-        let id = step.codeWidget;
+    if (step == undefined) return this.setCurrent(1);
+    if (step.codeWidget) {
+      let id = step.codeWidget;
+      let widget = this.codeWidgets[id] as SubcodeWidget;
+      if (widget) {
+        let lineNumber = widget.next();
+        if (lineNumber) return { lineNumber: lineNumber, codeWidget: id };
+        lineNumber = widget.lineNumber(this.editor) + 1;
+        return this.setCurrent(lineNumber);
+      }
+    } else {
+      let decorations = this.editor.getLineDecorations(step.lineNumber);
+      for (let id in this.codeWidgets) {
         let widget = this.codeWidgets[id] as SubcodeWidget;
-        if (widget) {
-          let lineNumber = widget.next();
-          if (lineNumber) return { lineNumber: lineNumber, codeWidget: id };
-          lineNumber = widget.lineNumber(this.editor) + 1;
-          this.set("current", lineNumber);
-          return { lineNumber: lineNumber, codeWidget: 0 };
+        if (decorations.some(d => d.id == widget.decoration)) {
+          return this.setCurrent(1, widget.id);
         }
       }
+      let lineNumber = step.lineNumber + 1;
+      return this.setCurrent(lineNumber);
     }
-    this.set("current", 1);
-    this.editor.revealLine(1);
-    return { lineNumber: 1, codeWidget: 0 };
-  }
-
-  public clearCurrentSubcode() {
-    this.currentStepDecorationIds = this.editor.deltaDecorations(this.currentStepDecorationIds, []);
-    document.querySelectorAll(".vanessa-code-border > div.debug-current-step-glyph").forEach(e => e.classList.remove("debug-current-step-glyph"));
-    document.querySelectorAll(".vanessa-code-lines > span.debug-current-step").forEach(e => e.classList.remove("debug-current-step"));
-  }
-
-  public setSubcodeProgress(status: string, id: string, arg: any): void {
-    if (status == "current") this.clearCurrentSubcode();
-    let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
-    if (typeof (lines) == "number") lines = [lines];
-    var domNode = document.querySelector(`.vanessa-code-border[data-id="${id}"]`);
-    if (domNode == undefined) return;
-    domNode.querySelectorAll('div').forEach((e, i) => {
-      if (lines.indexOf(i + 1) >= 0) {
-        e.className = status == "current" ? "debug-current-step-glyph" : "";
-      }
-    });
-    var domNode = document.querySelector(`.vanessa-code-widget[data-id="${id}"]`);
-    domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (lines.indexOf(i + 1) >= 0) {
-        e.className = `debug-${status}-step`;
-      }
-    });
   }
 
   public showError(lineNumber: number, data: string, text: string) {
@@ -384,7 +387,7 @@ export class RuntimeProcessManager {
   }
 
   public clear(): void {
-    this.currentStepDecorationIds = this.editor.deltaDecorations(this.currentStepDecorationIds, []);
+    this.currentDecorationIds = this.editor.deltaDecorations(this.currentDecorationIds, []);
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
     this.clearErrors();
     this.clearSubcode();

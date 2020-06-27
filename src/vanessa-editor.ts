@@ -55,6 +55,7 @@ export class VanessaEditor {
   public setRuntimeProgress: Function;
   public getRuntimeProgress: Function;
   public getCurrentProgress: Function;
+  public setCurrentProgress: Function;
   public setSubcodeProgress: Function;
   public nextRuntimeProgress: Function;
   public clearRuntimeProgress: Function;
@@ -117,8 +118,8 @@ export class VanessaEditor {
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
     this.setRuntimeProgress = (status: string, lines: any) => this.runtimeProcessManager.set(status, lines);
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.get(status);
-    this.setSubcodeProgress = (status: string, id: string, lines: any) => this.runtimeProcessManager.setSubcodeProgress(status, id, lines);
     this.getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
+    this.setCurrentProgress = (lineNumber: number, codeWidget: number = 0) => this.runtimeProcessManager.setCurrent(lineNumber, codeWidget);
     this.showRuntimeError = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, data, text);
     this.showRuntimeCode = (lineNumber: number, text: string) => this.runtimeProcessManager.showCode(lineNumber, text);
     this.nextRuntimeProgress = () => this.runtimeProcessManager.next();
