@@ -876,10 +876,10 @@ Procedure ShowSubcode(Command)
 	|";
 
 	VanessaEditor.setContent(Cоntent);
-	VanessaEditor.showRuntimeCode(8, "Cоntent1", Cоntent1);
-	VanessaEditor.showRuntimeCode(9, "Cоntent2", Cоntent2);
-	VanessaEditor.showRuntimeCode(11, "Cоntent3", Cоntent1);
-	VanessaEditor.showRuntimeCode(12, "Cоntent4", Cоntent2);
+	VanessaEditor.showRuntimeCode(8, Cоntent1);
+	VanessaEditor.showRuntimeCode(9, Cоntent2);
+	VanessaEditor.showRuntimeCode(11, Cоntent1);
+	VanessaEditor.showRuntimeCode(12, Cоntent2);
 
 EndProcedure
 

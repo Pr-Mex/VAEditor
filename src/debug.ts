@@ -321,21 +321,17 @@ export class RuntimeProcessManager {
   }
 
   public showError(lineNumber: number, data: string, text: string) {
-    let ids = this.errorViewZoneIds;
-    let widget = new ErrorWidget(data, text, lineNumber);
-    this.editor.changeViewZones(changeAccessor =>
-      ids.push(changeAccessor.addZone(widget))
-    );
+    let widget = new ErrorWidget(data, text);
+    let id = widget.show(this.editor, lineNumber);
+    this.errorViewZoneIds.push(id);
+    return id;
   }
 
-  public showCode(lineNumber: number, id: string, text: string) {
-    let ids = this.codeViewZoneIds;
-    let widget = new SubcodeWidget(id);
-    widget.setContent(text, lineNumber, () =>
-      this.editor.changeViewZones(changeAccessor =>
-        ids.push(changeAccessor.addZone(widget))
-      )
-    );
+  public showCode(lineNumber: number, text: string): number {
+    let widget = new SubcodeWidget(text);
+    let id = widget.show(this.editor, lineNumber);
+    this.codeViewZoneIds.push(id);
+    return id;
   }
 
   public clearErrors(): void {
@@ -359,5 +355,9 @@ export class RuntimeProcessManager {
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
     this.clearErrors();
     this.clearSubcode();
+  }
+
+  public getViewZone(id: number): any {
+    return this.editor["_modelData"].view.viewZones._zones[id];
   }
 }
