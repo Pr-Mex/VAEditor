@@ -105,8 +105,8 @@ export class VanessaEditor {
     this.undo = () => this.editor.trigger('undo…', 'undo', undefined);
     this.redo = () => this.editor.trigger('undo…', 'redo', undefined);
     this.popMessage = () => this.messages.shift();
-    this.getContent = () => this.editor.getValue();
-    this.getLineContent = (lineNumber: number, codeWidget: string = undefined) => this.editor.getModel().getLineContent(lineNumber);
+    this.getContent = (codeWidget: number = 0) => this.runtimeProcessManager.getContent(codeWidget);
+    this.getLineContent = (lineNumber: number, codeWidget: number = 0) => this.runtimeProcessManager.getLineContent(lineNumber, codeWidget);
     this.getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
     this.getPosition = () => this.editor.getPosition();
     this.getSelection = () => this.editor.getSelection();

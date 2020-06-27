@@ -167,22 +167,20 @@ export class BreakpointManager {
 
 interface IRuntimePosition {
   lineNumber: number;
-  codeWidget: string;
+  codeWidget: number;
 }
 
 export class RuntimeProcessManager {
 
-  private VanessaEditor: VanessaEditor;
   private editor: monaco.editor.IStandaloneCodeEditor;
   private stepDecorationIds: string[] = [];
   private currentStepDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
-  private codeViewZoneIds: Array<number> = [];
-
   private lineHeight: number = 0;
+  private codeWidgets = {};
+  private currentCodeWidget: number = 0;
 
   constructor(VanessaEditor: VanessaEditor) {
-    this.VanessaEditor = VanessaEditor;
     this.editor = VanessaEditor.editor;
     this.editor.onDidChangeConfiguration(e => this.setStyle());
     this.editor.onDidLayoutChange(e => this.setStyle());
@@ -210,7 +208,7 @@ export class RuntimeProcessManager {
     .vanessa-code-lines { left: ${conf.lineHeight}px; }\
     .vanessa-code-border { width: ${conf.lineHeight}px; }\
     .vanessa-code-border div { height: ${conf.lineHeight}px; }\
-    `; 
+    `;
   }
 
   public set(status: string, arg: any): void {
@@ -264,64 +262,65 @@ export class RuntimeProcessManager {
     return JSON.stringify(lines);
   }
 
+  public getContent(codeWidget: number = 0) {
+    if (codeWidget) {
+      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      return widget ? widget.getContent() : undefined;
+    }
+    return this.editor.getValue();
+  };
+
+  public getLineContent(lineNumber: number, codeWidget: number = 0) {
+    if (codeWidget) {
+      let widhet = this.codeWidgets[codeWidget] as SubcodeWidget;
+      return widhet ? widhet.getLineContent(lineNumber) : undefined;
+    }
+    return this.editor.getModel().getLineContent(lineNumber);
+  };
+
   public getCurrent(): IRuntimePosition {
-    const model: monaco.editor.ITextModel = this.editor.getModel();
-    let lineCount = model.getLineCount();
-    for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      if (model.getLinesDecorations(lineNumber, lineNumber).some(d =>
-        d.options.className == `debug-current-step`
-      )) return { lineNumber: lineNumber, codeWidget: undefined };
-    };
-    let lineNumber = undefined;
-    let glyphNode = document.querySelector(".vanessa-code-border > div.debug-current-step-glyph");
-    if (glyphNode) glyphNode.parentNode.querySelectorAll('div').forEach((e, i) => { if (e == glyphNode) lineNumber = i + 1; });
-    if (lineNumber) return { lineNumber: lineNumber, codeWidget: glyphNode.parentElement.dataset.id };
+    const model = this.editor.getModel();
+    let decoration = this.currentStepDecorationIds[0];
+    let range = decoration ? model.getDecorationRange(decoration) : undefined;
+    if (range) return { lineNumber: range.startLineNumber, codeWidget: 0 };
+    let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
+    let lineNumber = widget ? widget.getCurrent() : undefined;
+    if (lineNumber) return { lineNumber: lineNumber, codeWidget: widget.id };
   }
 
   public next(): IRuntimePosition {
-    let next: IRuntimePosition;
     let step = this.getCurrent();
     if (step) {
-      if (step.codeWidget == undefined) {
-        let codeWidget = undefined;
-        let lineNumber = step.lineNumber;
-        let prev = this.editor.getTopForLineNumber(lineNumber);
-        let next = this.editor.getTopForLineNumber(++lineNumber);
-        document.querySelectorAll('.vanessa-code-border').forEach((node: HTMLElement) => {
-          let top = node.getBoundingClientRect().top;
-          if (prev < top && top < next) codeWidget = node.dataset.id;
-        })
-        if (codeWidget) {
-          this.setSubcodeProgress("current", codeWidget, 1);
-          return { lineNumber: 1, codeWidget: codeWidget };
-        } else {
-          this.set("current", lineNumber);
-          this.editor.revealLine(lineNumber);
-          return { lineNumber: lineNumber, codeWidget: undefined };
-        }
-      } else {
-        let code = step.codeWidget;
-        let line = step.lineNumber;
-        let node = document.querySelector(`.vanessa-code-border[data-id="${code}"]`) as HTMLElement;
-        if (step.lineNumber < node.querySelectorAll('div').length) {
-          this.setSubcodeProgress("current", code, ++line);
-          return { lineNumber: line, codeWidget: code };
-        } else {
-          this.clearCurrentSubcode();
-          let top = parseInt(node.parentElement.style.top.replace('px', ''));
-          let lineCount = this.editor.getModel().getLineCount();
-          for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-            if (this.editor.getTopForLineNumber(lineNumber) > top) {
-              this.set("current", lineNumber);
-              return { lineNumber: lineNumber, codeWidget: undefined };
-            }
+      if (step.codeWidget == 0) {
+        let decorations = this.editor.getLineDecorations(step.lineNumber);
+        for (let id in this.codeWidgets) {
+          let widget = this.codeWidgets[id] as SubcodeWidget;
+          if (decorations.some(d => d.id == widget.decoration)) {
+            widget.setCurrent(1);
+            this.currentCodeWidget = widget.id;
+            this.currentStepDecorationIds = this.editor.deltaDecorations(this.currentStepDecorationIds, []);
+            return { lineNumber: 1, codeWidget: widget.id };
           }
+        }
+        let lineNumber = step.lineNumber + 1;
+        this.set("current", lineNumber);
+        this.editor.revealLine(lineNumber);
+        return { lineNumber: lineNumber, codeWidget: 0 };
+      } else {
+        let id = step.codeWidget;
+        let widget = this.codeWidgets[id] as SubcodeWidget;
+        if (widget) {
+          let lineNumber = widget.next();
+          if (lineNumber) return { lineNumber: lineNumber, codeWidget: id };
+          lineNumber = widget.lineNumber(this.editor) + 1;
+          this.set("current", lineNumber);
+          return { lineNumber: lineNumber, codeWidget: 0 };
         }
       }
     }
     this.set("current", 1);
     this.editor.revealLine(1);
-    return { lineNumber: 1, codeWidget: undefined };
+    return { lineNumber: 1, codeWidget: 0 };
   }
 
   public clearCurrentSubcode() {
@@ -359,7 +358,7 @@ export class RuntimeProcessManager {
   public showCode(lineNumber: number, text: string): number {
     let widget = new SubcodeWidget(text);
     let id = widget.show(this.editor, lineNumber);
-    this.codeViewZoneIds.push(id);
+    this.codeWidgets[id] = widget;
     return id;
   }
 
@@ -372,11 +371,16 @@ export class RuntimeProcessManager {
   }
 
   public clearSubcode(): void {
-    let ids = this.codeViewZoneIds;
+    let ids = [];
+    for (let id in this.codeWidgets) {
+      let widget = this.codeWidgets[id] as SubcodeWidget;
+      this.editor.deltaDecorations([widget.decoration], []);
+      ids.push(id);
+    }
     this.editor.changeViewZones(changeAccessor =>
-      ids.forEach(id => changeAccessor.removeZone(id)
-      ));
-    ids.length = 0;
+      ids.forEach(id => changeAccessor.removeZone(id))
+    );
+    this.codeWidgets = {};
   }
 
   public clear(): void {
@@ -384,9 +388,5 @@ export class RuntimeProcessManager {
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
     this.clearErrors();
     this.clearSubcode();
-  }
-
-  public getViewZone(id: number): any {
-    return this.editor["_modelData"].view.viewZones._zones[id];
   }
 }
