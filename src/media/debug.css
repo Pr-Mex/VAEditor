@@ -35,6 +35,7 @@
   background: #CCDDDD80;
   overflow: hidden;
   white-space: nowrap;
+  z-index: 9999;
 }
 .vanessa-code-margin {
   background: #CCDDDD80;
@@ -55,7 +56,6 @@
 .vanessa-code-widget .vanessa-code-lines {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
   right: 0;
 }
@@ -78,6 +78,7 @@
   -webkit-user-select: none;
   overflow: hidden;
   white-space: nowrap;
+  z-index: 9999;
 }
 .vanessa-error-widget .vanessa-error-links {
   position: absolute;
