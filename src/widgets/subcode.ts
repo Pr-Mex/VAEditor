@@ -10,14 +10,13 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     this.top = top;
   }
 
-  public id: string;
+  public id: number;
   public top: number;
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
   private lineHeight: string;
 
-  constructor(id: string) {
-    this.id = id;
+  constructor(content: string) {
     let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.domNode = document.createElement('div');
     this.domNode.classList.add('vanessa-code-widget');
@@ -25,13 +24,11 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     this.domNode.style.lineHeight = style.lineHeight;
     this.domNode.style.fontSize = style.fontSize;
     this.domNode.style.zIndex = "9999";
-    this.domNode.dataset.id = id;
     this.lineHeight = style.lineHeight;
 
     this.leftNode = document.createElement('div');
     this.leftNode.classList.add('vanessa-code-border');
     this.leftNode.style.width = style.lineHeight;
-    this.leftNode.dataset.id = id;
     this.domNode.appendChild(this.leftNode);
 
     this.textNode = document.createElement('div');
@@ -40,30 +37,25 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     this.domNode.appendChild(this.textNode);
 
     this.marginDomNode = document.createElement('div');
-  }
 
-  public setContent(content: string, lineNumber: number, then: Function): void {
-    monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
-      this.textNode.innerHTML = html;
-      this.afterLineNumber = lineNumber;
-      this.heightInLines = this.textNode.querySelectorAll('div>span').length;
-      for (let i = 0; i < this.heightInLines; i++) {
-        var glyphNode = document.createElement('div');
-        this.leftNode.appendChild(glyphNode);
-        glyphNode.style.height = this.lineHeight;
-      }
-      then();
-    });
-  }
-
-   public setText(html: string, lineNumber: number): void {
-    this.textNode.innerHTML = html;
-    this.afterLineNumber = lineNumber;
-    this.heightInLines = this.textNode.querySelectorAll('div>span').length;
+    this.heightInLines = content.split(/\r\n|\r|\n/).length;
     for (let i = 0; i < this.heightInLines; i++) {
       var glyphNode = document.createElement('div');
       this.leftNode.appendChild(glyphNode);
       glyphNode.style.height = this.lineHeight;
     }
+
+    monaco.editor.colorize(content, "turbo-gherkin", {})
+      .then((html: string) => this.textNode.innerHTML = html);
+  }
+
+  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
+    this.afterLineNumber = lineNumber;
+    editor.changeViewZones(changeAccessor => {
+      this.id = changeAccessor.addZone(this)
+    });
+    this.domNode.dataset.id = String(this.id);
+    this.leftNode.dataset.id = String(this.id);
+    return this.id;
   }
 }

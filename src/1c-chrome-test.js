@@ -134,9 +134,9 @@ window.onload = () => {
     VanessaEditor.addCommands(JSON.stringify(commands));
 
     let subcode = '\t\tИ шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\tИ шаг подсценария 3\n\t\tИ шаг подсценария 4';
-    VanessaEditor.showRuntimeCode(15, '0x001', subcode);
-    VanessaEditor.showRuntimeCode(20, '0x002', subcode);
-    VanessaEditor.showRuntimeCode(22, '0x003', subcode);
+    VanessaEditor.showRuntimeCode(15, subcode);
+    VanessaEditor.showRuntimeCode(20, subcode);
+    VanessaEditor.showRuntimeCode(22, subcode);
 
     setInterval(() => VanessaEditor.runtimeProcessManager.next(), 500);
 /*
