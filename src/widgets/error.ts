@@ -8,7 +8,6 @@ export class ErrorWidget implements monaco.editor.IViewZone {
   public id: number;
 
   constructor(data: string, text: string) {
-    let style = (document.querySelector('div.view-lines') as HTMLElement).style;
     this.domNode = document.createElement('div');
     this.domNode.classList.add('vanessa-error-widget');
     var textNode = document.createElement('span');

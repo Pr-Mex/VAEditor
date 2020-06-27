@@ -179,14 +179,20 @@ export class RuntimeProcessManager {
   private errorViewZoneIds: Array<number> = [];
   private codeViewZoneIds: Array<number> = [];
 
+  private lineHeight: number = 0;
+
   constructor(VanessaEditor: VanessaEditor) {
     this.VanessaEditor = VanessaEditor;
     this.editor = VanessaEditor.editor;
+    this.editor.onDidChangeConfiguration(e => this.setStyle());
     this.editor.onDidLayoutChange(e => this.setStyle());
     this.setStyle();
   }
 
   private setStyle() {
+    let conf = this.editor.getConfiguration();
+    if (this.lineHeight == conf.lineHeight) return;
+
     const id = 'vanessa-widget-style';
     let style = document.getElementById(id) as HTMLElement;
     if (style == null) {
@@ -195,7 +201,6 @@ export class RuntimeProcessManager {
       style.id = id;
       document.head.appendChild(style)
     }
-    let conf = this.editor.getConfiguration();
     style.innerHTML = `\
     .vanessa-code-widget, .vanessa-error-widget {\
       font-family: ${conf.fontInfo.fontFamily};\
@@ -205,7 +210,7 @@ export class RuntimeProcessManager {
     .vanessa-code-lines { left: ${conf.lineHeight}px; }\
     .vanessa-code-border { width: ${conf.lineHeight}px; }\
     .vanessa-code-border div { height: ${conf.lineHeight}px; }\
-    `;
+    `; 
   }
 
   public set(status: string, arg: any): void {
