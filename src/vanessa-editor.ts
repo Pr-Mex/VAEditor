@@ -123,7 +123,7 @@ export class VanessaEditor {
     this.nextRuntimeProgress = () => this.runtimeProcessManager.next();
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
-    this.decorateBreakpoints = (arg: string) => this.runtimeProcessManager.DecorateBreakpoints(JSON.parse(arg));
+    this.decorateBreakpoints = (arg: string) => this.runtimeProcessManager.breakpoints = JSON.parse(arg);
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
     this.toggleBreakpoint = () => this.runtimeProcessManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());

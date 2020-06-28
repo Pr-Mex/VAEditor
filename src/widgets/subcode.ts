@@ -1,16 +1,11 @@
-import { RuntimeProcessManager, IBreakpoint } from "../debug";
+import { RuntimeProcessManager, IBreakpoint, Breakpoint } from "../debug";
+import { BaseWidget } from "./base";
 
 const glyphClassBreakpoint: string = "debug-breakpoint-glyph";
 const glyphClassUnverified: string = "debug-breakpoint-unverified-glyph";
 const glyphClassCurrent: string = "debug-current-step-glyph";
 
-export class SubcodeWidget implements monaco.editor.IViewZone {
-
-  public domNode: HTMLElement;
-  public afterLineNumber: number;
-  public heightInLines: number;
-  public marginDomNode: HTMLElement;
-  public afterColumn: number = 1;
+export class SubcodeWidget extends BaseWidget {
 
   public id: number;
   public content: string[];
@@ -20,7 +15,7 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   private current: number = 0;
 
   private runtime: RuntimeProcessManager;
-  private breakpoints = {};
+  private _breakpoints = {};
 
   private onBreakpointClick(e: MouseEvent) {
     let lineNumber = 1;
@@ -29,18 +24,19 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     let node = e.target as HTMLElement;
     if (node.classList.contains(glyphClassBreakpoint)) {
       node.classList.remove(glyphClassBreakpoint);
-      delete this.breakpoints[lineNumber];
+      delete this._breakpoints[lineNumber];
     } else if (node.classList.contains(glyphClassUnverified)) {
       node.classList.remove(glyphClassUnverified);
-      delete this.breakpoints[lineNumber];
+      delete this._breakpoints[lineNumber];
     } else {
       node.classList.add(glyphClassUnverified);
-      this.breakpoints[lineNumber] = true;
+      this._breakpoints[lineNumber] = true;
     }
     this.runtime.updateBreakpoints();
   }
 
   constructor(runtime: RuntimeProcessManager, content: string) {
+    super();
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
     this.domNode = this.div('vanessa-code-widget');
@@ -70,13 +66,6 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     return this.id;
   }
 
-  private div(className: string, parent: HTMLElement = null): HTMLElement {
-    let node = document.createElement('div');
-    if (className) node.classList.add(className);
-    if (parent) parent.appendChild(node);
-    return node;
-  }
-
   public lineNumber(editor: monaco.editor.IStandaloneCodeEditor): number {
     return editor.getModel().getDecorationRange(this.decoration).endLineNumber;
   }
@@ -97,20 +86,16 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     return this.setCurrent(this.getCurrent() + 1);
   }
 
-  public getBreakpoints(): Array<IBreakpoint> {
+  get breakpoints(): Array<IBreakpoint> {
     let breakpoints = [];
-    for (let lineNumber in this.breakpoints) {
-      breakpoints.push({
-        lineNumber: lineNumber,
-        codeWidget: this.id,
-        enable: this.breakpoints[lineNumber],
-      });
-    };
+    for (let lineNumber in this._breakpoints) breakpoints.push(
+      new Breakpoint(lineNumber, this.id, this._breakpoints[lineNumber])
+    );
     return breakpoints;
   }
 
-  public setBreakpoints(breakpoints: Array<IBreakpoint>): void {
-    this.breakpoints = {};
+  set breakpoints(breakpoints: Array<IBreakpoint>) {
+    this._breakpoints = {};
     this.leftNode.querySelectorAll("." + glyphClassBreakpoint).forEach((e: HTMLElement) => e.classList.remove(glyphClassBreakpoint));
     this.leftNode.querySelectorAll("." + glyphClassUnverified).forEach((e: HTMLElement) => e.classList.remove(glyphClassUnverified));
     if (breakpoints.length == 0) return;
@@ -118,7 +103,7 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
       let b = breakpoints.find(b => b.lineNumber == i + 1 && b.codeWidget == this.id);
       if (b) {
         e.classList.add(b.enable ? glyphClassBreakpoint : glyphClassUnverified);
-        this.breakpoints[b.lineNumber] = b.enable;
+        this._breakpoints[b.lineNumber] = b.enable;
       }
     });
   }
