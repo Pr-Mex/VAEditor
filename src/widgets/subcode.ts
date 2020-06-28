@@ -17,6 +17,7 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   public decoration: string;
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
+  private current: number = 0;
 
   private runtime: RuntimeProcessManager;
   private breakpoints = {};
@@ -89,17 +90,11 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   }
 
   public getCurrent(): number {
-    let lineNumber = 0;
-    let glyphNode = this.leftNode.querySelector("div." + glyphClassCurrent);
-    this.leftNode.childNodes.forEach((e, i) => { if (e == glyphNode) lineNumber = i + 1; });
-    return lineNumber;
+    return this.current;
   }
 
   public next(): number {
-    let lineNumber = this.getCurrent() + 1;
-    if (lineNumber > this.leftNode.childNodes.length) lineNumber = 0;
-    this.setCurrent(lineNumber);
-    return lineNumber;
+    return this.setCurrent(this.getCurrent() + 1);
   }
 
   public getBreakpoints(): Array<IBreakpoint> {
@@ -119,30 +114,25 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     this.leftNode.querySelectorAll("." + glyphClassBreakpoint).forEach((e: HTMLElement) => e.classList.remove(glyphClassBreakpoint));
     this.leftNode.querySelectorAll("." + glyphClassUnverified).forEach((e: HTMLElement) => e.classList.remove(glyphClassUnverified));
     if (breakpoints.length == 0) return;
-    this.leftNode.childNodes.forEach((node: HTMLElement, i: number) => {
+    this.leftNode.querySelectorAll('div').forEach((e: HTMLElement, i: number) => {
       let b = breakpoints.find(b => b.lineNumber == i + 1 && b.codeWidget == this.id);
       if (b) {
-        node.classList.add(b.enable ? glyphClassBreakpoint : glyphClassUnverified);
+        e.classList.add(b.enable ? glyphClassBreakpoint : glyphClassUnverified);
         this.breakpoints[b.lineNumber] = b.enable;
       }
     });
   }
 
-  public setCurrent(lineNumber: number) {
-    this.leftNode.childNodes.forEach((e: HTMLElement, i) => {
-      if (i + 1 == lineNumber) {
-        e.classList.add(glyphClassCurrent);
-      } else {
-        e.classList.remove(glyphClassCurrent);
-      }
+  public setCurrent(lineNumber: number): number {
+    this.leftNode.querySelectorAll('div').forEach((e: HTMLElement, i: number) => {
+      if (i + 1 == lineNumber) e.classList.add(glyphClassCurrent);
+      else e.classList.remove(glyphClassCurrent);
     });
     this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (i + 1 == lineNumber) {
-        e.className = "debug-current-step";
-      } else {
-        e.classList.remove("debug-current-step");
-      }
+      if (i + 1 == lineNumber) e.className = "debug-current-step";
+      else e.classList.remove("debug-current-step");
     });
+    return this.current = 0 < lineNumber && lineNumber <= this.leftNode.childNodes.length ? lineNumber : 0;
   }
 
   public setStatus(status: string, lines: Array<number>) {
