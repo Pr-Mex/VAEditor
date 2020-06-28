@@ -19,9 +19,9 @@ export class BaseWidget implements monaco.editor.IViewZone {
     return node;
   }
 
-  protected showError(data: string, text: string, parent: HTMLElement) {
-    var textNode = this.div('vanessa-error-text', this.domNode);
-    var linkNode = this.div('vanessa-error-links', this.domNode);
+  protected error(data: string, text: string, parent: HTMLElement) {
+    var textNode = this.div('vanessa-error-text', parent);
+    var linkNode = this.div('vanessa-error-links', parent);
     textNode.innerText = text;
     linkNode.dataset.value = data;
     window["VanessaEditor"].errorLinks.forEach((e: any, i: number) => {

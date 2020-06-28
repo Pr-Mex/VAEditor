@@ -63,8 +63,8 @@ class RuntimePosition implements IRuntimePosition {
 
 export class RuntimeProcessManager {
 
-  private VanessaEditor: VanessaEditor;
-  private editor: monaco.editor.IStandaloneCodeEditor;
+  public VanessaEditor: VanessaEditor;
+  public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointDecorations: IBreakpointDecoration[] = [];
   private breakpointDecorationIds: string[] = [];
   private breakpointHintDecorationIds: string[] = [];
@@ -245,9 +245,11 @@ export class RuntimeProcessManager {
       font-size: ${conf.fontInfo.fontSize}px;\
       line-height: ${conf.lineHeight}px;\
     }\
+    .vanessa-error-widget { height: ${2*conf.lineHeight}px; }\
     .vanessa-code-lines { left: ${conf.lineHeight}px; }\
     .vanessa-code-border { width: ${conf.lineHeight}px; }\
-    .vanessa-code-border div { height: ${conf.lineHeight}px; }\
+    .vanessa-code-border div.cgmr { height: ${conf.lineHeight}px; }\
+    .vanessa-code-border div.error { height: ${2*conf.lineHeight}px; }\
     `;
   }
 
@@ -384,11 +386,16 @@ export class RuntimeProcessManager {
     }
   }
 
-  public showError(lineNumber: number, data: string, text: string) {
-    let widget = new ErrorWidget(data, text);
-    let id = widget.show(this.editor, lineNumber);
-    this.errorViewZoneIds.push(id);
-    return id;
+  public showError(lineNumber: number, codeWidget:  number, data: string, text: string) {
+    if (codeWidget) {
+      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      if (widget) widget.showError(lineNumber, data, text);
+     } else {
+      let widget = new ErrorWidget(data, text);
+      let id = widget.show(this.editor, lineNumber);
+      this.errorViewZoneIds.push(id);
+      return id;
+    }
   }
 
   public showCode(lineNumber: number, text: string): number {
@@ -404,6 +411,7 @@ export class RuntimeProcessManager {
       ids.forEach(id => changeAccessor.removeZone(id))
     );
     ids.length = 0;
+    for (let id in this.codeWidgets) this.codeWidgets[id].clearErrors();
   }
 
   public clearSubcode(): void {

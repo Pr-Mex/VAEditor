@@ -1,5 +1,6 @@
 import { RuntimeProcessManager, IBreakpoint, Breakpoint } from "../debug";
 import { BaseWidget } from "./base";
+import { editor } from "monaco-editor";
 
 const glyphClassBreakpoint: string = "debug-breakpoint-glyph";
 const glyphClassUnverified: string = "debug-breakpoint-unverified-glyph";
@@ -18,9 +19,10 @@ export class SubcodeWidget extends BaseWidget {
   private _breakpoints = {};
 
   private onBreakpointClick(e: MouseEvent) {
-    let lineNumber = 1;
-    let child = e.target as HTMLElement;
-    while ((child = child.previousSibling as HTMLElement) != null) lineNumber++;
+    let lineNumber = 0;
+    this.leftNode.querySelectorAll('div.cgmr').forEach((node: HTMLElement, i: number) => {
+      if (e.target == node) lineNumber = i + 1;
+    });
     let node = e.target as HTMLElement;
     if (node.classList.contains(glyphClassBreakpoint)) {
       node.classList.remove(glyphClassBreakpoint);
@@ -45,7 +47,7 @@ export class SubcodeWidget extends BaseWidget {
     this.marginDomNode = this.div('vanessa-code-margin', this.domNode);
     this.heightInLines = this.content.length;
     for (let i = 0; i < this.heightInLines; i++) {
-      let node = this.div("", this.leftNode);
+      let node = this.div("cgmr", this.leftNode);
       node.addEventListener("click", this.onBreakpointClick.bind(this));
     }
     monaco.editor.colorize(content, "turbo-gherkin", {})
@@ -99,7 +101,7 @@ export class SubcodeWidget extends BaseWidget {
     this.leftNode.querySelectorAll("." + glyphClassBreakpoint).forEach((e: HTMLElement) => e.classList.remove(glyphClassBreakpoint));
     this.leftNode.querySelectorAll("." + glyphClassUnverified).forEach((e: HTMLElement) => e.classList.remove(glyphClassUnverified));
     if (breakpoints.length == 0) return;
-    this.leftNode.querySelectorAll('div').forEach((e: HTMLElement, i: number) => {
+    this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {
       let b = breakpoints.find(b => b.lineNumber == i + 1 && b.codeWidget == this.id);
       if (b) {
         e.classList.add(b.enable ? glyphClassBreakpoint : glyphClassUnverified);
@@ -109,7 +111,7 @@ export class SubcodeWidget extends BaseWidget {
   }
 
   public setCurrent(lineNumber: number): number {
-    this.leftNode.querySelectorAll('div').forEach((e: HTMLElement, i: number) => {
+    this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {
       if (i + 1 == lineNumber) e.classList.add(glyphClassCurrent);
       else e.classList.remove(glyphClassCurrent);
     });
@@ -125,4 +127,29 @@ export class SubcodeWidget extends BaseWidget {
       if (lines.indexOf(i + 1) != -1) e.className = `debug-${status}-step`;
     });
   }
+
+  public showError(lineNumber: number, data: string, text: string) {
+    let line = undefined;
+    this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {
+      if (i == lineNumber) this.leftNode.insertBefore(this.div("error"), e);
+    });
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
+      if (i == lineNumber) line = e;
+    });
+    let node = this.div('vanessa-error-widget');
+    this.error(data, text, node);
+    if (line) this.textNode.insertBefore(node, line); else this.textNode.append(node);
+    this.heightInLines = this.heightInLines + 2;
+    this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
+    this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
+  }
+
+  public clearErrors() {
+    this.leftNode.querySelectorAll('div.error').forEach((e: HTMLElement) => e.remove());
+    this.textNode.querySelectorAll('div.vanessa-error-widget').forEach((e: HTMLElement) => e.remove());
+    this.heightInLines = this.content.length;
+    this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
+    this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
+  }
+
 }

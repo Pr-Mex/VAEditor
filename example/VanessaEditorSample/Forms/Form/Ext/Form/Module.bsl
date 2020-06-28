@@ -148,7 +148,7 @@ EndProcedure
 Procedure ShowError(Command)
 
 	VanessaEditor.setRuntimeProgress("error", CurrentStep);
-	VanessaEditor.showRuntimeError(CurrentStep, ErrorCode, ErrorText);
+	VanessaEditor.showRuntimeError(CurrentStep, 0, ErrorCode, ErrorText);
 
 EndProcedure
 
