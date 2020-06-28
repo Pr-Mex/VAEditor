@@ -381,16 +381,16 @@ EndProcedure
 &AtClient
 Procedure BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
 
-	Breakpoints.SortByValue();
+	Breakpoints.Sort("codeWidget,lineNumber");
 
-	Value = 0;
-	For Each Row In Breakpoints Do
-		If Value = Row.Value Then
-			Cancel = True;
-			Return;
-		EndIf;
-		Value = Row.Value;
-	EndDo;
+	//Value = 0;
+	//For Each Row In Breakpoints Do
+	//	If Value = Row.Value Then
+	//		Cancel = True;
+	//		Return;
+	//	EndIf;
+	//	Value = Row.Value;
+	//EndDo;
 
 EndProcedure
 
@@ -401,7 +401,9 @@ Procedure BreakpointsOnActivateRow(Item)
 		Return;
 	EndIf;
 
-	VanessaEditor.revealLine(Item.CurrentData.Value);
+	if Item.CurrentData.codeWidget = 0 Then
+		VanessaEditor.revealLine(Item.CurrentData.lineNumber);
+	EndIf;
 
 EndProcedure
 
@@ -412,10 +414,10 @@ Procedure UpdateBreakpoints(Json)
 
 	Breakpoints.Clear();
 	For Each Chunk In BreakpointsPacket Do
-		Breakpoints.Add(Chunk.lineNumber, , Chunk.enable);
+		FillPropertyValues(Breakpoints.Add(), Chunk);
 	EndDo;
 
-	Breakpoints.SortByValue();
+	Breakpoints.Sort("codeWidget,lineNumber");
 
 	If EmulateBreakpointUpdateDelay Then
 		Sleep();
@@ -429,9 +431,8 @@ Procedure DecorateBreakpoints()
 	BreakpointsPacket = New Array;
 
 	For Each Row In Breakpoints Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.Value);
-		Chunk.Insert("enable", Row.Check);
+		Chunk = New Structure("lineNumber,codeWidget,enable");
+		FillPropertyValues(Chunk, Row);
 		BreakpointsPacket.Add(Chunk);
 	EndDo;
 

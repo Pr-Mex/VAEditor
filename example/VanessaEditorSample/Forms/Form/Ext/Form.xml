@@ -717,11 +717,13 @@
 								<Table name="Breakpoints" id="18">
 									<Representation>List</Representation>
 									<TitleLocation>Auto</TitleLocation>
-									<Header>false</Header>
 									<HorizontalLines>false</HorizontalLines>
 									<VerticalLines>false</VerticalLines>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
 									<DataPath>Breakpoints</DataPath>
-									<RowPictureDataPath>Breakpoints.Picture</RowPictureDataPath>
+									<RowPictureDataPath>Breakpoints.Enable</RowPictureDataPath>
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
@@ -734,7 +736,6 @@
 										<ExcludedCommand>MoveUp</ExcludedCommand>
 										<ExcludedCommand>SelectAll</ExcludedCommand>
 										<ExcludedCommand>SortListDesc</ExcludedCommand>
-										<ExcludedCommand>Pickup</ExcludedCommand>
 										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
 										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
 										<ExcludedCommand>EndEdit</ExcludedCommand>
@@ -742,6 +743,7 @@
 										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
 										<ExcludedCommand>MoveDown</ExcludedCommand>
 									</CommandSet>
+									<RowFilter xsi:nil="true"/>
 									<ContextMenu name="BreakpointsContextMenu" id="19"/>
 									<AutoCommandBar name="BreakpointsCommandBar" id="20">
 										<Autofill>false</Autofill>
@@ -764,14 +766,14 @@
 												<Type>CommandBarButton</Type>
 												<Representation>Picture</Representation>
 												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Item.Breakpoints.StandardCommand.CheckAll</CommandName>
+												<CommandName>18:18248aa8-e621-4e19-a611-54fb8923644c</CommandName>
 												<ExtendedTooltip name="BreakpointsCheckAllExtendedTooltip" id="45"/>
 											</Button>
 											<Button name="BreakpointsUncheckAll" id="46">
 												<Type>CommandBarButton</Type>
 												<Representation>Picture</Representation>
 												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Item.Breakpoints.StandardCommand.UncheckAll</CommandName>
+												<CommandName>18:5048cc44-702b-44e3-8445-9af75c02724d</CommandName>
 												<ExtendedTooltip name="BreakpointsUncheckAllExtendedTooltip" id="47"/>
 											</Button>
 										</ChildItems>
@@ -807,20 +809,30 @@
 										<Event name="OnChange">BreakpointsOnChange</Event>
 									</Events>
 									<ChildItems>
-										<CheckBoxField name="BreakpointsCheck" id="48">
-											<DataPath>Breakpoints.Check</DataPath>
+										<CheckBoxField name="BreakpointsEnable" id="385">
+											<DataPath>Breakpoints.Enable</DataPath>
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content> </v8:content>
+												</v8:item>
+											</Title>
 											<EditMode>EnterOnInput</EditMode>
 											<CheckBoxType>Auto</CheckBoxType>
-											<ContextMenu name="BreakpointsCheckContextMenu" id="49"/>
-											<ExtendedTooltip name="BreakpointsCheckExtendedTooltip" id="50"/>
+											<ContextMenu name="BreakpointsEnableContextMenu" id="386"/>
+											<ExtendedTooltip name="BreakpointsEnableExtendedTooltip" id="387"/>
 										</CheckBoxField>
-										<InputField name="BreakpointsValue" id="31">
-											<DataPath>Breakpoints.Value</DataPath>
+										<InputField name="BreakpointsLineNumber" id="379">
+											<DataPath>Breakpoints.LineNumber</DataPath>
 											<EditMode>EnterOnInput</EditMode>
-											<Width>4</Width>
-											<MinValue xsi:type="xs:decimal">1</MinValue>
-											<ContextMenu name="BreakpointsValueContextMenu" id="32"/>
-											<ExtendedTooltip name="BreakpointsValueExtendedTooltip" id="33"/>
+											<ContextMenu name="BreakpointsLineNumberContextMenu" id="380"/>
+											<ExtendedTooltip name="BreakpointsLineNumberExtendedTooltip" id="381"/>
+										</InputField>
+										<InputField name="BreakpointsCodeWidget" id="382">
+											<DataPath>Breakpoints.CodeWidget</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="BreakpointsCodeWidgetContextMenu" id="383"/>
+											<ExtendedTooltip name="BreakpointsCodeWidgetExtendedTooltip" id="384"/>
 										</InputField>
 									</ChildItems>
 								</Table>
@@ -1758,29 +1770,6 @@
 				<v8:Type>xs:boolean</v8:Type>
 			</Type>
 		</Attribute>
-		<Attribute name="Breakpoints" id="7">
-			<Title>
-				<v8:item>
-					<v8:lang>en</v8:lang>
-					<v8:content>Breakpoints</v8:content>
-				</v8:item>
-				<v8:item>
-					<v8:lang>ru</v8:lang>
-					<v8:content>Breakpoints</v8:content>
-				</v8:item>
-			</Title>
-			<Type>
-				<v8:Type>v8:ValueListType</v8:Type>
-			</Type>
-			<Settings xsi:type="v8:TypeDescription">
-				<v8:Type>xs:decimal</v8:Type>
-				<v8:NumberQualifiers>
-					<v8:Digits>6</v8:Digits>
-					<v8:FractionDigits>0</v8:FractionDigits>
-					<v8:AllowedSign>Nonnegative</v8:AllowedSign>
-				</v8:NumberQualifiers>
-			</Settings>
-		</Attribute>
 		<Attribute name="EmulateBreakpointUpdateDelay" id="5">
 			<Title>
 				<v8:item>
@@ -2200,6 +2189,62 @@
 					<v8:AllowedLength>Variable</v8:AllowedLength>
 				</v8:StringQualifiers>
 			</Type>
+		</Attribute>
+		<Attribute name="Breakpoints" id="23">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Breakpoints</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueTable</v8:Type>
+			</Type>
+			<Columns>
+				<Column name="LineNumber" id="1">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Line number</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:decimal</v8:Type>
+						<v8:NumberQualifiers>
+							<v8:Digits>10</v8:Digits>
+							<v8:FractionDigits>0</v8:FractionDigits>
+							<v8:AllowedSign>Any</v8:AllowedSign>
+						</v8:NumberQualifiers>
+					</Type>
+				</Column>
+				<Column name="CodeWidget" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Code widget</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:decimal</v8:Type>
+						<v8:NumberQualifiers>
+							<v8:Digits>10</v8:Digits>
+							<v8:FractionDigits>0</v8:FractionDigits>
+							<v8:AllowedSign>Any</v8:AllowedSign>
+						</v8:NumberQualifiers>
+					</Type>
+				</Column>
+				<Column name="Enable" id="3">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Enable</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:boolean</v8:Type>
+					</Type>
+				</Column>
+			</Columns>
 		</Attribute>
 	</Attributes>
 	<Commands>
