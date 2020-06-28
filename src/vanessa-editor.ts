@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 
 import "./languages/turbo-gherkin.contribution";
 
-import { BreakpointManager, RuntimeProcessManager } from "./debug";
+import { RuntimeProcessManager } from "./debug";
 import { ProblemManager } from "./problems";
 import { Entry } from "webpack";
 
@@ -74,10 +74,9 @@ export class VanessaEditor {
   public useKeyboardTracer: boolean;
   public onErrorLink: Function;
 
-  private breakpointManager: BreakpointManager;
   private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
-  private syntaxTimer: any = 0;
+  private syntaxTimer: NodeJS.Timeout;
 
   public codeActions: Array<VanessaCodeAction>;
   public errorLinks: Array<VanessaCodeAction>;
@@ -98,7 +97,6 @@ export class VanessaEditor {
     this.codeLens = [];
     this.editor.setValue(content);
 
-    this.breakpointManager = new BreakpointManager(this);
     this.runtimeProcessManager = new RuntimeProcessManager(this);
     this.problemManager = new ProblemManager(this);
     this.subscribeEditorEvents();
@@ -125,9 +123,9 @@ export class VanessaEditor {
     this.nextRuntimeProgress = () => this.runtimeProcessManager.next();
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
-    this.decorateBreakpoints = (arg: string) => this.breakpointManager.DecorateBreakpoints(JSON.parse(arg));
+    this.decorateBreakpoints = (arg: string) => this.runtimeProcessManager.DecorateBreakpoints(JSON.parse(arg));
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
-    this.toggleBreakpoint = () => this.breakpointManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
+    this.toggleBreakpoint = () => this.runtimeProcessManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
     this.showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
     this.onErrorLink = (e: HTMLElement) => this.fireEvent(e.dataset.id, e.parentElement.dataset.value);
     this.getActions = () => {
@@ -198,35 +196,10 @@ export class VanessaEditor {
     this.editor.dispose();
   }
 
-  private updateReadonly() {
-    let f = (d: any) => d.options.className == "debug-disabled-step";
-    let model = this.editor.getModel();
-    let s = this.editor.getSelection();
-    let lineNumber = s.positionLineNumber;
-    this.setReadOnly(model.getLinesDecorations(lineNumber, lineNumber).some(f)
-      && model.getLinesDecorations(s.startLineNumber, s.endLineNumber).some(f)
-    );
-  }
-
   private subscribeEditorEvents(): void {
-
-    this.editor.onDidChangeModelContent(() => this.updateReadonly());
-    this.editor.onDidChangeCursorPosition(() => this.updateReadonly());
-    this.editor.onDidChangeCursorSelection(() => this.updateReadonly());
 
     this.editor.onDidChangeModelContent(
       () => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE)
-    );
-
-    this.editor.onDidChangeCursorPosition(
-      (e: monaco.editor.ICursorPositionChangedEvent) => this.setReadOnly(
-        model.getLinesDecorations(e.position.lineNumber, e.position.lineNumber).some(d => d.options.className == "debug-disabled-step")
-      )
-    );
-
-    this.editor.onDidChangeCursorSelection(
-      (e: monaco.editor.ICursorSelectionChangedEvent) => {
-      }
     );
 
     this.editor.onDidChangeCursorPosition(
@@ -235,14 +208,8 @@ export class VanessaEditor {
       }
     );
 
-    this.editor.onMouseDown(e => this.breakpointManager.breakpointOnMouseDown(e));
-    this.editor.onMouseMove(e => this.breakpointManager.breakpointsOnMouseMove(e));
     this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
     this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
-
-    const model: monaco.editor.ITextModel = this.editor.getModel();
-
-    model.onDidChangeDecorations(() => this.breakpointManager.breakpointOnDidChangeDecorations());
 
     this.checkSyntax = () => {
       clearTimeout(this.syntaxTimer);

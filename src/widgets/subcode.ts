@@ -1,3 +1,5 @@
+import { RuntimeProcessManager, IBreakpoint } from "../debug";
+
 const glyphClassBreakpoint: string = "debug-breakpoint-glyph";
 const glyphClassUnverified: string = "debug-breakpoint-unverified-glyph";
 const glyphClassCurrent: string = "debug-current-step-glyph";
@@ -16,24 +18,29 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
 
+  private runtime: RuntimeProcessManager;
+  private breakpoints = {};
+
   private onBreakpointClick(e: MouseEvent) {
+    let lineNumber = 1;
+    let child = e.target as HTMLElement;
+    while ((child = child.previousSibling as HTMLElement) != null) lineNumber++;
     let node = e.target as HTMLElement;
     if (node.classList.contains(glyphClassBreakpoint)) {
       node.classList.remove(glyphClassBreakpoint);
-      node.classList.add(glyphClassUnverified);
-      setTimeout(() => {
-        node.classList.remove(glyphClassUnverified);
-      }, 400);
+      delete this.breakpoints[lineNumber];
+    } else if (node.classList.contains(glyphClassUnverified)) {
+      node.classList.remove(glyphClassUnverified);
+      delete this.breakpoints[lineNumber];
     } else {
       node.classList.add(glyphClassUnverified);
-      setTimeout(() => {
-        node.classList.remove(glyphClassUnverified);
-        node.classList.add(glyphClassBreakpoint);
-      }, 400);
+      this.breakpoints[lineNumber] = true;
     }
+    this.runtime.updateBreakpoints();
   }
 
-  constructor(content: string) {
+  constructor(runtime: RuntimeProcessManager, content: string) {
+    this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
     this.domNode = this.div('vanessa-code-widget');
     this.textNode = this.div('vanessa-code-lines', this.domNode);
@@ -42,7 +49,7 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     this.heightInLines = this.content.length;
     for (let i = 0; i < this.heightInLines; i++) {
       let node = this.div("", this.leftNode);
-      node.addEventListener("click", this.onBreakpointClick);
+      node.addEventListener("click", this.onBreakpointClick.bind(this));
     }
     monaco.editor.colorize(content, "turbo-gherkin", {})
       .then((html: string) => this.textNode.innerHTML = html);
@@ -93,6 +100,32 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     if (lineNumber > this.leftNode.childNodes.length) lineNumber = 0;
     this.setCurrent(lineNumber);
     return lineNumber;
+  }
+
+  public getBreakpoints(): Array<IBreakpoint> {
+    let breakpoints = [];
+    for (let lineNumber in this.breakpoints) {
+      breakpoints.push({
+        lineNumber: lineNumber,
+        codeWidget: this.id,
+        enable: this.breakpoints[lineNumber],
+      });
+    };
+    return breakpoints;
+  }
+
+  public setBreakpoints(breakpoints: Array<IBreakpoint>): void {
+    this.breakpoints = {};
+    this.leftNode.querySelectorAll("." + glyphClassBreakpoint).forEach((e: HTMLElement) => e.classList.remove(glyphClassBreakpoint));
+    this.leftNode.querySelectorAll("." + glyphClassUnverified).forEach((e: HTMLElement) => e.classList.remove(glyphClassUnverified));
+    if (breakpoints.length == 0) return;
+    this.leftNode.childNodes.forEach((node: HTMLElement, i: number) => {
+      let b = breakpoints.find(b => b.lineNumber == i + 1 && b.codeWidget == this.id);
+      if (b) {
+        node.classList.add(b.enable ? glyphClassBreakpoint : glyphClassUnverified);
+        this.breakpoints[b.lineNumber] = b.enable;
+      }
+    });
   }
 
   public setCurrent(lineNumber: number) {

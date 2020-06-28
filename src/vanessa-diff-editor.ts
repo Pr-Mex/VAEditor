@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 
 import "./languages/turbo-gherkin.contribution";
 
-import { BreakpointManager, RuntimeProcessManager } from "./debug";
+import { RuntimeProcessManager } from "./debug";
 import { ProblemManager } from "./problems";
 
 export enum VanessaDiffEditorEvent {
@@ -20,7 +20,6 @@ export class VanessaDiffEditor {
   public SendAction: Function; // 1C:Enterprise interaction call.
 
   public editor: monaco.editor.IStandaloneDiffEditor;
-  private breakpointManager: BreakpointManager;
   private runtimeProcessManager: RuntimeProcessManager;
   private problemManager: ProblemManager;
 
