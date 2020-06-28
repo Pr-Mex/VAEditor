@@ -482,13 +482,19 @@ EndProcedure
 
 &AtClient
 Procedure SetProgress(Command)
-	Steps = New Array;
+	Map = new Map;
 	For Each Row In CompleteSteps Do
+		Steps = Map.Get(Row.codeWidget);
+		If Steps = Undefined Then
+			Steps = New Array;
+			Map.Insert(Row.codeWidget, Steps);
+		EndIf;
 		Steps.Add(Row.LineNumber);
 	EndDo;
-	VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(Steps));
+	For each KeyValue in Map do
+		VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key);
+	EndDo;
 EndProcedure
-
 
 &AtClient
 Procedure CleanRuntimeProgress(Command)
