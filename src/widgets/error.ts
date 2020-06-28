@@ -1,40 +1,18 @@
-export class ErrorWidget implements monaco.editor.IViewZone {
-  public domNode: HTMLElement;
-  public afterLineNumber: number;
-  public afterColumn: number;
-  public heightInLines: number;
-  public marginDomNode: HTMLElement;
+import { BaseWidget } from "./base";
+
+export class ErrorWidget  extends BaseWidget {
 
   public id: number;
 
   constructor(data: string, text: string) {
-    this.domNode = document.createElement('div');
-    this.domNode.classList.add('vanessa-error-widget');
-    var textNode = document.createElement('span');
-    textNode.innerText = text;
-    this.domNode.appendChild(textNode);
-    var linkNode = document.createElement('div');
-    linkNode.classList.add('vanessa-error-links');
-    linkNode.dataset.value = data;
-    window["VanessaEditor"].errorLinks.forEach((e, i) => {
-      if (i) {
-        let sNode = document.createElement('span');
-        sNode.innerHTML = '&nbsp;|&nbsp;';
-        linkNode.appendChild(sNode);
-      }
-      let aNode = document.createElement('a');
-      aNode.href = "#";
-      aNode.dataset.id = e.id;
-      aNode.innerText = e.title;
-      aNode.setAttribute("onclick", "VanessaEditor.onErrorLink(this)");
-      linkNode.appendChild(aNode);
-    });
-    this.domNode.appendChild(linkNode);
-    this.afterColumn = 1;
-    this.heightInLines = 2;
+    super();
+    this.domNode = this.div('vanessa-error-widget');
+    this.showError(data, text, this.domNode);
   }
 
   public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
+    this.afterColumn = 1;
+    this.heightInLines = 2;
     this.afterLineNumber = lineNumber;
     editor.changeViewZones(changeAccessor => {
       this.id = changeAccessor.addZone(this)

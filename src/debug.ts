@@ -25,6 +25,21 @@ export interface IBreakpoint {
   enable: boolean;
 }
 
+export class Breakpoint implements IBreakpoint {
+  lineNumber: number;
+  codeWidget: number;
+  enable: boolean;
+  constructor(
+    lineNumber: number | string,
+    codeWidget: number = 0,
+    enable: boolean = true
+  ) {
+    this.lineNumber = Number(lineNumber);
+    this.codeWidget = codeWidget;
+    this.enable = enable;
+  }
+}
+
 interface IBreakpointDecoration {
   id: string;
   range: IRange;
@@ -70,7 +85,7 @@ export class RuntimeProcessManager {
     this.setStyle();
   }
 
-  public DecorateBreakpoints(breakpoints: IBreakpoint[]): void {
+  set breakpoints(breakpoints: IBreakpoint[]) {
     const widgetsBreakpoints = {};
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     breakpoints.forEach(breakpoint => {
@@ -103,7 +118,7 @@ export class RuntimeProcessManager {
     for (let id in this.codeWidgets) {
       let widget: SubcodeWidget = this.codeWidgets[id];
       let breakpoints = widgetsBreakpoints[id] || [];
-      widget.setBreakpoints(breakpoints);
+      widget.breakpoints = breakpoints;
     }
   }
 
@@ -179,29 +194,25 @@ export class RuntimeProcessManager {
 
   private updateTimer: NodeJS.Timeout;
 
+  get breakpoints(): IBreakpoint[] {
+    const breakpoints: IBreakpoint[] = [];
+    this.breakpointDecorations.forEach(breakpoint => {
+      const range: monaco.Range = this.editor.getModel().getDecorationRange(breakpoint.id);
+      if (range !== null) {
+        const found: Boolean = breakpoints.some(b => (b.lineNumber === range.startLineNumber));
+        if (!found) breakpoints.push(new Breakpoint(range.startLineNumber, 0, breakpoint.enable));
+      }
+    });
+    for (let id in this.codeWidgets) {
+      this.codeWidgets[id].breakpoints.forEach((b: IBreakpoint) => breakpoints.push(b));
+    }
+    return breakpoints;
+  }
+
   public updateBreakpoints(): void {
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
-      const breakpointPacket: IBreakpoint[] = [];
-      this.breakpointDecorations.forEach(breakpoint => {
-        const range: monaco.Range = this.editor.getModel().getDecorationRange(breakpoint.id);
-        if (range !== null) {
-          const breakpointFound: Boolean = breakpointPacket.find(breakpointChunk =>
-            (breakpointChunk.lineNumber === range.startLineNumber)) !== undefined;
-          if (!breakpointFound) {
-            breakpointPacket.push({
-              codeWidget: 0,
-              lineNumber: range.startLineNumber,
-              enable: breakpoint.enable
-            });
-          }
-        }
-      });
-      for (let id in this.codeWidgets) {
-        let widget = this.codeWidgets[id] as SubcodeWidget;
-        widget.getBreakpoints().forEach((b: IBreakpoint) => breakpointPacket.push(b));
-      }
-      this.VanessaEditor.fireEvent(VanessaEditorEvent.UPDATE_BREAKPOINTS, JSON.stringify(breakpointPacket));
+      this.VanessaEditor.fireEvent(VanessaEditorEvent.UPDATE_BREAKPOINTS, JSON.stringify(this.breakpoints));
     }, 100);
   }
 
