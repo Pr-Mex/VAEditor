@@ -114,7 +114,7 @@ export class VanessaEditor {
     this.setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
     this.setTheme = (arg: string) => monaco.editor.setTheme(arg);
     this.revealLine = (arg: number) => this.editor.revealLine(arg);
-    this.setRuntimeProgress = (status: string, lines: any) => this.runtimeProcessManager.setStatus(status, lines);
+    this.setRuntimeProgress = (status: string, lines: any, widget: number = 0) => this.runtimeProcessManager.setStatus(status, lines, widget);
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.getStatus(status);
     this.getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
     this.setCurrentProgress = (lineNumber: number, codeWidget: number = 0) => this.runtimeProcessManager.setCurrent(lineNumber, codeWidget);

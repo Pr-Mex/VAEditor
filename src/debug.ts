@@ -240,31 +240,36 @@ export class RuntimeProcessManager {
     `;
   }
 
-  public setStatus(status: string, arg: any): void {
+  public setStatus(status: string, arg: any, codeWidget: number): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
-    const model: monaco.editor.ITextModel = this.editor.getModel();
-    const oldDecorations = [];
-    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
-    lines.forEach((line: number) => {
-      model.getLinesDecorations(line, line).forEach(d => {
-        let i = this.stepDecorationIds.indexOf(d.id);
-        if (i >= 0) {
-          this.stepDecorationIds.slice(i, 1);
-          oldDecorations.push(d.id);
-        }
+    if (codeWidget) {
+      let widget: SubcodeWidget = this.codeWidgets[codeWidget];
+      if (widget) widget.setStatus(status, lines);
+    } else {
+      const model: monaco.editor.ITextModel = this.editor.getModel();
+      const oldDecorations = [];
+      const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+      lines.forEach((line: number) => {
+        model.getLinesDecorations(line, line).forEach(d => {
+          let i = this.stepDecorationIds.indexOf(d.id);
+          if (i >= 0) {
+            this.stepDecorationIds.slice(i, 1);
+            oldDecorations.push(d.id);
+          }
+        });
+        if (status) decorations.push({
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+            className: `debug-${status}-step`,
+            isWholeLine: true,
+          }
+        });
       });
-      if (status) decorations.push({
-        range: new monaco.Range(line, 1, line, 1),
-        options: {
-          stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-          className: `debug-${status}-step`,
-          isWholeLine: true,
-        }
-      });
-    });
-    const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
-    newDecorations.forEach(s => this.stepDecorationIds.push(s));
+      const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
+      newDecorations.forEach(s => this.stepDecorationIds.push(s));
+    }
   }
 
   public getStatus(status: string): string {
