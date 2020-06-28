@@ -138,10 +138,16 @@ export class SubcodeWidget implements monaco.editor.IViewZone {
     });
     this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
       if (i + 1 == lineNumber) {
-        e.classList.add("debug-current-step");
+        e.className = "debug-current-step";
       } else {
         e.classList.remove("debug-current-step");
       }
+    });
+  }
+
+  public setStatus(status: string, lines: Array<number>) {
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
+      if (lines.indexOf(i + 1) != -1) e.className = `debug-${status}-step`;
     });
   }
 }
