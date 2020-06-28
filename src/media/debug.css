@@ -49,10 +49,6 @@
   user-select: none;
   -webkit-user-select: none;
 }
-.vanessa-code-border div {
-  left: 0;
-  width: 100%;
-}
 .vanessa-code-border div:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
   background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
 }
