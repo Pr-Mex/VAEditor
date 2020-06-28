@@ -1133,6 +1133,12 @@
 											<ContextMenu name="CompleteStepsLineNumberContextMenu" id="110"/>
 											<ExtendedTooltip name="CompleteStepsLineNumberExtendedTooltip" id="111"/>
 										</InputField>
+										<InputField name="CompleteStepsCodeWidget" id="388">
+											<DataPath>CompleteSteps.CodeWidget</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="CompleteStepsCodeWidgetContextMenu" id="389"/>
+											<ExtendedTooltip name="CompleteStepsCodeWidgetExtendedTooltip" id="390"/>
+										</InputField>
 									</ChildItems>
 								</Table>
 								<UsualGroup name="GroupError" id="351">
@@ -1894,6 +1900,22 @@
 						<v8:item>
 							<v8:lang>en</v8:lang>
 							<v8:content>Line number</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:decimal</v8:Type>
+						<v8:NumberQualifiers>
+							<v8:Digits>10</v8:Digits>
+							<v8:FractionDigits>0</v8:FractionDigits>
+							<v8:AllowedSign>Any</v8:AllowedSign>
+						</v8:NumberQualifiers>
+					</Type>
+				</Column>
+				<Column name="CodeWidget" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Code widget</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
