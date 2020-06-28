@@ -52,7 +52,7 @@
 .vanessa-code-border > span {
   display: block;
 }
-.vanessa-code-border div:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
+.vanessa-code-border div.cgmr:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
   background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
 }
 .vanessa-code-widget .vanessa-code-lines {
@@ -83,8 +83,6 @@
   z-index: 9999;
 }
 .vanessa-error-widget .vanessa-error-links {
-  position: absolute;
-  bottom: 0;
   vertical-align: sub;
   font-size: 85%;
 }

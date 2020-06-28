@@ -7,7 +7,7 @@ export class ErrorWidget  extends BaseWidget {
   constructor(data: string, text: string) {
     super();
     this.domNode = this.div('vanessa-error-widget');
-    this.showError(data, text, this.domNode);
+    this.error(data, text, this.domNode);
   }
 
   public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {

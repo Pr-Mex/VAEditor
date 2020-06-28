@@ -58,10 +58,11 @@ export class VanessaEditor {
   public setCurrentProgress: Function;
   public setSubcodeProgress: Function;
   public nextRuntimeProgress: Function;
+  public clearRuntimeСodes: Function;
+  public clearRuntimeErrors: Function;
   public clearRuntimeProgress: Function;
   public showRuntimeError: Function;
   public showRuntimeCode: Function;
-  public clearRuntimeErrors: Function;
   public setSuggestWidgetWidth: Function;
   public decorateBreakpoints: Function;
   public decorateProblems: Function;
@@ -118,9 +119,10 @@ export class VanessaEditor {
     this.getRuntimeProgress = (status: string) => this.runtimeProcessManager.getStatus(status);
     this.getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
     this.setCurrentProgress = (lineNumber: number, codeWidget: number = 0) => this.runtimeProcessManager.setCurrent(lineNumber, codeWidget);
-    this.showRuntimeError = (lineNumber: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, data, text);
+    this.showRuntimeError = (lineNumber: number, codeWidget:  number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, codeWidget, data, text);
     this.showRuntimeCode = (lineNumber: number, text: string) => this.runtimeProcessManager.showCode(lineNumber, text);
     this.nextRuntimeProgress = () => this.runtimeProcessManager.next();
+    this.clearRuntimeСodes = () => this.runtimeProcessManager.clearSubcode();
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.runtimeProcessManager.breakpoints = JSON.parse(arg);
