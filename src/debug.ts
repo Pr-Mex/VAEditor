@@ -221,6 +221,7 @@ export class RuntimeProcessManager {
   }
 
   private stepDecorationIds: string[] = [];
+  private underlineDecorationIds: string[] = [];
   private currentDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
   private lineHeight: number = 0;
@@ -245,11 +246,11 @@ export class RuntimeProcessManager {
       font-size: ${conf.fontInfo.fontSize}px;\
       line-height: ${conf.lineHeight}px;\
     }\
-    .vanessa-error-widget { height: ${2*conf.lineHeight}px; }\
+    .vanessa-error-widget { height: ${2 * conf.lineHeight}px; }\
     .vanessa-code-lines { left: ${conf.lineHeight}px; }\
     .vanessa-code-border { width: ${conf.lineHeight}px; }\
     .vanessa-code-border div.cgmr { height: ${conf.lineHeight}px; }\
-    .vanessa-code-border div.error { height: ${2*conf.lineHeight}px; }\
+    .vanessa-code-border div.error { height: ${2 * conf.lineHeight}px; }\
     `;
   }
 
@@ -283,6 +284,32 @@ export class RuntimeProcessManager {
       const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
       newDecorations.forEach(s => this.stepDecorationIds.push(s));
     }
+  }
+
+  public setUnderline(status: string, arg: any, codeWidget: number = 0): void {
+    let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
+    if (typeof (lines) == "number") lines = [lines];
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    const oldDecorations = [];
+    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+    lines.forEach((line: number) => {
+      model.getLinesDecorations(line, line).forEach(d => {
+        let i = this.underlineDecorationIds.indexOf(d.id);
+        if (i >= 0) {
+          this.underlineDecorationIds.slice(i, 1);
+          oldDecorations.push(d.id);
+        }
+      });
+      if (status) decorations.push({
+        range: new monaco.Range(line, model.getLineFirstNonWhitespaceColumn(line), line, model.getLineLastNonWhitespaceColumn(line)),
+        options: {
+          stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+          inlineClassName: `runtime-${status}-underline`,
+        }
+      });
+      const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
+      newDecorations.forEach(s => this.underlineDecorationIds.push(s));
+    });
   }
 
   public getStatus(status: string): string {
@@ -386,11 +413,11 @@ export class RuntimeProcessManager {
     }
   }
 
-  public showError(lineNumber: number, codeWidget:  number, data: string, text: string) {
+  public showError(lineNumber: number, codeWidget: number, data: string, text: string) {
     if (codeWidget) {
       let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
       if (widget) widget.showError(lineNumber, data, text);
-     } else {
+    } else {
       let widget = new ErrorWidget(data, text);
       let id = widget.show(this.editor, lineNumber);
       this.errorViewZoneIds.push(id);
@@ -434,8 +461,13 @@ export class RuntimeProcessManager {
     for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearStatus();
   }
 
+  public clearUnderline(): void {
+    this.underlineDecorationIds = this.editor.deltaDecorations(this.underlineDecorationIds, []);
+  }
+
   public clear(): void {
     this.clearSubcode();
+    this.clearUnderline();
     this.clearErrors();
     this.clearStatus();
   }
