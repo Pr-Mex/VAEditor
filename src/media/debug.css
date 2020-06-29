@@ -31,6 +31,21 @@
 .debug-disabled-step {
   background-color: silver;
 }
+.runtime-single-underline {
+  text-decoration: underline black;
+}
+.runtime-double-underline {
+  text-decoration: underline black double;
+}
+.runtime-wavy-underline {
+  text-decoration: underline black wavy;
+}
+.runtime-dotted-underline {
+  text-decoration: underline black dotted;
+}
+.runtime-dashed-underline {
+  text-decoration: underline black dashed;
+}
 .vanessa-code-widget {
   background: #CCDDDD80;
   overflow: hidden;
