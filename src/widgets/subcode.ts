@@ -128,6 +128,12 @@ export class SubcodeWidget extends BaseWidget {
     });
   }
 
+  public clearStatus() {
+    this.current = 0;
+    this.leftNode.querySelectorAll('div.cgmr').forEach(e => e.classList.remove(glyphClassCurrent));
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach(e => e.className = undefined);
+  }
+
   public showError(lineNumber: number, data: string, text: string) {
     let line = undefined;
     this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {

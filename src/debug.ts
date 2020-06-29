@@ -411,7 +411,7 @@ export class RuntimeProcessManager {
       ids.forEach(id => changeAccessor.removeZone(id))
     );
     ids.length = 0;
-    for (let id in this.codeWidgets) this.codeWidgets[id].clearErrors();
+    for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearErrors();
   }
 
   public clearSubcode(): void {
@@ -428,10 +428,15 @@ export class RuntimeProcessManager {
     this.updateBreakpoints();
   }
 
-  public clear(): void {
+  public clearStatus(): void {
     this.currentDecorationIds = this.editor.deltaDecorations(this.currentDecorationIds, []);
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
-    this.clearErrors();
+    for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearStatus();
+  }
+
+  public clear(): void {
     this.clearSubcode();
+    this.clearErrors();
+    this.clearStatus();
   }
 }

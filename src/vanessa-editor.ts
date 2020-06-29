@@ -58,8 +58,9 @@ export class VanessaEditor {
   public setCurrentProgress: Function;
   public setSubcodeProgress: Function;
   public nextRuntimeProgress: Function;
-  public clearRuntimeСodes: Function;
+  public clearRuntimeCodes: Function;
   public clearRuntimeErrors: Function;
+  public clearRuntimeStatus: Function;
   public clearRuntimeProgress: Function;
   public showRuntimeError: Function;
   public showRuntimeCode: Function;
@@ -122,8 +123,9 @@ export class VanessaEditor {
     this.showRuntimeError = (lineNumber: number, codeWidget:  number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, codeWidget, data, text);
     this.showRuntimeCode = (lineNumber: number, text: string) => this.runtimeProcessManager.showCode(lineNumber, text);
     this.nextRuntimeProgress = () => this.runtimeProcessManager.next();
-    this.clearRuntimeСodes = () => this.runtimeProcessManager.clearSubcode();
+    this.clearRuntimeCodes = () => this.runtimeProcessManager.clearSubcode();
     this.clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
+    this.clearRuntimeStatus = () => this.runtimeProcessManager.clearStatus();
     this.clearRuntimeProgress = () => this.runtimeProcessManager.clear();
     this.decorateBreakpoints = (arg: string) => this.runtimeProcessManager.breakpoints = JSON.parse(arg);
     this.decorateProblems = (arg: string) => this.problemManager.DecorateProblems(JSON.parse(arg));
