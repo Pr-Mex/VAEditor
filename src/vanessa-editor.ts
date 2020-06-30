@@ -1,22 +1,17 @@
-import * as monaco from "monaco-editor";
-
-import "./languages/turbo-gherkin.contribution";
-
-import { RuntimeProcessManager } from "./debug";
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
+import { RuntimeManager } from "./runtime";
 import { SyntaxManager } from "./syntax";
-import { Entry } from "webpack";
 
 export class VanessaEditor {
 
   // 1C:Enterprise interaction call.
   public setContent = (arg: string) => this.editor.setValue(arg);
-  public getContent = (codeWidget: number = 0) => this.runtimeProcessManager.getContent(codeWidget);
+  public getContent = (codeWidget: number = 0) => this.runtimeManager.getContent(codeWidget);
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
   public redo = () => this.editor.trigger('undo…', 'redo', undefined);
   public popMessage = () => this.actionManager.popMessage();
-  public getLineContent = (lineNumber: number, codeWidget: number = 0) => this.runtimeProcessManager.getLineContent(lineNumber, codeWidget);
+  public getLineContent = (lineNumber: number, codeWidget: number = 0) => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
   public getPosition = () => this.editor.getPosition();
   public getSelection = () => this.editor.getSelection();
@@ -25,24 +20,24 @@ export class VanessaEditor {
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setTheme = (arg: string) => monaco.editor.setTheme(arg);
   public revealLine = (arg: number) => this.editor.revealLine(arg);
-  public setRuntimeProgress = (status: string, lines: any, widget: number = 0) => this.runtimeProcessManager.setStatus(status, lines, widget);
-  public getRuntimeProgress = (status: string) => this.runtimeProcessManager.getStatus(status);
-  public getCurrentProgress = () => this.runtimeProcessManager.getCurrent();
-  public setCurrentProgress = (lineNumber: number, codeWidget: number = 0) => this.runtimeProcessManager.setCurrent(lineNumber, codeWidget);
-  public showRuntimeError = (lineNumber: number, codeWidget: number, data: string, text: string) => this.runtimeProcessManager.showError(lineNumber, codeWidget, data, text);
-  public showRuntimeCode = (lineNumber: number, text: string) => this.runtimeProcessManager.showCode(lineNumber, text);
-  public setRuntimeUnderline = (status: string, lines: any, widget: number = 0) => this.runtimeProcessManager.setUnderline(status, lines, widget);
-  public nextRuntimeProgress = () => this.runtimeProcessManager.next();
-  public clearRuntimeCodes = () => this.runtimeProcessManager.clearSubcode();
-  public clearRuntimeErrors = () => this.runtimeProcessManager.clearErrors();
-  public clearRuntimeStatus = () => this.runtimeProcessManager.clearStatus();
-  public clearRuntimeUnderline = () => this.runtimeProcessManager.clearUnderline();
-  public clearRuntimeProgress = () => this.runtimeProcessManager.clear();
-  public decorateBreakpoints = (arg: string) => this.runtimeProcessManager.breakpoints = JSON.parse(arg);
-  public setBreakpoints = (arg: string) => this.runtimeProcessManager.breakpoints = JSON.parse(arg);
-  public getBreakpoints = (arg: string) => JSON.stringify(this.runtimeProcessManager.breakpoints);
+  public setRuntimeProgress = (status: string, lines: any, widget: number = 0) => this.runtimeManager.setStatus(status, lines, widget);
+  public getRuntimeProgress = (status: string) => this.runtimeManager.getStatus(status);
+  public getCurrentProgress = () => this.runtimeManager.getCurrent();
+  public setCurrentProgress = (lineNumber: number, codeWidget: number = 0) => this.runtimeManager.setCurrent(lineNumber, codeWidget);
+  public showRuntimeError = (lineNumber: number, codeWidget: number, data: string, text: string) => this.runtimeManager.showError(lineNumber, codeWidget, data, text);
+  public showRuntimeCode = (lineNumber: number, text: string) => this.runtimeManager.showCode(lineNumber, text);
+  public setRuntimeUnderline = (status: string, lines: any, widget: number = 0) => this.runtimeManager.setUnderline(status, lines, widget);
+  public nextRuntimeProgress = () => this.runtimeManager.next();
+  public clearRuntimeCodes = () => this.runtimeManager.clearSubcode();
+  public clearRuntimeErrors = () => this.runtimeManager.clearErrors();
+  public clearRuntimeStatus = () => this.runtimeManager.clearStatus();
+  public clearRuntimeUnderline = () => this.runtimeManager.clearUnderline();
+  public clearRuntimeProgress = () => this.runtimeManager.clear();
+  public decorateBreakpoints = (arg: string) => this.runtimeManager.breakpoints = JSON.parse(arg);
+  public setBreakpoints = (arg: string) => this.runtimeManager.breakpoints = JSON.parse(arg);
+  public getBreakpoints = (arg: string) => JSON.stringify(this.runtimeManager.breakpoints);
   public decorateProblems = (arg: string) => this.problemManager.problems = JSON.parse(arg);
-  public toggleBreakpoint = () => this.runtimeProcessManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
+  public toggleBreakpoint = () => this.runtimeManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
   public getActions = () => JSON.stringify(this.actionManager.actions);
   public addCommands = (arg: string) => this.actionManager.addCommands(JSON.parse(arg));
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
@@ -52,8 +47,12 @@ export class VanessaEditor {
   public onErrorLink = (e: HTMLElement) => this.fireEvent(e.dataset.id, e.parentElement.dataset.value);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
 
+  get errorLinks() { return this.actionManager.errorLinks; }
+  get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
+  set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
+
   public editor: monaco.editor.IStandaloneCodeEditor;
-  private runtimeProcessManager: RuntimeProcessManager;
+  private runtimeManager: RuntimeManager;
   private problemManager: ProblemManager;
   private actionManager: ActionManager;
   private syntaxManager: SyntaxManager;
@@ -67,7 +66,7 @@ export class VanessaEditor {
       lightbulb: { enabled: true }
     });
     this.editor.setValue(content);
-    this.runtimeProcessManager = new RuntimeProcessManager(this);
+    this.runtimeManager = new RuntimeManager(this);
     this.problemManager = new ProblemManager(this.editor);
     this.actionManager = new ActionManager(this.editor)
     this.syntaxManager = new SyntaxManager(this.editor);
@@ -75,9 +74,5 @@ export class VanessaEditor {
 
   public dispose(): void {
     this.editor.dispose();
-  }
-
-  public get errorLinks() {
-    return this.actionManager.errorLinks;
   }
 }

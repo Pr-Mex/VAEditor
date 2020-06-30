@@ -138,7 +138,7 @@ window.onload = () => {
     VanessaEditor.showRuntimeCode(20, subcode);
     VanessaEditor.showRuntimeCode(22, subcode);
 
-    setInterval(() => VanessaEditor.runtimeProcessManager.next(), 500);
+    setInterval(() => VanessaEditor.runtimeManager.next(), 500);
 
     let problems = [{
         "lineNumber": 12,
