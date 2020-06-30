@@ -1,4 +1,4 @@
-import { RuntimeProcessManager, IBreakpoint, Breakpoint } from "../debug";
+import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { BaseWidget } from "./base";
 import { editor } from "monaco-editor";
 
@@ -15,7 +15,7 @@ export class SubcodeWidget extends BaseWidget {
   private leftNode: HTMLElement;
   private current: number = 0;
 
-  private runtime: RuntimeProcessManager;
+  private runtime: RuntimeManager;
   private _breakpoints = {};
 
   private onBreakpointClick(e: MouseEvent) {
@@ -37,7 +37,7 @@ export class SubcodeWidget extends BaseWidget {
     this.runtime.updateBreakpoints();
   }
 
-  constructor(runtime: RuntimeProcessManager, content: string) {
+  constructor(runtime: RuntimeManager, content: string) {
     super();
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);

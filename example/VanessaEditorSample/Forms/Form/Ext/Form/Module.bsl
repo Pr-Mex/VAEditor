@@ -359,7 +359,7 @@ EndFunction
 
 &AtClient
 Procedure TraceKeyboardOnChange(Item)
-	VanessaEditor.useKeyboardTracer = TraceKeyboard;
+	VanessaEditor.traceKeyboard = TraceKeyboard;
 EndProcedure
 
 &AtClient

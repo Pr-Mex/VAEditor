@@ -34,14 +34,14 @@ export class ActionManager {
   public codeActions: Array<IVanessaAction> = [];
   public errorLinks: Array<IVanessaAction> = [];
   public codeLens: Array<IVanessaAction> = [];
-  public useKeyboardTracer: boolean;
+  public traceKeyboard: boolean = false;
 
   constructor(
     editor: monaco.editor.IStandaloneCodeEditor
   ) {
     this.editor = editor;
-    this.editor.onKeyDown(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
-    this.editor.onKeyUp(e => { if (this.useKeyboardTracer) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
+    this.editor.onKeyDown(e => { if (this.traceKeyboard) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
+    this.editor.onKeyUp(e => { if (this.traceKeyboard) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
     this.editor.onDidChangeModelContent(() => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
     this.editor.onDidChangeCursorPosition(
       (e: monaco.editor.ICursorPositionChangedEvent) => {

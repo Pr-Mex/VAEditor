@@ -15,7 +15,6 @@ const markdownToHTML = (value) => {
     codeBlockRenderer: async function (languageAlias, value) {
       return await monaco.editor.colorize(value, "markdown", {});
     }
-
   })
   return result
 }
@@ -62,7 +61,7 @@ class RuntimePosition implements IRuntimePosition {
   }
 }
 
-export class RuntimeProcessManager {
+export class RuntimeManager {
 
   public VanessaEditor: VanessaEditor;
   public editor: monaco.editor.IStandaloneCodeEditor;
