@@ -1,3 +1,5 @@
+import { VanessaEditor } from "../vanessa-editor";
+
 interface IVanessaStep {
   filterText: string;
   insertText: string;
@@ -271,25 +273,26 @@ export class VanessaGherkinProvider {
     return actions;
   }
 
-  public checkSyntax() {
-    let ve = window["VanessaEditor"];
-    if (ve && ve.editor) {
-      const model: monaco.editor.ITextModel = ve.editor.getModel();
-      let problems: monaco.editor.IMarkerData[] = [];
-      let lineCount = ve.editor.getModel().getLineCount();
-      for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-        let error = this.lineSyntaxError(ve.getLineContent(lineNumber));
-        if (error) problems.push({
-          severity: monaco.MarkerSeverity.Error,
-          message: "Syntax error: step not found",
-          startLineNumber: lineNumber,
-          startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
-          endLineNumber: lineNumber,
-          endColumn: model.getLineLastNonWhitespaceColumn(lineNumber),
-        });
-      }
-      monaco.editor.setModelMarkers(model, "syntax", problems);
+  public checkSyntax(model: monaco.editor.ITextModel = undefined) {
+    if (model == undefined) {
+      let editor = window["VanessaEditor"].editor;
+      if (editor == undefined) return;
+      model = editor.getModel();
+    };
+    let problems: monaco.editor.IMarkerData[] = [];
+    let lineCount = model.getLineCount();
+    for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
+      let error = this.lineSyntaxError(model.getLineContent(lineNumber));
+      if (error) problems.push({
+        severity: monaco.MarkerSeverity.Error,
+        message: "Syntax error: step not found",
+        startLineNumber: lineNumber,
+        startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
+        endLineNumber: lineNumber,
+        endColumn: model.getLineLastNonWhitespaceColumn(lineNumber),
+      });
     }
+    monaco.editor.setModelMarkers(model, "syntax", problems);
   }
 
   private createTheme1C() {

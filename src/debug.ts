@@ -1,4 +1,5 @@
-import { VanessaEditor, VanessaEditorEvent } from "./vanessa-editor";
+import { VanessaEditor } from "./vanessa-editor";
+import { VanessaEditorEvent } from "./actions";
 import { IRange } from "monaco-editor";
 
 import * as monaco from "monaco-editor"
