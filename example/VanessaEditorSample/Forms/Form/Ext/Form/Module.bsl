@@ -476,7 +476,7 @@ EndProcedure
 
 &AtClient
 Procedure CurrentStepOnChange(Item)
-	VanessaEditor.setRuntimeProgress("current", CurrentStep);
+	VanessaEditor.setCurrentProgress(CurrentStep);
 	VanessaEditor.revealLine(CurrentStep);
 EndProcedure
 

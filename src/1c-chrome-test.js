@@ -139,7 +139,7 @@ window.onload = () => {
     VanessaEditor.showRuntimeCode(22, subcode);
 
     setInterval(() => VanessaEditor.runtimeProcessManager.next(), 500);
-/*
+
     let problems = [{
         "lineNumber": 12,
         "severity": "Warning",
@@ -151,6 +151,5 @@ window.onload = () => {
 
     let error = "Runtime error info";
     VanessaEditor.setRuntimeProgress("error", 13);
-    VanessaEditor.showRuntimeError(13, "0x01", error);
-*/
+    VanessaEditor.showRuntimeError(13, 0, "0x01", error);
 }

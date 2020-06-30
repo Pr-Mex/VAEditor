@@ -27,27 +27,3 @@ monaco.languages.registerCodeActionProvider(language.id, {
   provideCodeActions: (model, range, context, token) =>
     window["VanessaGherkinProvider"].getCodeAction(model, range, context, token)
 });
-
-monaco.languages.registerCodeLensProvider(language.id, {
-  provideCodeLenses: function (model, token) {
-    let result = [];
-    window["VanessaEditor"].codeLens.forEach((e: any) => {
-      model.getLinesDecorations(1, model.getLineCount()).forEach(d => {
-        if (d.options.className == "debug-error-step") {
-          result.push({
-            range: d.range,
-            command: {
-              id: e.id,
-              title: e.title,
-              arguments: [d.range.startLineNumber],
-            }
-          });
-        }
-      });
-    });
-    return result;
-  },
-  resolveCodeLens: function (model, codeLens, token) {
-    return codeLens;
-  }
-});

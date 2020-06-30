@@ -1,5 +1,3 @@
-import { VanessaEditor } from "./vanessa-editor";
-
 interface IProblem {
   lineNumber: number;
   severity: string;
@@ -10,27 +8,25 @@ interface IProblem {
 
 export class ProblemManager {
 
-  private VanessaEditor: VanessaEditor;
+  private editor: monaco.editor.IStandaloneCodeEditor;
 
   constructor(
-    VanessaEditor: VanessaEditor
-    ) {
-      this.VanessaEditor = VanessaEditor;
+    editor: monaco.editor.IStandaloneCodeEditor
+  ) {
+    this.editor = editor;
   }
 
-  public DecorateProblems (problems: IProblem[]): void {
-    const model: monaco.editor.ITextModel = this.VanessaEditor.editor.getModel();
+  set problems(problems: IProblem[]) {
+    const model: monaco.editor.ITextModel = this.editor.getModel();
     let data: monaco.editor.IMarkerData[] = [];
     problems.forEach(problem => {
       let severity: monaco.MarkerSeverity;
-      if (problem.severity === "Hint") {
-        severity = monaco.MarkerSeverity.Hint;
-      } else if(problem.severity === "Info") {
-        severity = monaco.MarkerSeverity.Info;
-      } else if(problem.severity === "Warning") {
-        severity = monaco.MarkerSeverity.Warning;
-      } else if(problem.severity === "Error") {
-        severity = monaco.MarkerSeverity.Error;
+      switch (problem.severity) {
+        case "Hint": severity = monaco.MarkerSeverity.Hint; break;
+        case "Info": severity = monaco.MarkerSeverity.Info; break;
+        case "Warning": severity = monaco.MarkerSeverity.Warning; break;
+        case "Error": severity = monaco.MarkerSeverity.Error; break;
+        default: severity = severity = monaco.MarkerSeverity.Error;
       }
       data.push(<monaco.editor.IMarkerData>{
         startLineNumber: problem.lineNumber,
