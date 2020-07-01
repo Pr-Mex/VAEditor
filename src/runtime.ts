@@ -365,7 +365,7 @@ export class RuntimeManager {
         return new RuntimePosition(lineNumber, codeWidget);
       }
     } else {
-      if (lineNumber > model.getLineCount()) return undefined;
+      if (lineNumber <= 0 || lineNumber > model.getLineCount()) return undefined;
       const oldDecorations = [];
       model.getLinesDecorations(lineNumber, lineNumber).forEach(d => {
         let i = this.stepDecorationIds.indexOf(d.id);
