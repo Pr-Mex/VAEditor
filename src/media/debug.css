@@ -46,6 +46,24 @@
 .runtime-dashed-underline {
   text-decoration: underline black dashed;
 }
+.subcode-single-underline > span {
+  text-decoration: underline black;
+}
+.subcode-double-underline > span {
+  text-decoration: underline black double;
+}
+.subcode-wavy-underline > span {
+  text-decoration: underline black wavy;
+}
+.subcode-dotted-underline > span {
+  text-decoration: underline black dotted;
+}
+.subcode-dashed-underline > span {
+  text-decoration: underline black dashed;
+}
+.vanessa-code-lines > span > span.space {
+  text-decoration: none;
+}
 .vanessa-code-widget {
   background: #CCDDDD80;
   overflow: hidden;
