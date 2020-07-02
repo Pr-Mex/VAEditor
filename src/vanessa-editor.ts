@@ -15,7 +15,7 @@ export class VanessaEditor {
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
   public getPosition = () => this.runtimeManager.position;
   public getSelection = () => this.editor.getSelection();
-  public setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });
+  public setPosition = (lineNumber: number, column: number, codeWidget: number = 0) => this.runtimeManager.position = {lineNumber: lineNumber, column: column, codeWidget: codeWidget};
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setTheme = (arg: string) => monaco.editor.setTheme(arg);

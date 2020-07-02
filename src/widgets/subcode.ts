@@ -212,4 +212,36 @@ export class SubcodeWidget extends BaseWidget {
       column: 1,
     }
   }
+
+  set position(position: any) {
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement, i: number) => {
+      if (i + 1 == position.lineNumber) {
+        let range = new Range();
+        range.selectNode(node);
+        document.getSelection().empty()
+        document.getSelection().addRange(range);
+        this.selected = parseInt(node.dataset.line);
+      };
+    });
+  }
+
+  get selection(): any {
+    let selection = window.getSelection();
+    let startLineNumber = 0;
+    let endLineNumber = 0;
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
+      if (selection.containsNode(e, true)) {
+        if (startLineNumber == 0) startLineNumber = i + 1;
+        endLineNumber = i + 1;
+      }
+    });
+    if (startLineNumber) return {
+      codeWidget: this.id,
+      startLineNumber: startLineNumber,
+      endLineNumber: endLineNumber,
+      startColumn: 1,
+      endColumn: 1,
+    }
+    return undefined;
+  }
 }
