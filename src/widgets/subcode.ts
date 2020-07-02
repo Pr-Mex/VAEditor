@@ -14,6 +14,7 @@ export class SubcodeWidget extends BaseWidget {
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
   private current: number = 0;
+  private selectedNode: HTMLElement;
 
   private runtime: RuntimeManager;
   private _breakpoints = {};
@@ -37,6 +38,20 @@ export class SubcodeWidget extends BaseWidget {
     this.runtime.updateBreakpoints();
   }
 
+  private onLineClick(e: MouseEvent) {
+    let node = e.target as HTMLElement;
+    while (true) {
+      if (node.parentElement == this.textNode) break;
+      node = node.parentElement;
+      if (node == null) return;
+    }
+    let range = new Range();
+    range.selectNode(node);
+    document.getSelection().empty()
+    document.getSelection().addRange(range);
+    this.selectedNode = node;
+  }
+
   constructor(runtime: RuntimeManager, content: string) {
     super();
     this.runtime = runtime;
@@ -50,8 +65,19 @@ export class SubcodeWidget extends BaseWidget {
       let node = this.div("cgmr", this.leftNode);
       node.addEventListener("click", this.onBreakpointClick.bind(this));
     }
-    monaco.editor.colorize(content, "turbo-gherkin", {})
-      .then((html: string) => this.textNode.innerHTML = html);
+    monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
+      this.textNode.innerHTML = html;
+      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement) => {
+        node.addEventListener("click", this.onLineClick.bind(this));
+        let first = node.firstElementChild;
+        if (first) {
+          let space = first.innerHTML.match(/^[&nbsp;]*/)[0];
+          first.innerHTML = first.innerHTML.substr(space.length);
+          node.insertBefore(this.span(space, node), first);
+          node.firstElementChild.className = "space";
+        }
+      });
+    });
   }
 
   public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
@@ -122,16 +148,36 @@ export class SubcodeWidget extends BaseWidget {
     return this.current = 0 < lineNumber && lineNumber <= this.leftNode.childNodes.length ? lineNumber : 0;
   }
 
+  private clearNodeStatus(node: HTMLElement): DOMTokenList {
+    node.classList.remove("debug-complete-step", "debug-error-step", "debug-pending-step", "debug-disabled-step", "debug-current-step");
+    return node.classList;
+  }
+
+  private clearNodeUnderline(node: HTMLElement): DOMTokenList {
+    node.classList.remove("subcode-single-underline", "subcode-double-underline", "subcode-wavy-underline", "subcode-dotted-underline", "subcode-dashed-underline");
+    return node.classList;
+  }
+
   public setStatus(status: string, lines: Array<number>) {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (lines.indexOf(i + 1) != -1) e.className = `debug-${status}-step`;
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement, i) => {
+      if (lines.indexOf(i + 1) != -1) this.clearNodeStatus(e).add(`debug-${status}-step`);
+    });
+  }
+
+  public setUnderline(status: string, lines: Array<number>) {
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement, i) => {
+      if (lines.indexOf(i + 1) != -1) this.clearNodeUnderline(e).add(`subcode-${status}-underline`);
     });
   }
 
   public clearStatus() {
     this.current = 0;
     this.leftNode.querySelectorAll('div.cgmr').forEach(e => e.classList.remove(glyphClassCurrent));
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach(e => e.className = undefined);
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e:HTMLElement) => this.clearNodeStatus(e));
+  }
+
+  public clearUnderline() {
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e:HTMLElement) => this.clearNodeUnderline(e));
   }
 
   public showError(lineNumber: number, data: string, text: string) {
@@ -158,4 +204,14 @@ export class SubcodeWidget extends BaseWidget {
     this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
   }
 
+  get position(): any {
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
+      if (this.selectedNode == e) return {
+        codeWidget: this.id,
+        lineNumber: i + 1,
+        column: 1,
+      }
+    });
+    return undefined;
+  }
 }

@@ -6,8 +6,8 @@ import { SyntaxManager } from "./syntax";
 export class VanessaEditor {
 
   // 1C:Enterprise interaction call.
-  public setContent = (arg: string) => this.editor.setValue(arg);
   public getContent = (codeWidget: number = 0) => this.runtimeManager.getContent(codeWidget);
+  public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
   public redo = () => this.editor.trigger('undo…', 'redo', undefined);
   public popMessage = () => this.actionManager.popMessage();
