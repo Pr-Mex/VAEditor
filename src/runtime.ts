@@ -52,6 +52,12 @@ interface IRuntimePosition {
   codeWidget: number;
 }
 
+interface IVanessaPosition {
+  lineNumber: number;
+  codeWidget: number;
+  column: number;
+}
+
 class RuntimePosition implements IRuntimePosition {
   public lineNumber: number;
   public codeWidget: number;
@@ -471,10 +477,10 @@ export class RuntimeManager {
     for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearUnderline();
   }
 
-  get position(): any {
+  get position(): IVanessaPosition {
     let node = document.getSelection().focusNode as HTMLElement;
     while (node) {
-      if (node.classList.contains('vanessa-code-widget')) {
+      if (node.classList && node.classList.contains('vanessa-code-widget')) {
         for (let id in this.codeWidgets) {
           let widget = this.codeWidgets[id] as SubcodeWidget;
           if (widget.domNode == node) return widget.position;
@@ -486,6 +492,37 @@ export class RuntimeManager {
     return {
       lineNumber: position.lineNumber,
       column: position.column,
+      codeWidget: 0,
+    }
+  }
+
+  set position(position: IVanessaPosition) {
+    window.getSelection().empty();
+    if (position.codeWidget) {
+      let widget = this.codeWidgets[position.codeWidget] as SubcodeWidget;
+      if (widget) widget.position = position;
+    } else {
+      this.editor.setPosition(position);
+    }
+  }
+
+  get selection(): any {
+    let node = document.getSelection().focusNode as HTMLElement;
+    while (node) {
+      if (node.classList && node.classList.contains('vanessa-code-widget')) {
+        for (let id in this.codeWidgets) {
+          let widget = this.codeWidgets[id] as SubcodeWidget;
+          if (widget.domNode == node) return widget.selection;
+        }
+      };
+      node = node.parentElement;
+    }
+    let selection = this.editor.getSelection();
+    return {
+      startLineNumber: selection.startLineNumber,
+      endLineNumber: selection.endLineNumber,
+      startColumn: selection.startColumn,
+      endColumn: selection.endColumn,
       codeWidget: 0,
     }
   }
