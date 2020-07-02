@@ -14,7 +14,7 @@ export class SubcodeWidget extends BaseWidget {
   private textNode: HTMLElement;
   private leftNode: HTMLElement;
   private current: number = 0;
-  private selectedNode: HTMLElement;
+  private selected: number;
 
   private runtime: RuntimeManager;
   private _breakpoints = {};
@@ -49,7 +49,7 @@ export class SubcodeWidget extends BaseWidget {
     range.selectNode(node);
     document.getSelection().empty()
     document.getSelection().addRange(range);
-    this.selectedNode = node;
+    this.selected = parseInt(node.dataset.line);
   }
 
   constructor(runtime: RuntimeManager, content: string) {
@@ -67,8 +67,9 @@ export class SubcodeWidget extends BaseWidget {
     }
     monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
       this.textNode.innerHTML = html;
-      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement) => {
+      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement, i: number) => {
         node.addEventListener("click", this.onLineClick.bind(this));
+        node.dataset.line = String(i + 1);
         let first = node.firstElementChild;
         if (first) {
           let space = first.innerHTML.match(/^[&nbsp;]*/)[0];
@@ -173,11 +174,11 @@ export class SubcodeWidget extends BaseWidget {
   public clearStatus() {
     this.current = 0;
     this.leftNode.querySelectorAll('div.cgmr').forEach(e => e.classList.remove(glyphClassCurrent));
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e:HTMLElement) => this.clearNodeStatus(e));
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement) => this.clearNodeStatus(e));
   }
 
   public clearUnderline() {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e:HTMLElement) => this.clearNodeUnderline(e));
+    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement) => this.clearNodeUnderline(e));
   }
 
   public showError(lineNumber: number, data: string, text: string) {
@@ -205,13 +206,10 @@ export class SubcodeWidget extends BaseWidget {
   }
 
   get position(): any {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (this.selectedNode == e) return {
-        codeWidget: this.id,
-        lineNumber: i + 1,
-        column: 1,
-      }
-    });
-    return undefined;
+    return {
+      lineNumber: this.selected,
+      codeWidget: this.id,
+      column: 1,
+    }
   }
 }

@@ -13,7 +13,7 @@ export class VanessaEditor {
   public popMessage = () => this.actionManager.popMessage();
   public getLineContent = (lineNumber: number, codeWidget: number = 0) => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
-  public getPosition = () => this.editor.getPosition();
+  public getPosition = () => this.runtimeManager.position;
   public getSelection = () => this.editor.getSelection();
   public setPosition = (lineNumber: number, column: number) => this.editor.setPosition({ lineNumber: lineNumber, column: column });
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
