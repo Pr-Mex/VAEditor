@@ -84,9 +84,10 @@ Procedure GetPosition(Command)
 
 	Arg = VanessaEditor.getPosition();
 	UserMessage = New UserMessage;
-	UserMessage.Text = "Position: lineNumber = "
-		+ Format(Arg.lineNumber, "NG=") + ", column = "
-		+ Format(Arg.column, "NG=");
+	UserMessage.Text = "Position: "
+	+ "lineNumber = " + Format(Arg.lineNumber, "NG=") + ","
+	+ "codeWidget = " + Format(Arg.codeWidget, "NG=") + ","
+	+ "column = " + Format(Arg.column, "NG=");
 	UserMessage.Message();
 
 EndProcedure
