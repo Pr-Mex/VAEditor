@@ -76,6 +76,11 @@ export class VanessaEditor {
   }
 
   public dispose(): void {
+    this.runtimeManager.dispose();
+    this.problemManager.dispose();
+    this.actionManager.dispose();
+    this.syntaxManager.dispose();
+    this.styleManager.dispose();
     this.editor.dispose();
   }
 }

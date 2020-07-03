@@ -16,6 +16,10 @@ export class ProblemManager {
     this.editor = editor;
   }
 
+  public dispose(): void {
+    this.editor = null;
+  }
+
   set problems(problems: IProblem[]) {
     const model: monaco.editor.ITextModel = this.editor.getModel();
     let data: monaco.editor.IMarkerData[] = [];

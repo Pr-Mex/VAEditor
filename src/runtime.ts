@@ -89,6 +89,11 @@ export class RuntimeManager {
     this.registerOnDidChangeFolding();
   }
 
+  public dispose(): void {
+    this.VanessaEditor = null;
+    this.editor = null;
+  }
+
   private registerOnDidChangeFolding() {
     let foldingContrib = this.editor.getContribution('editor.contrib.folding');
     //@ts-ignore

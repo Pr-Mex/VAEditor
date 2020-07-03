@@ -13,6 +13,10 @@ export class SyntaxManager {
     this.editor.onDidChangeModelContent(() => this.checkSyntax());
   }
 
+  public dispose(): void {
+    this.editor = null;
+  }
+
   public checkSyntax() {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
