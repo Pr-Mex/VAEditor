@@ -1,5 +1,5 @@
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
-import { SubcodeLine, RuntileGlyphs } from "./subline";
+import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
 import { BaseWidget } from "./base";
 
 export class SubcodeWidget extends BaseWidget {
@@ -14,13 +14,13 @@ export class SubcodeWidget extends BaseWidget {
   public selected: number;
   public lines: Array<SubcodeLine> = [];
 
-  private runtime: RuntimeManager;
+  public runtime: RuntimeManager;
   private _breakpoints = {};
 
-  public togleBreakpoint(lineNumber: number, value: boolean) {
-    if (value) this._breakpoints[lineNumber] = value;
-    else delete this._breakpoints[lineNumber];
-    this.runtime.updateBreakpoints();
+  public togleBreakpoint(lineNumber: number) {
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.lineNumber == lineNumber) line.togleBreakpoint();
+    });
   }
 
   public onDomNodeTop(top: number) {
@@ -90,17 +90,20 @@ export class SubcodeWidget extends BaseWidget {
 
   get breakpoints(): Array<IBreakpoint> {
     let breakpoints = [];
-    for (let lineNumber in this._breakpoints) breakpoints.push(
-      new Breakpoint(lineNumber, this.id, this._breakpoints[lineNumber])
-    );
+    this.lines.forEach((line: SubcodeLine) => {
+      switch (line.getBreakpoint()) {
+        case BreakpointState.Breakpoint: breakpoints.push(new Breakpoint(line.lineNumber, this.id, true)); break;
+        case BreakpointState.Unverified: breakpoints.push(new Breakpoint(line.lineNumber, this.id, false)); break;
+      }
+    });
     return breakpoints;
   }
 
   set breakpoints(breakpoints: Array<IBreakpoint>) {
-    this._breakpoints = {};
+    let State = BreakpointState;
     this.lines.forEach((line: SubcodeLine) => {
       let b = breakpoints.find(b => b.lineNumber == line.lineNumber && b.codeWidget == this.id);
-      line.setBreakpoint(b ? b.enable : undefined);
+      line.setBreakpoint(b ? (b.enable ? State.Breakpoint : State.Unverified) : State.Unmarked);
     });
   }
 

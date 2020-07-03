@@ -173,29 +173,39 @@ export class RuntimeManager {
     }
   }
 
-  public toggleBreakpoint(lineNumber: number): void {
-    const breakpointIndex: number = this.breakpointIndexByLineNumber(lineNumber);
-    if (breakpointIndex === -1) {
-      this.checkBreakpointChangeDecorations = false;
-      this.breakpointHintDecorationIds = this.editor.deltaDecorations(this.breakpointHintDecorationIds, []);
-      this.breakpointUnverifiedDecorationIds = this.editor.deltaDecorations(this.breakpointUnverifiedDecorationIds, [{
-        range: new monaco.Range(lineNumber, 1, lineNumber, 1),
-        options: {
-          stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-          glyphMarginClassName: "debug-breakpoint-unverified-glyph"
-        }
-      }]);
-      this.checkBreakpointChangeDecorations = true;
-      this.breakpointDecorations.push({
-        id: this.breakpointUnverifiedDecorationIds[0],
-        range: new monaco.Range(lineNumber, 1, lineNumber, 1),
-        enable: true,
-        verified: false
-      });
-    } else {
-      this.breakpointDecorations.splice(breakpointIndex, 1);
+  public toggleBreakpoint(lineNumber: number = 0, codeWidget: number = 0): void {
+    if (lineNumber == 0) {
+      let position = this.position;
+      lineNumber = position.lineNumber;
+      codeWidget = position.codeWidget;
     }
-    this.updateBreakpoints();
+    if (codeWidget) {
+      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      if (widget) widget.togleBreakpoint(lineNumber);
+    } else {
+      const breakpointIndex: number = this.breakpointIndexByLineNumber(lineNumber);
+      if (breakpointIndex === -1) {
+        this.checkBreakpointChangeDecorations = false;
+        this.breakpointHintDecorationIds = this.editor.deltaDecorations(this.breakpointHintDecorationIds, []);
+        this.breakpointUnverifiedDecorationIds = this.editor.deltaDecorations(this.breakpointUnverifiedDecorationIds, [{
+          range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+          options: {
+            stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+            glyphMarginClassName: "debug-breakpoint-unverified-glyph"
+          }
+        }]);
+        this.checkBreakpointChangeDecorations = true;
+        this.breakpointDecorations.push({
+          id: this.breakpointUnverifiedDecorationIds[0],
+          range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+          enable: true,
+          verified: false
+        });
+      } else {
+        this.breakpointDecorations.splice(breakpointIndex, 1);
+      }
+      this.updateBreakpoints();
+    }
   }
 
   private updateTimer: NodeJS.Timeout;

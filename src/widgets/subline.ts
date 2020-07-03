@@ -6,12 +6,19 @@ export enum RuntileGlyphs {
   Current = "debug-current-step-glyph",
 }
 
+export enum BreakpointState {
+  Unmarked = 0,
+  Unverified = 1,
+  Breakpoint = 2,
+};
+
 export class SubcodeLine {
   private owner: SubcodeWidget;
   private lineNode: HTMLElement;
   private foldingNode: HTMLElement;
   private breakpointNode: HTMLElement;
   private errorNodes: Array<HTMLElement> = [];
+  private breakpoint: BreakpointState = BreakpointState.Unmarked;
   public lineNumber: number;
 
   constructor(owner: SubcodeWidget, lineNode: HTMLElement) {
@@ -20,7 +27,7 @@ export class SubcodeLine {
     this.lineNode = lineNode;
     this.lineNode.addEventListener("click", this.select.bind(this));
     this.breakpointNode = this.owner.div("cgmr", this.owner.leftNode);
-    this.breakpointNode.addEventListener("click", this.onBreakpointClick.bind(this));
+    this.breakpointNode.addEventListener("click", this.togleBreakpoint.bind(this));
     this.foldingNode = this.owner.div("folding", this.owner.overlayDom);
     this.lineNumber = this.owner.lines.length;
     this.patchLineHTML(this.lineNode);
@@ -33,21 +40,6 @@ export class SubcodeLine {
     first.innerHTML = first.innerHTML.substr(space.length);
     this.lineNode.insertBefore(this.owner.span(space, node), first);
     this.lineNode.firstElementChild.className = "space";
-  }
-
-  private onBreakpointClick(e: MouseEvent) {
-    console.log("onBreakpointClick");
-    let value = false;
-    let classList = this.breakpointNode.classList;
-    if (classList.contains(RuntileGlyphs.Breakpoint)) {
-      classList.remove(RuntileGlyphs.Breakpoint);
-    } else if (classList.contains(RuntileGlyphs.Unverified)) {
-      classList.remove(RuntileGlyphs.Unverified);
-    } else {
-      classList.add(RuntileGlyphs.Unverified);
-      value = true;
-    }
-    this.owner.togleBreakpoint(this.lineNumber, value);
   }
 
   public select() {
@@ -69,14 +61,35 @@ export class SubcodeLine {
     }
   }
 
-  public setBreakpoint(status: boolean | undefined) {
+  public togleBreakpoint() {
     let classList = this.breakpointNode.classList;
     classList.remove(RuntileGlyphs.Breakpoint);
     classList.remove(RuntileGlyphs.Unverified);
-    switch (status) {
-      case false: classList.add(RuntileGlyphs.Unverified); break;
-      case true: classList.add(RuntileGlyphs.Breakpoint); break;
+    switch (this.breakpoint) {
+      case BreakpointState.Breakpoint:
+      case BreakpointState.Unverified:
+        this.breakpoint = BreakpointState.Unmarked;
+        break
+      default:
+        this.breakpoint = BreakpointState.Unverified;
+        classList.add(RuntileGlyphs.Unverified);
+        break;
     }
+    this.owner.runtime.updateBreakpoints();
+  }
+
+  public setBreakpoint(breakpoint: BreakpointState) {
+    this.breakpoint = breakpoint;
+    let classList = this.breakpointNode.classList;
+    classList.remove(RuntileGlyphs.Breakpoint, RuntileGlyphs.Unverified);
+    switch (breakpoint) {
+      case BreakpointState.Breakpoint: classList.add(RuntileGlyphs.Breakpoint);
+      case BreakpointState.Unverified: classList.add(RuntileGlyphs.Unverified);
+    }
+  }
+
+  public getBreakpoint(): BreakpointState {
+    return this.breakpoint;
   }
 
   public setStatus(status: string = undefined) {
