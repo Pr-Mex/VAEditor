@@ -1,6 +1,7 @@
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
+import { StyleManager } from "./style";
 import { SyntaxManager } from "./syntax";
 
 export class VanessaEditor {
@@ -56,6 +57,7 @@ export class VanessaEditor {
   private problemManager: ProblemManager;
   private actionManager: ActionManager;
   private syntaxManager: SyntaxManager;
+  private styleManager: StyleManager;
 
   constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
@@ -70,6 +72,7 @@ export class VanessaEditor {
     this.problemManager = new ProblemManager(this.editor);
     this.actionManager = new ActionManager(this.editor)
     this.syntaxManager = new SyntaxManager(this.editor);
+    this.styleManager = new StyleManager(this.editor);
   }
 
   public dispose(): void {

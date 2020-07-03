@@ -86,10 +86,22 @@ export class RuntimeManager {
     model.onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations());
     this.editor.onMouseDown(e => this.breakpointOnMouseDown(e));
     this.editor.onMouseMove(e => this.breakpointsOnMouseMove(e));
-    this.editor.onDidChangeConfiguration(e => this.setStyle());
-    this.editor.onDidLayoutChange(e => this.setStyle());
-    this.setStyle();
+    this.registerOnDidChangeFolding();
   }
+
+  private registerOnDidChangeFolding() {
+    let foldingContrib = this.editor.getContribution('editor.contrib.folding');
+    //@ts-ignore
+    foldingContrib.getFoldingModel().then((foldingModel: any) => {
+      foldingModel.onDidChange(() => setTimeout(() => {
+        for (let id in this.codeWidgets) {
+          let widget = this.codeWidgets[id] as SubcodeWidget;
+          let display = widget.domNode.offsetHeight ? "block" : "none";
+          widget.overlayDom.style.display = display;
+        }
+      }, 200));
+    });
+  };
 
   set breakpoints(breakpoints: IBreakpoint[]) {
     const widgetsBreakpoints = {};
@@ -240,38 +252,8 @@ export class RuntimeManager {
   private underlineDecorationIds: string[] = [];
   private currentDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
-  private lineHeight: number = 0;
   private codeWidgets = {};
   private currentCodeWidget: number = 0;
-
-  private setStyle() {
-    let conf = this.editor.getConfiguration();
-    if (this.lineHeight == conf.lineHeight) return;
-
-    const id = 'vanessa-widget-style';
-    let style = document.getElementById(id) as HTMLElement;
-    if (style == null) {
-      style = document.createElement('style');
-      style.setAttribute("type", "text/css");
-      style.id = id;
-      document.head.appendChild(style)
-    }
-    style.innerHTML = `\
-    .vanessa-code-widget, .vanessa-error-widget {\
-      font-family: ${conf.fontInfo.fontFamily};\
-      font-size: ${conf.fontInfo.fontSize}px;\
-      line-height: ${conf.lineHeight}px;\
-    }\
-    .vanessa-code-overlays { left: ${3 * conf.lineHeight}px; }\
-    .vanessa-code-overlays div { height: ${conf.lineHeight}px; }\
-    .vanessa-error-widget { height: ${2 * conf.lineHeight}px; }\
-    .vanessa-code-lines { left: ${conf.lineHeight}px; }\
-    .vanessa-code-border { width: ${conf.lineHeight}px; }\
-    .vanessa-code-border div.cgmr { height: ${conf.lineHeight}px; }\
-    .vanessa-code-border div.error { height: ${2 * conf.lineHeight}px; }\
-    .vanessa-code-overlays div.error { height: ${2 * conf.lineHeight}px; }\
-    `;
-  }
 
   public setStatus(status: string, arg: any, codeWidget: number): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
