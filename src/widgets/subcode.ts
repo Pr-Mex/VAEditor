@@ -1,82 +1,55 @@
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
+import { SubcodeLine, RuntileGlyphs } from "./subline";
 import { BaseWidget } from "./base";
-import { editor } from "monaco-editor";
-
-const glyphClassBreakpoint: string = "debug-breakpoint-glyph";
-const glyphClassUnverified: string = "debug-breakpoint-unverified-glyph";
-const glyphClassCurrent: string = "debug-current-step-glyph";
 
 export class SubcodeWidget extends BaseWidget {
 
   public id: number;
   public content: string[];
   public decoration: string;
-  private textNode: HTMLElement;
-  private leftNode: HTMLElement;
-  private current: number = 0;
-  private selected: number;
+  public textNode: HTMLElement;
+  public leftNode: HTMLElement;
+  public overlayDom: HTMLElement;
+  public current: number = 0;
+  public selected: number;
+  public lines: Array<SubcodeLine> = [];
 
   private runtime: RuntimeManager;
   private _breakpoints = {};
 
-  private onBreakpointClick(e: MouseEvent) {
-    let lineNumber = 0;
-    this.leftNode.querySelectorAll('div.cgmr').forEach((node: HTMLElement, i: number) => {
-      if (e.target == node) lineNumber = i + 1;
-    });
-    let node = e.target as HTMLElement;
-    if (node.classList.contains(glyphClassBreakpoint)) {
-      node.classList.remove(glyphClassBreakpoint);
-      delete this._breakpoints[lineNumber];
-    } else if (node.classList.contains(glyphClassUnverified)) {
-      node.classList.remove(glyphClassUnverified);
-      delete this._breakpoints[lineNumber];
-    } else {
-      node.classList.add(glyphClassUnverified);
-      this._breakpoints[lineNumber] = true;
-    }
+  public togleBreakpoint(lineNumber: number, value: boolean) {
+    if (value) this._breakpoints[lineNumber] = value;
+    else delete this._breakpoints[lineNumber];
     this.runtime.updateBreakpoints();
   }
 
-  private onLineClick(e: MouseEvent) {
-    let node = e.target as HTMLElement;
-    while (true) {
-      if (node.parentElement == this.textNode) break;
-      node = node.parentElement;
-      if (node == null) return;
-    }
-    let range = new Range();
-    range.selectNode(node);
-    document.getSelection().empty()
-    document.getSelection().addRange(range);
-    this.selected = parseInt(node.dataset.line);
+  public onDomNodeTop(top: number) {
+    this.overlayDom.style.top = top + "px";
+  }
+  public onComputedHeight(height: number) {
+    this.overlayDom.style.height = height + "px";
   }
 
   constructor(runtime: RuntimeManager, content: string) {
     super();
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
+    this.heightInLines = this.content.length;
     this.domNode = this.div('vanessa-code-widget');
     this.textNode = this.div('vanessa-code-lines', this.domNode);
     this.leftNode = this.div('vanessa-code-border', this.domNode);
-    this.marginDomNode = this.div('vanessa-code-margin', this.domNode);
-    this.heightInLines = this.content.length;
-    for (let i = 0; i < this.heightInLines; i++) {
-      let node = this.div("cgmr", this.leftNode);
-      node.addEventListener("click", this.onBreakpointClick.bind(this));
-    }
+    this.overlayDom = this.div('vanessa-code-overlays');
+    this.overlayDom.classList.add('margin-view-overlays')
+    let overlayWidget = {
+      getId: () => 'overlay.zone.widget',
+      getDomNode: () => this.overlayDom,
+      getPosition: () => null
+    };
+    this.runtime.editor.addOverlayWidget(overlayWidget);
     monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
       this.textNode.innerHTML = html;
-      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement, i: number) => {
-        node.addEventListener("click", this.onLineClick.bind(this));
-        node.dataset.line = String(i + 1);
-        let first = node.firstElementChild;
-        if (first) {
-          let space = first.innerHTML.match(/^[&nbsp;]*/)[0];
-          first.innerHTML = first.innerHTML.substr(space.length);
-          node.insertBefore(this.span(space, node), first);
-          node.firstElementChild.className = "space";
-        }
+      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement) => {
+        new SubcodeLine(this, node);
       });
     });
   }
@@ -125,81 +98,47 @@ export class SubcodeWidget extends BaseWidget {
 
   set breakpoints(breakpoints: Array<IBreakpoint>) {
     this._breakpoints = {};
-    this.leftNode.querySelectorAll("." + glyphClassBreakpoint).forEach((e: HTMLElement) => e.classList.remove(glyphClassBreakpoint));
-    this.leftNode.querySelectorAll("." + glyphClassUnverified).forEach((e: HTMLElement) => e.classList.remove(glyphClassUnverified));
-    if (breakpoints.length == 0) return;
-    this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {
-      let b = breakpoints.find(b => b.lineNumber == i + 1 && b.codeWidget == this.id);
-      if (b) {
-        e.classList.add(b.enable ? glyphClassBreakpoint : glyphClassUnverified);
-        this._breakpoints[b.lineNumber] = b.enable;
-      }
+    this.lines.forEach((line: SubcodeLine) => {
+      let b = breakpoints.find(b => b.lineNumber == line.lineNumber && b.codeWidget == this.id);
+      line.setBreakpoint(b ? b.enable : undefined);
     });
   }
 
   public setCurrent(lineNumber: number): number {
-    this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {
-      if (i + 1 == lineNumber) e.classList.add(glyphClassCurrent);
-      else e.classList.remove(glyphClassCurrent);
-    });
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (i + 1 == lineNumber) e.className = "debug-current-step";
-      else e.classList.remove("debug-current-step");
-    });
+    this.lines.forEach((line: SubcodeLine) => line.setCurrent(line.lineNumber == lineNumber));
     return this.current = 0 < lineNumber && lineNumber <= this.leftNode.childNodes.length ? lineNumber : 0;
   }
 
-  private clearNodeStatus(node: HTMLElement): DOMTokenList {
-    node.classList.remove("debug-complete-step", "debug-error-step", "debug-pending-step", "debug-disabled-step", "debug-current-step");
-    return node.classList;
-  }
-
-  private clearNodeUnderline(node: HTMLElement): DOMTokenList {
-    node.classList.remove("subcode-single-underline", "subcode-double-underline", "subcode-wavy-underline", "subcode-dotted-underline", "subcode-dashed-underline");
-    return node.classList;
-  }
-
   public setStatus(status: string, lines: Array<number>) {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement, i) => {
-      if (lines.indexOf(i + 1) != -1) this.clearNodeStatus(e).add(`debug-${status}-step`);
-    });
+    this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setStatus(status); });
   }
 
   public setUnderline(status: string, lines: Array<number>) {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement, i) => {
-      if (lines.indexOf(i + 1) != -1) this.clearNodeUnderline(e).add(`subcode-${status}-underline`);
-    });
+    this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setUnderline(status); });
   }
 
   public clearStatus() {
     this.current = 0;
-    this.leftNode.querySelectorAll('div.cgmr').forEach(e => e.classList.remove(glyphClassCurrent));
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement) => this.clearNodeStatus(e));
+    this.lines.forEach((line: SubcodeLine) => line.setStatus());
   }
 
   public clearUnderline() {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e: HTMLElement) => this.clearNodeUnderline(e));
+    this.lines.forEach((line: SubcodeLine) => line.setUnderline());
   }
 
   public showError(lineNumber: number, data: string, text: string) {
-    let line = undefined;
-    this.leftNode.querySelectorAll('div.cgmr').forEach((e: HTMLElement, i: number) => {
-      if (i == lineNumber) this.leftNode.insertBefore(this.div("error"), e);
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.lineNumber == lineNumber) {
+        line.showError(data, text);
+        this.heightInLines += 2;
+      }
     });
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (i == lineNumber) line = e;
-    });
-    let node = this.div('vanessa-error-widget');
-    this.error(data, text, node);
-    if (line) this.textNode.insertBefore(node, line); else this.textNode.append(node);
-    this.heightInLines = this.heightInLines + 2;
     this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
     this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
   }
 
   public clearErrors() {
-    this.leftNode.querySelectorAll('div.error').forEach((e: HTMLElement) => e.remove());
-    this.textNode.querySelectorAll('div.vanessa-error-widget').forEach((e: HTMLElement) => e.remove());
+    this.lines.forEach((line: SubcodeLine) => line.clearErrors());
     this.heightInLines = this.content.length;
     this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
     this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
@@ -214,14 +153,8 @@ export class SubcodeWidget extends BaseWidget {
   }
 
   set position(position: any) {
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement, i: number) => {
-      if (i + 1 == position.lineNumber) {
-        let range = new Range();
-        range.selectNode(node);
-        document.getSelection().empty()
-        document.getSelection().addRange(range);
-        this.selected = parseInt(node.dataset.line);
-      };
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.lineNumber == position.lineNumber) line.select();
     });
   }
 

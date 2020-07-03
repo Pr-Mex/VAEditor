@@ -5,21 +5,21 @@ export class BaseWidget implements monaco.editor.IViewZone {
   public marginDomNode: HTMLElement;
   public afterColumn: number = 1;
 
-  protected div(className: string, parent: HTMLElement = null): HTMLElement {
+  public div(className: string, parent: HTMLElement = null): HTMLElement {
     let node = document.createElement('div');
     if (className) node.classList.add(className);
     if (parent) parent.appendChild(node);
     return node;
   }
 
-  protected span(html: string, parent: HTMLElement): HTMLElement {
+  public span(html: string, parent: HTMLElement): HTMLElement {
     let node = document.createElement('span');
     if (parent) parent.appendChild(node);
     node.innerHTML = html;
     return node;
   }
 
-  protected error(data: string, text: string, parent: HTMLElement) {
+  public error(data: string, text: string, parent: HTMLElement) {
     var textNode = this.div('vanessa-error-text', parent);
     var linkNode = this.div('vanessa-error-links', parent);
     textNode.innerText = text;
