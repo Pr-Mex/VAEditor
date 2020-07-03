@@ -13,9 +13,7 @@ export class SubcodeWidget extends BaseWidget {
   public current: number = 0;
   public selected: number;
   public lines: Array<SubcodeLine> = [];
-
   public runtime: RuntimeManager;
-  private _breakpoints = {};
 
   public togleBreakpoint(lineNumber: number) {
     this.lines.forEach((line: SubcodeLine) => {
