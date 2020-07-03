@@ -33,36 +33,47 @@
 }
 .runtime-single-underline {
   text-decoration: underline black;
+  -webkit-text-decoration: underline black;
 }
 .runtime-double-underline {
   text-decoration: underline black double;
+  -webkit-text-decoration: underline black double;
 }
 .runtime-wavy-underline {
   text-decoration: underline black wavy;
+  -webkit-text-decoration: underline black wavy;
 }
 .runtime-dotted-underline {
   text-decoration: underline black dotted;
+  -webkit-text-decoration: underline black dotted;
 }
 .runtime-dashed-underline {
   text-decoration: underline black dashed;
+  -webkit-text-decoration: underline black dashed;
 }
 .subcode-single-underline > span {
   text-decoration: underline black;
+  -webkit-text-decoration: underline black;
 }
 .subcode-double-underline > span {
   text-decoration: underline black double;
+  -webkit-text-decoration: underline black double;
 }
 .subcode-wavy-underline > span {
   text-decoration: underline black wavy;
+  -webkit-text-decoration: underline black wavy;
 }
 .subcode-dotted-underline > span {
   text-decoration: underline black dotted;
+  -webkit-text-decoration: underline black dotted;
 }
 .subcode-dashed-underline > span {
   text-decoration: underline black dashed;
+  -webkit-text-decoration: underline black dashed;
 }
 .vanessa-code-lines > span > span.space {
   text-decoration: none;
+  -webkit-text-decoration: none;
 }
 .vanessa-code-widget {
   background: #CCDDDD80;
