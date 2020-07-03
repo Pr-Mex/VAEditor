@@ -252,11 +252,14 @@ export class RuntimeManager {
       font-size: ${conf.fontInfo.fontSize}px;\
       line-height: ${conf.lineHeight}px;\
     }\
+    .vanessa-code-overlays { left: ${3 * conf.lineHeight}px; }\
+    .vanessa-code-overlays div { height: ${conf.lineHeight}px; }\
     .vanessa-error-widget { height: ${2 * conf.lineHeight}px; }\
     .vanessa-code-lines { left: ${conf.lineHeight}px; }\
     .vanessa-code-border { width: ${conf.lineHeight}px; }\
     .vanessa-code-border div.cgmr { height: ${conf.lineHeight}px; }\
     .vanessa-code-border div.error { height: ${2 * conf.lineHeight}px; }\
+    .vanessa-code-overlays div.error { height: ${2 * conf.lineHeight}px; }\
     `;
   }
 
