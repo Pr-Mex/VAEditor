@@ -37,7 +37,7 @@ export class VanessaEditor {
   public setBreakpoints = (arg: string) => this.runtimeManager.breakpoints = JSON.parse(arg);
   public getBreakpoints = (arg: string) => JSON.stringify(this.runtimeManager.breakpoints);
   public decorateProblems = (arg: string) => this.problemManager.problems = JSON.parse(arg);
-  public toggleBreakpoint = () => this.runtimeManager.toggleBreakpoint(this.editor.getPosition().lineNumber);
+  public toggleBreakpoint = (lineNumber: number = 0, codeWidget: number = 0) => this.runtimeManager.toggleBreakpoint(lineNumber, codeWidget);
   public getActions = () => JSON.stringify(this.actionManager.actions);
   public addCommands = (arg: string) => this.actionManager.addCommands(JSON.parse(arg));
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
