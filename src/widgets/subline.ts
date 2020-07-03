@@ -71,8 +71,8 @@ export class SubcodeLine {
         this.breakpoint = BreakpointState.Unmarked;
         break
       default:
-        this.breakpoint = BreakpointState.Unverified;
-        classList.add(RuntileGlyphs.Unverified);
+        this.breakpoint = BreakpointState.Breakpoint;
+        classList.add(RuntileGlyphs.Breakpoint);
         break;
     }
     this.owner.runtime.updateBreakpoints();
@@ -83,8 +83,8 @@ export class SubcodeLine {
     let classList = this.breakpointNode.classList;
     classList.remove(RuntileGlyphs.Breakpoint, RuntileGlyphs.Unverified);
     switch (breakpoint) {
-      case BreakpointState.Breakpoint: classList.add(RuntileGlyphs.Breakpoint);
-      case BreakpointState.Unverified: classList.add(RuntileGlyphs.Unverified);
+      case BreakpointState.Breakpoint: classList.add(RuntileGlyphs.Breakpoint); break;
+      case BreakpointState.Unverified: classList.add(RuntileGlyphs.Unverified); break;
     }
   }
 
