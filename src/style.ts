@@ -8,6 +8,10 @@ export class StyleManager {
     this.setStyle();
   }
 
+  public dispose(): void {
+    this.editor = null;
+  }
+
   private setStyle() {
     let conf = this.editor.getConfiguration();
     if (this.lineHeight == conf.lineHeight) return;
