@@ -46,21 +46,8 @@ export class SubcodeWidget extends BaseWidget {
     this.runtime.editor.addOverlayWidget(overlayWidget);
     monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
       this.textNode.innerHTML = html;
-      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement) => {
-        new SubcodeLine(this, node);
-      });
-      let lineCount = this.lines.length;
-      for (let i = 0; i < lineCount; i++) {
-        let line = this.lines[i] as SubcodeLine;
-        if (line.spaceLevel == 0) continue;
-        for (let j = i + 1; j < lineCount; j++) {
-          let next = this.lines[j] as SubcodeLine;
-          if (next.spaceLevel == 0) continue;
-          if (next.spaceLevel <= line.spaceLevel) break;
-          line.foldNumber = j + 1;
-        }
-        line.initFolding();
-      }
+      this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((n: HTMLElement) => new SubcodeLine(this, n));
+      this.lines.forEach((line: SubcodeLine) => line.initFolding(this.lines));
     });
   }
 
@@ -143,16 +130,19 @@ export class SubcodeWidget extends BaseWidget {
     this.lines.forEach((line: SubcodeLine) => {
       if (line.lineNumber == lineNumber) {
         line.showError(data, text);
-        this.heightInLines += 2;
       }
     });
-    this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
-    this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
+    this.layoutViewZone();
   }
 
   public clearErrors() {
     this.lines.forEach((line: SubcodeLine) => line.clearErrors());
-    this.heightInLines = this.content.length;
+    this.layoutViewZone();
+  }
+
+  public layoutViewZone() {
+    this.heightInLines = 0;
+    this.lines.forEach((line: SubcodeLine) => this.heightInLines += line.heightInLines);
     this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
     this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
   }
