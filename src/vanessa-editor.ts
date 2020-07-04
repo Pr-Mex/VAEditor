@@ -54,11 +54,11 @@ export class VanessaEditor {
   set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
 
   public editor: monaco.editor.IStandaloneCodeEditor;
-  private runtimeManager: RuntimeManager;
-  private problemManager: ProblemManager;
-  private actionManager: ActionManager;
-  private syntaxManager: SyntaxManager;
-  private styleManager: StyleManager;
+  public actionManager: ActionManager;
+  public runtimeManager: RuntimeManager;
+  public problemManager: ProblemManager;
+  public syntaxManager: SyntaxManager;
+  public styleManager: StyleManager;
 
   constructor(content: string, language: string) {
     this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {

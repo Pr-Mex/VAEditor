@@ -29,10 +29,11 @@ export class VanessaGherkinProvider {
   }
 
   private key(words: Array<string>): string {
-    return words.map((w: string) => {
-      let regexp = /(^\d+(?:\.\d+)?$|^"([^"]|[\\"])*"$|^'([^']|[\\'])*'$)/g;
-      return regexp.test(w) ? "^" : w.toLowerCase();
-    }).join(' ');
+    let result = [];
+    words.forEach((w: string) => {
+      if (/^[A-zА-я]+$/.test(w)) result.push(w.toLowerCase());
+    });
+    return result.join(' ');
   }
 
   private lineSyntaxError(line: string): boolean {
@@ -266,8 +267,8 @@ export class VanessaGherkinProvider {
     if (context.markers.every(e => e.severity != monaco.MarkerSeverity.Error)) return [];
     if (context.only == "quickfix") return this.getQuickFix(model, context.markers);
     let actions = [];
-    let ve = window["VanessaEditor"];
-    if (ve) ve.codeActions.forEach((e: any) => {
+    let ve = window["VanessaEditor"] as VanessaEditor;
+    if (ve) ve.actionManager.codeActions.forEach((e: any) => {
       actions.push({ command: { id: e.id }, title: e.title });
     });
     return actions;
