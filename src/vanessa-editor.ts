@@ -27,6 +27,7 @@ export class VanessaEditor {
   public setCurrentProgress = (lineNumber: number, codeWidget: number = 0) => this.runtimeManager.setCurrent(lineNumber, codeWidget);
   public showRuntimeError = (lineNumber: number, codeWidget: number, data: string, text: string) => this.runtimeManager.showError(lineNumber, codeWidget, data, text);
   public showRuntimeCode = (lineNumber: number, text: string) => this.runtimeManager.showCode(lineNumber, text);
+  public setSubcodeFolding = (lineNumber: number, codeWidget: number, collapsed: boolean) => this.runtimeManager.setFolding(lineNumber, codeWidget, collapsed);
   public setRuntimeUnderline = (status: string, lines: any, widget: number = 0) => this.runtimeManager.setUnderline(status, lines, widget);
   public nextRuntimeProgress = () => this.runtimeManager.next();
   public clearRuntimeCodes = () => this.runtimeManager.clearSubcode();

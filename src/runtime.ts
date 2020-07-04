@@ -472,6 +472,13 @@ export class RuntimeManager {
     for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearUnderline();
   }
 
+  public setFolding(lineNumber: number, codeWidget: number, collapsed: boolean) {
+    for (let id in this.codeWidgets) {
+      let widget = this.codeWidgets[id] as SubcodeWidget;
+      if (widget.id = codeWidget) widget.setFolding(lineNumber, collapsed);
+    }
+  }
+
   get position(): IVanessaPosition {
     let node = document.getSelection().focusNode as HTMLElement;
     while (node) {

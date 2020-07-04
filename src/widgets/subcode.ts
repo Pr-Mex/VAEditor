@@ -180,4 +180,10 @@ export class SubcodeWidget extends BaseWidget {
     }
     return undefined;
   }
+
+  public setFolding(lineNumber: number, collapsed: boolean) {
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.lineNumber == lineNumber) line.setFolding(collapsed);
+    });
+  }
 }
