@@ -68,6 +68,7 @@ export class VanessaEditor {
       lightbulb: { enabled: true }
     });
     this.editor.setValue(content);
+    this.editor.getModel().updateOptions({insertSpaces: false});
     this.runtimeManager = new RuntimeManager(this);
     this.problemManager = new ProblemManager(this.editor);
     this.actionManager = new ActionManager(this.editor)
