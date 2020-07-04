@@ -133,10 +133,9 @@ window.onload = () => {
     ];
     VanessaEditor.addCommands(JSON.stringify(commands));
 
-    let subcode = '\t\tИ шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\tИ шаг подсценария 3\n\t\tИ шаг подсценария 4';
+    let subcode = '\tИ шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\n\t\t\tИ шаг подсценария 2\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\n\t\tИ шаг подсценария 4\n\tИ шаг подсценария 5';
     VanessaEditor.showRuntimeCode(15, subcode);
-    VanessaEditor.showRuntimeCode(20, subcode);
-    VanessaEditor.showRuntimeCode(22, subcode);
+    VanessaEditor.showRuntimeCode(20, subcode + "\n");
 /*
     setInterval(() => VanessaEditor.runtimeManager.next(), 500);
 

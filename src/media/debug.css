@@ -145,3 +145,6 @@
 .overlayWidgets .vanessa-code-overlays.margin-view-overlays:hover div {
   opacity: 1;
 }
+.vanessa-hidden {
+  display: none !important;
+}

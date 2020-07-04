@@ -95,9 +95,9 @@ export class RuntimeManager {
     foldingContrib.getFoldingModel().then((foldingModel: any) => {
       foldingModel.onDidChange(() => setTimeout(() => {
         for (let id in this.codeWidgets) {
-          let widget = this.codeWidgets[id] as SubcodeWidget;
-          let display = widget.domNode.offsetHeight ? "block" : "none";
-          widget.overlayDom.style.display = display;
+          let widget = (this.codeWidgets[id] as SubcodeWidget);
+          if (widget.domNode.offsetHeight) widget.overlayDom.classList.remove("vanessa-hidden");
+          else widget.overlayDom.classList.add("vanessa-hidden");
         }
       }, 200));
     });
