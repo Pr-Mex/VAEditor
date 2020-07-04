@@ -49,6 +49,18 @@ export class SubcodeWidget extends BaseWidget {
       this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((node: HTMLElement) => {
         new SubcodeLine(this, node);
       });
+      let lineCount = this.lines.length;
+      for (let i = 0; i < lineCount; i++) {
+        let line = this.lines[i] as SubcodeLine;
+        if (line.spaceLevel == 0) continue;
+        for (let j = i + 1; j < lineCount; j++) {
+          let next = this.lines[j] as SubcodeLine;
+          if (next.spaceLevel == 0) continue;
+          if (next.spaceLevel <= line.spaceLevel) break;
+          line.foldNumber = j + 1;
+        }
+        line.initFolding();
+      }
     });
   }
 
