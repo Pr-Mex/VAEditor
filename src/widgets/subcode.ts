@@ -105,8 +105,15 @@ export class SubcodeWidget extends BaseWidget {
   }
 
   public setCurrent(lineNumber: number): number {
-    this.lines.forEach((line: SubcodeLine) => line.setCurrent(line.lineNumber == lineNumber));
-    return this.current = 0 < lineNumber && lineNumber <= this.leftNode.childNodes.length ? lineNumber : 0;
+    this.current = 0;
+    this.lines.forEach((line: SubcodeLine) => {
+      line.setCurrent(line.lineNumber == lineNumber);
+      if (line.lineNumber == lineNumber) {
+        this.revealLine(lineNumber);
+        this.current = line.lineNumber;
+      }
+    });
+    return this.current;
   }
 
   public setStatus(status: string, lines: Array<number>) {
@@ -185,5 +192,27 @@ export class SubcodeWidget extends BaseWidget {
     this.lines.forEach((line: SubcodeLine) => {
       if (line.lineNumber == lineNumber) line.setFolding(collapsed);
     });
+  }
+
+  public revealLine(lineNumber: number) {
+    let size = { top: 0, bottom: 2 };
+    console.log(size);
+    let lineHeight = this.runtime.editor.getConfiguration().lineHeight;
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.lineNumber <= lineNumber) {
+        size.top = size.bottom;
+        size.bottom += line.heightInLines;
+      }
+    });
+    let editor = this.runtime.editor;
+    let afterLine = editor.getModel().getDecorationRange(this.decoration).endLineNumber;
+    let top = editor.getTopForLineNumber(afterLine);
+    size.top = top + size.top * lineHeight;
+    size.bottom = top + size.bottom * lineHeight;
+    let scrollTop = editor.getScrollTop();
+    let clientHeight = editor.getDomNode().clientHeight;
+    let scrollBottom = scrollTop + clientHeight;
+    if (size.bottom > scrollBottom) editor.setScrollTop(size.bottom - clientHeight);
+    else if (size.top < scrollTop) editor.setScrollTop(size.top);
   }
 }
