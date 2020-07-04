@@ -90,15 +90,9 @@ export class SubcodeLine {
 
   private setVisible(value: boolean) {
     this.visible = value;
-    if (value) {
-      let show = (nodes: Array<HTMLElement>) => nodes.forEach((n: HTMLElement) => n.classList.remove("vanessa-hidden"));
-      show([this.lineNode, this.foldingNode, this.breakpointNode]);
-      show(this.errorNodes);
-    } else {
-      let hide = (nodes: Array<HTMLElement>) => nodes.forEach((n: HTMLElement) => n.classList.add("vanessa-hidden"));
-      hide([this.lineNode, this.foldingNode, this.breakpointNode]);
-      hide(this.errorNodes);
-    }
+    let nodes = [this.lineNode, this.foldingNode, this.breakpointNode].concat(this.errorNodes);
+    if (value) nodes.forEach((n: HTMLElement) => n.classList.remove("vanessa-hidden"));
+    else nodes.forEach((n: HTMLElement) => n.classList.add("vanessa-hidden"));
   }
 
   public select() {
