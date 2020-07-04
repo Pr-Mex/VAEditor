@@ -872,8 +872,8 @@ Procedure ShowSubcode(Command)
 
 	Cоntent1 =
 	"	И шаг подсценария 1
-	|	И шаг подсценария 2
-	|	И шаг подсценария 3
+	|		И шаг подсценария 2
+	|		И шаг подсценария 3
 	|";
 
 	Cоntent2 =
@@ -884,8 +884,7 @@ Procedure ShowSubcode(Command)
 	|";
 
 	VanessaEditor.setContent(Cоntent);
-	VanessaEditor.showRuntimeCode(8, Cоntent1);
-	VanessaEditor.showRuntimeCode(9, Cоntent2);
+	VanessaEditor.showRuntimeCode(8, Cоntent1 + Cоntent2);
 	VanessaEditor.showRuntimeCode(11, Cоntent1);
 	VanessaEditor.showRuntimeCode(12, Cоntent2);
 
