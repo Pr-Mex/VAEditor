@@ -63,7 +63,11 @@ export class SubcodeLine {
   }
 
   private onFolding() {
-    this.collapsed = !(this.collapsed);
+    this.setFolding(!(this.collapsed));
+  }
+
+  public setFolding(collapsed: boolean) {
+    this.collapsed = collapsed;
     if (this.collapsed) this.foldingNode.classList.add("collapsed");
     else this.foldingNode.classList.remove("collapsed");
     this.updateFolding();
