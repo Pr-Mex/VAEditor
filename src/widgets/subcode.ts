@@ -28,6 +28,8 @@ export class SubcodeWidget extends BaseWidget {
     this.overlayDom.style.height = height + "px";
   }
 
+  private overlayWidget: monaco.editor.IOverlayWidget;
+
   constructor(runtime: RuntimeManager, content: string) {
     super();
     this.runtime = runtime;
@@ -38,17 +40,22 @@ export class SubcodeWidget extends BaseWidget {
     this.leftNode = this.div('vanessa-code-border', this.domNode);
     this.overlayDom = this.div('vanessa-code-overlays');
     this.overlayDom.classList.add('margin-view-overlays')
-    let overlayWidget = {
+    this.overlayWidget = {
       getId: () => 'overlay.zone.widget',
       getDomNode: () => this.overlayDom,
       getPosition: () => null
     };
-    this.runtime.editor.addOverlayWidget(overlayWidget);
+    this.runtime.editor.addOverlayWidget(this.overlayWidget);
     monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
       this.textNode.innerHTML = html;
       this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((n: HTMLElement) => new SubcodeLine(this, n));
       this.lines.forEach((line: SubcodeLine) => line.initFolding(this.lines));
     });
+  }
+
+  public dispose(): void {
+    this.runtime.editor.removeOverlayWidget(this.overlayWidget);
+    this.overlayDom.remove();
   }
 
   public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
