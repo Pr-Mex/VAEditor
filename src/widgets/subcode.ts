@@ -24,6 +24,7 @@ export class SubcodeWidget extends BaseWidget {
   public onDomNodeTop(top: number) {
     this.overlayDom.style.top = top + "px";
   }
+
   public onComputedHeight(height: number) {
     this.overlayDom.style.height = height + "px";
   }
@@ -39,7 +40,7 @@ export class SubcodeWidget extends BaseWidget {
     this.textNode = this.div('vanessa-code-lines', this.domNode);
     this.leftNode = this.div('vanessa-code-border', this.domNode);
     this.overlayDom = this.div('vanessa-code-overlays');
-    this.overlayDom.classList.add('margin-view-overlays')
+    this.overlayDom.classList.add('margin-view-overlays');
     this.overlayWidget = {
       getId: () => 'overlay.zone.widget',
       getDomNode: () => this.overlayDom,
@@ -69,8 +70,14 @@ export class SubcodeWidget extends BaseWidget {
       range: new monaco.Range(lineNumber, 1, lineNumber, 1),
       options: {},
     }])[0];
+    setTimeout(() => this.layoutViewZone, 200);
     return this.id;
   }
+
+  public updateOverlayVisible() {
+    if (this.domNode.offsetHeight) this.overlayDom.classList.remove("vanessa-hidden");
+    else this.overlayDom.classList.add("vanessa-hidden");
+}
 
   public lineNumber(editor: monaco.editor.IStandaloneCodeEditor): number {
     return editor.getModel().getDecorationRange(this.decoration).endLineNumber;

@@ -84,6 +84,7 @@ export class RuntimeManager {
     this.editor = VanessaEditor.editor;
     const model: monaco.editor.ITextModel = this.editor.getModel();
     model.onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations());
+    this.editor.onDidScrollChange(() => this.checkOverlayVisible());
     this.editor.onMouseDown(e => this.breakpointOnMouseDown(e));
     this.editor.onMouseMove(e => this.breakpointsOnMouseMove(e));
     this.registerOnDidChangeFolding();
@@ -100,13 +101,13 @@ export class RuntimeManager {
     let foldingContrib = this.editor.getContribution('editor.contrib.folding');
     //@ts-ignore
     foldingContrib.getFoldingModel().then((foldingModel: any) => {
-      foldingModel.onDidChange(() => setTimeout(() =>
-        this.forEachSubcode((widget: SubcodeWidget) => {
-          if (widget.domNode.offsetHeight) widget.overlayDom.classList.remove("vanessa-hidden");
-          else widget.overlayDom.classList.add("vanessa-hidden");
-        }), 200));
+      foldingModel.onDidChange(() => this.checkOverlayVisible());
     });
   };
+
+  private checkOverlayVisible() {
+    setTimeout(() => this.forEachSubcode((widget: SubcodeWidget) => widget.updateOverlayVisible()), 200);
+  }
 
   set breakpoints(breakpoints: IBreakpoint[]) {
     const widgetsBreakpoints = {};
