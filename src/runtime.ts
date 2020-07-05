@@ -456,6 +456,7 @@ export class RuntimeManager {
     this.forEachSubcode((widget: SubcodeWidget) => {
       this.editor.deltaDecorations([widget.decoration], []);
       zoneIds.push(widget.id);
+      widget.dispose();
     });
     this.editor.changeViewZones(changeAccessor =>
       zoneIds.forEach(id => changeAccessor.removeZone(id))
