@@ -89,17 +89,22 @@ export class RuntimeManager {
     this.registerOnDidChangeFolding();
   }
 
+  private forEachSubcode(callbackfn: (widget: SubcodeWidget, id: number) => void) {
+    for (let id in this.codeWidgets) {
+      let widget = this.codeWidgets[id] as SubcodeWidget;
+      callbackfn(widget, widget.id);
+    }
+  }
+
   private registerOnDidChangeFolding() {
     let foldingContrib = this.editor.getContribution('editor.contrib.folding');
     //@ts-ignore
     foldingContrib.getFoldingModel().then((foldingModel: any) => {
-      foldingModel.onDidChange(() => setTimeout(() => {
-        for (let id in this.codeWidgets) {
-          let widget = (this.codeWidgets[id] as SubcodeWidget);
+      foldingModel.onDidChange(() => setTimeout(() =>
+        this.forEachSubcode((widget: SubcodeWidget) => {
           if (widget.domNode.offsetHeight) widget.overlayDom.classList.remove("vanessa-hidden");
           else widget.overlayDom.classList.add("vanessa-hidden");
-        }
-      }, 200));
+        }), 200));
     });
   };
 
@@ -133,11 +138,10 @@ export class RuntimeManager {
       verified: true
     }));
 
-    for (let id in this.codeWidgets) {
-      let widget: SubcodeWidget = this.codeWidgets[id];
+    this.forEachSubcode((widget: SubcodeWidget, id: number) => {
       let breakpoints = widgetsBreakpoints[id] || [];
       widget.breakpoints = breakpoints;
-    }
+    });
   }
 
   public breakpointsOnMouseMove(e: monaco.editor.IEditorMouseEvent): void {
@@ -231,9 +235,9 @@ export class RuntimeManager {
         if (!found) breakpoints.push(new Breakpoint(range.startLineNumber, 0, breakpoint.enable));
       }
     });
-    for (let id in this.codeWidgets) {
-      this.codeWidgets[id].breakpoints.forEach((b: IBreakpoint) => breakpoints.push(b));
-    }
+    this.forEachSubcode((widget: SubcodeWidget) =>
+      widget.breakpoints.forEach((b: IBreakpoint) => breakpoints.push(b))
+    );
     return breakpoints;
   }
 
@@ -444,18 +448,17 @@ export class RuntimeManager {
       ids.forEach(id => changeAccessor.removeZone(id))
     );
     ids.length = 0;
-    for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearErrors();
+    this.forEachSubcode((widget: SubcodeWidget) => widget.clearErrors());
   }
 
   public clearSubcode(): void {
-    let ids = [];
-    for (let id in this.codeWidgets) {
-      let widget = this.codeWidgets[id] as SubcodeWidget;
+    let zoneIds = [];
+    this.forEachSubcode((widget: SubcodeWidget) => {
       this.editor.deltaDecorations([widget.decoration], []);
-      ids.push(id);
-    }
+      zoneIds.push(widget.id);
+    });
     this.editor.changeViewZones(changeAccessor =>
-      ids.forEach(id => changeAccessor.removeZone(id))
+      zoneIds.forEach(id => changeAccessor.removeZone(id))
     );
     this.codeWidgets = {};
     this.updateBreakpoints();
@@ -464,19 +467,18 @@ export class RuntimeManager {
   public clearStatus(): void {
     this.currentDecorationIds = this.editor.deltaDecorations(this.currentDecorationIds, []);
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
-    for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearStatus();
+    this.forEachSubcode((widget: SubcodeWidget) => widget.clearStatus());
   }
 
   public clearUnderline(): void {
     this.underlineDecorationIds = this.editor.deltaDecorations(this.underlineDecorationIds, []);
-    for (let id in this.codeWidgets) (this.codeWidgets[id] as SubcodeWidget).clearUnderline();
+    this.forEachSubcode((widget: SubcodeWidget) => widget.clearUnderline());
   }
 
   public setFolding(lineNumber: number, codeWidget: number, collapsed: boolean) {
-    for (let id in this.codeWidgets) {
-      let widget = this.codeWidgets[id] as SubcodeWidget;
+    this.forEachSubcode((widget: SubcodeWidget) => {
       if (widget.id = codeWidget) widget.setFolding(lineNumber, collapsed);
-    }
+    });
   }
 
   get position(): IVanessaPosition {
@@ -526,6 +528,16 @@ export class RuntimeManager {
       startColumn: selection.startColumn,
       endColumn: selection.endColumn,
       codeWidget: 0,
+    }
+  }
+
+  public revealLine(lineNumber: number, codeWidget: number = 0) {
+    if (codeWidget) {
+      this.forEachSubcode((widget: SubcodeWidget) => {
+        if (widget.id == codeWidget) widget.revealLine(lineNumber);
+      });
+    } else {
+      this.editor.revealLine(lineNumber);
     }
   }
 

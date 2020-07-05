@@ -196,7 +196,6 @@ export class SubcodeWidget extends BaseWidget {
 
   public revealLine(lineNumber: number) {
     let size = { top: 0, bottom: 2 };
-    console.log(size);
     let lineHeight = this.runtime.editor.getConfiguration().lineHeight;
     this.lines.forEach((line: SubcodeLine) => {
       if (line.lineNumber <= lineNumber) {
