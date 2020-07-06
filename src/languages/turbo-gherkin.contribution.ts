@@ -1,3 +1,5 @@
+import { VanessaFoldingProvider } from "./turbo-gherkin.folding";
+
 interface ILangImpl {
   conf: monaco.languages.LanguageConfiguration;
   language: monaco.languages.IMonarchLanguage;
@@ -28,99 +30,8 @@ monaco.languages.registerCodeActionProvider(language.id, {
     window["VanessaGherkinProvider"].getCodeAction(model, range, context, token)
 });
 
-enum VanessaToken {
-  Empty = 0,
-  Section,
-  Operator,
-  Comment,
-  Instruction,
-  Parameter,
-}
-
-interface VanessaIndent {
-  token: VanessaToken;
-  indent: number;
-}
-
 monaco.languages.registerFoldingRangeProvider(language.id, {
   provideFoldingRanges: (model: monaco.editor.ITextModel, context, token) => {
-    let getIndent = (text: string, tabSize: number) => {
-      let length = text.search(/[^\s]/)
-      if (length == -1) return 0;
-      let indent = 0;
-      for (let i = 0; i < length; i++) {
-        if (text.charAt(i) == "\t")
-          indent = indent + tabSize - (indent % tabSize);
-        else indent++;
-      }
-      return indent + 1;
-    }
-    let isSection = (text: string) => {
-      let pos = text.indexOf(":");
-      if (pos == -1) return false;
-      text = text.substring(0, pos);
-      let regexp = /([^\s"']+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
-      let line = text.match(regexp) || [];
-      let keywords = window["VanessaGherkinProvider"].keywords;
-      return keywords.some((item: Array<string>) =>
-        item.length == line.length && item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase())
-      );
-    };
-    let isInstruction = (text: string) => /^[\s]*@/.test(text);
-    let isParameter = (text: string) => /^[\s]*\|/.test(text);
-    let isComment = (text: string) => /^[\s]*[#|//]/.test(text);
-    let lines: Array<VanessaIndent> = [{ token: VanessaToken.Empty, indent: 0 }];
-    let lineCount = model.getLineCount();
-    let tabSize = model.getOptions().tabSize;
-    for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      let text = model.getLineContent(lineNumber);
-      let indent = getIndent(text, tabSize);
-      let token = VanessaToken.Empty;
-      if (indent) {
-        if (isInstruction(text)) token = VanessaToken.Instruction;
-        else if (isParameter(text)) token = VanessaToken.Parameter;
-        else if (isComment(text)) token = VanessaToken.Comment;
-        else if (isSection(text)) token = VanessaToken.Section;
-        else token = VanessaToken.Operator;
-      }
-      lines.push({ indent: indent, token: token });
-    }
-    let result = [];
-    for (let i = 1; i <= lineCount; i++) {
-      let k = i;
-      let line = lines[i];
-      let kind = undefined;
-      switch (line.token) {
-        case VanessaToken.Instruction:
-          for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VanessaToken.Instruction) k = j; else break;
-          }
-          break;
-        case VanessaToken.Comment:
-          kind = monaco.languages.FoldingRangeKind.Comment;
-          for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VanessaToken.Comment) k = j; else break;
-          }
-          break;
-        case VanessaToken.Section:
-          kind = monaco.languages.FoldingRangeKind.Region;
-          for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VanessaToken.Section) break; else k = j;
-          }
-          break;
-        case VanessaToken.Operator:
-          for (let j = i + 1; j <= lineCount; j++) {
-            let next = lines[j];
-            if (next.token == VanessaToken.Section) break;
-            if (next.token == VanessaToken.Empty) continue;
-            if (next.token == VanessaToken.Comment) { k = j; continue; }
-            if (next.token == VanessaToken.Parameter) { k = j; continue; }
-            if (next.indent <= line.indent) break; else k = j;
-          } break;
-      }
-      if (k > i) result.push({ kind: kind, start: i, end: k });
-      if (line.token == VanessaToken.Instruction || line.token == VanessaToken.Comment) i = k;
-    }
-    return result;
+    return VanessaFoldingProvider.getModelFolding(model);
   }
-});
+})
