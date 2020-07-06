@@ -50,7 +50,9 @@ export class VanessaFoldingProvider {
     return /^[\s]*[#|//]/.test(text);
   }
 
-  static getModelFolding(model: monaco.editor.ITextModel) {
+  static getModelFolding(
+    model: monaco.editor.ITextModel
+  ): Array<monaco.languages.FoldingRange> {
     return this.getCodeFolding(
       model.getOptions().tabSize,
       model.getLineCount(),
@@ -58,7 +60,11 @@ export class VanessaFoldingProvider {
     );
   }
 
-  static getCodeFolding(tabSize: number, lineCount: number, getLineContent: (lineNumber: number) => string) {
+  static getCodeFolding(
+    tabSize: number,
+    lineCount: number,
+    getLineContent: (lineNumber: number) => string
+  ): Array<monaco.languages.FoldingRange> {
     let lines: Array<VanessaIndent> = [{ token: VanessaToken.Empty, indent: 0 }];
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
       let text = getLineContent(lineNumber);

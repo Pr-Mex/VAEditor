@@ -21,9 +21,8 @@ export class SubcodeLine {
   private breakpoint: BreakpointState = BreakpointState.Unmarked;
   private collapsed: boolean = false;
   private visible: boolean = true;
-  private foldNumber: number;
-  private spaceLevel: number;
   public lineNumber: number;
+  public foldNumber: number;
 
   constructor(owner: SubcodeWidget, lineNode: HTMLElement) {
     this.owner = owner;
@@ -41,21 +40,13 @@ export class SubcodeLine {
     let first = node.firstElementChild;
     if (first == null) return;
     let space = first.innerHTML.match(/^[&nbsp;]*/)[0];
-    this.spaceLevel = space.length / 6 + 1;
-    if (/^\s*$/.test(this.lineNode.innerText)) this.spaceLevel = 0;
     first.innerHTML = first.innerHTML.substr(space.length);
     this.lineNode.insertBefore(this.owner.span(space, node), first);
     this.lineNode.firstElementChild.className = "space";
   }
 
-  public initFolding(lines: Array<SubcodeLine>) {
-    if (this.spaceLevel == 0) return;
-    for (let i = this.lineNumber; i < lines.length; i++) {
-      let next = lines[i] as SubcodeLine;
-      if (next.spaceLevel == 0) continue;
-      if (next.spaceLevel <= this.spaceLevel) break;
-      this.foldNumber = next.lineNumber;
-    }
+  public initFolding(foldNumber: number) {
+    this.foldNumber = foldNumber;
     if (this.foldNumber > this.lineNumber) {
       this.foldingNode.classList.add("folding");
       this.foldingNode.addEventListener("click", this.onFolding.bind(this));
