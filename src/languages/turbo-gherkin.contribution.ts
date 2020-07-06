@@ -30,10 +30,11 @@ monaco.languages.registerCodeActionProvider(language.id, {
 
 enum VanessaToken {
   Empty = 0,
-  Section = 1,
-  Operator = 2,
-  Comment = 3,
-  Parameter = 4
+  Section,
+  Operator,
+  Comment,
+  Instruction,
+  Parameter,
 }
 
 interface VanessaIndent {
@@ -65,6 +66,7 @@ monaco.languages.registerFoldingRangeProvider(language.id, {
         item.length == line.length && item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase())
       );
     };
+    let isInstruction = (text: string) => /^[\s]*@/.test(text);
     let isParameter = (text: string) => /^[\s]*\|/.test(text);
     let isComment = (text: string) => /^[\s]*[#|//]/.test(text);
     let lines: Array<VanessaIndent> = [{ token: VanessaToken.Empty, indent: 0 }];
@@ -75,7 +77,8 @@ monaco.languages.registerFoldingRangeProvider(language.id, {
       let indent = getIndent(text, tabSize);
       let token = VanessaToken.Empty;
       if (indent) {
-        if (isParameter(text)) token = VanessaToken.Parameter;
+        if (isInstruction(text)) token = VanessaToken.Instruction;
+        else if (isParameter(text)) token = VanessaToken.Parameter;
         else if (isComment(text)) token = VanessaToken.Comment;
         else if (isSection(text)) token = VanessaToken.Section;
         else token = VanessaToken.Operator;
@@ -84,11 +87,15 @@ monaco.languages.registerFoldingRangeProvider(language.id, {
     }
     let result = [];
     for (let i = 1; i <= lineCount; i++) {
-      let line = lines[i];
-      if (line.indent == 0) continue;
       let k = i;
-      let kind = new monaco.languages.FoldingRangeKind("Operator");
+      let line = lines[i];
+      let kind = undefined;
       switch (line.token) {
+        case VanessaToken.Instruction:
+          for (let j = i + 1; j <= lineCount; j++) {
+            if (lines[j].token == VanessaToken.Instruction) k = j; else break;
+          }
+          break;
         case VanessaToken.Comment:
           kind = monaco.languages.FoldingRangeKind.Comment;
           for (let j = i + 1; j <= lineCount; j++) {
@@ -112,7 +119,7 @@ monaco.languages.registerFoldingRangeProvider(language.id, {
           } break;
       }
       if (k > i) result.push({ kind: kind, start: i, end: k });
-      if (line.token == VanessaToken.Comment) i = k;
+      if (line.token == VanessaToken.Instruction || line.token == VanessaToken.Comment) i = k;
     }
     return result;
   }
