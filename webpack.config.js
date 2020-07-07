@@ -4,13 +4,14 @@ const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
   entry: {
     app: './src/main'
   },
   resolve: {
-    extensions: ['.ts', '.js', '.css']
+    extensions: ['.ts', '.js', '.css', '.ttf']
   },
   output: {
     globalObject: 'self',
@@ -33,7 +34,12 @@ module.exports = {
     }, {
       test: /\.ts$/,
       loader: 'ts-loader'
-    }, {
+    },
+    {
+      test: /\.ttf$/,
+      use: ['file-loader'],
+    },
+    {
       test: /\.css$/,
       use: [
         'style-loader',
@@ -43,7 +49,7 @@ module.exports = {
     }]
   },
   plugins: [
-    new webpack.NormalModuleReplacementPlugin(/\/(vscode\-)?nls\.js/, function(resource) {
+    new webpack.NormalModuleReplacementPlugin(/\/(vscode\-)?nls\.js/, function (resource) {
       resource.request = nls;
       resource.resource = nls;
     }),
@@ -58,7 +64,8 @@ module.exports = {
       inline: [
         'app.js'
       ]
-    })
+    }),
+    new MonacoWebpackPlugin()
   ],
   devServer: {
     port: 4000,
