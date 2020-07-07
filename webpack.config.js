@@ -65,6 +65,5 @@ module.exports = {
     port: 4000,
     hot: process.env.NODE_ENV === 'development',
     open: true
-  },
-  devtool: process.argv.includes('--use-sourcemaps') ? 'inline-source-map' : false
+  }
 }
