@@ -4,11 +4,11 @@ export class StyleManager {
   constructor(
     public editor: monaco.editor.IStandaloneCodeEditor
   ) {
-    editor.onDidLayoutChange(e => this.setStyle());
-    this.setStyle();
+    editor.onDidLayoutChange(e => this.updateLineHeight());
+    this.updateLineHeight();
   }
 
-  private setStyle() {
+  private updateLineHeight() {
     let conf = this.editor.getConfiguration();
     if (this.lineHeight == conf.lineHeight) return;
 
