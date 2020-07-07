@@ -2,7 +2,6 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaEditorEvent } from "./actions";
 import { IRange } from "monaco-editor";
 
-import * as monaco from "monaco-editor"
 import { renderMarkdown } from "monaco-editor/esm/vs/base/browser/htmlContentRenderer.js"
 import { SubcodeWidget } from "./widgets/subcode";
 import { ErrorWidget } from "./widgets/error";
