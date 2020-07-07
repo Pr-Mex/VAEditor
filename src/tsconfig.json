@@ -2,7 +2,8 @@
   "compilerOptions": {
       "target": "es6",
       "module": "commonjs",
-      "removeComments": true
+      "removeComments": true,
+      "resolveJsonModule": true
   },
   "exclude": [
       "node_modules"

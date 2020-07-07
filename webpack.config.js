@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
+const nls = require.resolve('monaco-editor-nls');
 
 module.exports = {
   entry: {
@@ -19,11 +20,17 @@ module.exports = {
   resolveLoader: {
     alias: {
       'blob-url-loader': require.resolve('./loaders/blobUrl'),
-      'compile-loader': require.resolve('./loaders/compile')
+      'compile-loader': require.resolve('./loaders/compile'),
+      'monaco-nls': require.resolve('./loaders/monacoNls')
     }
   },
   module: {
     rules: [{
+      test: /\.js/,
+      enforce: 'pre',
+      include: /node_modules[\\\/]monaco-editor[\\\/]esm/,
+      use: 'monaco-nls'
+    }, {
       test: /\.ts$/,
       loader: 'ts-loader'
     }, {
@@ -36,6 +43,10 @@ module.exports = {
     }]
   },
   plugins: [
+    new webpack.NormalModuleReplacementPlugin(/\/(vscode\-)?nls\.js/, function(resource) {
+      resource.request = nls;
+      resource.resource = nls;
+    }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     }),
