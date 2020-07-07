@@ -15,7 +15,7 @@ export class VanessaEditor {
   public getLineContent = (lineNumber: number, codeWidget: number = 0) => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
   public getPosition = () => this.runtimeManager.position;
-  public getSelection = () => this.editor.getSelection();
+  public getSelection = () => this.runtimeManager.selection;
   public setPosition = (lineNumber: number, column: number, codeWidget: number = 0) => this.runtimeManager.position = {lineNumber: lineNumber, column: column, codeWidget: codeWidget};
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
@@ -28,12 +28,12 @@ export class VanessaEditor {
   public showRuntimeError = (lineNumber: number, codeWidget: number, data: string, text: string) => this.runtimeManager.showError(lineNumber, codeWidget, data, text);
   public showRuntimeCode = (lineNumber: number, text: string) => this.runtimeManager.showCode(lineNumber, text);
   public setSubcodeFolding = (lineNumber: number, codeWidget: number, collapsed: boolean) => this.runtimeManager.setFolding(lineNumber, codeWidget, collapsed);
-  public setRuntimeUnderline = (status: string, lines: any, widget: number = 0) => this.runtimeManager.setUnderline(status, lines, widget);
+  public setLineStyle = (lines: any, widget: number = 0, bold: boolean, italic: boolean, underline: boolean) => this.runtimeManager.setStyle(lines, widget, bold, italic, underline);
+  public clearLinesStyle = () => this.runtimeManager.clearStyle();
   public nextRuntimeProgress = () => this.runtimeManager.next();
   public clearRuntimeCodes = () => this.runtimeManager.clearSubcode();
   public clearRuntimeErrors = () => this.runtimeManager.clearErrors();
   public clearRuntimeStatus = () => this.runtimeManager.clearStatus();
-  public clearRuntimeUnderline = () => this.runtimeManager.clearUnderline();
   public clearRuntimeProgress = () => this.runtimeManager.clear();
   public decorateBreakpoints = (arg: string) => this.runtimeManager.breakpoints = JSON.parse(arg);
   public setBreakpoints = (arg: string) => this.runtimeManager.breakpoints = JSON.parse(arg);

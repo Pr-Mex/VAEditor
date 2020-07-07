@@ -91,7 +91,14 @@ export class SubcodeLine {
     range.selectNode(this.lineNode);
     document.getSelection().empty()
     document.getSelection().addRange(range);
-    this.owner.selected = this.lineNumber;
+  }
+
+  get selected(): boolean {
+    let selection = window.getSelection();
+    var childrens = this.lineNode.children;
+    if (selection.anchorOffset == 0 && selection.focusOffset == 0) {
+      return selection.focusNode == this.lineNode;
+    } else return selection.containsNode(this.lineNode, true);
   }
 
   public setCurrent(value: boolean) {
@@ -141,12 +148,14 @@ export class SubcodeLine {
     if (status) this.lineNode.classList.add(`debug-${status}-step`);
   }
 
-  public setUnderline(status: string = undefined) {
-    this.clearUnderline();
-    if (status) this.lineNode.classList.add(`subcode-${status}-underline`);
+  public setStyle(bold: boolean, italic: boolean, underline: boolean) {
+    this.clearStyle();
+    if (bold) this.lineNode.classList.add("vanessa-subcode-bold");
+    if (italic) this.lineNode.classList.add("vanessa-subcode-italic");
+    if (underline) this.lineNode.classList.add("vanessa-subcode-underline");
   }
 
-  private clearStatus() {
+  public clearStatus() {
     this.lineNode.classList.remove(
       "debug-complete-step",
       "debug-error-step",
@@ -156,13 +165,11 @@ export class SubcodeLine {
     );
   }
 
-  private clearUnderline() {
+  public clearStyle() {
     this.lineNode.classList.remove(
-      "subcode-single-underline",
-      "subcode-double-underline",
-      "subcode-wavy-underline",
-      "subcode-dotted-underline",
-      "subcode-dashed-underline",
+      "vanessa-subcode-bold",
+      "vanessa-subcode-italic",
+      "vanessa-subcode-underline",
     );
   }
 

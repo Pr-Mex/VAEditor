@@ -12,7 +12,6 @@ export class SubcodeWidget extends BaseWidget {
   public leftNode: HTMLElement;
   public overlayDom: HTMLElement;
   public current: number = 0;
-  public selected: number;
   public lines: Array<SubcodeLine> = [];
   public runtime: RuntimeManager;
 
@@ -140,17 +139,17 @@ export class SubcodeWidget extends BaseWidget {
     this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setStatus(status); });
   }
 
-  public setUnderline(status: string, lines: Array<number>) {
-    this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setUnderline(status); });
+  public setStyle(lines: Array<number>, bold: boolean, italic: boolean, underline: boolean) {
+    this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setStyle(bold, italic, underline); });
   }
 
   public clearStatus() {
     this.current = 0;
-    this.lines.forEach((line: SubcodeLine) => line.setStatus());
+    this.lines.forEach((line: SubcodeLine) => line.clearStatus());
   }
 
-  public clearUnderline() {
-    this.lines.forEach((line: SubcodeLine) => line.setUnderline());
+  public clearStyle() {
+    this.lines.forEach((line: SubcodeLine) => line.clearStyle());
   }
 
   public showError(lineNumber: number, data: string, text: string) {
@@ -175,11 +174,14 @@ export class SubcodeWidget extends BaseWidget {
   }
 
   get position(): any {
-    return {
-      lineNumber: this.selected,
-      codeWidget: this.id,
-      column: 1,
-    }
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.selected) return {
+        lineNumber: line.lineNumber,
+        codeWidget: this.id,
+        column: 1,
+      }
+    });
+    return undefined;
   }
 
   set position(position: any) {
@@ -188,14 +190,13 @@ export class SubcodeWidget extends BaseWidget {
     });
   }
 
-  get selection(): any {
-    let selection = window.getSelection();
+  get selection(): Object {
     let startLineNumber = 0;
     let endLineNumber = 0;
-    this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((e, i) => {
-      if (selection.containsNode(e, true)) {
-        if (startLineNumber == 0) startLineNumber = i + 1;
-        endLineNumber = i + 1;
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.selected) {
+        if (startLineNumber == 0) startLineNumber = line.lineNumber;
+        endLineNumber = line.lineNumber;
       }
     });
     if (startLineNumber) return {

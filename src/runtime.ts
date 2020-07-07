@@ -254,7 +254,7 @@ export class RuntimeManager {
   }
 
   private stepDecorationIds: string[] = [];
-  private underlineDecorationIds: string[] = [];
+  private lineDecorationIds: string[] = [];
   private currentDecorationIds: string[] = [];
   private errorViewZoneIds: Array<number> = [];
   private codeWidgets = {};
@@ -292,33 +292,49 @@ export class RuntimeManager {
     }
   }
 
-  public setUnderline(status: string, arg: any, codeWidget: number = 0): void {
+  public setStyle(arg: any, codeWidget: number, bold: boolean, italic: boolean, underline: boolean): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
     if (codeWidget) {
       let widget: SubcodeWidget = this.codeWidgets[codeWidget];
-      if (widget) widget.setUnderline(status, lines);
+      if (widget) widget.setStyle(lines, bold, italic, underline);
     } else {
       const model: monaco.editor.ITextModel = this.editor.getModel();
       const oldDecorations = [];
       const decorations: monaco.editor.IModelDeltaDecoration[] = [];
       lines.forEach((line: number) => {
         model.getLinesDecorations(line, line).forEach(d => {
-          let i = this.underlineDecorationIds.indexOf(d.id);
+          let i = this.lineDecorationIds.indexOf(d.id);
           if (i >= 0) {
-            this.underlineDecorationIds.slice(i, 1);
+            this.lineDecorationIds.slice(i, 1);
             oldDecorations.push(d.id);
           }
         });
-        if (status) decorations.push({
+        if (bold) decorations.push({
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+            inlineClassName: "vanessa-style-bold",
+            isWholeLine: true,
+          }
+        });
+        if (italic) decorations.push({
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
+            inlineClassName: "vanessa-style-italic",
+            isWholeLine: true,
+          }
+        });
+        if (underline) decorations.push({
           range: new monaco.Range(line, model.getLineFirstNonWhitespaceColumn(line), line, model.getLineLastNonWhitespaceColumn(line)),
           options: {
             stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
-            inlineClassName: `runtime-${status}-underline`,
+            inlineClassName: "vanessa-style-underline",
           }
         });
         const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
-        newDecorations.forEach(s => this.underlineDecorationIds.push(s));
+        newDecorations.forEach(s => this.lineDecorationIds.push(s));
       });
     }
   }
@@ -472,9 +488,9 @@ export class RuntimeManager {
     this.forEachSubcode((widget: SubcodeWidget) => widget.clearStatus());
   }
 
-  public clearUnderline(): void {
-    this.underlineDecorationIds = this.editor.deltaDecorations(this.underlineDecorationIds, []);
-    this.forEachSubcode((widget: SubcodeWidget) => widget.clearUnderline());
+  public clearStyle(): void {
+    this.lineDecorationIds = this.editor.deltaDecorations(this.lineDecorationIds, []);
+    this.forEachSubcode((widget: SubcodeWidget) => widget.clearStyle());
   }
 
   public setFolding(lineNumber: number, codeWidget: number, collapsed: boolean) {
@@ -483,18 +499,25 @@ export class RuntimeManager {
     });
   }
 
-  get position(): IVanessaPosition {
+  private getSeletedWidget(): SubcodeWidget {
     let node = document.getSelection().focusNode as HTMLElement;
     while (node) {
       if (node.classList && node.classList.contains('vanessa-code-widget')) {
         for (let id in this.codeWidgets) {
           let widget = this.codeWidgets[id] as SubcodeWidget;
-          if (widget.domNode == node) return widget.position;
+          if (widget.domNode == node) return widget;
         }
       };
       node = node.parentElement;
     }
+    return undefined;
+  }
+
+  get position(): IVanessaPosition {
+    let widget = this.getSeletedWidget();
+    if (widget) return widget.position;
     let position = this.editor.getPosition();
+    position["codeWidget"] = 0;
     return {
       lineNumber: position.lineNumber,
       column: position.column,
@@ -512,25 +535,12 @@ export class RuntimeManager {
     }
   }
 
-  get selection(): any {
-    let node = document.getSelection().focusNode as HTMLElement;
-    while (node) {
-      if (node.classList && node.classList.contains('vanessa-code-widget')) {
-        for (let id in this.codeWidgets) {
-          let widget = this.codeWidgets[id] as SubcodeWidget;
-          if (widget.domNode == node) return widget.selection;
-        }
-      };
-      node = node.parentElement;
-    }
+  get selection(): Object {
+    let widget = this.getSeletedWidget();
+    if (widget) return widget.selection;
     let selection = this.editor.getSelection();
-    return {
-      startLineNumber: selection.startLineNumber,
-      endLineNumber: selection.endLineNumber,
-      startColumn: selection.startColumn,
-      endColumn: selection.endColumn,
-      codeWidget: 0,
-    }
+    selection["codeWidget"] = 0;
+    return selection;
   }
 
   public revealLine(lineNumber: number, codeWidget: number = 0) {
@@ -544,8 +554,8 @@ export class RuntimeManager {
   }
 
   public clear(): void {
+    this.clearStyle();
     this.clearSubcode();
-    this.clearUnderline();
     this.clearErrors();
     this.clearStatus();
   }
