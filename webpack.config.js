@@ -10,7 +10,7 @@ module.exports = {
     app: './src/main'
   },
   resolve: {
-    extensions: ['.ts', '.js', '.css', '.ttf']
+    extensions: ['.ts', '.js', '.css']
   },
   output: {
     globalObject: 'self',
@@ -33,8 +33,7 @@ module.exports = {
     }, {
       test: /\.ts$/,
       loader: 'ts-loader'
-    },
-    {
+    }, {
       test: /\.css$/,
       use: [
         'style-loader',
