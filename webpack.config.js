@@ -35,10 +35,6 @@ module.exports = {
       loader: 'ts-loader'
     },
     {
-      test: /\.ttf$/,
-      use: ['file-loader'],
-    },
-    {
       test: /\.css$/,
       use: [
         'style-loader',

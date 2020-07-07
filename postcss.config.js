@@ -4,7 +4,7 @@ const alter = require('postcss-alter-property-value')
 module.exports = {
   plugins: [
     base64({
-      extensions: ['.svg', '.svg']
+      extensions: ['.svg', '.ttf']
     }),
     alter({
       declarations: {
