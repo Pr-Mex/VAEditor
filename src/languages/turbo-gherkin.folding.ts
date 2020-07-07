@@ -27,13 +27,11 @@ export class VanessaFoldingProvider {
   }
 
   private static isSection(text: string) {
-    let pos = text.indexOf(":");
-    if (pos == -1) return false;
-    text = text.substring(0, pos);
-    let regexp = /([^\s"']+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
-    let line = text.match(regexp) || [];
+    let regexp = /[^:\s]+(?=.*:)/g;
+    let line = text.match(regexp);
+    if (line == null) return false;
     let keywords = window["VanessaGherkinProvider"].keywords;
-    return keywords.some((item: Array<string>) =>
+    return keywords.some((item: string[]) =>
       item.length == line.length && item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase())
     );
   };
