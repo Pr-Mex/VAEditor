@@ -5,7 +5,7 @@ import { VanessaFoldingProvider } from "../languages/turbo-gherkin.folding";
 
 export class SubcodeWidget extends BaseWidget {
 
-  public id: number;
+  public id: string;
   public content: string[];
   public decoration: string;
   public textNode: HTMLElement;
@@ -64,7 +64,7 @@ export class SubcodeWidget extends BaseWidget {
     this.overlayDom.remove();
   }
 
-  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
+  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): string {
     this.afterLineNumber = lineNumber;
     editor.changeViewZones(changeAccessor => {
       this.id = changeAccessor.addZone(this)
@@ -217,7 +217,7 @@ export class SubcodeWidget extends BaseWidget {
 
   public revealLine(lineNumber: number) {
     let size = { top: 0, bottom: 2 };
-    let lineHeight = this.runtime.editor.getConfiguration().lineHeight;
+    let lineHeight = this.runtime.editor.getOption(monaco.editor.EditorOption.lineHeight);
     this.lines.forEach((line: SubcodeLine) => {
       if (line.lineNumber <= lineNumber) {
         size.top = size.bottom;
