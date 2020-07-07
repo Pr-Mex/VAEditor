@@ -2,6 +2,13 @@ import "./1c-webkit-style-patch";
 import "./1c-chrome-test";
 import "./media/debug";
 
+import { setLocaleData } from 'monaco-editor-nls';
+const ru_RU = require('monaco-editor-nls/locale/ru.json');
+
+setLocaleData(ru_RU);
+
+import * as monaco from "monaco-editor"
+
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin.provider";
