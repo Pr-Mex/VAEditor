@@ -1,11 +1,16 @@
 import "./1c-webkit-style-patch";
 import "./1c-chrome-test";
 import "./media/debug";
-
 import { setLocaleData } from 'monaco-editor-nls';
-const ru_RU = require('monaco-editor-nls/locale/ru.json');
 
-setLocaleData(ru_RU);
+
+var url = new URL(location.href);
+const localeCode = url.searchParams.get('localeCode') || navigator.language.substr(0, 2);
+console.log('Current locale is: ' + localeCode);
+if (localeCode !== 'en') {
+  const localeData = require('monaco-editor-nls/locale/' + localeCode + '.json');
+  setLocaleData(localeData);
+}
 
 import * as monaco from "monaco-editor"
 
