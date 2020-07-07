@@ -11,21 +11,25 @@ interface IVanessaStep {
 
 export class VanessaGherkinProvider {
 
-  private isKeyword(w: string): boolean {
-    let s = w.toLowerCase();
-    return this.keywords.some(e => e == s);
-  }
+  private isSection(text: string) {
+    let regexp = /[^:\s]+(?=.*:)/g;
+    let words = text.match(regexp);
+    if (words == null) return false;
+    return this.keywords.some((item: string[]) =>
+      item.length == words.length && item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())
+    );
+  };
 
   private splitWords(line: string): Array<string> {
     let regexp = /([^\s"']+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
     return line.match(regexp) || [];
   }
 
-  private filterWords(line: Array<string>): Array<string> {
+  private filterWords(words: Array<string>): Array<string> {
     let s = true;
-    let notComment = (w: string) => s && w[0] != '#' && w.substring(0, 2) != '//';
-    let keyword = this.keywords.find(item => item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase()));
-    return line.filter((w, i) => (keyword && i < keyword.length) ? false : (notComment(w) ? true : s = false));
+    let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
+    let keyword = this.keywords.find((item: string[]) => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
+    return words.filter((w, i) => (keyword && i < keyword.length) ? false : (notComment(w) ? true : s = false));
   }
 
   private key(words: Array<string>): string {
@@ -37,12 +41,15 @@ export class VanessaGherkinProvider {
   }
 
   private lineSyntaxError(line: string): boolean {
-    let res = line.match(/[^\s"']+\:/s); // Top-level keywords
-    if (res && this.isKeyword(res[0].substring(0, res[0].length - 1))) return false;
-    if ([undefined, '#', '|', '@'].includes(line.trimLeft()[0])) return false;
+    if (/^[\s]*[#|@|//]/.test(line)) return false;
+    if (this.isSection(line)) return false;
     let words = this.splitWords(line);
-    if (!this.isKeyword(words[0])) return false;
-    words = this.filterWords(words);
+    let keyword = this.keywords.find(item => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
+    if (keyword == undefined) return false;
+    let s = true;
+    let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
+    words = words.filter((w, i) => (i < keyword.length) ? false : (notComment(w) ? true : s = false));
+    if (words.length == 0) return false;
     return this.steps[this.key(words)] == undefined;
   }
 
