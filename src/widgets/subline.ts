@@ -91,6 +91,7 @@ export class SubcodeLine {
     range.selectNode(this.lineNode);
     document.getSelection().empty()
     document.getSelection().addRange(range);
+    this.owner.selected = this.lineNumber;
   }
 
   get selected(): boolean {
