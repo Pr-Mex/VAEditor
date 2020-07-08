@@ -33,6 +33,7 @@ export class StyleManager {
     .vanessa-error-widget { height: ${2 * lineHeight}px; }\
     .vanessa-code-lines { left: ${lineHeight}px; }\
     .vanessa-code-border { width: ${lineHeight}px; }\
+    .vanessa-code-lines > span { height: ${lineHeight}px; }\
     .vanessa-code-border div.cgmr { height: ${lineHeight}px; }\
     .vanessa-code-border div.error { height: ${2 * lineHeight}px; }\
     .vanessa-code-overlays div.error { height: ${2 * lineHeight}px; }\
