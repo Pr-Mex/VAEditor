@@ -6,7 +6,9 @@
 	"private": true,
 	"scripts": {
 		"debug": "webpack-dev-server --progress --mode development",
-		"build": "webpack --progress --mode production"
+		"build": "webpack --progress --mode production",
+		"compile": "oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
+		"decompile": "oscript .\\tools\\onescript\\Decompile.os .\\example"
 	},
 	"keywords": [],
 	"author": "Pautov Leonid",
