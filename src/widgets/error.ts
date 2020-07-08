@@ -1,6 +1,6 @@
-import { BaseWidget } from "./base";
+import { WidgetBase } from "./base";
 
-export class ErrorWidget  extends BaseWidget {
+export class ErrorWidget  extends WidgetBase {
 
   public id: string;
 

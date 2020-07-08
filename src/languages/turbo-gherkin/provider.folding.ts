@@ -1,3 +1,5 @@
+import { ProviderBase } from "./provider.base";
+
 enum VanessaToken {
   Empty = 0,
   Section,
@@ -12,7 +14,7 @@ interface VanessaIndent {
   indent: number;
 }
 
-export class VanessaFoldingProvider {
+export class FoldingProvider extends ProviderBase {
 
   private static getIndent(text: string, tabSize: number) {
     let length = text.search(/[^\s]/)
@@ -25,16 +27,6 @@ export class VanessaFoldingProvider {
     }
     return indent + 1;
   }
-
-  private static isSection(text: string) {
-    let regexp = /[^:\s]+(?=.*:)/g;
-    let line = text.match(regexp);
-    if (line == null) return false;
-    let keywords = window["VanessaGherkinProvider"].keywords;
-    return keywords.some((item: string[]) =>
-      item.length == line.length && item.every((w: string, i: number) => line[i] && w == line[i].toLowerCase())
-    );
-  };
 
   private static isInstruction(text: string) {
     return /^[\s]*@/.test(text);
@@ -49,7 +41,9 @@ export class VanessaFoldingProvider {
   }
 
   static getModelFolding(
-    model: monaco.editor.ITextModel
+    model: monaco.editor.ITextModel,
+    context: monaco.languages.FoldingContext,
+    token: monaco.CancellationToken,
   ): Array<monaco.languages.FoldingRange> {
     return this.getCodeFolding(
       model.getOptions().tabSize,

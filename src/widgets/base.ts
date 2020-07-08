@@ -1,4 +1,4 @@
-export class BaseWidget implements monaco.editor.IViewZone {
+export class WidgetBase implements monaco.editor.IViewZone {
   public domNode: HTMLElement;
   public afterLineNumber: number;
   public heightInLines: number;
