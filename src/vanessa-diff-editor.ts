@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor";
 
-import "./languages/turbo-gherkin.contribution";
+import "./languages/turbo-gherkin/contribution";
 
 import { RuntimeManager } from "./runtime";
 import { ProblemManager } from "./problems";

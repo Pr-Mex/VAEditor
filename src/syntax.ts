@@ -1,4 +1,4 @@
-import { VanessaGherkinProvider } from "./languages/turbo-gherkin.provider";
+import { SyntaxProvider } from "./languages/turbo-gherkin/provider.syntax";
 
 export class SyntaxManager {
 
@@ -15,9 +15,8 @@ export class SyntaxManager {
 
   public checkSyntax() {
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      const provider = window["VanessaGherkinProvider"] as VanessaGherkinProvider;
-      if (provider) provider.checkSyntax(this.editor.getModel());
-    }, 1000);
+    this.timer = setTimeout(() =>
+      SyntaxProvider.checkSyntax(this.editor.getModel())
+      , 1000);
   }
 }
