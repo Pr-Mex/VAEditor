@@ -137,9 +137,9 @@ window.onload = () => {
     И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9';
     VanessaEditor.showRuntimeCode(15, subcode);
     VanessaEditor.showRuntimeCode(20, subcode + "\n");
-/*
-    setInterval(() => VanessaEditor.runtimeManager.next(), 500);
 
+    setInterval(() => VanessaEditor.runtimeManager.next(), 500);
+/*
     let problems = [{
         "lineNumber": 12,
         "severity": "Warning",
