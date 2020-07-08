@@ -117,10 +117,11 @@
 .vanessa-error-widget .vanessa-error-links a:hover {
   color: #ff0000 !important;
 }
-.overlayWidgets .vanessa-code-overlays.margin-view-overlays div {
+.overlayWidgets .vanessa-code-overlays.margin-view-overlays div.codicon {
   right: 0;
   opacity: 0;
   width: 26px;
+  font-size: 122.5%;
 }
 .overlayWidgets .vanessa-code-overlays.margin-view-overlays:hover div {
   opacity: 1;
