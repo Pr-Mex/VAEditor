@@ -12,6 +12,7 @@ export class SubcodeWidget extends WidgetBase {
   public leftNode: HTMLElement;
   public overlayDom: HTMLElement;
   public current: number = 0;
+  public selected: number = 0;
   public lines: Array<SubcodeLine> = [];
   public runtime: RuntimeManager;
 
@@ -174,14 +175,11 @@ export class SubcodeWidget extends WidgetBase {
   }
 
   get position(): any {
-    this.lines.forEach((line: SubcodeLine) => {
-      if (line.selected) return {
-        lineNumber: line.lineNumber,
-        codeWidget: this.id,
-        column: 1,
-      }
-    });
-    return undefined;
+    return {
+      lineNumber: this.selected,
+      codeWidget: this.id,
+      column: 1,
+    };
   }
 
   set position(position: any) {

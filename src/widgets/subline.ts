@@ -91,11 +91,11 @@ export class SubcodeLine {
     range.selectNode(this.lineNode);
     document.getSelection().empty()
     document.getSelection().addRange(range);
+    this.owner.selected = this.lineNumber;
   }
 
   get selected(): boolean {
     let selection = window.getSelection();
-    var childrens = this.lineNode.children;
     if (selection.anchorOffset == 0 && selection.focusOffset == 0) {
       return selection.focusNode == this.lineNode;
     } else return selection.containsNode(this.lineNode, true);
