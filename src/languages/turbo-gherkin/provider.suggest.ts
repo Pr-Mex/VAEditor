@@ -1,6 +1,24 @@
 import { ProviderBase } from "./provider.base";
 
 export class SuggestProvider extends ProviderBase {
+
+  private static empty(position: monaco.Position
+  ): monaco.languages.CompletionList {
+    return {
+      suggestions: [{
+        label: '',
+        insertText: '',
+        kind: monaco.languages.CompletionItemKind.Function,
+        range: {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: position.column - 1,
+          endColumn: position.column,
+        },
+      }]
+    };
+  }
+
   public static getSuggestions(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
@@ -22,8 +40,8 @@ export class SuggestProvider extends ProviderBase {
     let result = [];
     if (wordRange) {
       let variable = model.getValueInRange(wordRange);
-      let Q1 = variable[0];
-      let Q2 = variable[variable.length - 1];
+      let Q1 = variable.charAt(0);
+      let Q2 = variable.charAt(variable.length - 1);
       let S = /^.\$.+\$.$/.test(variable) ? "$" : "";
       for (let name in this.variables) {
         let item = this.variables[name];
@@ -38,29 +56,50 @@ export class SuggestProvider extends ProviderBase {
     }
     else {
       let maxColumn = model.getLineMaxColumn(position.lineNumber);
-      if (position.column != maxColumn) return undefined;
-      let word = model.getWordUntilPosition(position);
-      let prev = model.findNextMatch(/[^\s]/.source, { lineNumber: position.lineNumber, column: 0 }, true, false, null, false);
-      let minColumn = prev ? Math.min(prev.range.startColumn, word.startColumn) : word.startColumn;
+      if (position.column != maxColumn) return this.empty(position);
+      let minColumn = model.getLineFirstNonWhitespaceColumn(position.lineNumber);
+      let line = model.getLineContent(position.lineNumber);
+      let words = line.match(/[^\s]+/g);
+      let keyword = this.findKeyword(words);
       let range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
         startColumn: minColumn,
         endColumn: maxColumn
       };
-      for (let key in this.steps) {
-        var e = this.steps[key];
-        if (e.documentation) {
-          result.push({
-            label: e.label,
-            kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
-            detail: e.section,
-            documentation: e.documentation,
-            insertText: e.insertText + "\n",
-            sortText: e.sortText,
-            filterText: key,
-            range: range
-          });
+      if (keyword) {
+        let keytext = keyword.join(' ');
+        keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
+        for (let key in this.steps) {
+          var e = this.steps[key];
+          if (e.documentation) {
+            result.push({
+              label: e.label,
+              kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
+              detail: e.section,
+              documentation: e.documentation,
+              sortText: e.sortText,
+              insertText: keytext + ' ' + e.insertText + '\n',
+              filterText: keytext + ' ' + key,
+              range: range
+            });
+          }
+        }
+      } else {
+        for (let key in this.steps) {
+          var e = this.steps[key];
+          if (e.documentation) {
+            result.push({
+              label: e.label,
+              kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
+              detail: e.section,
+              documentation: e.documentation,
+              sortText: e.sortText,
+              insertText: e.keyword + ' ' + e.insertText + '\n',
+              filterText: key,
+              range: range
+            });
+          }
         }
       }
     }

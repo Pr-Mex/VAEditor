@@ -11,6 +11,11 @@ interface IVanessaStep {
 
 export class VanessaGherkinProvider extends ProviderBase {
 
+  public get elements(): any { return ProviderBase.elements; }
+  public get keywords(): any { return ProviderBase.keywords; }
+  public get variables(): any { return ProviderBase.variables; }
+  public get steps(): any { return ProviderBase.steps; }
+
   public setKeywords = (arg: string): void => {
     ProviderBase.keywords = [];
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
@@ -63,15 +68,19 @@ export class VanessaGherkinProvider extends ProviderBase {
     for (let key in this.steps) {
       let e = this.steps[key];
       let words = e.head.map((word: string) => {
-        let regexp = /^"[^"]*"$|^'[^']*'$/g;
+        let regexp = /^"[^"]*"$|^'[^']*'$|^<[^<]*>$/g;
         if (!regexp.test(word)) return word;
         let name = word.substring(1, word.length - 1).toLowerCase();
         let elem = this.elements[name];
-        return elem ? '"' + elem + '"' : word;
+        if (!elem) return word;
+        let Q1 = word.charAt(0);
+        let Q2 = word.charAt(word.length - 1);
+        return `${Q1}${elem}${Q2}`;
       });
-      e.label = this.filterWords(words).join(' ');
-      e.insertText = words.join(' ');
-      if (e.body.length) e.insertText += '\n' + e.body.join('\n');
+      let keyword = this.findKeyword(words);
+      e.label = words.filter((w, i) => (keyword && i < keyword.length) ? false : true).join(' ');
+      e.keyword = words.filter((w, i) => (keyword && i < keyword.length) ? true : false).join(' ');
+      e.insertText = e.label + (e.body.length ? '\n' + e.body.join('\n') : '');
     }
   }
 

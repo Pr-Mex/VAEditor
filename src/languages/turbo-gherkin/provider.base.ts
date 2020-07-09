@@ -15,14 +15,18 @@ export class ProviderBase {
   };
 
   protected static splitWords(line: string): Array<string> {
-    let regexp = /([^\s"'\pP\.:;,?!-]+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
+    let regexp = /([^\s"'\.:;,?!-]+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
     return line.match(regexp) || [];
+  }
+
+  protected static findKeyword(words: Array<string>): Array<string> {
+    return this.keywords.find((item: string[]) => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
   }
 
   protected static filterWords(words: Array<string>): Array<string> {
     let s = true;
+    let keyword = this.findKeyword(words);
     let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
-    let keyword = this.keywords.find((item: string[]) => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
     return words.filter((w, i) => (keyword && i < keyword.length) ? false : (notComment(w) ? true : s = false));
   }
 
