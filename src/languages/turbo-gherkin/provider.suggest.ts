@@ -12,7 +12,7 @@ export class SuggestProvider extends ProviderBase {
       endColumn: model.getLineMaxColumn(position.lineNumber),
     };
     let wordRange = undefined;
-    let regexp = /"[^"]*"|'[^']*'/g;
+    let regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/g;
     let words = model.findMatches(regexp.source, line, true, false, null, false) || [];
     words.forEach(e => {
       if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
@@ -22,13 +22,15 @@ export class SuggestProvider extends ProviderBase {
     let result = [];
     if (wordRange) {
       let variable = model.getValueInRange(wordRange);
+      let Q1 = variable[0];
+      let Q2 = variable[variable.length - 1];
       let S = /^.\$.+\$.$/.test(variable) ? "$" : "";
       for (let name in this.variables) {
         let item = this.variables[name];
         result.push({
           label: `"${S}${item.name}${S}" = ${item.value}`,
           filterText: variable + `${S}${item.name}${S}`,
-          insertText: `"${S}${item.name}${S}"`,
+          insertText: `${Q1}${S}${item.name}${S}${Q2}`,
           kind: monaco.languages.CompletionItemKind.Variable,
           range: wordRange
         })
