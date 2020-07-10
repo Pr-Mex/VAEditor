@@ -21,7 +21,7 @@ export const conf: IRichLanguageConfiguration = {
 export const language: ILanguage = <ILanguage>{
   ignoreCase: true,
 
-  keywords: window["VanessaGherkinKeywords"],
+  keywords: window["VanessaGherkinKeywords"].concat(["if"]),
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 
