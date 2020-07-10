@@ -1,4 +1,4 @@
-# Vanessa Editor
+# Vanessa Automation Editor
 
 Code editor which powers by [Monaco](https://github.com/Microsoft/monaco-editor) and interaction with [1C:Enterprise](https://1c-dn.com/) 8.3.15+.
 
