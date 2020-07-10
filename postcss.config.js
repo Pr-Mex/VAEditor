@@ -1,10 +1,15 @@
-const base64 = require('postcss-base64')
+const base64 = require('./postcss/postcss-base64')
 const alter = require('postcss-alter-property-value')
 
 module.exports = {
   plugins: [
     base64({
-      extensions: ['.svg', '.svg']
+      extensions: ['.svg'],
+    }),
+    base64({
+      extensions: ['.ttf'],
+      excludeAtFontFace: false,
+      root: 'node_modules/monaco-editor/esm/vs/base/browser/ui/codiconLabel/codicon'
     }),
     alter({
       declarations: {

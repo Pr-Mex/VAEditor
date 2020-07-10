@@ -2,35 +2,22 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaEditorEvent } from "./actions";
 import { IRange } from "monaco-editor";
 
-import { renderMarkdown } from "monaco-editor/esm/vs/base/browser/htmlContentRenderer.js"
 import { SubcodeWidget } from "./widgets/subcode";
 import { ErrorWidget } from "./widgets/error";
 
-const markdownToHTML = (value) => {
-  const result = renderMarkdown({
-    value
-  }, {
-    inline: false,
-    codeBlockRenderer: async function (languageAlias, value) {
-      return await monaco.editor.colorize(value, "markdown", {});
-    }
-  })
-  return result
-}
-
 export interface IBreakpoint {
   lineNumber: number;
-  codeWidget: number;
+  codeWidget: string;
   enable: boolean;
 }
 
 export class Breakpoint implements IBreakpoint {
   lineNumber: number;
-  codeWidget: number;
+  codeWidget: string;
   enable: boolean;
   constructor(
     lineNumber: number | string,
-    codeWidget: number = 0,
+    codeWidget: string,
     enable: boolean = true
   ) {
     this.lineNumber = Number(lineNumber);
@@ -48,19 +35,19 @@ interface IBreakpointDecoration {
 
 interface IRuntimePosition {
   lineNumber: number;
-  codeWidget: number;
+  codeWidget: string;
 }
 
 interface IVanessaPosition {
   lineNumber: number;
-  codeWidget: number;
+  codeWidget: string;
   column: number;
 }
 
 class RuntimePosition implements IRuntimePosition {
   public lineNumber: number;
-  public codeWidget: number;
-  constructor(lineNumber: number, codeWidget: number = 0) {
+  public codeWidget: string;
+  constructor(lineNumber: number, codeWidget: string = "") {
     this.lineNumber = lineNumber;
     this.codeWidget = codeWidget;
   }
@@ -89,7 +76,7 @@ export class RuntimeManager {
     this.registerOnDidChangeFolding();
   }
 
-  private forEachSubcode(callbackfn: (widget: SubcodeWidget, id: number) => void) {
+  private forEachSubcode(callbackfn: (widget: SubcodeWidget, id: string) => void) {
     for (let id in this.codeWidgets) {
       let widget = this.codeWidgets[id] as SubcodeWidget;
       callbackfn(widget, widget.id);
@@ -138,7 +125,7 @@ export class RuntimeManager {
       verified: true
     }));
 
-    this.forEachSubcode((widget: SubcodeWidget, id: number) => {
+    this.forEachSubcode((widget: SubcodeWidget, id: string) => {
       let breakpoints = widgetsBreakpoints[id] || [];
       widget.breakpoints = breakpoints;
     });
@@ -189,7 +176,7 @@ export class RuntimeManager {
     }
   }
 
-  public toggleBreakpoint(lineNumber: number = 0, codeWidget: number = 0): void {
+  public toggleBreakpoint(lineNumber: number = 0, codeWidget: string = ""): void {
     if (lineNumber == 0) {
       let position = this.position;
       lineNumber = position.lineNumber;
@@ -232,7 +219,7 @@ export class RuntimeManager {
       const range: monaco.Range = this.editor.getModel().getDecorationRange(breakpoint.id);
       if (range !== null) {
         const found: Boolean = breakpoints.some(b => (b.lineNumber === range.startLineNumber));
-        if (!found) breakpoints.push(new Breakpoint(range.startLineNumber, 0, breakpoint.enable));
+        if (!found) breakpoints.push(new Breakpoint(range.startLineNumber, "", breakpoint.enable));
       }
     });
     this.forEachSubcode((widget: SubcodeWidget) =>
@@ -255,9 +242,9 @@ export class RuntimeManager {
   private stepDecorationIds: string[] = [];
   private lineDecorationIds: string[] = [];
   private currentDecorationIds: string[] = [];
-  private errorViewZoneIds: Array<number> = [];
+  private errorViewZoneIds: Array<string> = [];
   private codeWidgets = {};
-  private currentCodeWidget: number = 0;
+  private currentCodeWidget: string = "";
 
   public setStatus(status: string, arg: any, codeWidget: number): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
@@ -376,12 +363,12 @@ export class RuntimeManager {
     if (lineNumber) return new RuntimePosition(lineNumber, widget.id);
   }
 
-  public setCurrent(lineNumber: number, codeWidget: number = 0): IRuntimePosition {
+  public setCurrent(lineNumber: number, codeWidget: string = ""): IRuntimePosition {
     const model = this.editor.getModel();
     this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
     let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
     if (widget) widget.setCurrent(0);
-    this.currentCodeWidget = 0;
+    this.currentCodeWidget = "";
     if (codeWidget) {
       this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
       let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
@@ -451,7 +438,7 @@ export class RuntimeManager {
     }
   }
 
-  public showCode(lineNumber: number, text: string): number {
+  public showCode(lineNumber: number, text: string): string {
     let widget = new SubcodeWidget(this, text);
     let id = widget.show(this.editor, lineNumber);
     this.codeWidgets[id] = widget;
@@ -492,7 +479,7 @@ export class RuntimeManager {
     this.forEachSubcode((widget: SubcodeWidget) => widget.clearStyle());
   }
 
-  public setFolding(lineNumber: number, codeWidget: number, collapsed: boolean) {
+  public setFolding(lineNumber: number, codeWidget: string, collapsed: boolean) {
     this.forEachSubcode((widget: SubcodeWidget) => {
       if (widget.id = codeWidget) widget.setFolding(lineNumber, collapsed);
     });
@@ -520,7 +507,7 @@ export class RuntimeManager {
     return {
       lineNumber: position.lineNumber,
       column: position.column,
-      codeWidget: 0,
+      codeWidget: "",
     }
   }
 
@@ -542,7 +529,7 @@ export class RuntimeManager {
     return selection;
   }
 
-  public revealLine(lineNumber: number, codeWidget: number = 0) {
+  public revealLine(lineNumber: number, codeWidget: string = "") {
     if (codeWidget) {
       this.forEachSubcode((widget: SubcodeWidget) => {
         if (widget.id == codeWidget) widget.revealLine(lineNumber);

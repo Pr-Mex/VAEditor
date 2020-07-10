@@ -1,8 +1,8 @@
-import { BaseWidget } from "./base";
+import { WidgetBase } from "./base";
 
-export class ErrorWidget  extends BaseWidget {
+export class ErrorWidget  extends WidgetBase {
 
-  public id: number;
+  public id: string;
 
   constructor(data: string, text: string) {
     super();
@@ -10,7 +10,7 @@ export class ErrorWidget  extends BaseWidget {
     this.error(data, text, this.domNode);
   }
 
-  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
+  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): string {
     this.afterColumn = 1;
     this.heightInLines = 2;
     this.afterLineNumber = lineNumber;

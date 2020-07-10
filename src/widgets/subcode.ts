@@ -1,11 +1,11 @@
+import { WidgetBase } from "./base";
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
-import { BaseWidget } from "./base";
-import { VanessaFoldingProvider } from "../languages/turbo-gherkin.folding";
+import { FoldingProvider } from "../languages/turbo-gherkin/provider.folding";
 
-export class SubcodeWidget extends BaseWidget {
+export class SubcodeWidget extends WidgetBase {
 
-  public id: number;
+  public id: string;
   public content: string[];
   public decoration: string;
   public textNode: HTMLElement;
@@ -51,7 +51,7 @@ export class SubcodeWidget extends BaseWidget {
     monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
       this.textNode.innerHTML = html;
       this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((n: HTMLElement) => new SubcodeLine(this, n));
-      let folding = VanessaFoldingProvider.getCodeFolding(
+      let folding = FoldingProvider.getCodeFolding(
         this.runtime.editor.getModel().getOptions().tabSize,
         this.lines.length,
         lineNumber => this.getLineContent(lineNumber)
@@ -65,7 +65,7 @@ export class SubcodeWidget extends BaseWidget {
     this.overlayDom.remove();
   }
 
-  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): number {
+  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): string {
     this.afterLineNumber = lineNumber;
     editor.changeViewZones(changeAccessor => {
       this.id = changeAccessor.addZone(this)
@@ -215,7 +215,7 @@ export class SubcodeWidget extends BaseWidget {
 
   public revealLine(lineNumber: number) {
     let size = { top: 0, bottom: 2 };
-    let lineHeight = this.runtime.editor.getConfiguration().lineHeight;
+    let lineHeight = this.runtime.editor.getOption(monaco.editor.EditorOption.lineHeight);
     this.lines.forEach((line: SubcodeLine) => {
       if (line.lineNumber <= lineNumber) {
         size.top = size.bottom;

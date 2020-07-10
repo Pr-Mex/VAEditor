@@ -9,8 +9,10 @@ export class StyleManager {
   }
 
   private updateLineHeight() {
-    let conf = this.editor.getConfiguration();
-    if (this.lineHeight == conf.lineHeight) return;
+    let lineHeight = this.editor.getOption(monaco.editor.EditorOption.lineHeight);
+    let fontFamily = this.editor.getOption(monaco.editor.EditorOption.fontFamily);
+    let fontSize = this.editor.getOption(monaco.editor.EditorOption.fontSize);
+    if (this.lineHeight == lineHeight) return;
 
     const id = 'vanessa-widget-style';
     let style = document.getElementById(id) as HTMLElement;
@@ -22,19 +24,19 @@ export class StyleManager {
     }
     style.innerHTML = `\
     .vanessa-code-widget, .vanessa-error-widget {\
-      font-family: ${conf.fontInfo.fontFamily};\
-      font-size: ${conf.fontInfo.fontSize}px;\
-      line-height: ${conf.lineHeight}px;\
+      font-family: ${fontFamily};\
+      font-size: ${fontSize}px;\
+      line-height: ${lineHeight}px;\
     }\
-    .vanessa-code-overlays { left: ${3 * conf.lineHeight}px; }\
-    .vanessa-code-overlays div { height: ${conf.lineHeight}px; }\
-    .vanessa-error-widget { height: ${2 * conf.lineHeight}px; }\
-    .vanessa-code-lines { left: ${conf.lineHeight}px; }\
-    .vanessa-code-border { width: ${conf.lineHeight}px; }\
-    .vanessa-code-lines > span { height: ${conf.lineHeight}px; }\
-    .vanessa-code-border div.cgmr { height: ${conf.lineHeight}px; }\
-    .vanessa-code-border div.error { height: ${2 * conf.lineHeight}px; }\
-    .vanessa-code-overlays div.error { height: ${2 * conf.lineHeight}px; }\
+    .vanessa-code-overlays { left: ${3 * lineHeight}px; }\
+    .vanessa-code-overlays div { height: ${lineHeight}px; }\
+    .vanessa-error-widget { height: ${2 * lineHeight}px; }\
+    .vanessa-code-lines { left: ${lineHeight}px; }\
+    .vanessa-code-border { width: ${lineHeight}px; }\
+    .vanessa-code-lines > span { height: ${lineHeight}px; }\
+    .vanessa-code-border div.cgmr { height: ${lineHeight}px; }\
+    .vanessa-code-border div.error { height: ${2 * lineHeight}px; }\
+    .vanessa-code-overlays div.error { height: ${2 * lineHeight}px; }\
     `;
   }
 }

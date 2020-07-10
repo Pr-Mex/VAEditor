@@ -48,7 +48,8 @@ export class SubcodeLine {
   public initFolding(foldNumber: number) {
     this.foldNumber = foldNumber;
     if (this.foldNumber > this.lineNumber) {
-      this.foldingNode.classList.add("folding");
+      this.foldingNode.classList.add("codicon");
+      this.foldingNode.classList.add("codicon-chevron-down");
       this.foldingNode.addEventListener("click", this.onFolding.bind(this));
     }
   }
@@ -59,8 +60,13 @@ export class SubcodeLine {
 
   public setFolding(collapsed: boolean) {
     this.collapsed = collapsed;
-    if (this.collapsed) this.foldingNode.classList.add("collapsed");
-    else this.foldingNode.classList.remove("collapsed");
+    if (this.collapsed) {
+      this.foldingNode.classList.remove("codicon-chevron-down");
+      this.foldingNode.classList.add("codicon-chevron-right");
+    } else {
+      this.foldingNode.classList.remove("codicon-chevron-right");
+      this.foldingNode.classList.add("codicon-chevron-down");
+    }
     this.updateFolding();
     this.owner.layoutViewZone();
   }
@@ -96,7 +102,6 @@ export class SubcodeLine {
 
   get selected(): boolean {
     let selection = window.getSelection();
-    var childrens = this.lineNode.children;
     if (selection.anchorOffset == 0 && selection.focusOffset == 0) {
       return selection.focusNode == this.lineNode;
     } else return selection.containsNode(this.lineNode, true);
