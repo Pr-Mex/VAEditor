@@ -49,17 +49,10 @@ export const language: ILanguage = <ILanguage>{
     section: [
       [/^\s*([A-zА-я]+)(?:\s*\:)/, {
         cases: {
-          "$1@keywords": { token: "metatag.php", next: "@metatag" },
-          "@default": { token: "identifier", next: "@metatag" },
+          "$1@keywords": { token: "metatag.php", switchTo: "@root" },
+          "@default": { token: "identifier", switchTo: "@root" },
         },
       }],
-    ],
-
-    metatag: [
-      { include: "@section" },
-      { include: "@keyword" },
-      { include: "@common" },
-      [/.*$/, "emphasis"],
     ],
 
     keyword: [
