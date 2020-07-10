@@ -43,7 +43,7 @@ module.exports = {
     }]
   },
   plugins: [
-    new webpack.NormalModuleReplacementPlugin(/\/(vscode\-)?nls\.js/, function(resource) {
+    new webpack.NormalModuleReplacementPlugin(/\/(vscode\-)?nls\.js/, function (resource) {
       resource.request = nls;
       resource.resource = nls;
     }),
@@ -58,12 +58,11 @@ module.exports = {
       inline: [
         'app.js'
       ]
-    })
+    }),
   ],
   devServer: {
     port: 4000,
     hot: process.env.NODE_ENV === 'development',
     open: true
-  },
-  devtool: process.argv.includes('--use-sourcemaps') ? 'inline-source-map' : false
+  }
 }

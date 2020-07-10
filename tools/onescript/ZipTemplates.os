@@ -94,8 +94,6 @@
 	Информация("Макет редактора не изменился.");
 КонецЕсли;
 
-Сообщить("");
-
 КаталогФайлов = "./example/StepList/";
 ПутьФайлаМакета = "./example/VanessaEditorSample/Templates/VanessaStepList/Ext/Template.bin";
 Информация("Сборка макета библиотеки шагов.");

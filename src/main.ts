@@ -16,7 +16,7 @@ import * as monaco from "monaco-editor"
 
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
-import { VanessaGherkinProvider } from "./languages/turbo-gherkin.provider";
+import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 
 function createDOMNode(tagName: string, id: string, style: string): void {
   const element: HTMLElement = document.createElement(tagName);

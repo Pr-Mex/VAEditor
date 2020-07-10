@@ -8,11 +8,13 @@ export const conf: IRichLanguageConfiguration = {
   autoClosingPairs: [
     { open: "\"", close: "\"", notIn: ["string"] },
     { open: "'", close: "'", notIn: ["string"] },
+    { open: "<", close: ">", notIn: ["string"] },
     { open: "$", close: "$" },
   ],
   surroundingPairs: [
     { open: "\"", close: "\"" },
-    { open: "'", close: "'" }
+    { open: "'", close: "'" },
+    { open: "<", close: ">" },
   ]
 };
 
@@ -41,6 +43,7 @@ export const language: ILanguage = <ILanguage>{
       [/'([^'\\]|\\.)*$/, "string.invalid"], // non-teminated string
       [/"/, "string", "@string_double"],
       [/'/, "string", "@string_single"],
+      [/</, "string", "@string_angle"],
     ],
 
     section: [
@@ -102,6 +105,13 @@ export const language: ILanguage = <ILanguage>{
       [/@escapes/, "string.escape"],
       [/\\./, "string.escape.invalid"],
       [/'/, "string", "@pop"]
-    ]
+    ],
+
+    string_angle: [
+      [/[^\\>]+/, "string"],
+      [/@escapes/, "string.escape"],
+      [/\\./, "string.escape.invalid"],
+      [/>/, "string", "@pop"]
+    ],
   }
 };
