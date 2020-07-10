@@ -17,7 +17,6 @@ monaco.languages.onLanguage(language.id, () => {
   import("./configuration").then((module: ILangImpl) => {
     monaco.languages.setLanguageConfiguration(language.id, module.conf);
     monaco.languages.setTokensProvider(language.id, new TokensProvider(language.id, module.language));
-//    monaco.languages.setMonarchTokensProvider(language.id, module.language);
   });
 });
 
