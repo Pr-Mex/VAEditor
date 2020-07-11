@@ -28,18 +28,6 @@ export class FoldingProvider extends ProviderBase {
     return indent + 1;
   }
 
-  private static isInstruction(text: string) {
-    return /^[\s]*@/.test(text);
-  }
-
-  private static isParameter(text: string) {
-    return /^[\s]*\|/.test(text);
-  }
-
-  private static isComment(text: string) {
-    return /^[\s]*[#|//]/.test(text);
-  }
-
   static getModelFolding(
     model: monaco.editor.ITextModel,
     context: monaco.languages.FoldingContext,
@@ -59,15 +47,19 @@ export class FoldingProvider extends ProviderBase {
   ): Array<monaco.languages.FoldingRange> {
     let lines: Array<VanessaIndent> = [{ token: VanessaToken.Empty, indent: 0 }];
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
+      let regexp = /(?<instr>^[\s]*@)|(?<param>^[\s]*\|)|(?<comnt>^[\s]*[#|//])|(?<empty>^\s*$)/;
       let text = getLineContent(lineNumber);
-      let indent = this.getIndent(text, tabSize);
-      let token = VanessaToken.Empty;
-      if (indent) {
-        if (this.isInstruction(text)) token = VanessaToken.Instruction;
-        else if (this.isParameter(text)) token = VanessaToken.Parameter;
-        else if (this.isComment(text)) token = VanessaToken.Comment;
-        else if (this.isSection(text)) token = VanessaToken.Section;
-        else token = VanessaToken.Operator;
+      let reg = regexp.exec(text);
+      let indent = 0;
+      let token = VanessaToken.Operator;
+      if (reg) {
+        if (reg.groups.empty) token = VanessaToken.Empty;
+        else if (reg.groups.comnt) token = VanessaToken.Comment;
+        else if (reg.groups.param) token = VanessaToken.Parameter;
+        else if (reg.groups.instr) token = VanessaToken.Instruction;
+      } else {
+        if (this.isSection(text)) token = VanessaToken.Section;
+        indent = this.getIndent(text, tabSize);
       }
       lines.push({ indent: indent, token: token });
     }
