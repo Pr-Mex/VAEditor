@@ -28,7 +28,7 @@ export class TokensProvider extends ProviderBase {
       let regexp = "^[\\s]*";
       keyword.forEach(w => regexp += w + "[\\s]*");
       let match = line.toLowerCase().match(new RegExp(regexp));
-      if (match) line = (' ').repeat(match[0].length - 3) + "if " + line.substring(match[0].length);
+      if (match) line = (' ').repeat(match[0].length - 3) + "if" + line.substring(match[0].length - 1);
     }
     let tokens = [];
     let result = this.tokenizer.tokenize(line, state, 0);

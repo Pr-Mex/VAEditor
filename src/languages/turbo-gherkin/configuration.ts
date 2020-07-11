@@ -1,7 +1,9 @@
-import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
-import ILanguage = monaco.languages.IMonarchLanguage;
+import { ProviderBase } from "./provider.base";
 
-export const conf: IRichLanguageConfiguration = {
+import LanguageConfiguration = monaco.languages.LanguageConfiguration;
+import IMonarchLanguage = monaco.languages.IMonarchLanguage;
+
+export const conf: LanguageConfiguration = {
   comments: {
     lineComment: "//"
   },
@@ -18,10 +20,10 @@ export const conf: IRichLanguageConfiguration = {
   ]
 };
 
-export const language: ILanguage = <ILanguage>{
+export const language: IMonarchLanguage = <IMonarchLanguage>{
   ignoreCase: true,
 
-  keywords: window["VanessaGherkinKeywords"].concat(["if"]),
+  keywords: ProviderBase.singleWords.concat(["if"]),
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 

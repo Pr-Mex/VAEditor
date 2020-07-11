@@ -1,16 +1,22 @@
 export class ProviderBase {
 
-  protected static keywords = [];
+  protected static keywords: string[][] = [];
   protected static steps = {};
   protected static elements = {};
   protected static variables = {};
+
+  public static get singleWords(): string[] {
+    return this.keywords.filter(w => w.length == 1).map(w => w[0]);
+  }
 
   protected static isSection(text: string) {
     let regexp = /[^:\s]+(?=.*:)/g;
     let words = text.match(regexp);
     if (words == null) return false;
     return this.keywords.some((item: string[]) =>
-      item.length == words.length && item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())
+      item.length == words.length && item.every(
+        (w, i) => words[i] && w == words[i].toLowerCase()
+      )
     );
   };
 
