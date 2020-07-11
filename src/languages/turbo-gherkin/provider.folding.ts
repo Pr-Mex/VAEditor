@@ -1,6 +1,6 @@
 import { ProviderBase } from "./provider.base";
 
-enum VanessaToken {
+enum VAToken {
   Empty = 0,
   Section,
   Operator,
@@ -9,21 +9,20 @@ enum VanessaToken {
   Parameter,
 }
 
-interface VanessaIndent {
-  token: VanessaToken;
+interface VAIndent {
+  token: VAToken;
   indent: number;
 }
 
 export class FoldingProvider extends ProviderBase {
 
   private static getIndent(text: string, tabSize: number) {
-    let length = text.search(/[^\s]/)
-    if (length == -1) return 0;
     let indent = 0;
+    let length = text.search(/[^\s]/)
     for (let i = 0; i < length; i++) {
-      if (text.charAt(i) == "\t")
+      if (text.charAt(i) == "\t") {
         indent = indent + tabSize - (indent % tabSize);
-      else indent++;
+      } else indent++;
     }
     return indent + 1;
   }
@@ -45,23 +44,25 @@ export class FoldingProvider extends ProviderBase {
     lineCount: number,
     getLineContent: (lineNumber: number) => string
   ): Array<monaco.languages.FoldingRange> {
-    let lines: Array<VanessaIndent> = [{ token: VanessaToken.Empty, indent: 0 }];
+    let lines: Array<VAIndent> = [{ token: VAToken.Empty, indent: 0 }];
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      let regexp = /(?<instr>^[\s]*@)|(?<param>^[\s]*\|)|(?<comnt>^[\s]*[#|//])|(?<empty>^\s*$)/;
+      let regexp = /(?<empty>^\s*$)|(?<instr>^[\s]*@)|(?<param>^[\s]*\|)|(?<comnt>^[\s]*[#|//])/;
       let text = getLineContent(lineNumber);
       let reg = regexp.exec(text);
-      let indent = 0;
-      let token = VanessaToken.Operator;
       if (reg) {
-        if (reg.groups.empty) token = VanessaToken.Empty;
-        else if (reg.groups.comnt) token = VanessaToken.Comment;
-        else if (reg.groups.param) token = VanessaToken.Parameter;
-        else if (reg.groups.instr) token = VanessaToken.Instruction;
+        let token = VAToken.Empty;
+        if (reg.groups.empty) token = VAToken.Empty;
+        else if (reg.groups.comnt) token = VAToken.Comment;
+        else if (reg.groups.param) token = VAToken.Parameter;
+        else if (reg.groups.instr) token = VAToken.Instruction;
+        lines.push({ token: token, indent: 0 });
       } else {
-        if (this.isSection(text)) token = VanessaToken.Section;
-        indent = this.getIndent(text, tabSize);
+        let ident = 0;
+        let token = VAToken.Operator;
+        if (this.isSection(text)) token = VAToken.Section;
+        else ident = this.getIndent(text, tabSize);
+        lines.push({ token: token, indent: ident });
       }
-      lines.push({ indent: indent, token: token });
     }
     let result = [];
     for (let i = 1; i <= lineCount; i++) {
@@ -69,35 +70,35 @@ export class FoldingProvider extends ProviderBase {
       let line = lines[i];
       let kind = undefined;
       switch (line.token) {
-        case VanessaToken.Instruction:
+        case VAToken.Instruction:
           for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VanessaToken.Instruction) k = j; else break;
+            if (lines[j].token == VAToken.Instruction) k = j; else break;
           }
           break;
-        case VanessaToken.Comment:
+        case VAToken.Comment:
           kind = monaco.languages.FoldingRangeKind.Comment;
           for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VanessaToken.Comment) k = j; else break;
+            if (lines[j].token == VAToken.Comment) k = j; else break;
           }
           break;
-        case VanessaToken.Section:
+        case VAToken.Section:
           kind = monaco.languages.FoldingRangeKind.Region;
           for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VanessaToken.Section) break; else k = j;
+            if (lines[j].token == VAToken.Section) break; else k = j;
           }
           break;
-        case VanessaToken.Operator:
+        case VAToken.Operator:
           for (let j = i + 1; j <= lineCount; j++) {
             let next = lines[j];
-            if (next.token == VanessaToken.Section) break;
-            if (next.token == VanessaToken.Empty) continue;
-            if (next.token == VanessaToken.Comment) { k = j; continue; }
-            if (next.token == VanessaToken.Parameter) { k = j; continue; }
+            if (next.token == VAToken.Section) break;
+            if (next.token == VAToken.Empty) continue;
+            if (next.token == VAToken.Comment) { k = j; continue; }
+            if (next.token == VAToken.Parameter) { k = j; continue; }
             if (next.indent <= line.indent) break; else k = j;
           } break;
       }
       if (k > i) result.push({ kind: kind, start: i, end: k });
-      if (line.token == VanessaToken.Instruction || line.token == VanessaToken.Comment) i = k;
+      if (line.token == VAToken.Instruction || line.token == VAToken.Comment) i = k;
     }
     return result;
   }
