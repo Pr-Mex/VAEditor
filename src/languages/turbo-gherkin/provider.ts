@@ -19,7 +19,6 @@ export class VanessaGherkinProvider extends ProviderBase {
   public setKeywords = (arg: string): void => {
     ProviderBase.keywords = [];
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
-    window["VanessaGherkinKeywords"] = list;
     list.forEach((w: string) => ProviderBase.keywords.push(w.split(" ")));
     ProviderBase.keywords = ProviderBase.keywords.sort((a: any, b: any) => b.length - a.length);
   }
@@ -87,7 +86,6 @@ export class VanessaGherkinProvider extends ProviderBase {
   constructor() {
     super();
     this.createTheme1C();
-    window["VanessaGherkinKeywords"] = ["feature", "scenario", "given", "when", "then", "and", "but", "if", "elseif", "else"];
   }
 
   private createTheme1C() {
