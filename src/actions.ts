@@ -50,6 +50,10 @@ export class ActionManager {
     );
   }
 
+  public dispose(): void {
+    this.editor = null;
+  }
+
   get actions(): Array<IVanessaAction> {
     let result = [];
     let actions: Object = this.editor["_actions"];

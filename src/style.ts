@@ -8,6 +8,10 @@ export class StyleManager {
     this.updateLineHeight();
   }
 
+  public dispose(): void {
+    this.editor = null;
+  }
+
   private updateLineHeight() {
     let lineHeight = this.editor.getOption(monaco.editor.EditorOption.lineHeight);
     let fontFamily = this.editor.getOption(monaco.editor.EditorOption.fontFamily);
