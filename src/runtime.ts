@@ -76,6 +76,11 @@ export class RuntimeManager {
     this.registerOnDidChangeFolding();
   }
 
+  public dispose(): void {
+    this.VanessaEditor = null;
+    this.editor = null;
+  }
+
   private forEachSubcode(callbackfn: (widget: SubcodeWidget, id: string) => void) {
     for (let id in this.codeWidgets) {
       let widget = this.codeWidgets[id] as SubcodeWidget;
