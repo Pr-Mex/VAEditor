@@ -10,8 +10,10 @@ export class ProviderBase {
   }
 
   protected static isSection(text: string) {
-    let regexp = /[^:\s]+(?=.*:)/g;
-    let words = text.match(regexp);
+    let regexp = /^[^:]+/;
+    let line = text.match(regexp);
+    if (line == null) return false;
+    let words = line[0].split(/\s+/);
     if (words == null) return false;
     return this.keywords.some((item: string[]) =>
       item.length == words.length && item.every(

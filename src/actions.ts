@@ -54,14 +54,8 @@ export class ActionManager {
     this.editor = null;
   }
 
-  get actions(): Array<IVanessaAction> {
-    let result = [];
-    let actions: Object = this.editor["_actions"];
-    for (let key in actions) {
-      let e = actions[key];
-      result.push({ id: e.id, label: e.label })
-    };
-    return result;
+  get actions(): any {
+    return this.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
   }
 
   public popMessage = () => this.messages.shift();
