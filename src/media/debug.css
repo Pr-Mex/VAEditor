@@ -129,3 +129,9 @@
 .vanessa-hidden {
   display: none !important;
 }
+div.monaco-editor div.editor-widget.find-widget {
+  transform: translateY(-9999px); 
+}
+div.monaco-editor div.editor-widget.find-widget.visible  {
+  transform: translateY(0);
+}
