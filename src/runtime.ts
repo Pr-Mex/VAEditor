@@ -552,6 +552,16 @@ export class RuntimeManager {
     return result;
   }
 
+  public getWidgetLine(codeWidget: string): number {
+    let result = 0;
+    this.forEachSubcode(w => {
+      if (w.id == codeWidget) {
+        result = this.editor.getModel().getDecorationRange(w.decoration).endLineNumber;
+      }
+    });
+    return result;
+  }
+
   public clear(): void {
     this.clearStyle();
     this.clearSubcode();
