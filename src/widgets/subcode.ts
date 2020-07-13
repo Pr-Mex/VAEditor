@@ -74,7 +74,7 @@ export class SubcodeWidget extends WidgetBase {
     this.leftNode.dataset.id = String(this.id);
     this.decoration = editor.deltaDecorations([], [{
       range: new monaco.Range(lineNumber, 1, lineNumber, 1),
-      options: {},
+      options: { stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges },
     }])[0];
     setTimeout(() => this.layoutViewZone, 200);
     return this.id;

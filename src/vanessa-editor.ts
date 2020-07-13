@@ -14,6 +14,7 @@ export class VanessaEditor {
   public popMessage = () => this.actionManager.popMessage();
   public getLineContent = (lineNumber: number, codeWidget: number = 0) => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getLineWidgets = (lineNumber: number) => JSON.stringify(this.runtimeManager.getLineWidgets(lineNumber));
+  public getWidgetLine = (codeWidget: string) => this.runtimeManager.getWidgetLine(codeWidget);
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
   public getPosition = () => this.runtimeManager.position;
   public getSelection = () => this.runtimeManager.selection;
