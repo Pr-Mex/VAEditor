@@ -53,19 +53,18 @@ export class SuggestProvider extends ProviderBase {
           range: wordRange
         })
       }
-    }
-    else {
-      let maxColumn = model.getLineMaxColumn(position.lineNumber);
-      if (position.column != maxColumn) return this.empty(position);
+    } else {
+      let maxColumn = model.getLineLastNonWhitespaceColumn(position.lineNumber);
+      if (maxColumn && position.column < maxColumn) return this.empty(position);
       let minColumn = model.getLineFirstNonWhitespaceColumn(position.lineNumber);
       let line = model.getLineContent(position.lineNumber);
-      let words = line.match(/[^\s]+/g);
+      let words = line.match(/[^\s]+/g) || [];
       let keyword = this.findKeyword(words);
       let range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
-        startColumn: minColumn,
-        endColumn: maxColumn
+        startColumn: minColumn ? minColumn : position.column,
+        endColumn: maxColumn ? maxColumn : position.column,
       };
       if (keyword) {
         let keytext = keyword.join(' ');

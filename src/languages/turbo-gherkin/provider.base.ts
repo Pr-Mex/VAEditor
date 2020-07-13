@@ -14,7 +14,7 @@ export class ProviderBase {
     let line = text.match(regexp);
     if (line == null) return false;
     let words = line[0].split(/\s+/);
-    if (words == null) return false;
+    if (words == undefined) return false;
     return this.keywords.some((item: string[]) =>
       item.length == words.length && item.every(
         (w, i) => words[i] && w == words[i].toLowerCase()
@@ -28,6 +28,7 @@ export class ProviderBase {
   }
 
   protected static findKeyword(words: Array<string>): Array<string> {
+    if (words.length == 0) return undefined;
     return this.keywords.find((item: string[]) => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
   }
 
