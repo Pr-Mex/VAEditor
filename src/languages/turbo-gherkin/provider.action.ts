@@ -25,7 +25,7 @@ export class ActionProvider extends ProviderBase {
       line.forEach((w: string) => k[w] ? k[w] += 1 : k[w] = 1);
       step.forEach((w: string) => k[w] ? k[w] -= 1 : k[w] = -1);
       for (let i in k) sum = sum + Math.abs(k[i]);
-      if (sum < 3) list.push({ key: key, sum: sum, error: error, range: range, words: words });
+      if (sum < 4) list.push({ key: key, sum: sum, error: error, range: range, words: words });
     }
   }
 

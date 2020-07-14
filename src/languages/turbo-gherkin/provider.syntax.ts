@@ -22,7 +22,7 @@ export class SyntaxProvider extends ProviderBase {
       let error = this.lineSyntaxError(model.getLineContent(lineNumber));
       if (error) problems.push({
         severity: monaco.MarkerSeverity.Error,
-        message: "Syntax error: step not found",
+        message: this.syntaxMsg,
         startLineNumber: lineNumber,
         startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
         endLineNumber: lineNumber,

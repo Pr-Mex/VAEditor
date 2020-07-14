@@ -120,6 +120,8 @@ window.onload = () => {
     };
     VanessaGherkinProvider.setVariables(JSON.stringify(variables));
 
+    VanessaGherkinProvider.setSyntaxMsg("Step not found");
+
     createVanessaEditor(content, 'turbo-gherkin');
 
     let commands = [
