@@ -7,8 +7,8 @@
 	"scripts": {
 		"debug": "webpack-dev-server --progress --mode development",
 		"build": "webpack --progress --mode production",
-		"compile": "oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
-		"decompile": "oscript .\\tools\\onescript\\Decompile.os .\\example"
+		"compile": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
+		"decompile": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example"
 	},
 	"keywords": [],
 	"author": "Pautov Leonid",
