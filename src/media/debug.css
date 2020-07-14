@@ -20,16 +20,37 @@
   background-color: rgba(255, 214, 92, 0.8);
 }
 .debug-complete-step {
-  background: rgba(67, 228, 94, 0.45);
+  background-color: rgba(129, 238, 147, 0.8);
 }
 .debug-error-step {
-  background: rgba(247, 96, 96, 0.788);
+  background-color: rgba(247, 96, 96, 0.8);
 }
 .debug-pending-step {
-  background: lightblue;
+  background-color: rgba(173, 216, 230, 0.8);
 }
 .debug-disabled-step {
-  background-color: silver;
+  background-color: rgba(192, 192, 192, 0.8);
+}
+body[data-theme="vs-dark"] .debug-current-step {
+  background-color: rgba(255, 214, 92, 0.3);
+}
+body[data-theme="vs-dark"] .debug-complete-step {
+  background-color: rgba(129, 238, 147, 0.25);
+}
+body[data-theme="vs-dark"] .debug-error-step {
+  background-color: rgba(247, 96, 96, 0.3);
+}
+body[data-theme="vs-dark"] .debug-pending-step {
+  background-color: rgba(147, 228, 255, 0.3);
+}
+body[data-theme="vs-dark"] .debug-disabled-step {
+  background-color: rgba(127, 127, 127, 0.3);
+}
+body[data-theme="vs-dark"] .vanessa-code-widget {
+  background-color: rgba(200, 220, 220, 0.2);
+}
+body[data-theme="vs-dark"] .vanessa-code-border {
+  background-color: rgba(190, 210, 210, 0.2);
 }
 .vanessa-style-bold {
   font-weight: bold;
@@ -84,9 +105,6 @@
   top: 0;
   bottom: 0;
   right: 0;
-}
-.vanessa-code-widget .debug-current-step {
-  background-color: rgba(255, 214, 92, 0.8);
 }
 .vanessa-code-widget .vanessa-code-lines > span {
   display: block;

@@ -12,6 +12,11 @@ export class StyleManager {
     this.editor = null;
   }
 
+  set theme(theme: string) {
+    document.body.dataset.theme = theme;
+    monaco.editor.setTheme(theme);
+  }
+
   private updateLineHeight() {
     let lineHeight = this.editor.getOption(monaco.editor.EditorOption.lineHeight);
     let fontFamily = this.editor.getOption(monaco.editor.EditorOption.fontFamily);
