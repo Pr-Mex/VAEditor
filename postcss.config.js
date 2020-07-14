@@ -1,4 +1,4 @@
-const base64 = require('./postcss/postcss-base64')
+const base64 = require('./tools/postcss/postcss-base64')
 const alter = require('postcss-alter-property-value')
 
 module.exports = {
