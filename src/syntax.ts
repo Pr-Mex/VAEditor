@@ -23,4 +23,8 @@ export class SyntaxManager {
       SyntaxProvider.checkSyntax(this.editor.getModel())
       , 1000);
   }
+
+  get errors(): number[] {
+    return monaco.editor.getModelMarkers({owner: "syntax"}).map( m => m.startLineNumber );
+  }
 }
