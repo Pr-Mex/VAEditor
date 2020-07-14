@@ -10,12 +10,17 @@ window.onload = () => {
 \t\tИ это значит что в таблице "$ИмяТаблицы$" есть колонка с именем \'$ИмяРеквизита$\' Тогда\n\
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \t\tЕсли в таблице <Номенклатура> есть колонка с именем "ИмяКолонки" Тогда\n\
+\t\tЕсли в окне предупреждения нет текста \"Нужный текст\" тогда\n\
+\t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
+\t\tИ видеовставка картинки "ИмяКартинки" "ТекстДиктора"\n\
 \t* Проверка шагов\n\
 \t\tЕсли в сообщениях пользователю есть строка "МояСтрока" Тогда\n\
 \t\tК тому же в окне предупреждения нет текста "Нужный текст" тогда\n\
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \t\tЕсли в таблице "Номенклатура" есть колонка с именем "ИмяКолонки" Тогда\n\
 \t\tИ видеовставка картинки "ИмяКартинки" "ТекстДиктора"\n\
+\t\tИ это значит что в таблице "$ИмяТаблицы$" есть колонка с именем \'$ИмяРеквизита$\' Тогда\n\
+\t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \n';
 
     if (!(['file:', 'http:'].includes(window.location.protocol))) return;
@@ -134,13 +139,12 @@ window.onload = () => {
     ];
     VanessaEditor.addCommands(JSON.stringify(commands));
 
-    let subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
-    И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9';
-    VanessaEditor.showRuntimeCode(15, subcode);
-    VanessaEditor.showRuntimeCode(20, subcode + "\n");
-
-    setInterval(() => VanessaEditor.runtimeManager.next(), 500);
+    let subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
+    И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9';
+    VanessaEditor.showRuntimeCode(28, subcode);
+//    VanessaEditor.showRuntimeCode(20, subcode + "\n");
 /*
+    setInterval(() => VanessaEditor.runtimeManager.next(), 500);
     let problems = [{
         "lineNumber": 12,
         "severity": "Warning",
@@ -149,9 +153,18 @@ window.onload = () => {
         "source": "Data info",
     }];
     VanessaEditor.decorateProblems(JSON.stringify(problems));
-
-    let error = "Runtime error info";
-    VanessaEditor.setRuntimeProgress("error", 13);
-    VanessaEditor.showRuntimeError(13, 0, "0x01", error);
 */
+    let error = "Runtime error info";
+    VanessaEditor.setRuntimeProgress("complete", 15);
+    VanessaEditor.setRuntimeProgress("error", 17);
+    VanessaEditor.setRuntimeProgress("disabled", 19);
+    VanessaEditor.setRuntimeProgress("pending", 24);
+    VanessaEditor.setCurrentProgress(21);
+    VanessaEditor.showRuntimeError(17, 0, "0x01", error);
+    VanessaEditor.setTheme("vs-dark");
+
+    setTimeout(() => {
+        VanessaEditor.setRuntimeProgress("error", 3, "b1");
+        VanessaEditor.showRuntimeError(3, "b1", "0x01", error);
+    }, 1000);
 }
