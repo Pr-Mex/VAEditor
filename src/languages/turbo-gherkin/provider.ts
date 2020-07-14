@@ -63,6 +63,10 @@ export class VanessaGherkinProvider extends ProviderBase {
     if (checkSyntax) checkSyntax();
   }
 
+  public setSyntaxMsg = (message: string): void => {
+    ProviderBase.syntaxMsg = message;
+  }
+
   private static updateStepLabels() {
     for (let key in this.steps) {
       let e = this.steps[key];

@@ -842,12 +842,16 @@ EndFunction
 &AtClient
 Procedure VanessaEditorDocumentComplete(Item)
 
+	syntaxErrorMsg = "Syntax error: step not found";
+
 	view = Items.VanessaEditor.Document.defaultView;
 	VanessaGherkinProvider = view.VanessaGherkinProvider;
 	VanessaGherkinProvider.setKeywords(GetKeywords());
 	VanessaGherkinProvider.setElements(GetElements());
 	VanessaGherkinProvider.setVariables(GetVariables());
 	VanessaGherkinProvider.setStepList(VanessaStepList("ru"));
+	VanessaGherkinProvider.setSyntaxMsg(syntaxErrorMsg);
+
 	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 	VanessaEditor.addCommands(GetCommands());
 	FillEditorActions();

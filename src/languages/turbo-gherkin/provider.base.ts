@@ -1,5 +1,6 @@
 export class ProviderBase {
 
+  protected static syntaxMsg = "Syntax error";
   protected static keywords: string[][] = [];
   protected static steps = {};
   protected static elements = {};
