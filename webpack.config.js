@@ -19,9 +19,9 @@ module.exports = {
   },
   resolveLoader: {
     alias: {
-      'blob-url-loader': require.resolve('./loaders/blobUrl'),
-      'compile-loader': require.resolve('./loaders/compile'),
-      'monaco-nls': require.resolve('./loaders/monacoNls')
+      'blob-url-loader': require.resolve('./tools/loaders/blobUrl'),
+      'compile-loader': require.resolve('./tools/loaders/compile'),
+      'monaco-nls': require.resolve('./tools/loaders/monacoNls')
     }
   },
   module: {
