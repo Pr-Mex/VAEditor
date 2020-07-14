@@ -21,7 +21,7 @@ export class VanessaEditor {
   public setPosition = (lineNumber: number, column: number, codeWidget: string = "") => this.runtimeManager.position = {lineNumber: lineNumber, column: column, codeWidget: codeWidget};
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
-  public setTheme = (arg: string) => monaco.editor.setTheme(arg);
+  public setTheme = (arg: string) => this.styleManager.theme = arg;
   public revealLine = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.revealLine(lineNumber, codeWidget);
   public setRuntimeProgress = (status: string, lines: any, widget: number = 0) => this.runtimeManager.setStatus(status, lines, widget);
   public getRuntimeProgress = (status: string) => this.runtimeManager.getStatus(status);
