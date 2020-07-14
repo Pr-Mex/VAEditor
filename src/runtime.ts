@@ -251,7 +251,7 @@ export class RuntimeManager {
   private codeWidgets = {};
   private currentCodeWidget: string = "";
 
-  public setStatus(status: string, arg: any, codeWidget: number): void {
+  public setStatus(status: string, arg: any, codeWidget: string = ""): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
     if (codeWidget) {
@@ -283,7 +283,7 @@ export class RuntimeManager {
     }
   }
 
-  public setStyle(arg: any, codeWidget: number, bold: boolean, italic: boolean, underline: boolean): void {
+  public setStyle(arg: any, codeWidget: string, bold: boolean, italic: boolean, underline: boolean): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
     if (codeWidget) {
@@ -342,7 +342,7 @@ export class RuntimeManager {
     return JSON.stringify(lines);
   }
 
-  public getContent(codeWidget: number = 0) {
+  public getContent(codeWidget: string = "") {
     if (codeWidget) {
       let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
       return widget ? widget.getContent() : undefined;
@@ -350,7 +350,7 @@ export class RuntimeManager {
     return this.editor.getValue();
   };
 
-  public getLineContent(lineNumber: number, codeWidget: number = 0) {
+  public getLineContent(lineNumber: number, codeWidget: string = "") {
     if (codeWidget) {
       let widhet = this.codeWidgets[codeWidget] as SubcodeWidget;
       return widhet ? widhet.getLineContent(lineNumber) : undefined;
@@ -431,7 +431,7 @@ export class RuntimeManager {
     }
   }
 
-  public showError(lineNumber: number, codeWidget: number, data: string, text: string) {
+  public showError(lineNumber: number, codeWidget: string, data: string, text: string) {
     if (codeWidget) {
       let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
       if (widget) widget.showError(lineNumber, data, text);
