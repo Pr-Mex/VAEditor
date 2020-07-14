@@ -652,6 +652,8 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 			If (msg = Undefined) Then Break; EndIf;
 			VanessaEditorOnReceiveEventHandler(msg.type, msg.data);
 		EndDo;
+	ElsIf CharCode(Element.innerText, 1) = 60020 Then
+		Message(Element.title);
 	EndIf;
 
 EndProcedure

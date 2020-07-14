@@ -9,9 +9,10 @@ export class HoverProvider extends ProviderBase {
     let line = model.getLineContent(position.lineNumber)
     let words = this.splitWords(line);
     let key = this.key(this.filterWords(words));
+    let char = String.fromCharCode(60020);
     let step = this.steps[key];
     if (step) {
-      contents.push({ value: "**" + step.section + "**" });
+      contents.push({ value: `**${step.section}** [${char}](#info[${key}])`});
       contents.push({ value: step.documentation });
       let values = this.variables;
       let vars = line.match(/"[^"]+"|'[^']+'/g) || [];

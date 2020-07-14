@@ -130,8 +130,23 @@
   display: none !important;
 }
 div.monaco-editor div.editor-widget.find-widget {
-  transform: translateY(-9999px); 
+  transform: translateY(-9999px);
 }
 div.monaco-editor div.editor-widget.find-widget.visible  {
   transform: translateY(0);
+}
+div.hover-contents a[href="#"] {
+  font-family: "codicon";
+  text-decoration: none;
+	font: normal normal normal 100% codicon;
+	display: inline-block;
+	text-decoration: none;
+	text-rendering: auto;
+	text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	user-select: none;
+	-webkit-user-select: none;
+  -ms-user-select: none;
+  vertical-align: -24%;
 }
