@@ -1,8 +1,8 @@
 {
-	"name": "vanessa-editor",
+	"name": "vanessa-automation-editor",
 	"version": "1.0.0",
-	"description": "Vanessa Editor",
-	"homepage": "https://github.com/Pr-Mex/vanessa-editor/",
+	"description": "Vanessa Automation Editor",
+	"homepage": "https://github.com/Pr-Mex/VAEditor/",
 	"private": true,
 	"scripts": {
 		"debug": "webpack-dev-server --progress --mode development",
