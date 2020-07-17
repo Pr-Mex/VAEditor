@@ -14,7 +14,7 @@ export class ActionProvider extends ProviderBase {
     let words = this.splitWords(value);
     let keyword = this.findKeyword(words);
     if (keyword == undefined) return;
-    let regexp = "^[\\s]+";
+    let regexp = "^[\\s]*";
     keyword.forEach(w => regexp += w + "[\\s]+");
     let match = value.toLowerCase().match(new RegExp(regexp));
     if (match) range.startColumn = match[0].length + 1;
