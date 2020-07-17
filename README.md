@@ -1,114 +1,46 @@
 # Vanessa Automation Editor
 
-Code editor which powers by [Monaco](https://github.com/Microsoft/monaco-editor) and interaction with [1C:Enterprise](https://1c-dn.com/) 8.3.15+.
+Редактор сценариев, созданный с помощью [Monaco](https://github.com/Microsoft/monaco-editor) и поддерживающий взаимодействие с платформой [1C:Предприятие](https://1c-dn.com/) 8.3.15+.
 
-Build for [Vanessa Automation](https://github.com/Pr-Mex/vanessa-automation).
+Собрано для [Vanessa Automation](https://github.com/Pr-Mex/vanessa-automation).
 
 
-## Build
+## Сборка
 
-Install
+Для установки выполните команду (необходим установленный node.js для сборки)
 ```
 npm install .
 ```
 
-Debug
+Для запуска отлидки в браузере во встроенном сервре для разработки выполните команду
 ```
 npm run debug
 ```
 
-Build production to `./dist/index.html`
+Для сборки финального файла `./dist/index.html`, встраиваемого в проект выполните команду
 ```
 npm run build
 ```
 
-## Fast start
-
-1. Create new data processor.
-2. Create new template with name **VanessaEditor** and selected type **Binary data**.
-3. Click **Restore from file** of the binary date template and chose **./dist/index.html**.
-4. Add a new form to the data processor.
-5. Create string attribute **VanessaEditor** into this form.
-6. Drug and drop the attribute to the items panel. The new item shuld have name **VanessaEditor**.
-7. Change type of the form item to **HTML document field**.
-8. Create **VanessaEditorOnClick** item event handler.
-9. Create **VanessaEditorDocumentComplete** item event handler.
-10. Create **OnCreateAtServer** form event handler.
-11. Add the next code to the form module:
-
-```bsl
-#Region FormEvents
-
-&AtServer
-Procedure OnCreateAtServer(Cancel, StandardProcessing)
-
-	VanessaEditorLoad();
-
-EndProcedure
-
-#EndRegion
-
-#Region VanessaEditor
-
-#Region Public
-
-&AtClient
-Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
-
-	// Call your event handlers here.
-
-EndProcedure
-
-#EndRegion
-
-#Region Public
-
-&AtServer
-Procedure VanessaEditorLoad()
-
-	VanessaEditor = GetInfoBaseURL() + "/" + PutToTempStorage(
-		FormAttributeToValue("Object").GetTemplate("VanessaEditor"), UUID);
-
-EndProcedure
-
-&AtClient
-Function VanessaEditorSendAction(Action, Arg = Undefined)
-
-	Return Items.VanessaEditor.Document.defaultView.VanessaEditor.SendAction(Action, Arg);
-
-EndFunction
-
-#EndRegion
-
-#Region Private
-
-&AtClient
-Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
-
-	Element = EventData.Element;
-	If Element.id = "VanessaEditorEventForwarder" Then
-		VanessaEditorOnReceiveEventHandler(Element.title, Element.value);
-	EndIf;
-
-EndProcedure
-
-&AtClient
-Procedure VanessaEditorDocumentComplete(Item)
-
-	Items.VanessaEditor.Document.defaultView.createVanessaEditor("", "turbo-gherkin");
-
-EndProcedure
-
-#EndRegion
-
-#EndRegion
+Для сборки примера внешней обработки из исходников в epf файл выполните команду
 ```
+npm run compile
+```
+
+Для разборки примера внешней обработки из epf в исходники выполните команду
+```
+npm run decompile
+```
+
+## Как использовать в своем проекте
+
+Смотрите пример использования во внешней обработке с примером [Example](./example)
 
 ## API
 
-### Actions
+### Действия (Actions)
 
-Vanessa Editor can be controlled with send action. If editor get action it update its internal state and render the decoration.
+Для управления редактором кода из 1С:Предпрития вы можете вызывать методы-действия объекта редактора, полученного из HTML-документа расположенного на форме.
 
 | Action                         | Description                                                                                     |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
@@ -125,15 +57,15 @@ Vanessa Editor can be controlled with send action. If editor get action it updat
 | `decorateErrorSteps`           | update runtime process error steps by json description in `arg`, see Runtime process chapter    |
 | `cleanDecorateRuntimeProgress` | clean runtime process, see Runtime process chapter                                              |
 
-1C:Enterprise script example:
+Пример:
 
 ```bsl
 VanessaEditorSendAction("setContent", "Text to edit")
 ```
 
-### Events
+### События(Events)
 
-Vanessa Editor can fire events that can be handled in 1C:Enterprise script.
+Редактор может отправлять события, которые будут получены и могут быть обработаны на стороне 1С:Предприятия.
 
 | Event                                  | Description                                                                  |
 | -------------------------------------- | ---------------------------------------------------------------------------- |
@@ -145,7 +77,7 @@ Vanessa Editor can fire events that can be handled in 1C:Enterprise script.
 | `STEP_OVER`                            | on F11 pressed, `arg` is line number                                         |
 | `CONTENT_DID_CHANGE`                   | after content did change                                                     |
 
-1C:Enterprise script example:
+Пример:
 
 ```bsl
 Function VanessaEditorOnReceiveEventHandler(Event, Arg)
@@ -157,12 +89,12 @@ Function VanessaEditorOnReceiveEventHandler(Event, Arg)
 EndFunction
 ```
 
-## Samples
+## Примеры
 
 ### Json
 
-In most of exchange cases the Vanessa Editor protocol use json message format.
-To dump or load json messages in 1C:Enterprise script you can use pattern:
+В большинстве случаев обмен редактора и 1С:Предприятия осуществляется с помощью сообщений в json формете.
+Для быстрой сериализации и десериализации объектов 1С:Предпрития в json формат Вы можете воспользоваться функциями:
 
 ```bsl
 &AtClient
@@ -187,7 +119,7 @@ Function JsonLoad(Json)
 EndFunction
 ```
 
-### Breakpoints
+### Брейкпоинты (Breakpoints)
 
 The editor in any case if is toggling breakpoints will send `UPDATE_BREAKPOINTS` event without decorate breakpoints in editor.
 You can verify the breakpoints, for example set the next non blank line if blank line is toggled or decline set the breakpoint into the end of file.
@@ -246,7 +178,7 @@ Procedure UpdateBreakpoints(Json)
 EndProcedure
 ```
 
-### Problems
+### Пробелмы (Problems)
 
 Sample json problems description:
 
