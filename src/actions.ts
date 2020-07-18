@@ -53,7 +53,7 @@ export class ActionManager {
     let service = editor.getContribution('editor.contrib.hover')["_openerService"];
     service._original_open = service.open;
     service.open = (target: any, options: any) => {
-      if (typeof (target) == "string" && /^http:\/\/|^https:\/\//.test(target)) {
+      if (typeof (target) == "string" && /^\s*http:\/\/|^\s*https:\/\//.test(target)) {
         this.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
         return { catch: () => { } };
       }
