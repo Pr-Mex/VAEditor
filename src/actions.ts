@@ -1,5 +1,4 @@
 import { VanessaEditor } from "./vanessa-editor";
-import { OpenerService } from "../node_modules/monaco-editor/esm/vs/editor/browser/services/openerService"
 
 export interface IVanessaAction {
   id: string;
@@ -68,8 +67,6 @@ export class ActionManager {
   get actions(): any {
     return this.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
   }
-
-  public OpenerService() { return OpenerService; };
 
   public popMessage = () => this.messages.shift();
 
