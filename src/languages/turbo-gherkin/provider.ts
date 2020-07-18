@@ -45,12 +45,14 @@ export class VanessaGherkinProvider extends ProviderBase {
     if (clear) VanessaGherkinProvider.steps = {};
     JSON.parse(list).forEach((e: IVanessaStep) => {
       let body = e.insertText.split('\n');
-      let line = body.shift();
-      let words = VanessaGherkinProvider.splitWords(line);
-      let key = VanessaGherkinProvider.key(VanessaGherkinProvider.filterWords(words));
+      let text = body.shift();
+      let head = VanessaGherkinProvider.splitWords(text);
+      let words = VanessaGherkinProvider.filterWords(head);
+      let key = VanessaGherkinProvider.key(words);
       VanessaGherkinProvider.steps[key] = {
-        head: words,
+        head: head,
         body: body,
+        filterText: words.join(' '),
         documentation: e.documentation,
         insertText: e.insertText,
         sortText: e.sortText,
