@@ -233,4 +233,23 @@ export class SubcodeWidget extends WidgetBase {
     if (size.bottom > scrollBottom) editor.setScrollTop(size.bottom - clientHeight);
     else if (size.top < scrollTop) editor.setScrollTop(size.top);
   }
+
+  public revealLineInCenter(lineNumber: number) {
+    let size = { top: 0, bottom: 2, center: 0 };
+    let lineHeight = this.runtime.editor.getOption(monaco.editor.EditorOption.lineHeight);
+    this.lines.forEach((line: SubcodeLine) => {
+      if (line.lineNumber <= lineNumber) {
+        size.top = size.bottom;
+        size.bottom += line.heightInLines;
+      }
+    });
+    let editor = this.runtime.editor;
+    let afterLine = editor.getModel().getDecorationRange(this.decoration).endLineNumber;
+    let top = editor.getTopForLineNumber(afterLine);
+    size.top = top + size.top * lineHeight;
+    size.bottom = top + size.bottom * lineHeight;
+    size.center = (size.top + size.bottom) / 2;
+    let clientHeight = editor.getDomNode().clientHeight;
+    editor.setScrollTop(size.center - clientHeight / 2);
+  }
 }
