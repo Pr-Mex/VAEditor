@@ -1,4 +1,5 @@
 import { VanessaEditor } from "./vanessa-editor";
+import { OpenerService } from "../node_modules/monaco-editor/esm/vs/editor/browser/services/openerService"
 
 export interface IVanessaAction {
   id: string;
@@ -18,6 +19,7 @@ export enum VanessaEditorEvent {
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
   POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
+  ON_HREF_CLICK = "ON_HREF_CLICK",
   ON_KEY_DOWN = "ON_KEY_DOWN",
   ON_KEY_UP = "ON_KEY_UP",
 }
@@ -48,6 +50,15 @@ export class ActionManager {
         this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
     );
+    let service = editor.getContribution('editor.contrib.hover')["_openerService"];
+    service._original_open = service.open;
+    service.open = (target: any, options: any) => {
+      if (typeof (target) == "string" && /^http:\/\/|^https:\/\//.test(target)) {
+        this.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
+        return { catch: () => { } };
+      }
+      return service._original_open(target, options);
+    };
   }
 
   public dispose(): void {
@@ -57,6 +68,8 @@ export class ActionManager {
   get actions(): any {
     return this.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
   }
+
+  public OpenerService() { return OpenerService; };
 
   public popMessage = () => this.messages.shift();
 
