@@ -544,6 +544,16 @@ export class RuntimeManager {
     }
   }
 
+  public revealLineInCenter(lineNumber: number, codeWidget: string = "") {
+    if (codeWidget) {
+      this.forEachSubcode((widget: SubcodeWidget) => {
+        if (widget.id == codeWidget) widget.revealLineInCenter(lineNumber);
+      });
+    } else {
+      this.editor.revealLineInCenter(lineNumber);
+    }
+  }
+
   public getLineWidgets(lineNumber: number): string[] {
     let result = [];
     const model: monaco.editor.ITextModel = this.editor.getModel();
