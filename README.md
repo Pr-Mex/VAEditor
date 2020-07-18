@@ -12,7 +12,7 @@
 npm install .
 ```
 
-Для запуска отлидки в браузере во встроенном сервре для разработки выполните команду
+Для запуска отладки в браузере (на встроенном сервере для разработки) выполните команду
 ```
 npm run debug
 ```
@@ -56,26 +56,29 @@ npm run decompile
 | `decorateCompleteSteps`        | update runtime process complete steps by json description in `arg`, see Runtime process chapter |
 | `decorateErrorSteps`           | update runtime process error steps by json description in `arg`, see Runtime process chapter    |
 | `cleanDecorateRuntimeProgress` | clean runtime process, see Runtime process chapter                                              |
+| ... другие команды ...         | см. другие команды в [vanessa-editor.ts](./src/vanessa-editor.ts)                               |
 
 Пример:
 
 ```bsl
-VanessaEditorSendAction("setContent", "Text to edit")
+view = Items.VanessaEditor.Document.defaultView;
+VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
+
+VanessaEditor.setContent("setContent", "Text to edit");
 ```
 
 ### События(Events)
 
 Редактор может отправлять события, которые будут получены и могут быть обработаны на стороне 1С:Предприятия.
 
-| Event                                  | Description                                                                  |
+| Событие                                | Описание                                                                     |
 | -------------------------------------- | ---------------------------------------------------------------------------- |
-| `START_DEBUGGING`                      | on F5 pressed                                                                |
-| `START_DEBUGGING_AT_STEP`              | on Ctrl+F5 pressed, `arg` is line number                                     |
-| `START_DEBUGGING_AT_STEP_AND_CONTINUE` | on Ctrl+Shift+F5 pressed, `arg` is line number                               |
-| `START_DEBUGGING_AT_ENTRY`             | on Alt+F5 pressed                                                            |
-| `UPDATE_BREAKPOINTS`                   | on F9 pressed, `arg` is breakpoint json description, see Breakpoints chapter |
-| `STEP_OVER`                            | on F11 pressed, `arg` is line number                                         |
-| `CONTENT_DID_CHANGE`                   | after content did change                                                     |
+| `UPDATE_BREAKPOINTS`                   | При обновлении состояния брейкпоинтов                                        |
+| `CONTENT_DID_CHANGE`                   | При изменении текста, содержащегося в модели редактора                       |
+| `POSITION_DID_CHANGE`                  | После изменения позиции курсора в редакторе                                  |
+| `ON_KEY_DOWN`                          | После нажатия клавиши на клавиатре при фокусе установленном в редакторе      |
+| `ON_KEY_UP`                            | После отпускания клавиши на клавиатре при фокусе установленном в редакторе   |
+| ... дополнительные команды ...         | Команды, переданные в `VanessaEditor.addCommands`                            |
 
 Пример:
 
@@ -119,210 +122,10 @@ Function JsonLoad(Json)
 EndFunction
 ```
 
-### Брейкпоинты (Breakpoints)
+## Правила сворачивания строк
 
-The editor in any case if is toggling breakpoints will send `UPDATE_BREAKPOINTS` event without decorate breakpoints in editor.
-You can verify the breakpoints, for example set the next non blank line if blank line is toggled or decline set the breakpoint into the end of file.
-To update the editor you must send `decorateBreakpoints` action with the json description of a new state of all breakpoints, after that the editor will delta the decoration of breakpoints.
-
-Sample json breakpoint description:
-
-```json
-[
-  {
-    "lineNumber": 3,
-    "enable": true
-  },
-  {
-    "lineNumber": 27,
-    "enable": false
-  }
-]
-```
-
-To generate this description you can use this 1C:Enterprise script pattern:
-
-```bsl
-&AtClient
-Procedure DecorateBreakpoints()
-
-	BreakpointsPacket = New Array;
-
-	For Each Row In Breakpoints Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.Value);
-		Chunk.Insert("enable", Row.Check);
-		BreakpointsPacket.Add(Chunk);
-	EndDo;
-
-	VanessaEditorSendAction("decorateBreakpoints", JsonDump(BreakpointsPacket));
-
-EndProcedure
-```
-
-To parse this description you can use this 1C:Enterprise script pattern:
-
-```bsl
-&AtClient
-Procedure UpdateBreakpoints(Json)
-
-	BreakpointsPacket = JsonLoad(Json);
-
-	Breakpoints.Clear();
-	For Each Chunk In BreakpointsPacket Do
-		Breakpoints.Add(Chunk.lineNumber,, Chunk.enable);
-	EndDo;
-
-	Breakpoints.SortByValue();
-
-EndProcedure
-```
-
-### Пробелмы (Problems)
-
-Sample json problems description:
-
-```json
-[
-  {
-    "lineNumber": 3,
-    "severity": "Warning",
-    "message": "Warning! Step was found in the library, but source data process was not found.",
-    "code": "",
-    "source": ""
-  },
-  {
-    "lineNumber": 3,
-    "severity": "Error",
-    "message": "Error! Step have no definitions in the library.",
-    "code": "",
-    "source": ""
-  }
-]
-```
-
-To generate this description you can use this 1C:Enterprise script pattern:
-
-```bsl
-&AtClient
-Procedure DecorateProblems()
-
-	ProblemsPacket = New Array;
-
-	For Each Row In Problems Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.LineNumber);
-		Chunk.Insert("severity", Row.Severity);
-		Chunk.Insert("message", Row.Message);
-		Chunk.Insert("code", Row.Code);
-		Chunk.Insert("source", Row.Source);
-		ProblemsPacket.Add(Chunk);
-	EndDo;
-
-	VanessaEditorSendAction("decorateProblems", JsonDump(ProblemsPacket));
-
-EndProcedure
-```
-
-### Runtime process
-
-Runtime is showning how the debug process is decorated.
-
-#### Curent step
-
-```bsl
-VanessaEditorSendAction("decorateCurrentStep", CurrentStep);
-```
-
-#### Complete steps
-
-Sample json complete steps description:
-
-```json
-[
-  {
-    "lineNumber": 3
-  },
-  {
-    "lineNumber": 4
-  }
-]
-```
-
-To generate this description you can use this 1C:Enterprise script pattern:
-
-```bsl
-&AtClient
-Procedure SendCompleteSteps(Command)
-
-	CompleteStepsPacket = New Array;
-
-	For Each Row In CompleteSteps Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.LineNumber);
-		CompleteStepsPacket.Add(Chunk);
-	EndDo;
-
-	VanessaEditorSendAction("decorateCompleteSteps", JsonDump(CompleteStepsPacket));
-
-EndProcedure
-```
-
-#### Error steps
-
-Sample json complete steps description:
-
-```json
-[
-  {
-		"lineNumber": 3,
-		"UID": "ID1",
-		"title": "Error description"
-  },
-  {
-    "lineNumber": 6,
-		"UID": "ID2",
-		"title": "Error description"
-  }
-]
-```
-
-To generate this description you can use this 1C:Enterprise script pattern:
-
-```bsl
-&AtClient
-Procedure SendErrorSteps(Command)
-
-	ErrorStepsPacket = New Array;
-
-	For Each Row In ErrorSteps Do
-		Chunk = New Structure;
-		Chunk.Insert("lineNumber", Row.LineNumber);
-		Chunk.Insert("UID", Row.UID);
-		Chunk.Insert("title", Row.Title);
-		ErrorStepsPacket.Add(Chunk);
-	EndDo;
-
-	VanessaEditorSendAction("decorateErrorSteps", JsonDump(ErrorStepsPacket));
-
-EndProcedure
-```
-
-#### Clean runtime progress
-
-```bsl
-VanessaEditorSendAction("cleanDecorateRuntimeProgress");
-
-```
-
-**Правила сворачивания строк:**
-
-1) ключевые слова верхнего уровня делят файл на секции и сворачиваются сами по себе, независимо от наличия отступов
-
-2) комментарии которые идут подряд сворачиваются к первой строке комментариев тоже независимо от отступов. Пустая строка прерывает группу комментариев
-
-3) параметры шага, строки начинающиеся с символа "|" сворачиваются к своей строке шага. Если внутри комментарии, они сворачиваются независимо сами в себя
-
-4) инструкции, которые начинаются с собаки "@", группируются внутри себя
-
-5) всё остальное сворачивается внутри секций по числу пробелов и табуляторов
+1. Ключевые слова верхнего уровня делят файл на секции и сворачиваются сами по себе, независимо от наличия отступов.
+1. Комментарии которые идут подряд сворачиваются к первой строке комментариев тоже независимо от отступов. Пустая строка прерывает группу комментариев.
+1. Параметры шага, строки начинающиеся с символа "|" сворачиваются к своей строке шага. Если внутри комментарии, они сворачиваются независимо сами в себя.
+1. Инструкции, которые начинаются с собаки "@", группируются внутри себя.
+1. Всё остальное сворачивается внутри секций по числу пробелов и табуляторов.
