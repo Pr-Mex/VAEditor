@@ -18,6 +18,11 @@
 			"name": "Kandrashin Denis",
 			"email": "mail@lintest.ru",
 			"url": "https://github.com/lintest/"
+		},
+		{
+			"name": "Ingvar Vilkman",
+			"email": "zeegin@zeegin.com",
+			"url": "https://github.com/zeegin/"
 		}
 	],
 	"dependencies": {
