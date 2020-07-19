@@ -32,7 +32,10 @@ export class VanessaEditor {
   public showRuntimeCode = (lineNumber: number, text: string) => this.runtimeManager.showCode(lineNumber, text);
   public setSubcodeFolding = (lineNumber: number, codeWidget: string, collapsed: boolean) => this.runtimeManager.setFolding(lineNumber, codeWidget, collapsed);
   public setLineStyle = (lines: any, widget: string = "", bold: boolean, italic: boolean, underline: boolean) => this.runtimeManager.setStyle(lines, widget, bold, italic, underline);
+  public setStackStatus = (status: boolean, lineNumber: number) => this.runtimeManager.setStack(status, lineNumber);
+  public getStackStatus = (lineNumber: number) => this.runtimeManager.getStack(lineNumber);
   public clearLinesStyle = () => this.runtimeManager.clearStyle();
+  public clearStackStatus = () => this.runtimeManager.clearStack();
   public nextRuntimeProgress = () => this.runtimeManager.next();
   public clearRuntimeCodes = () => this.runtimeManager.clearSubcode();
   public clearRuntimeErrors = () => this.runtimeManager.clearErrors();

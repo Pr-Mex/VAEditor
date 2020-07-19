@@ -247,6 +247,7 @@ export class RuntimeManager {
   private stepDecorationIds: string[] = [];
   private lineDecorationIds: string[] = [];
   private currentDecorationIds: string[] = [];
+  private stackDecorationIds: string[] = [];
   private errorViewZoneIds: Array<string> = [];
   private codeWidgets = {};
   private currentCodeWidget: string = "";
@@ -281,6 +282,30 @@ export class RuntimeManager {
       const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
       newDecorations.forEach(s => this.stepDecorationIds.push(s));
     }
+  }
+
+  public setStack(status: boolean, lineNumber: number) {
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+    if (status) decorations.push({
+      range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+      options: {
+        stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+        glyphMarginClassName: "debug-stackframe-glyph",
+        isWholeLine: true,
+      }
+    });
+    this.stackDecorationIds = this.editor.deltaDecorations(this.stackDecorationIds, decorations);
+  }
+
+  public getStack(lineNumber: number) {
+    let status = false;
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    model.getLinesDecorations(lineNumber, lineNumber).forEach(d => {
+      let i = this.stackDecorationIds.indexOf(d.id);
+      if (i >= 0) status = true;
+    });
+    return status;
   }
 
   public setStyle(arg: any, codeWidget: string, bold: boolean, italic: boolean, underline: boolean): void {
@@ -473,6 +498,10 @@ export class RuntimeManager {
     this.updateBreakpoints();
   }
 
+  public clearStack(): void {
+    this.stackDecorationIds = this.editor.deltaDecorations(this.stackDecorationIds, []);
+  }
+
   public clearStatus(): void {
     this.currentDecorationIds = this.editor.deltaDecorations(this.currentDecorationIds, []);
     this.stepDecorationIds = this.editor.deltaDecorations(this.stepDecorationIds, []);
@@ -574,6 +603,7 @@ export class RuntimeManager {
 
   public clear(): void {
     this.clearStyle();
+    this.clearStack();
     this.clearSubcode();
     this.clearErrors();
     this.clearStatus();
