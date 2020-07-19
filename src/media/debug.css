@@ -13,6 +13,15 @@
 .debug-current-step-glyph {
   background: url('src/media/debug-current-arrow.svg') center center no-repeat;
 }
+.debug-stackframe-glyph {
+  background: url('src/media/debug-stackframe-arrow.svg') center center no-repeat;
+}
+.debug-breakpoint-glyph.debug-stackframe-glyph {
+  background: url('src/media/debug-stackframe-and-breakpoint.svg') center center no-repeat;
+}
+.debug-breakpoint-unverified-glyph.debug-stackframe-glyph {
+  background: url('src/media/debug-stackframe-and-breakpoint.svg') center center no-repeat;
+}
 .debug-breakpoint-glyph.debug-current-step-glyph {
   background: url('src/media/debug-current-and-breakpoint.svg') center center no-repeat;
 }
