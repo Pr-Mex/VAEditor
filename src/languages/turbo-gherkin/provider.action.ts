@@ -18,10 +18,10 @@ export class ActionProvider extends ProviderBase {
     keyword.forEach(w => regexp += w + "[\\s]+");
     let match = value.toLowerCase().match(new RegExp(regexp));
     if (match) range.startColumn = match[0].length + 1;
-    let line = this.key(this.filterWords(words)).split("-");
+    let line = this.key(this.filterWords(words)).split(" ");
     for (let key in this.steps) {
       let sum = 0; let k = {};
-      var step = key.split('-');
+      var step = key.split(" ");
       line.forEach((w: string) => k[w] ? k[w] += 1 : k[w] = 1);
       step.forEach((w: string) => k[w] ? k[w] -= 1 : k[w] = -1);
       for (let i in k) sum = sum + Math.abs(k[i]);

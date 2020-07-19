@@ -45,6 +45,6 @@ export class ProviderBase {
     words.forEach((w: string) => {
       if (/^[A-zА-я]+$/.test(w)) result.push(w.toLowerCase());
     });
-    return result.join('-');
+    return result.join(" ");
   }
 }

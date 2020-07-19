@@ -12,7 +12,8 @@ export class HoverProvider extends ProviderBase {
     let char = String.fromCharCode(60020);
     let step = this.steps[key];
     if (step) {
-      contents.push({ value: `**${step.section}** [${char}](#info[${key}])`});
+      let href = "#info:" + key.replace(/ /g, "-");
+      contents.push({ value: `**${step.section}** [${char}](${href})`});
       contents.push({ value: step.documentation });
       let values = this.variables;
       let vars = line.match(/"[^"]+"|'[^']+'/g) || [];
