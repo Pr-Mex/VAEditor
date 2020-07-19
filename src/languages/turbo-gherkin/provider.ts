@@ -52,7 +52,6 @@ export class VanessaGherkinProvider extends ProviderBase {
       VanessaGherkinProvider.steps[key] = {
         head: head,
         body: body,
-        filterText: words.join(' '),
         documentation: e.documentation,
         insertText: e.insertText,
         sortText: e.sortText,

@@ -79,7 +79,7 @@ export class SuggestProvider extends ProviderBase {
               documentation: e.documentation,
               sortText: e.sortText,
               insertText: keytext + ' ' + e.insertText + '\n',
-              filterText: keytext + ' ' + e.filterText,
+              filterText: keytext + ' ' + key,
               range: range
             });
           }
@@ -95,7 +95,7 @@ export class SuggestProvider extends ProviderBase {
               documentation: e.documentation,
               sortText: e.sortText,
               insertText: e.keyword + ' ' + e.insertText + '\n',
-              filterText: e.filterText,
+              filterText: key,
               range: range
             });
           }
