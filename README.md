@@ -34,7 +34,7 @@ npm run decompile
 
 ## Как использовать в своем проекте
 
-Смотрите пример использования во внешней обработке с примером [Example](./example)
+Смотрите пример использования во внешней обработке с примером [Example](./example).
 
 ## API
 
@@ -44,18 +44,12 @@ npm run decompile
 
 | Action                         | Description                                                                                     |
 | ------------------------------ | ----------------------------------------------------------------------------------------------- |
-| `setTheme`                     | set etitor theme from `arg`, avaliable values: `vs`, `vs-dark`, and `hc-black`                  |
-| `setContent`                   | load `arg` to the editor                                                                        |
-| `getContent`                   | return editor content                                                                           |
-| `revealLine`                   | scrolling to the `arg` line number                                                              |
-| `enableEdit`                   | disable read only mode                                                                          |
-| `disableEdit`                  | set read only mode                                                                              |
-| `decorateBreakpoints`          | update breakpoint by json description in `arg`, see Breakpoints chapter                         |
-| `decorateProblems`             | update problems by json description in `arg`, see Problems chapter                              |
-| `decorateCurrentStep`          | update runtime process current step, `arg` line number, see Runtime process chapter             |
-| `decorateCompleteSteps`        | update runtime process complete steps by json description in `arg`, see Runtime process chapter |
-| `decorateErrorSteps`           | update runtime process error steps by json description in `arg`, see Runtime process chapter    |
-| `cleanDecorateRuntimeProgress` | clean runtime process, see Runtime process chapter                                              |
+| `setTheme`                     | Установить тему редактора `vs`, `vs-dark` или `hc-black`                                        |
+| `setContent`                   | Загрузить контент в модель редактора                                                            |
+| `getContent`                   | Получить текст из модели редактора                                                              |
+| `revealLine`                   | Выплнить прокрутку редактора до определенной строки                                             |
+| `enableEdit`                   | Разлокировать редактор                                                                          |
+| `disableEdit`                  | Заблокировать редактор                                                                          |
 | ... другие команды ...         | см. другие команды в [vanessa-editor.ts](./src/vanessa-editor.ts)                               |
 
 Пример:
@@ -64,10 +58,12 @@ npm run decompile
 view = Items.VanessaEditor.Document.defaultView;
 VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
 
-VanessaEditor.setContent("setContent", "Text to edit");
+VanessaEditor.setContent("Text to edit");
 ```
 
-### События(Events)
+Посмотреть все доступные действия можно в списке действий в [Example](./example).
+
+### События (Events)
 
 Редактор может отправлять события, которые будут получены и могут быть обработаны на стороне 1С:Предприятия.
 
@@ -76,9 +72,10 @@ VanessaEditor.setContent("setContent", "Text to edit");
 | `UPDATE_BREAKPOINTS`                   | При обновлении состояния брейкпоинтов                                        |
 | `CONTENT_DID_CHANGE`                   | При изменении текста, содержащегося в модели редактора                       |
 | `POSITION_DID_CHANGE`                  | После изменения позиции курсора в редакторе                                  |
+| `ON_HREF_CLICK`                        | При нажатии на ссылку                                                        |
 | `ON_KEY_DOWN`                          | После нажатия клавиши на клавиатре при фокусе установленном в редакторе      |
 | `ON_KEY_UP`                            | После отпускания клавиши на клавиатре при фокусе установленном в редакторе   |
-| ... дополнительные команды ...         | Команды, переданные в `VanessaEditor.addCommands`                            |
+| ... другие события ...                 | Команды, переданные в `VanessaEditor.addCommands`                            |
 
 Пример:
 
@@ -91,6 +88,8 @@ Function VanessaEditorOnReceiveEventHandler(Event, Arg)
 
 EndFunction
 ```
+
+Отслеживать события можно в логе событий в [Example](./example).
 
 ## Примеры
 
