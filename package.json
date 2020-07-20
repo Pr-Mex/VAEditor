@@ -7,8 +7,10 @@
 	"scripts": {
 		"debug": "webpack-dev-server --progress --mode development",
 		"build": "webpack --progress --mode production",
-		"compile": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
-		"decompile": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example"
+		"compile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
+		"compile:darwin:linux": "oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
+		"decompile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example",
+		"decompile:darwin:linux": "oscript .\\tools\\onescript\\Decompile.os .\\example"
 	},
 	"keywords": [],
 	"author": "Pautov Leonid",
