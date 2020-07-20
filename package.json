@@ -15,7 +15,8 @@
 		"decompile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example",
 		"decompile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/Decompile.os ./example",
 		"decompile:linux": "oscript ./tools/onescript/Decompile.os ./example",
-		"test": "standard"
+		"test": "echo OK :)",
+		"codestyle": "standard"
 	},
 	"keywords": [],
 	"author": "Pautov Leonid",
