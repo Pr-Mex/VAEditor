@@ -15,7 +15,7 @@
 		"decompile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example",
 		"decompile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/Decompile.os ./example",
 		"decompile:linux": "oscript ./tools/onescript/Decompile.os ./example",
-		"test": "echo OK :) && exit 0",
+		"test": "mocha",
 		"codestyle": "standard"
 	},
 	"keywords": [],
@@ -41,6 +41,7 @@
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^2.1.1",
 		"html-webpack-plugin": "^3.2.0",
+		"mocha": "^8.0.1",
 		"postcss-alter-property-value": "^1.1.3",
 		"postcss-loader": "^3.0.0",
 		"run-script-os": "^1.1.1",
