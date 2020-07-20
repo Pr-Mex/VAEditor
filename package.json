@@ -14,7 +14,8 @@
 		"decompile": "run-script-os",
 		"decompile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example",
 		"decompile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/Decompile.os ./example",
-		"decompile:linux": "oscript ./tools/onescript/Decompile.os ./example"
+		"decompile:linux": "oscript ./tools/onescript/Decompile.os ./example",
+		"test": "standard"
 	},
 	"keywords": [],
 	"author": "Pautov Leonid",
@@ -43,6 +44,7 @@
 		"postcss-loader": "^3.0.0",
 		"run-script-os": "^1.1.1",
 		"script-ext-html-webpack-plugin": "^2.1.3",
+		"standard": "^14.3.4",
 		"style-loader": "^0.23.1",
 		"ts-loader": "^6.0.4",
 		"tslint": "^5.18.0",
@@ -50,5 +52,8 @@
 		"webpack": "^4.32.0",
 		"webpack-cli": "^3.3.12",
 		"webpack-dev-server": "^3.11.0"
-	}
+	},
+	"engines": {
+    "node": ">=8.10.0"
+  }
 }

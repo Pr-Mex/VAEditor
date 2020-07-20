@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
-const nls = require.resolve('monaco-editor-nls');
+const nls = require.resolve('monaco-editor-nls')
 
 module.exports = {
   entry: {
@@ -28,7 +28,7 @@ module.exports = {
     rules: [{
       test: /\.js/,
       enforce: 'pre',
-      include: /node_modules[\\\/]monaco-editor[\\\/]esm/,
+      include: /node_modules[\\/]monaco-editor[\\/]esm/,
       use: 'monaco-nls'
     }, {
       test: /\.ts$/,
@@ -43,9 +43,9 @@ module.exports = {
     }]
   },
   plugins: [
-    new webpack.NormalModuleReplacementPlugin(/\/(vscode\-)?nls\.js/, function (resource) {
-      resource.request = nls;
-      resource.resource = nls;
+    new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js/, function (resource) {
+      resource.request = nls
+      resource.resource = nls
     }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
@@ -58,7 +58,7 @@ module.exports = {
       inline: [
         'app.js'
       ]
-    }),
+    })
   ],
   devServer: {
     port: 4000,
