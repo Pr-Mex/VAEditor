@@ -1,3 +1,4 @@
+/* global VanessaGherkinProvider, VanessaEditor createVanessaEditor */
 
 window.onload = () => {
   // eslint-disable-next-line
@@ -28,7 +29,6 @@ window.onload = () => {
 
   if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
-  // eslint-disable-next-line
   VanessaGherkinProvider.setKeywords('["и","и это значит что", "к тому же","вот почему","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]')
 
   const steps = [{
@@ -121,7 +121,6 @@ window.onload = () => {
   }
   ]
 
-  // eslint-disable-next-line
   VanessaGherkinProvider.setStepList(JSON.stringify(steps))
 
   const elements = {
@@ -131,7 +130,6 @@ window.onload = () => {
     ИмяРеквизита: 'Количество'
   }
 
-  // eslint-disable-next-line
   VanessaGherkinProvider.setElements(JSON.stringify(elements))
 
   const variables = {
@@ -141,13 +139,10 @@ window.onload = () => {
     ИмяРеквизита: 'Количество'
   }
 
-  // eslint-disable-next-line
   VanessaGherkinProvider.setVariables(JSON.stringify(variables))
 
-  // eslint-disable-next-line
   VanessaGherkinProvider.setSyntaxMsg('Step not found')
 
-  // eslint-disable-next-line
   createVanessaEditor(content, 'turbo-gherkin')
 
   const commands = [
@@ -159,17 +154,14 @@ window.onload = () => {
     { eventId: 'CODE_LENS_COPY', errorLink: 'Copy error', script: "alert('Copy error!')" }
   ]
 
-  // eslint-disable-next-line
   VanessaEditor.addCommands(JSON.stringify(commands))
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
   И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9'
 
-  // eslint-disable-next-line
   VanessaEditor.showRuntimeCode(20, subcode)
 
-  // eslint-disable-next-line
   VanessaEditor.showRuntimeCode(28, subcode)
   /*
     setInterval(() => VanessaEditor.runtimeManager.next(), 500);
