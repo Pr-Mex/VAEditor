@@ -5,9 +5,6 @@
   }
   const fullscreenStyle = document.createElement('style')
   fullscreenStyle.type = 'text/css'
-  fullscreenStyle.innerHTML = "\
-  html, body { width: 100%; height:100%; margin: 0; padding: 0; }\
-  ::-webkit-scrollbar { display: none; }\
-  ";
+  fullscreenStyle.innerHTML = 'html, body { width: 100%; height:100%; margin: 0; padding: 0; } ::-webkit-scrollbar { display: none; }'
   document.head.appendChild(fullscreenStyle)
 })()
