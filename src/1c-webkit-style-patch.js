@@ -8,3 +8,17 @@
   fullscreenStyle.innerHTML = 'html, body { width: 100%; height:100%; margin: 0; padding: 0; } ::-webkit-scrollbar { display: none; }'
   document.head.appendChild(fullscreenStyle)
 })()
+
+document.addEventListener('keydown', e => {
+  if (!e) e = window.event
+  if (e.ctrlKey && e.keyCode === 83) {
+    const editor = window.VanessaEditor
+    if (editor) {
+      editor.actionManager.fireEvent('PRESS_CTRL_S')
+      if (e.preventDefault) e.preventDefault()
+      if (e.stopPropagation) e.stopPropagation()
+      return false
+    }
+  }
+  return true
+}, false)
