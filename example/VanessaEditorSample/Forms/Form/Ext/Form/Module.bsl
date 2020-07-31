@@ -15,6 +15,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	MessageText = "Hello, world!";
 	RuntimeStatus = "complete";
 	EditorTheme = "vs";
+	ShowMinimap = true;
 	LineNumber = 1;
 	Column = 1;
 
@@ -917,6 +918,13 @@ Procedure NextRuntimeStep()
 		RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
 		RuntimeCode = VanessaEditor.getLineContent(Pos.lineNumber, Pos.codeWidget);
 	EndIf;
+EndProcedure
+
+&AtClient
+Procedure ShowMinimapOnChange(Item)
+	
+	VanessaEditor.showMinimap(ShowMinimap);
+	
 EndProcedure
 
 #EndRegion

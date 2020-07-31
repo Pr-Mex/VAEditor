@@ -692,6 +692,16 @@
 										</Popup>
 									</ChildItems>
 								</CommandBar>
+								<CheckBoxField name="ShowMinimap" id="391">
+									<DataPath>ShowMinimap</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="ShowMinimapContextMenu" id="392"/>
+									<ExtendedTooltip name="ShowMinimapExtendedTooltip" id="393"/>
+									<Events>
+										<Event name="OnChange">ShowMinimapOnChange</Event>
+									</Events>
+								</CheckBoxField>
 							</ChildItems>
 						</Page>
 						<Page name="PageBreakpoints" id="36">
@@ -2265,6 +2275,17 @@
 					</Type>
 				</Column>
 			</Columns>
+		</Attribute>
+		<Attribute name="ShowMinimap" id="7">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Show minimap</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
 		</Attribute>
 	</Attributes>
 	<Commands>

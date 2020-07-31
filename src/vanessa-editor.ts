@@ -18,7 +18,7 @@ export class VanessaEditor {
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
   public getPosition = () => this.runtimeManager.position;
   public getSelection = () => this.runtimeManager.selection;
-  public setPosition = (lineNumber: number, column: number, codeWidget: string = "") => this.runtimeManager.position = {lineNumber: lineNumber, column: column, codeWidget: codeWidget};
+  public setPosition = (lineNumber: number, column: number, codeWidget: string = "") => this.runtimeManager.position = { lineNumber: lineNumber, column: column, codeWidget: codeWidget };
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setTheme = (arg: string) => this.styleManager.theme = arg;
@@ -55,6 +55,7 @@ export class VanessaEditor {
   public onErrorLink = (e: HTMLElement) => this.fireEvent(e.dataset.id, e.parentElement.dataset.value);
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
+  public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
 
   get errorLinks() { return this.actionManager.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
@@ -76,7 +77,7 @@ export class VanessaEditor {
       lightbulb: { enabled: true }
     });
     this.editor.setValue(content);
-    this.editor.getModel().updateOptions({insertSpaces: false});
+    this.editor.getModel().updateOptions({ insertSpaces: false });
     this.runtimeManager = new RuntimeManager(this);
     this.problemManager = new ProblemManager(this.editor);
     this.actionManager = new ActionManager(this.editor)
