@@ -9,7 +9,10 @@ interface ILangImpl {
   language: monaco.languages.IMonarchLanguage;
 }
 
-const language: monaco.languages.ILanguageExtensionPoint = { id: "turbo-gherkin" };
+const language: monaco.languages.ILanguageExtensionPoint = {
+  id: "turbo-gherkin",
+  extensions: [".feature"],
+};
 
 monaco.languages.register(language);
 
@@ -22,7 +25,7 @@ monaco.languages.onLanguage(language.id, () => {
 
 monaco.languages.registerCodeActionProvider(language.id, {
   provideCodeActions: (model, range, context, token) =>
-  ActionProvider.getCodeAction(model, range, context, token)
+    ActionProvider.getCodeAction(model, range, context, token)
 });
 
 monaco.languages.registerCompletionItemProvider(language.id, {
