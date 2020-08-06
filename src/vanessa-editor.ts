@@ -1,4 +1,5 @@
 import { ActionManager } from "./actions";
+import { EventsManager } from "./events";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
 import { StyleManager } from "./style";
@@ -11,7 +12,7 @@ export class VanessaEditor {
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
   public redo = () => this.editor.trigger('undo…', 'redo', undefined);
-  public popMessage = () => this.actionManager.popMessage();
+  public popMessage = () => this.eventsManager.popMessage();
   public getLineContent = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getLineWidgets = (lineNumber: number) => JSON.stringify(this.runtimeManager.getLineWidgets(lineNumber));
   public getWidgetLine = (codeWidget: string) => this.runtimeManager.getWidgetLine(codeWidget);
@@ -49,7 +50,7 @@ export class VanessaEditor {
   public getActions = () => JSON.stringify(this.actionManager.actions);
   public addCommands = (arg: string) => this.actionManager.addCommands(JSON.parse(arg));
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
-  public fireEvent = (event: any, arg: any = undefined) => this.actionManager.fireEvent(event, arg);
+  public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setSuggestWidgetWidth = (arg: any) => this.actionManager.setSuggestWidgetWidth(arg);
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController')["showMessage"](arg, this.getPosition());
   public onErrorLink = (e: HTMLElement) => this.fireEvent(e.dataset.id, e.parentElement.dataset.value);
@@ -63,6 +64,7 @@ export class VanessaEditor {
 
   public editor: monaco.editor.IStandaloneCodeEditor;
   public actionManager: ActionManager;
+  public eventsManager: EventsManager;
   public runtimeManager: RuntimeManager;
   public problemManager: ProblemManager;
   public syntaxManager: SyntaxManager;
@@ -79,8 +81,9 @@ export class VanessaEditor {
     this.editor.setValue(content);
     this.editor.getModel().updateOptions({ insertSpaces: false });
     this.runtimeManager = new RuntimeManager(this);
+    this.actionManager = new ActionManager(this);
+    this.eventsManager = new EventsManager(this.editor);
     this.problemManager = new ProblemManager(this.editor);
-    this.actionManager = new ActionManager(this.editor)
     this.syntaxManager = new SyntaxManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
   }

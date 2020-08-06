@@ -1,5 +1,5 @@
 import { VanessaEditor } from "./vanessa-editor";
-import { VanessaEditorEvent } from "./actions";
+import { VanessaEditorEvent } from "./events";
 import { IRange } from "monaco-editor";
 
 import { SubcodeWidget } from "./widgets/subcode";

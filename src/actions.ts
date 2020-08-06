@@ -1,4 +1,5 @@
 import { VanessaEditor } from "./vanessa-editor";
+import { VanessaEditorEvent } from "./events";
 
 export interface IVanessaAction {
   id: string;
@@ -14,46 +15,33 @@ interface IVanessaCommand {
   script: string;
 }
 
-export enum VanessaEditorEvent {
-  UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
-  CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
-  POSITION_DID_CHANGE = "POSITION_DID_CHANGE",
-  ON_HREF_CLICK = "ON_HREF_CLICK",
-  ON_KEY_DOWN = "ON_KEY_DOWN",
-  ON_KEY_UP = "ON_KEY_UP",
-}
-
-export interface VanessaEditorMessage {
-  type: string;
-  data: any;
-}
-
 export class ActionManager {
 
-  private editor: monaco.editor.IStandaloneCodeEditor;
-  private messages: Array<VanessaEditorMessage> = [];
+  public VanessaEditor: VanessaEditor;
+  public editor: monaco.editor.IStandaloneCodeEditor;
   public codeActions: Array<IVanessaAction> = [];
   public errorLinks: Array<IVanessaAction> = [];
   public codeLens: Array<IVanessaAction> = [];
   public traceKeyboard: boolean = false;
 
   constructor(
-    editor: monaco.editor.IStandaloneCodeEditor
+    VanessaEditor: VanessaEditor
   ) {
-    this.editor = editor;
-    this.editor.onKeyDown(e => { if (this.traceKeyboard) this.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
-    this.editor.onKeyUp(e => { if (this.traceKeyboard) this.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
-    this.editor.onDidChangeModelContent(() => this.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
+    this.VanessaEditor = VanessaEditor;
+    this.editor = VanessaEditor.editor;
+    this.editor.onKeyDown(e => { if (this.traceKeyboard) this.VanessaEditor.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
+    this.editor.onKeyUp(e => { if (this.traceKeyboard) this.VanessaEditor.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
+    this.editor.onDidChangeModelContent(() => this.VanessaEditor.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
     this.editor.onDidChangeCursorPosition(
       (e: monaco.editor.ICursorPositionChangedEvent) => {
-        this.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
+        this.VanessaEditor.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
     );
-    let service = editor.getContribution('editor.contrib.hover')["_openerService"];
+    let service = this.editor.getContribution('editor.contrib.hover')["_openerService"];
     service._original_open = service.open;
     service.open = (target: any, options: any) => {
       if (typeof (target) == "string" && /^\s*http:\/\/|^\s*https:\/\//.test(target)) {
-        this.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
+        this.VanessaEditor.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
         return { catch: () => { } };
       }
       return service._original_open(target, options);
@@ -67,8 +55,6 @@ export class ActionManager {
   get actions(): any {
     return this.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
   }
-
-  public popMessage = () => this.messages.shift();
 
   public insertText(text: string, arg: string = undefined) {
     let position = this.editor.getPosition();
@@ -85,9 +71,8 @@ export class ActionManager {
         let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
         if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
         let id: string = this.editor.addCommand(keybinding, (c, a) => {
-          let v: VanessaEditor = window["VanessaEditor"];
-          let n = a ? a : v.getPosition().lineNumber;
-          v.fireEvent(`${e.eventId}`, n);
+          let n = a ? a : this.VanessaEditor.getPosition().lineNumber;
+          this.VanessaEditor.fireEvent(`${e.eventId}`, n);
           eval.apply(null, [`${e.script}`]);
         });
         if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
@@ -106,13 +91,5 @@ export class ActionManager {
     }
     let width = typeof (arg) == "number" ? String(arg) + 'px' : arg;
     style.innerHTML = `.suggest-widget{width:${width} !important}`;
-  }
-
-  public fireEvent(event: any, arg: any = undefined) {
-    // tslint:disable-next-line: no-console
-    console.debug("fireEvent: ", event, " : ", arg);
-    this.messages.push({ type: event, data: arg });
-    let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
-    fakeButtonFireClickEvent.click();
   }
 }
