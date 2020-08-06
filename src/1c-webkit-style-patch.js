@@ -14,7 +14,7 @@ document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.keyCode === 83) {
     const editor = window.VanessaEditor
     if (editor) {
-      editor.actionManager.fireEvent('PRESS_CTRL_S')
+      editor.fireEvent('PRESS_CTRL_S')
       if (e.preventDefault) e.preventDefault()
       if (e.stopPropagation) e.stopPropagation()
       return false

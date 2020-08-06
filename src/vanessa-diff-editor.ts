@@ -1,10 +1,12 @@
 import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
+import { EventsManager } from "./events";
 
 export class VanessaDiffEditor {
 
   public editor: monaco.editor.IStandaloneDiffEditor;
+  public eventsManager: EventsManager;
 
   constructor(original: string, modified: string, language: string) {
     this.editor = monaco.editor.createDiffEditor(document.getElementById("VanessaEditor"), {
@@ -12,11 +14,11 @@ export class VanessaDiffEditor {
       glyphMargin: true,
       automaticLayout: true
     });
-
     this.editor.setModel({
       original: monaco.editor.createModel(original, language),
       modified: monaco.editor.createModel(modified, language),
     });
+    this.eventsManager = new EventsManager(this.editor);
   }
 
   public dispose(): void {
@@ -41,5 +43,8 @@ export class VanessaDiffEditor {
     });
   }
 
+  public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
+  public popMessage = () => this.eventsManager.popMessage();
+  public setSideBySide = (value: boolean) => this.editor.updateOptions({renderSideBySide: value});
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);;
 }
