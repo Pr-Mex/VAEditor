@@ -1,21 +1,21 @@
-import { ProviderBase } from "./provider.base";
+import { ProviderBase as base } from "./provider.base";
 
-export class HoverProvider extends ProviderBase {
-  public static getHoverContents(
+export class HoverProvider extends base {
+  public provideHover(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
   ): monaco.languages.Hover {
     let contents = [];
     let line = model.getLineContent(position.lineNumber)
-    let words = this.splitWords(line);
-    let key = this.key(this.filterWords(words));
+    let words = base.splitWords(line);
+    let key = base.key(base.filterWords(words));
     let char = String.fromCharCode(60020);
-    let step = this.steps[key];
+    let step = base.steps[key];
     if (step) {
       let href = "#info:" + key.replace(/ /g, "-");
       contents.push({ value: `**${step.section}** [${char}](${href})`});
       contents.push({ value: step.documentation });
-      let values = this.variables;
+      let values = base.variables;
       let vars = line.match(/"[^"]+"|'[^']+'/g) || [];
       vars.forEach(function (part: string) {
         let d = /^.\$.+\$.$/.test(part) ? 2 : 1;

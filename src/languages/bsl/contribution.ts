@@ -5,7 +5,7 @@ interface ILangImpl {
 
 const language: monaco.languages.ILanguageExtensionPoint = {
   id: "bsl",
-  extensions: [".bsl"],
+  extensions: [".bsl", ".os"],
 };
 
 monaco.languages.register(language);

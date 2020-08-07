@@ -1,9 +1,9 @@
-import { ProviderBase } from "./provider.base";
+import { ProviderBase as base } from "./provider.base";
 import { VanessaEditor } from "../../vanessa-editor";
 
-export class ActionProvider extends ProviderBase {
+export class ActionProvider extends base {
 
-  private static addQuickFix(model: monaco.editor.ITextModel, list: any, error: monaco.editor.IMarkerData) {
+  private addQuickFix(model: monaco.editor.ITextModel, list: any, error: monaco.editor.IMarkerData) {
     let range = {
       startLineNumber: error.startLineNumber,
       endLineNumber: error.endLineNumber,
@@ -11,15 +11,15 @@ export class ActionProvider extends ProviderBase {
       endColumn: error.endColumn,
     };
     let value = model.getValueInRange(range);
-    let words = this.splitWords(value);
-    let keyword = this.findKeyword(words);
+    let words = base.splitWords(value);
+    let keyword = base.findKeyword(words);
     if (keyword == undefined) return;
     let regexp = "^[\\s]*";
     keyword.forEach(w => regexp += w + "[\\s]+");
     let match = value.toLowerCase().match(new RegExp(regexp));
     if (match) range.startColumn = match[0].length + 1;
-    let line = this.key(this.filterWords(words)).split(" ");
-    for (let key in this.steps) {
+    let line = base.key(base.filterWords(words)).split(" ");
+    for (let key in base.steps) {
       let sum = 0; let k = {};
       var step = key.split(" ");
       line.forEach((w: string) => k[w] ? k[w] += 1 : k[w] = 1);
@@ -29,16 +29,16 @@ export class ActionProvider extends ProviderBase {
     }
   }
 
-  private static replaceParams(step: string[], line: string[]): string {
+  private replaceParams(step: string[], line: string[]): string {
     let index = 0;
-    step = this.filterWords(step);
+    step = base.filterWords(step);
     let regexp = /^"[^"]*"$|^'[^']*'$|^<[^<]*>$/g;
     let test = (w: string) => (new RegExp(regexp.source)).test(w);
     let params = line.filter(w => test(w));
     return step.map(w => (test(w) && index < params.length) ? params[index++] : w ).join(' ');
   }
 
-  private static getQuickFix(
+  private getQuickFix(
     model: monaco.editor.ITextModel,
     markers: monaco.editor.IMarkerData[]
   ): monaco.languages.CodeActionList {
@@ -48,7 +48,7 @@ export class ActionProvider extends ProviderBase {
     list.sort((a, b) => a.sum - b.sum);
     list.forEach((e, i) => {
       if (i > 6) return;
-      let step = this.steps[e.key];
+      let step = base.steps[e.key];
       let text = this.replaceParams(step.head, e.words);
       actions.push({
         title: text,
@@ -66,7 +66,7 @@ export class ActionProvider extends ProviderBase {
     return { actions: actions, dispose: () => { } };
   }
 
-  public static getCodeAction(model: monaco.editor.ITextModel
+  public provideCodeActions(model: monaco.editor.ITextModel
     , range: monaco.Range
     , context: monaco.languages.CodeActionContext
     , token: monaco.CancellationToken

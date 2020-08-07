@@ -1,8 +1,8 @@
-import { ProviderBase } from "./provider.base";
+import { ProviderBase as base } from "./provider.base";
 
-export class SuggestProvider extends ProviderBase {
+export class SuggestProvider extends base {
 
-  private static empty(position: monaco.Position
+  private empty(position: monaco.Position
   ): monaco.languages.CompletionList {
     return {
       suggestions: [{
@@ -19,7 +19,7 @@ export class SuggestProvider extends ProviderBase {
     };
   }
 
-  public static getSuggestions(
+  public provideCompletionItems(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
   ): monaco.languages.CompletionList {
@@ -43,8 +43,8 @@ export class SuggestProvider extends ProviderBase {
       let Q1 = variable.charAt(0);
       let Q2 = variable.charAt(variable.length - 1);
       let S = /^.\$.+\$.$/.test(variable) ? "$" : "";
-      for (let name in this.variables) {
-        let item = this.variables[name];
+      for (let name in base.variables) {
+        let item = base.variables[name];
         result.push({
           label: `"${S}${item.name}${S}" = ${item.value}`,
           filterText: variable + `${S}${item.name}${S}`,
@@ -59,7 +59,7 @@ export class SuggestProvider extends ProviderBase {
       let minColumn = model.getLineFirstNonWhitespaceColumn(position.lineNumber);
       let line = model.getLineContent(position.lineNumber);
       let words = line.match(/[^\s]+/g) || [];
-      let keyword = this.findKeyword(words);
+      let keyword = base.findKeyword(words);
       let range = {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
@@ -69,8 +69,8 @@ export class SuggestProvider extends ProviderBase {
       if (keyword) {
         let keytext = keyword.join(' ');
         keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
-        for (let key in this.steps) {
-          var e = this.steps[key];
+        for (let key in base.steps) {
+          var e = base.steps[key];
           if (e.documentation) {
             result.push({
               label: e.label,
@@ -85,8 +85,8 @@ export class SuggestProvider extends ProviderBase {
           }
         }
       } else {
-        for (let key in this.steps) {
-          var e = this.steps[key];
+        for (let key in base.steps) {
+          var e = base.steps[key];
           if (e.documentation) {
             result.push({
               label: e.label,
