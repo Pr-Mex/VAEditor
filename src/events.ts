@@ -41,4 +41,8 @@ export class EventsManager {
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.click();
   }
+
+  public show(node: HTMLElement, visible: boolean) {
+    node.style.display = visible ? "block" : "none";
+  }
 }
