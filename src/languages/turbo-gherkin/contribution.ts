@@ -20,25 +20,9 @@ monaco.languages.onLanguage(language.id, () => {
   import("./configuration").then((module: ILangImpl) => {
     monaco.languages.setLanguageConfiguration(language.id, module.conf);
     monaco.languages.setTokensProvider(language.id, new TokensProvider(language.id, module.language));
+    monaco.languages.registerCodeActionProvider(language.id, new ActionProvider);
+    monaco.languages.registerCompletionItemProvider(language.id, new SuggestProvider);
+    monaco.languages.registerFoldingRangeProvider(language.id, new FoldingProvider);
+    monaco.languages.registerHoverProvider(language.id, new HoverProvider);
   });
-});
-
-monaco.languages.registerCodeActionProvider(language.id, {
-  provideCodeActions: (model, range, context, token) =>
-    ActionProvider.getCodeAction(model, range, context, token)
-});
-
-monaco.languages.registerCompletionItemProvider(language.id, {
-  provideCompletionItems: (model, position) =>
-    SuggestProvider.getSuggestions(model, position)
-});
-
-monaco.languages.registerFoldingRangeProvider(language.id, {
-  provideFoldingRanges: (model: monaco.editor.ITextModel, context, token) =>
-    FoldingProvider.getModelFolding(model, context, token)
-});
-
-monaco.languages.registerHoverProvider(language.id, {
-  provideHover: (model, position) =>
-    HoverProvider.getHoverContents(model, position)
 });

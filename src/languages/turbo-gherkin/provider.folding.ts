@@ -1,4 +1,4 @@
-import { ProviderBase } from "./provider.base";
+import { ProviderBase as base } from "./provider.base";
 
 enum VAToken {
   Empty = 0,
@@ -14,7 +14,7 @@ interface VAIndent {
   indent: number;
 }
 
-export class FoldingProvider extends ProviderBase {
+export class FoldingProvider extends base {
 
   private static getIndent(text: string, tabSize: number) {
     let indent = 0;
@@ -27,19 +27,19 @@ export class FoldingProvider extends ProviderBase {
     return indent + 1;
   }
 
-  static getModelFolding(
+  public provideFoldingRanges(
     model: monaco.editor.ITextModel,
     context: monaco.languages.FoldingContext,
     token: monaco.CancellationToken,
   ): Array<monaco.languages.FoldingRange> {
-    return this.getCodeFolding(
+    return FoldingProvider.getCodeFolding(
       model.getOptions().tabSize,
       model.getLineCount(),
       lineNumber => model.getLineContent(lineNumber)
     );
   }
 
-  static getCodeFolding(
+  public static getCodeFolding(
     tabSize: number,
     lineCount: number,
     getLineContent: (lineNumber: number) => string
