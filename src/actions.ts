@@ -1,5 +1,5 @@
 import { VanessaEditor } from "./vanessa-editor";
-import { VanessaEditorEvent } from "./events";
+import { VanessaEditorEvent } from "./common";
 
 export interface IVanessaAction {
   id: string;

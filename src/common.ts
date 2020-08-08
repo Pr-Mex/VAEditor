@@ -46,4 +46,18 @@ export class EventsManager {
     document.querySelectorAll("#VanessaEditorContainer>div").forEach((e: HTMLElement) => e.classList.add("vanessa-hidden"));
     if (visible) document.querySelector("#VanessaEditorContainer>div." + selector).classList.remove("vanessa-hidden");
   }
+
+  public getLanguage = (filename: string): string => {
+    let ext = "." + filename.split('.').pop().toLowerCase();
+    let languages = monaco.languages.getLanguages();
+    for (let key in languages) {
+      let lang = languages[key];
+      if (lang.extensions == undefined) continue;
+      if (lang.extensions.find(e => e == ext)) return lang.id;
+    }
+  }
+
+  public createModel(value: string, filename: string): monaco.editor.ITextModel {
+    return monaco.editor.createModel(value, this.getLanguage(filename));
+  }
 }

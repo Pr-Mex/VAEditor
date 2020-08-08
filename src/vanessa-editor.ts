@@ -1,5 +1,5 @@
 import { ActionManager } from "./actions";
-import { EventsManager } from "./events";
+import { EventsManager } from "./common";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
 import { StyleManager } from "./style";
@@ -8,6 +8,7 @@ import { SyntaxManager } from "./syntax";
 export class VanessaEditor {
 
   // 1C:Enterprise interaction call.
+  public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(this.eventsManager.createModel(value, filename)); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
