@@ -15,7 +15,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	MessageText = "Hello, world!";
 	RuntimeStatus = "complete";
 	EditorTheme = "vs";
-	ShowMinimap = true;
+	ShowMinimap = True;
 	LineNumber = 1;
 	Column = 1;
 
@@ -137,7 +137,7 @@ EndProcedure
 &AtClient
 Procedure ReplaceText(Command)
 
-	Map = new Map;
+	Map = New Map;
 	Map.Insert("startLineNumber", LineNumber);
 	Map.Insert("startColumn", 1);
 	Map.Insert("endLineNumber", LineNumber);
@@ -355,7 +355,7 @@ Function GetKeyCodeMap()
 	Map.Insert(110, "ABNT_C1");
 	Map.Insert(111, "ABNT_C2");
 	Map.Insert(112, "MAX_VALUE");
-	return Map;
+	Return Map;
 
 EndFunction
 
@@ -403,7 +403,7 @@ Procedure BreakpointsOnActivateRow(Item)
 		Return;
 	EndIf;
 
-	if Item.CurrentData.codeWidget = 0 Then
+	If Item.CurrentData.codeWidget = 0 Then
 		VanessaEditor.revealLine(Item.CurrentData.lineNumber);
 	EndIf;
 
@@ -484,7 +484,7 @@ EndProcedure
 
 &AtClient
 Procedure SetProgress(Command)
-	Map = new Map;
+	Map = New Map;
 	For Each Row In CompleteSteps Do
 		Steps = Map.Get(Row.codeWidget);
 		If Steps = Undefined Then
@@ -493,7 +493,7 @@ Procedure SetProgress(Command)
 		EndIf;
 		Steps.Add(Row.LineNumber);
 	EndDo;
-	For each KeyValue in Map do
+	For each KeyValue In Map Do
 		VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key);
 	EndDo;
 EndProcedure
@@ -559,11 +559,11 @@ EndProcedure
 Function GetKeyInfo(Data)
 
 	res = "";
-	If Data.metaKey then res = res + "Win+"; EndIf;
-	If Data.ctrlKey then res = res + "Ctrl+"; EndIf;
-	If Data.altKey then res = res + "Alt+"; EndIf;
-	If Data.shiftKey then res = res + "Shift+"; EndIf;
-	return res + KeyCodeMap[Data.keyCode] + " (" + Data.keyCode + ")";
+	If Data.metaKey Then res = res + "Win+"; EndIf;
+	If Data.ctrlKey Then res = res + "Ctrl+"; EndIf;
+	If Data.altKey Then res = res + "Alt+"; EndIf;
+	If Data.shiftKey Then res = res + "Shift+"; EndIf;
+	Return res + KeyCodeMap[Data.keyCode] + " (" + Data.keyCode + ")";
 
 EndFunction
 
@@ -660,33 +660,13 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 EndProcedure
 
 &AtClient
-Procedure VanessaDiffEditorDocumentComplete(Item)
-
-	text1 =
-		"const a = 1;
-		|function test(){
-		|	return a + 1;
-		|}";
-
-	text2 =
-		"const a = 2;
-		|function test(){
-		|	alert('Hello world!');
-		|	return a + 2;
-		|}";
-
-	Items.VanessaDiffEditor.Document.defaultView.createVanessaDiffEditor(text1, text2, "javascript");
-
-EndProcedure
-
-&AtClient
 Procedure FillEditorActions();
 
 	TextJSON = VanessaEditor.getActions();
 	JSONReader = New JSONReader;
 	JSONReader.SetString(TextJSON);
 	ActionArray = ReadJSON(JSONReader);
-	For Each Action in ActionArray do
+	For Each Action In ActionArray Do
 		FillPropertyValues(Actions.Add(), Action);
 	EndDo;
 	Actions.Sort("Id");
@@ -745,9 +725,9 @@ Function GetKeywords(Language = "")
 	split = "
 		|";
 
-	If Language = "en" then
+	If Language = "en" Then
 		words = WordsEn;
-	ElsIf Language = "ru" then
+	ElsIf Language = "ru" Then
 		words = WordsRu;
 	Else
 		words = WordsRu + WordsEn;
@@ -922,11 +902,40 @@ EndProcedure
 
 &AtClient
 Procedure ShowMinimapOnChange(Item)
-	
+
 	VanessaEditor.showMinimap(ShowMinimap);
-	
+
+EndProcedure
+
+&AtClient
+Procedure EditorTypeПриИзменении(Элемент)
+
+	If EditorType > 0 Then
+		text1 =
+			"const a = 1;
+			|function test(){
+			|	return a + 1;
+			|}";
+
+		text2 =
+			"const a = 2;
+			|function test(){
+			|	alert('Hello world!');
+			|	return a + 2;
+			|}";
+
+		SideBySide = 2;
+		defaultView = Items.VanessaEditor.Document.defaultView;
+		DiffEditor = defaultView.createVanessaDiffEditor(text1, text2, "javascript");
+		DiffEditor.setSideBySide(EditorType = SideBySide);
+		DiffEditor.setVisible(True);
+	Else
+		VanessaEditor.setVisible(True);
+	EndIf;
+
 EndProcedure
 
 #EndRegion
 
 #EndRegion
+

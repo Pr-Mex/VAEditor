@@ -1,3 +1,13 @@
+#VanessaEditorContainer {
+  width: 100%;
+  height:100%;
+}
+#VanessaEditorEventForwarder {
+  display: none;
+}
+.vanessa-hidden {
+  display: none !important;
+}
 .debug-breakpoint-glyph {
   background: url('src/media/debug-breakpoint.svg') center center no-repeat;
 }
@@ -152,9 +162,6 @@ body[data-theme="vs-dark"] .vanessa-code-border {
 }
 .overlayWidgets .vanessa-code-overlays.margin-view-overlays:hover div {
   opacity: 1;
-}
-.vanessa-hidden {
-  display: none !important;
 }
 div.monaco-editor div.editor-widget.find-widget {
   transform: translateY(-9999px);

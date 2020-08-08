@@ -9,7 +9,8 @@ export class VanessaDiffEditor {
   public eventsManager: EventsManager;
 
   constructor(original: string, modified: string, language: string) {
-    this.editor = monaco.editor.createDiffEditor(document.getElementById("VanessaEditor"), {
+    let node = document.getElementById("VanessaEditorContainer");
+    this.editor = monaco.editor.createDiffEditor(node, {
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true
@@ -19,6 +20,7 @@ export class VanessaDiffEditor {
       modified: monaco.editor.createModel(modified, language),
     });
     this.eventsManager = new EventsManager(this.editor);
+    this.setVisible(true);
   }
 
   public dispose(): void {
@@ -47,5 +49,5 @@ export class VanessaDiffEditor {
   public popMessage = () => this.eventsManager.popMessage();
   public setSideBySide = (value: boolean) => this.editor.updateOptions({renderSideBySide: value});
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
-  public setVisible = (value: boolean) => this.eventsManager.show(this.editor.getDomNode(), value);
+  public setVisible = (value: boolean) => this.eventsManager.show("monaco-diff-editor", value);
 }

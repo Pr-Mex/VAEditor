@@ -57,7 +57,7 @@ export class VanessaEditor {
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
-  public setVisible = (value: boolean) => this.eventsManager.show(this.editor.getContainerDomNode(), value);
+  public setVisible = (value: boolean) => this.eventsManager.show("monaco-editor", value);
 
   get errorLinks() { return this.actionManager.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
@@ -72,7 +72,8 @@ export class VanessaEditor {
   public styleManager: StyleManager;
 
   constructor(content: string, language: string) {
-    this.editor = monaco.editor.create(document.getElementById("VanessaEditor"), {
+    let node = document.getElementById("VanessaEditorContainer");
+    this.editor = monaco.editor.create(node, {
       language: language,
       scrollBeyondLastLine: false,
       glyphMargin: true,
@@ -87,6 +88,7 @@ export class VanessaEditor {
     this.problemManager = new ProblemManager(this.editor);
     this.syntaxManager = new SyntaxManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
+    this.setVisible(true);
   }
 
   public dispose(): void {
