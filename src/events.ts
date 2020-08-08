@@ -42,7 +42,8 @@ export class EventsManager {
     fakeButtonFireClickEvent.click();
   }
 
-  public show(node: HTMLElement, visible: boolean) {
-    node.style.display = visible ? "block" : "none";
+  public show(selector: string, visible: boolean) {
+    document.querySelectorAll("#VanessaEditorContainer>div").forEach((e: HTMLElement) => e.classList.add("vanessa-hidden"));
+    if (visible) document.querySelector("#VanessaEditorContainer>div." + selector).classList.remove("vanessa-hidden");
   }
 }

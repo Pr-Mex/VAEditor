@@ -60,8 +60,8 @@ export class VanessaGherkinProvider extends ProviderBase {
       };
     });
     VanessaGherkinProvider.updateStepLabels();
-    let checkSyntax = window["VanessaEditor"].checkSyntax;
-    if (checkSyntax) checkSyntax();
+    let editor = window["VanessaEditor"];
+    if (editor) editor.checkSyntax();
   }
 
   public setSyntaxMsg = (message: string): void => {

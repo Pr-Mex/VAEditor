@@ -18,16 +18,15 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 
-function createDOMNode(tagName: string, id: string, style: string): void {
+function createDOMNode(tagName: string, id: string): void {
   const element: HTMLElement = document.createElement(tagName);
   element.id = id;
-  element.setAttribute("style", style);
   document.body.appendChild(element);
 }
 
 (() => {
-  createDOMNode("div", "VanessaEditor", "width: 100%; height:100%;");
-  createDOMNode("button", "VanessaEditorEventForwarder", "display: none");
+  createDOMNode("div", "VanessaEditorContainer");
+  createDOMNode("button", "VanessaEditorEventForwarder")
 })();
 
 // tslint:disable-next-line: no-string-literal
@@ -43,11 +42,14 @@ window["VanessaGherkinProvider"] = new VanessaGherkinProvider;
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaEditor"] = (content: string, language: string) => {
-  return window["VanessaEditor"] = new VanessaEditor(content, language);
+  const id = "VanessaEditor";
+  if (window[id]) return window[id];
+  return window[id] = new VanessaEditor(content, language);
 };
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
-  return window["VanessaEditor"] = new VanessaDiffEditor(original, modified, language);
+  const id = "VADiffEditor";
+  if (window[id]) return window[id];
+  return window[id] = new VanessaDiffEditor(original, modified, language);
 };
-
