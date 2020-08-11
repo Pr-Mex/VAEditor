@@ -16,6 +16,7 @@ export class SyntaxProvider extends ProviderBase {
   }
 
   public static checkSyntax(model: monaco.editor.ITextModel) {
+    if (model.getModeId() != "turbo-gherkin") return;
     let problems: monaco.editor.IMarkerData[] = [];
     let lineCount = model.getLineCount();
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
