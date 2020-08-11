@@ -36,6 +36,7 @@ export class VanessaDiffEditor {
 
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public popMessage = () => this.eventsManager.popMessage();
+  public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public setVisible = (value: boolean) => this.eventsManager.show("monaco-diff-editor", value);
