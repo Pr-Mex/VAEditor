@@ -29,6 +29,8 @@ window.onload = () => {
 
   if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
+  createVanessaTabs();
+
   VanessaGherkinProvider.setKeywords('["и","и это значит что", "к тому же","вот почему","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]')
 
   const steps = [{
