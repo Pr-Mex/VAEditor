@@ -1,8 +1,8 @@
 import "./1c-webkit-style-patch";
 import "./1c-chrome-test";
 import "./media/debug";
+import "./media/tabs";
 import { setLocaleData } from 'monaco-editor-nls';
-
 
 var url = new URL(location.href);
 const localeCode = url.searchParams.get('localeCode') || navigator.language.substr(0, 2);
@@ -14,6 +14,7 @@ if (localeCode !== 'en') {
 
 import * as monaco from "monaco-editor"
 
+import { VanessaTabs } from "./tabs";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
@@ -52,4 +53,11 @@ window["createVanessaDiffEditor"] = (original: string, modified: string, languag
   const id = "VADiffEditor";
   if (window[id]) return window[id];
   return window[id] = new VanessaDiffEditor(original, modified, language);
+};
+
+// tslint:disable-next-line: no-string-literal
+window["createVanessaTabs"] = () => {
+  const id = "VanessaTabs";
+  if (window[id]) return window[id];
+  return window[id] = new VanessaTabs();
 };
