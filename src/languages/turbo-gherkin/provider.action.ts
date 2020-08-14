@@ -75,8 +75,7 @@ export class ActionProvider extends base {
     if (context.markers.every(e => e.severity != monaco.MarkerSeverity.Error)) return undefined;
     if (context.only == "quickfix") return this.getQuickFix(model, context.markers);
     let actions = [];
-    let ve = window["VanessaEditor"] as VanessaEditor;
-    if (ve) ve.actionManager.codeActions.forEach((e: any) => {
+    VanessaEditor.get().actionManager.codeActions.forEach((e: any) => {
       actions.push({ command: { id: e.id }, title: e.title });
     });
     return { actions: actions, dispose: () => { } };

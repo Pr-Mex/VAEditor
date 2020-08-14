@@ -1,4 +1,5 @@
 import { ProviderBase } from "./provider.base";
+import { VanessaEditor } from "../../vanessa-editor";
 
 interface IVanessaStep {
   filterText: string;
@@ -60,8 +61,7 @@ export class VanessaGherkinProvider extends ProviderBase {
       };
     });
     VanessaGherkinProvider.updateStepLabels();
-    let editor = window["VanessaEditor"];
-    if (editor) editor.checkSyntax();
+    VanessaEditor.checkInstanceSyntax();
   }
 
   public setSyntaxMsg = (message: string): void => {

@@ -4,6 +4,8 @@ import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
 import { StyleManager } from "./style";
 import { SyntaxManager } from "./syntax";
+import { VanessaTabs } from "./tabs";
+import { Module } from "webpack";
 
 export class VanessaEditor implements IVAEditor {
 
@@ -59,6 +61,8 @@ export class VanessaEditor implements IVAEditor {
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
   public setVisible = (value: boolean) => this.eventsManager.show(this.editor.getDomNode(), value);
+  public hide = () => this.setVisible(false);
+  public show = () => this.setVisible(true);
 
   get errorLinks() { return this.actionManager.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
@@ -72,10 +76,9 @@ export class VanessaEditor implements IVAEditor {
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
 
-  constructor(model: monaco.editor.ITextModel) {
+  private constructor() {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
-      model: model,
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true,
@@ -98,5 +101,16 @@ export class VanessaEditor implements IVAEditor {
     this.syntaxManager.dispose();
     this.styleManager.dispose();
     this.editor.dispose();
+  }
+
+  private static instance: VanessaEditor;
+
+  public static checkInstanceSyntax() {
+    if (this.instance) this.instance.checkSyntax();
+  }
+
+  public static get() {
+    if (!this.instance) this.instance = new VanessaEditor();
+    return this.instance;
   }
 }

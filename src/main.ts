@@ -43,14 +43,9 @@ window["VanessaGherkinProvider"] = new VanessaGherkinProvider;
 // tslint:disable-next-line: no-string-literal
 window["createVanessaEditor"] = (content: string, language: string) => {
   const model = monaco.editor.createModel(content, language);
-  const id = "VanessaEditor";
-  if (window[id]) {
-    const editor = window[id] as VanessaEditor;
-    editor.editor.setModel(model);
-    return editor;
-  }
-  VanessaTabs.updateEditorContainer();
-  return window[id] = new VanessaEditor(model);
+  const editor = VanessaEditor.get();
+  editor.editor.setModel(model);
+  return editor;
 };
 
 // tslint:disable-next-line: no-string-literal
@@ -59,19 +54,18 @@ window["createVanessaDiffEditor"] = (original: string, modified: string, languag
     original: monaco.editor.createModel(original, language),
     modified: monaco.editor.createModel(modified, language),
   };
-  const id = "VADiffEditor";
-  if (window[id]) {
-    const editor = window[id] as VanessaDiffEditor;
-    editor.editor.setModel(model);
-    return editor;
-  }
-  VanessaTabs.updateEditorContainer();
-  return window[id] = new VanessaDiffEditor(model);
+  const editor = VanessaDiffEditor.get();
+  editor.editor.setModel(model);
+  return editor;
 };
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaTabs"] = () => {
-  const id = "VanessaTabs";
-  if (window[id]) return window[id];
-  return window[id] = new VanessaTabs();
+  return VanessaTabs.get();
 };
+
+Object.defineProperties(window, {
+  VanessaTabs: { get: () => VanessaTabs.get() },
+  VanessaEditor: { get: () => VanessaEditor.get() },
+  VanessaDiffEditor: { get: () => VanessaDiffEditor.get() }
+});
