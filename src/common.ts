@@ -1,3 +1,9 @@
+export interface IVAEditor {
+  setVisible: Function;
+  dispose(): void;
+  editor: any;
+}
+
 export enum VanessaEditorEvent {
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",
@@ -11,6 +17,21 @@ export enum VanessaEditorEvent {
 export interface VanessaEditorMessage {
   type: string;
   data: any;
+}
+
+function getLanguage(filename: string): string {
+  let ext = "." + filename.split('.').pop().toLowerCase();
+  let languages = monaco.languages.getLanguages();
+  for (let key in languages) {
+    let lang = languages[key];
+    if (lang.extensions == undefined) continue;
+    if (lang.extensions.find(e => e == ext)) return lang.id;
+  }
+}
+
+export function createModel(value: string, filename: string, uri?: monaco.Uri): monaco.editor.ITextModel
+{
+  return monaco.editor.createModel(value, getLanguage(filename), uri);
 }
 
 export class EventsManager {
@@ -42,22 +63,8 @@ export class EventsManager {
     fakeButtonFireClickEvent.click();
   }
 
-  public show(selector: string, visible: boolean) {
+  public show(domNode: HTMLElement, visible: boolean) {
     document.querySelectorAll("#VanessaEditorContainer>div").forEach((e: HTMLElement) => e.classList.add("vanessa-hidden"));
-    if (visible) document.querySelector("#VanessaEditorContainer>div." + selector).classList.remove("vanessa-hidden");
-  }
-
-  public getLanguage = (filename: string): string => {
-    let ext = "." + filename.split('.').pop().toLowerCase();
-    let languages = monaco.languages.getLanguages();
-    for (let key in languages) {
-      let lang = languages[key];
-      if (lang.extensions == undefined) continue;
-      if (lang.extensions.find(e => e == ext)) return lang.id;
-    }
-  }
-
-  public createModel(value: string, filename: string): monaco.editor.ITextModel {
-    return monaco.editor.createModel(value, this.getLanguage(filename));
+    if (visible) domNode.classList.remove("vanessa-hidden");
   }
 }

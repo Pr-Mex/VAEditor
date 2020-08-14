@@ -27,9 +27,7 @@ window.onload = () => {
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \n'
 
-  if (!(['file:', 'http:'].includes(window.location.protocol))) return
-
-  createVanessaTabs();
+if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
   VanessaGherkinProvider.setKeywords('["и","и это значит что", "к тому же","вот почему","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]')
 
@@ -145,7 +143,10 @@ window.onload = () => {
 
   VanessaGherkinProvider.setSyntaxMsg('Step not found')
 
-  createVanessaEditor(content, 'turbo-gherkin')
+  createVanessaEditor("", "");
+  createVanessaDiffEditor("", "");
+  let tabs = createVanessaTabs();
+  VanessaEditor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature')
 
   const commands = [
     { eventId: 'Win+F6', keyCode: 'F6', keyMod: ['WinCtrl'] },
@@ -162,9 +163,11 @@ window.onload = () => {
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
   И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9'
 
-  VanessaEditor.showRuntimeCode(20, subcode)
+//  VanessaEditor.showRuntimeCode(20, subcode)
+//  VanessaEditor.showRuntimeCode(28, subcode)
+  tabs.edit(subcode, 'Подсценарий.feature', 'Подсценарий.feature', 0, true)
+  tabs.diff(subcode, 'blob:Подсценарий.text', subcode, 'Подсценарий.feature', 'Подсценарий.feature', 0, true)
 
-  VanessaEditor.showRuntimeCode(28, subcode)
   /*
     setInterval(() => VanessaEditor.runtimeManager.next(), 500);
     let problems = [{

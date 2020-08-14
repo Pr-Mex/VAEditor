@@ -19,13 +19,12 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 
-function createDOMNode(tagName: string, id: string): void {
-  const element: HTMLElement = document.createElement(tagName);
-  element.id = id;
-  document.body.appendChild(element);
-}
-
 (() => {
+  function createDOMNode(tagName: string, id: string): void {
+    const element: HTMLElement = document.createElement(tagName);
+    element.id = id;
+    document.body.appendChild(element);
+  }
   createDOMNode("div", "VanessaEditorContainer");
   createDOMNode("button", "VanessaEditorEventForwarder")
 })();
@@ -43,16 +42,31 @@ window["VanessaGherkinProvider"] = new VanessaGherkinProvider;
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaEditor"] = (content: string, language: string) => {
+  const model = monaco.editor.createModel(content, language);
   const id = "VanessaEditor";
-  if (window[id]) return window[id];
-  return window[id] = new VanessaEditor(content, language);
+  if (window[id]) {
+    const editor = window[id] as VanessaEditor;
+    editor.editor.setModel(model);
+    return editor;
+  }
+  VanessaTabs.updateEditorContainer();
+  return window[id] = new VanessaEditor(model);
 };
 
 // tslint:disable-next-line: no-string-literal
 window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
+  const model = {
+    original: monaco.editor.createModel(original, language),
+    modified: monaco.editor.createModel(modified, language),
+  };
   const id = "VADiffEditor";
-  if (window[id]) return window[id];
-  return window[id] = new VanessaDiffEditor(original, modified, language);
+  if (window[id]) {
+    const editor = window[id] as VanessaDiffEditor;
+    editor.editor.setModel(model);
+    return editor;
+  }
+  VanessaTabs.updateEditorContainer();
+  return window[id] = new VanessaDiffEditor(model);
 };
 
 // tslint:disable-next-line: no-string-literal

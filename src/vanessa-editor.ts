@@ -1,14 +1,14 @@
+import { IVAEditor, EventsManager, createModel } from "./common";
 import { ActionManager } from "./actions";
-import { EventsManager } from "./common";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
 import { StyleManager } from "./style";
 import { SyntaxManager } from "./syntax";
 
-export class VanessaEditor {
+export class VanessaEditor implements IVAEditor {
 
   // 1C:Enterprise interaction call.
-  public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(this.eventsManager.createModel(value, filename)); }
+  public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
@@ -58,7 +58,7 @@ export class VanessaEditor {
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
-  public setVisible = (value: boolean) => this.eventsManager.show("monaco-editor", value);
+  public setVisible = (value: boolean) => this.eventsManager.show(this.editor.getDomNode(), value);
 
   get errorLinks() { return this.actionManager.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
@@ -72,17 +72,16 @@ export class VanessaEditor {
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
 
-  constructor(content: string, language: string) {
+  constructor(model: monaco.editor.ITextModel) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
-      language: language,
+      model: model,
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true,
+      insertSpaces: false,
       lightbulb: { enabled: true }
     });
-    this.editor.setValue(content);
-    this.editor.getModel().updateOptions({ insertSpaces: false });
     this.runtimeManager = new RuntimeManager(this);
     this.actionManager = new ActionManager(this);
     this.eventsManager = new EventsManager(this.editor);
