@@ -2,20 +2,20 @@ import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
 import { IVAEditor, EventsManager, createModel } from "./common";
+import { VanessaTabs } from "./tabs";
 
 export class VanessaDiffEditor implements IVAEditor {
 
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
 
-  constructor(model: monaco.editor.IDiffEditorModel) {
+  private constructor() {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.createDiffEditor(node, {
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true,
     });
-    this.editor.setModel(model);
     this.eventsManager = new EventsManager(this.editor);
     this.setVisible(true);
   }
@@ -37,4 +37,13 @@ export class VanessaDiffEditor implements IVAEditor {
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public setVisible = (value: boolean) => this.eventsManager.show(this.editor["_containerDomElement"], value);
+  public hide = () => this.setVisible(false);
+  public show = () => this.setVisible(true);
+
+  private static instance: VanessaDiffEditor;
+
+  public static get() {
+    if (!this.instance) this.instance = new VanessaDiffEditor();
+    return this.instance;
+  }
 }

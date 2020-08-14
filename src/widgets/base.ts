@@ -1,3 +1,5 @@
+import { VanessaEditor } from "../vanessa-editor";
+
 export class WidgetBase implements monaco.editor.IViewZone {
   public domNode: HTMLElement;
   public afterLineNumber: number;
@@ -24,7 +26,7 @@ export class WidgetBase implements monaco.editor.IViewZone {
     var linkNode = this.div('vanessa-error-links', parent);
     textNode.innerText = text;
     linkNode.dataset.value = data;
-    window["VanessaEditor"].errorLinks.forEach((e: any, i: number) => {
+    VanessaEditor.get().errorLinks.forEach((e: any, i: number) => {
       if (i) this.span('&nbsp;|&nbsp;', linkNode);
       let node = document.createElement('a');
       node.href = "#";

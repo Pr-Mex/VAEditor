@@ -63,11 +63,9 @@ class VanessaTabItem {
     this.domNode.classList.add(className);
     this.domNode.scrollIntoView();
     if (this.model.modified) {
-      const editor = window["VADiffEditor"] as VanessaDiffEditor;
-      editor.editor.setModel(this.model);
+      VanessaDiffEditor.get().editor.setModel(this.model);
     } else {
-      const editor = window["VanessaEditor"] as VanessaEditor;
-      editor.editor.setModel(this.model.original);
+      VanessaEditor.get().editor.setModel(this.model.original);
     }
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
@@ -79,7 +77,7 @@ class VanessaTabItem {
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     const next = this.owner.tabStack.pop();
-    if (next) next.select(); else window["VanessaEditor"].setVisible(false);
+    if (next) next.select(); else VanessaDiffEditor.get().setVisible(false);
     this.dispose();
   }
 
@@ -99,7 +97,7 @@ export class VanessaTabs {
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
 
-  public constructor() {
+  private constructor() {
     this.domTabPanel = $("div.vanessa-tab-panel");
     const container = $("div", { id: "VanessaTabsContainer" });
     container.append(this.domTabPanel);
@@ -143,7 +141,7 @@ export class VanessaTabs {
       if (tab) { tab.select(); return tab.editor; }
     }
     if (!model.original) model.original = createModel(content, filename, uri);
-    const editor = window["VanessaEditor"] as IVAEditor;
+    const editor = VanessaEditor.get();
     editor.editor.setModel(model.original);
     return this.openTab(editor, model, title, encoding, openNewTab);
   }
@@ -169,7 +167,7 @@ export class VanessaTabs {
     }
     if (!model.original) model.original = createModel(oldValue, oldFile, original);
     if (!model.modified) model.modified = createModel(newValue, newFile, modified);
-    const editor = window["VADiffEditor"] as IVAEditor;
+    const editor = VanessaDiffEditor.get();
     editor.editor.setModel(model);
     return this.openTab(editor, model, title, encoding, openNewTab);
   }
@@ -179,9 +177,14 @@ export class VanessaTabs {
     monaco.editor.getModels().forEach(model => model.dispose());
   }
 
-  public static updateEditorContainer() {
-    const tabs = window["VanessaTabs"] as VanessaTabs;
-    const container = document.getElementById("VanessaEditorContainer");
-    if (!tabs) container.setAttribute("style", "top: 0; height: 100%");
+  private static instance: VanessaTabs;
+
+  public static get() {
+    if (!this.instance) {
+      this.instance = new VanessaTabs();
+      VanessaDiffEditor.get().hide();
+      VanessaEditor.get().hide();
+    }
+    return this.instance;
   }
 }
