@@ -8,22 +8,32 @@ body {
 }
 
 body {
+    display: flex;
     color: #4b4b4b;
     background-color: #fff;
     font-family: Almarai, Arial, sans-serif;
     font-size: 10pt;
     cursor: default;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
     overflow: hidden;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    -ms-user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none
+}
+
+#VanessaEditorEventForwarder {
+    display: none;
+}
+
+.vanessa-hidden {
+    display: none !important;
+}
+
+#VanessaEditorContainer {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 2em);
 }
 
 #VanessaTabsContainer {
@@ -41,9 +51,12 @@ body {
     height: 2em;
     border-style: solid;
     border-color: rgba(0, 0, 0, .4);
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none
 }
 
-.VanessaTabPanel {
+.vanessa-tab-panel {
     background-color: #f2f2f2;
     position: relative;
     overflow: hidden;
@@ -53,7 +66,7 @@ body {
     padding: 0;
 }
 
-.VanessaTabItem {
+.vanessa-tab-item {
     margin: 0 0 0 -1px;
     padding: 0 5px;
     display: inherit;
@@ -69,17 +82,17 @@ body {
     z-index: 0;
 }
 
-.VanessaTabItem>div:not(.VanessaTabClose) {
+.vanessa-tab-item>div:not(.vanessa-tab-close) {
     padding: 4px 0
 }
 
-.VanessaTabClose {
+.vanessa-tab-close {
     font-family: "codicon";
     margin: -2px;
     padding: 0;
 }
 
-.VanessaTabClose {
+.vanessa-tab-close {
     fill: #4b4b4b;
     display: inline-flex;
     flex: 0 0 auto;
@@ -90,7 +103,7 @@ body {
     height: 1.2em;
 }
 
-.VanessaTabClose:HOVER:before {
+.vanessa-tab-close:HOVER:before {
     content: '';
     border-radius: 50%;
     position: absolute;
@@ -102,24 +115,24 @@ body {
     box-shadow: 0 0 0 1em inset
 }
 
-.VanessaTabSelect .VanessaTabItem {
+.vanessa-tab-select .vanessa-tab-item {
     background-color: #fff
 }
 
-.VanessaTabSelect .VanessaTabItem:before {
+.vanessa-tab-select .vanessa-tab-item:before {
     content: '';
     background: #009646;
     position: absolute
 }
 
-.VanessaTabSelect .VanessaTabItem:before {
+.vanessa-tab-select .vanessa-tab-item:before {
     height: 2px;
     right: 3px;
     bottom: 2px;
     left: 3px
 }
 
-.VanessaTabItem {
+.vanessa-tab-item {
     transition: width .1s;
     -webkit-transition: width .1s;
     -moz-transition: width .1s;
@@ -129,7 +142,7 @@ body {
     text-overflow: ellipsis;
 }
 
-.VanessaTabBox {
+.vanessa-tab-box {
     transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
     -webkit-transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
     -moz-transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
@@ -139,7 +152,7 @@ body {
     padding: 0;
 }
 
-.VanessaTabTitle {
+.vanessa-tab-title {
     flex: 1 1 auto;
     margin: 0 5px;
     white-space: nowrap;

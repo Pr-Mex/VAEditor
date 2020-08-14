@@ -1,13 +1,3 @@
-#VanessaEditorContainer {
-  width: 100%;
-  height:100%;
-}
-#VanessaEditorEventForwarder {
-  display: none;
-}
-.vanessa-hidden {
-  display: none !important;
-}
 .debug-breakpoint-glyph {
   background: url('src/media/debug-breakpoint.svg') center center no-repeat;
 }
