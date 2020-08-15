@@ -95,15 +95,16 @@ class VanessaTabItem {
 export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
+  public domEditors: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
 
   private constructor() {
     this.domTabPanel = $("div.vanessa-tab-panel");
-    const container = $("div", { id: "VanessaTabsContainer" });
-    container.append(this.domTabPanel);
-    document.body.append(container);
-    this.domContainer = document.getElementById("VanessaEditorContainer");
-    this.domContainer.setAttribute("style", "top: 2em");
+    this.domContainer = $("div", { id: "VanessaTabsContainer" });
+    this.domContainer.append(this.domTabPanel);
+    document.body.append(this.domContainer);
+    this.domEditors = document.getElementById("VanessaEditorContainer");
+    this.domEditors.setAttribute("style", "top: 2em");
   }
 
   public current() {
@@ -186,5 +187,21 @@ export class VanessaTabs {
       VanessaEditor.get().hide();
     }
     return this.instance;
+  }
+
+  show = () => this.setVisible(true);
+  hide = () => this.setVisible(false);
+  setVisible = (visible: boolean) => {
+    if (visible) {
+      this.domContainer.classList.remove("vanessa-hidden");
+      this.domEditors.setAttribute("style", "top: 2em");
+      VanessaDiffEditor.get().editor.layout();
+      VanessaEditor.get().editor.layout();
+    } else {
+      this.domContainer.classList.add("vanessa-hidden");
+      this.domEditors.setAttribute("style", "height: 100%");
+      VanessaDiffEditor.get().editor.layout();
+      VanessaEditor.get().editor.layout();
+    }
   }
 }
