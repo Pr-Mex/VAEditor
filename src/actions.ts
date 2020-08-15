@@ -35,6 +35,7 @@ export class ActionManager {
   public codeActions: Array<IVanessaAction> = [];
   public errorLinks: Array<IVanessaAction> = [];
   public codeLens: Array<IVanessaAction> = [];
+  private codiconDecorations: string[] = [];
   public traceKeyboard: boolean = false;
 
   constructor(
@@ -93,6 +94,47 @@ export class ActionManager {
         if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
       }
     });
+  }
+
+  public getCodicon(line: number): string[] {
+    const codicons = [];
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    model.getLinesDecorations(line, line).forEach(d => {
+      if (this.codiconDecorations.indexOf(d.id) >= 0) {
+        codicons.push(d.options.glyphMarginClassName);
+      }
+    });
+    return codicons;
+  }
+
+  public setCodicon(arg: any, codicon: string = undefined) {
+    let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
+    if (typeof (lines) == "number") lines = [lines];
+    const oldDecorations = [];
+    const decorations: monaco.editor.IModelDeltaDecoration[] = [];
+    const model: monaco.editor.ITextModel = this.editor.getModel();
+    lines.forEach((line: number) => {
+      model.getLinesDecorations(line, line).forEach(d => {
+        let i = this.codiconDecorations.indexOf(d.id);
+        if (i >= 0) {
+          this.codiconDecorations.splice(i, 1);
+          oldDecorations.push(d.id);
+        }
+      });
+      if (codicon) decorations.push({
+        range: new monaco.Range(line, 1, line, 1),
+        options: {
+          stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+          glyphMarginClassName: codicon,
+        }
+      });
+    });
+    const newDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
+    newDecorations.forEach(s => this.codiconDecorations.push(s));
+  }
+
+  public clearCodicons() {
+    this.codiconDecorations = this.editor.deltaDecorations(this.codiconDecorations, []);
   }
 
   public setSuggestWidgetWidth(arg: any) {
