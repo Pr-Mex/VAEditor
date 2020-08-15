@@ -52,6 +52,9 @@ export class VanessaEditor implements IVAEditor {
   public toggleBreakpoint = (lineNumber: number = 0, codeWidget: string = "") => this.runtimeManager.toggleBreakpoint(lineNumber, codeWidget);
   public getActions = () => JSON.stringify(this.actionManager.actions);
   public addCommands = (arg: string) => this.actionManager.addCommands(JSON.parse(arg));
+  public setLineCodicon = (arg: string, codicon: string) => this.actionManager.setCodicon(arg, codicon);
+  public getLineCodicon = (lineNumber: number) => this.actionManager.getCodicon(lineNumber);
+  public clearCodicons = () => this.actionManager.clearCodicons();
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setSuggestWidgetWidth = (arg: any) => this.actionManager.setSuggestWidgetWidth(arg);
