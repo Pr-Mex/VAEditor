@@ -1,21 +1,23 @@
 import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
-import { IVAEditor, EventsManager, createModel } from "./common";
+import { IVanessaEditor, EventsManager, createModel } from "./common";
 import { VanessaTabs } from "./tabs";
 
-export class VanessaDiffEditor implements IVAEditor {
+export class VanessaDiffEditor implements IVanessaEditor {
 
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
 
-  constructor() {
+  constructor(model: monaco.editor.IDiffEditorModel = null, readOnly: boolean = false) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.createDiffEditor(node, {
+      originalEditable: !readOnly,
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true,
     });
+    this.editor.setModel(model);
     this.eventsManager = new EventsManager(this.editor);
   }
 

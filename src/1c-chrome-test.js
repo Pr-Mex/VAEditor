@@ -143,8 +143,8 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
   VanessaGherkinProvider.setSyntaxMsg('Step not found')
 
-  let tabs = createVanessaTabs();
-  VanessaEditor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature')
+  let tabs = createVanessaTabs()
+  let editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
   const commands = [
     { eventId: 'Win+F6', keyCode: 'F6', keyMod: ['WinCtrl'] },
@@ -155,7 +155,7 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
     { eventId: 'CODE_LENS_COPY', errorLink: 'Copy error', script: "alert('Copy error!')" }
   ]
 
-  VanessaEditor.addCommands(JSON.stringify(commands))
+  editor.addCommands(JSON.stringify(commands))
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
@@ -163,8 +163,8 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
 //  VanessaEditor.showRuntimeCode(20, subcode)
 //  VanessaEditor.showRuntimeCode(28, subcode)
-  tabs.edit(subcode, 'Подсценарий.feature', 'Подсценарий.feature', 0, true)
-  tabs.diff(subcode, 'blob:Подсценарий.text', subcode, 'Подсценарий.feature', 'Подсценарий.feature', 0, true)
+  tabs.edit(subcode, 'Подсценарий.feature', 'Подсценарий.feature', 'Подсценарий.feature', 0, false, true)
+  tabs.diff(subcode, 'blob:Подсценарий.text', 'blob:Подсценарий.text', subcode, 'Подсценарий.feature', 'Подсценарий.feature',  'Подсценарий.feature', 'Подсценарий.feature', 0, false, true)
 
   /*
     setInterval(() => VanessaEditor.runtimeManager.next(), 500);

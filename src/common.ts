@@ -2,7 +2,7 @@ import * as dom from '../node_modules/monaco-editor/esm/vs/base/browser/dom';
 
 const $ = dom.$;
 
-export interface IVAEditor {
+export interface IVanessaEditor {
   domNode(): HTMLElement;
   dispose(): void;
   editor: any;
