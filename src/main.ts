@@ -18,16 +18,9 @@ import { VanessaTabs } from "./tabs";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
+import { initPage } from "./common";
 
-(() => {
-  function createDOMNode(tagName: string, id: string): void {
-    const element: HTMLElement = document.createElement(tagName);
-    element.id = id;
-    document.body.appendChild(element);
-  }
-  createDOMNode("div", "VanessaEditorContainer");
-  createDOMNode("button", "VanessaEditorEventForwarder")
-})();
+initPage();
 
 // tslint:disable-next-line: no-string-literal
 window["MonacoEnvironment"] = { // worker loader

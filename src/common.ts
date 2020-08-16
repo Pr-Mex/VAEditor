@@ -1,8 +1,10 @@
+import * as dom from '../node_modules/monaco-editor/esm/vs/base/browser/dom';
+
+const $ = dom.$;
+
 export interface IVAEditor {
-  setVisible: Function;
+  domNode(): HTMLElement;
   dispose(): void;
-  hide(): void;
-  show(): void;
   editor: any;
 }
 
@@ -19,6 +21,14 @@ export enum VanessaEditorEvent {
 export interface VanessaEditorMessage {
   type: string;
   data: any;
+}
+
+export function initPage() {
+  const domMain  = $("div", {id : "VanessaContainer"});
+  domMain.append($("div", {id : "VanessaTabsContainer", class: "vanessa-hidden"}));
+  domMain.append($("div", {id : "VanessaEditorContainer"}));
+  domMain.append($("botton", {id : "VanessaEditorEventForwarder"}));
+  document.body.append(domMain);
 }
 
 function getLanguage(filename: string): string {

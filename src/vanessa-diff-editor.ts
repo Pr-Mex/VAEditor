@@ -9,7 +9,7 @@ export class VanessaDiffEditor implements IVAEditor {
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
 
-  private constructor() {
+  constructor() {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.createDiffEditor(node, {
       scrollBeyondLastLine: false,
@@ -17,7 +17,6 @@ export class VanessaDiffEditor implements IVAEditor {
       automaticLayout: true,
     });
     this.eventsManager = new EventsManager(this.editor);
-    this.setVisible(true);
   }
 
   public dispose(): void {
@@ -36,9 +35,7 @@ export class VanessaDiffEditor implements IVAEditor {
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
-  public setVisible = (value: boolean) => this.eventsManager.show(this.editor["_containerDomElement"], value);
-  public hide = () => this.setVisible(false);
-  public show = () => this.setVisible(true);
+  public domNode = () => this.editor["_containerDomElement"];
 
   private static instance: VanessaDiffEditor;
 
