@@ -40,7 +40,6 @@ class VanessaTabItem {
     this.domNode.append(this.domItem);
     this.owner.domTabPanel.append(this.domNode);
     this.editor.editor.setModel(model);
-    this.editor.show();
     this.select();
   }
 
@@ -65,17 +64,19 @@ class VanessaTabItem {
     this.domNode.classList.add(className);
     this.domNode.scrollIntoView();
     this.editor.editor.setModel(this.model);
+    let domEditor = this.editor.domNode();
+    domEditor.parentElement.appendChild(domEditor);
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
-    this.editor.show();
   }
 
   private close() {
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     const next = this.owner.tabStack.pop();
-    if (next) next.select(); else VanessaEditor.get().hide();
+    if (next) next.select();
+    this.editor.dispose();
     this.dispose();
   }
 
@@ -93,16 +94,13 @@ class VanessaTabItem {
 export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
-  public domEditors: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
 
   private constructor() {
+    this.domContainer = document.getElementById("VanessaTabsContainer");
+    this.domContainer.classList.remove("vanessa-hidden");
     this.domTabPanel = $("div.vanessa-tab-panel");
-    this.domContainer = $("div", { id: "VanessaTabsContainer" });
     this.domContainer.append(this.domTabPanel);
-    document.body.append(this.domContainer);
-    this.domEditors = document.getElementById("VanessaEditorContainer");
-    this.domEditors.setAttribute("style", "top: 2em");
   }
 
   public current() {
@@ -116,10 +114,7 @@ export class VanessaTabs {
     encoding: number,
     newTab: boolean,
    ) {
-    let tab = newTab ? null : this.current();
-    if (tab) tab.open(editor, model, title, encoding);
-    else tab = new VanessaTabItem(this, editor, model, title, encoding);
-    editor.show();
+    new VanessaTabItem(this, editor, model, title, encoding);
     return editor;
   }
 
@@ -133,7 +128,7 @@ export class VanessaTabs {
     const uri = monaco.Uri.parse(filename);
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
-    return this.openTab(VanessaEditor.get(), model, title, encoding, newTab);
+    return this.openTab(new VanessaEditor(), model, title, encoding, newTab);
   }
 
   public diff = (
@@ -153,38 +148,24 @@ export class VanessaTabs {
     };
     if (!model.original) model.original = createModel(oldValue, oldFile, original);
     if (!model.modified) model.modified = createModel(newValue, newFile, modified);
-    return this.openTab(VanessaDiffEditor.get(), model, title, encoding, newTab);
+    return this.openTab(new VanessaDiffEditor, model, title, encoding, newTab);
   }
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
-    monaco.editor.getModels().forEach(model => model.dispose());
   }
 
   private static instance: VanessaTabs;
 
   public static get() {
-    if (!this.instance) {
-      this.instance = new VanessaTabs();
-      VanessaDiffEditor.get().hide();
-      VanessaEditor.get().hide();
-    }
+    if (!this.instance) this.instance = new VanessaTabs();
     return this.instance;
   }
 
   show = () => this.setVisible(true);
   hide = () => this.setVisible(false);
   setVisible = (visible: boolean) => {
-    if (visible) {
-      this.domContainer.classList.remove("vanessa-hidden");
-      this.domEditors.setAttribute("style", "top: 2em");
-      VanessaDiffEditor.get().editor.layout();
-      VanessaEditor.get().editor.layout();
-    } else {
-      this.domContainer.classList.add("vanessa-hidden");
-      this.domEditors.setAttribute("style", "height: 100%");
-      VanessaDiffEditor.get().editor.layout();
-      VanessaEditor.get().editor.layout();
-    }
+    if (visible) this.domContainer.classList.remove("vanessa-hidden");
+    else this.domContainer.classList.add("vanessa-hidden");
   }
 }

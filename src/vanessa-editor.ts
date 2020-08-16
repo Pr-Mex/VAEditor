@@ -63,9 +63,7 @@ export class VanessaEditor implements IVAEditor {
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
-  public setVisible = (value: boolean) => this.eventsManager.show(this.editor.getDomNode(), value);
-  public hide = () => this.setVisible(false);
-  public show = () => this.setVisible(true);
+  public domNode = () => this.editor.getDomNode();
 
   get errorLinks() { return this.actionManager.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
@@ -79,7 +77,7 @@ export class VanessaEditor implements IVAEditor {
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
 
-  private constructor() {
+  constructor() {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
       scrollBeyondLastLine: false,
@@ -94,7 +92,6 @@ export class VanessaEditor implements IVAEditor {
     this.problemManager = new ProblemManager(this.editor);
     this.syntaxManager = new SyntaxManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
-    this.setVisible(true);
   }
 
   public dispose(): void {
