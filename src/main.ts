@@ -59,6 +59,4 @@ window["createVanessaTabs"] = () => {
 
 Object.defineProperties(window, {
   VanessaTabs: { get: () => VanessaTabs.get() },
-  VanessaEditor: { get: () => VanessaEditor.get() },
-  VanessaDiffEditor: { get: () => VanessaDiffEditor.get() }
 });

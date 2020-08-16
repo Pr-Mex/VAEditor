@@ -1,4 +1,4 @@
-import { IVAEditor, EventsManager, createModel } from "./common";
+import { IVanessaEditor, EventsManager, createModel } from "./common";
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
@@ -7,7 +7,7 @@ import { SyntaxManager } from "./syntax";
 import { VanessaTabs } from "./tabs";
 import { Module } from "webpack";
 
-export class VanessaEditor implements IVAEditor {
+export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
@@ -77,9 +77,11 @@ export class VanessaEditor implements IVAEditor {
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
 
-  constructor() {
+  constructor(model: monaco.editor.ITextModel = null, readOnly: boolean = false) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
+      model: model,
+      readOnly: readOnly,
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true,
