@@ -1,6 +1,8 @@
 export interface IVAEditor {
   setVisible: Function;
   dispose(): void;
+  hide(): void;
+  show(): void;
   editor: any;
 }
 
@@ -65,6 +67,6 @@ export class EventsManager {
 
   public show(domNode: HTMLElement, visible: boolean) {
     document.querySelectorAll("#VanessaEditorContainer>div").forEach((e: HTMLElement) => e.classList.add("vanessa-hidden"));
-    if (visible) domNode.classList.remove("vanessa-hidden");
+    if (visible) { domNode.classList.remove("vanessa-hidden"); this.editor.layout(); }
   }
 }
