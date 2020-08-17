@@ -2,3 +2,4 @@
 /dist
 *.epf
 fileversion
+/package-lock.json
