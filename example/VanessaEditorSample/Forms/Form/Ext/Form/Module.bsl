@@ -631,7 +631,7 @@ Procedure VanessaEditorLoad()
 	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
 	For each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-		BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
+		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
 		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID)
 			+ "&localeCode=" + Left(CurrentSystemLanguage(), 2);
 	EndDo;
@@ -796,7 +796,7 @@ Function VanessaStepList(language)
 	For each ZipFileEntry In ZipFileReader.Items Do
 		If ZipFileEntry.BaseName = language Then
 			ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-			BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
+			BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
 			TextReader = New TextReader(BinaryData.OpenStreamForRead(), TextEncoding.UTF8);
 			Result = TextReader.Read();
 		EndIf;
@@ -922,9 +922,9 @@ EndProcedure
 
 &AtClient
 Procedure ShowMinimapOnChange(Item)
-	
+
 	VanessaEditor.showMinimap(ShowMinimap);
-	
+
 EndProcedure
 
 #EndRegion
