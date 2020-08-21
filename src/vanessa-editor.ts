@@ -59,6 +59,7 @@ export class VanessaEditor {
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
+  public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
 
   get errorLinks() { return this.actionManager.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }

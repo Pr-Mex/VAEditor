@@ -119,6 +119,7 @@ export class SubcodeLine {
   }
 
   public togleBreakpoint() {
+    if (!this.owner.useDebugger) return;
     let classList = this.breakpointNode.classList;
     classList.remove(RuntileGlyphs.Breakpoint);
     classList.remove(RuntileGlyphs.Unverified);

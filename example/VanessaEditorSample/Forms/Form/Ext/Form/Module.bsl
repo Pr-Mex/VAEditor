@@ -926,6 +926,13 @@ Procedure ShowMinimapOnChange(Item)
 
 EndProcedure
 
+&НаКлиенте
+Процедура useDebuggerПриИзменении(Элемент)
+	
+	VanessaEditor.useDebugger(useDebugger);
+	
+КонецПроцедуры
+
 #EndRegion
 
 #EndRegion

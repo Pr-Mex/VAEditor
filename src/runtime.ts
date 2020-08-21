@@ -71,8 +71,8 @@ export class RuntimeManager {
     const model: monaco.editor.ITextModel = this.editor.getModel();
     model.onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations());
     this.editor.onDidScrollChange(() => this.checkOverlayVisible());
-    this.editor.onMouseDown(e => this.breakpointOnMouseDown(e));
-    this.editor.onMouseMove(e => this.breakpointsOnMouseMove(e));
+    this.editor.onMouseDown(e => { if (this.showBreakpoints) this.breakpointOnMouseDown(e) });
+    this.editor.onMouseMove(e => { if (this.showBreakpoints) this.breakpointsOnMouseMove(e) });
     this.registerOnDidChangeFolding();
   }
 
@@ -251,6 +251,16 @@ export class RuntimeManager {
   private errorViewZoneIds: Array<string> = [];
   private codeWidgets = {};
   private currentCodeWidget: string = "";
+  private showBreakpoints: boolean = false;
+
+  public set useDebugger (value: boolean) {
+    if (!value) this.breakpoints = [];
+    this.showBreakpoints = value;
+    this.forEachSubcode(w => w.useDebugger = value);
+  }
+  public get useDebugger() {
+    return this.showBreakpoints;
+  }
 
   public setStatus(status: string, arg: any, codeWidget: string = ""): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;

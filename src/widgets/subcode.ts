@@ -31,6 +31,7 @@ export class SubcodeWidget extends WidgetBase {
   }
 
   private overlayWidget: monaco.editor.IOverlayWidget;
+  private showBreakpoints: boolean = false;
 
   constructor(runtime: RuntimeManager, content: string) {
     super();
@@ -58,11 +59,26 @@ export class SubcodeWidget extends WidgetBase {
       );
       folding.forEach(e => (this.lines[e.start - 1] as SubcodeLine).initFolding(e.end));
     });
+    this.useDebugger = runtime.useDebugger;
   }
 
   public dispose(): void {
     this.runtime.editor.removeOverlayWidget(this.overlayWidget);
     this.overlayDom.remove();
+  }
+
+  public set useDebugger(value: boolean) {
+    if (value) {
+      this.leftNode.classList.add("vanessa-use-breakpoints");
+    } else {
+      this.leftNode.classList.remove("vanessa-use-breakpoints");
+      this.breakpoints = [];
+    }
+    this.showBreakpoints = value;
+  }
+
+  public get useDebugger() {
+    return this.showBreakpoints;
   }
 
   public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): string {
