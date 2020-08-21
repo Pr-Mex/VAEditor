@@ -1,11 +1,12 @@
+import { VanessaEditor } from "../vanessa-editor";
 import { WidgetBase } from "./base";
 
 export class ErrorWidget  extends WidgetBase {
 
   public id: string;
 
-  constructor(data: string, text: string) {
-    super();
+  constructor(editor: VanessaEditor, data: string, text: string) {
+    super(editor);
     this.domNode = this.div('vanessa-error-widget');
     this.error(data, text, this.domNode);
   }

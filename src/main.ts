@@ -34,22 +34,45 @@ window["MonacoEnvironment"] = { // worker loader
 window["VanessaGherkinProvider"] = new VanessaGherkinProvider;
 
 // tslint:disable-next-line: no-string-literal
-window["createVanessaEditor"] = (content: string, language: string) => {
+window["createVanessaEditor"] = (
+  content: string = "",
+  language: string = "turbo-gherkin",
+) => {
+  const id = "VanessaEditor";
+  if (window[id]) return window[id];
   const model = monaco.editor.createModel(content, language);
-  const editor = VanessaEditor.get();
-  editor.editor.setModel(model);
-  return editor;
+  return window[id] = new VanessaEditor(model);
+};
+
+window["deleteVanessaEditor"] = () => {
+  const id = "VanessaEditor";
+  if (window[id]) {
+    window[id].dispose()
+    delete window[id];
+  }
 };
 
 // tslint:disable-next-line: no-string-literal
-window["createVanessaDiffEditor"] = (original: string, modified: string, language: string) => {
+window["createVanessaDiffEditor"] = (
+  original: string = "",
+  modified: string = "",
+  language: string = "turbo-gherkin",
+) => {
+  const id = "VanessaDiffEditor";
+  if (window[id]) return window[id];
   const model = {
     original: monaco.editor.createModel(original, language),
     modified: monaco.editor.createModel(modified, language),
   };
-  const editor = VanessaDiffEditor.get();
-  editor.editor.setModel(model);
-  return editor;
+  return window[id] = new VanessaDiffEditor(model);
+};
+
+window["deleteVanessaDiffEditor"] = () => {
+  const id = "VanessaDiffEditor";
+  if (window[id]) {
+    window[id].dispose()
+    delete window[id];
+  }
 };
 
 // tslint:disable-next-line: no-string-literal
