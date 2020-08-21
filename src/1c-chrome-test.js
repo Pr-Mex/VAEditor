@@ -143,6 +143,8 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
   VanessaGherkinProvider.setSyntaxMsg('Step not found')
 
+  return;
+
   let tabs = createVanessaTabs()
   let editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 

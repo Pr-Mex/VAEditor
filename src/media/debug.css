@@ -106,7 +106,7 @@ body[data-theme="vs-dark"] .vanessa-code-border {
 .vanessa-code-border > span {
   display: block;
 }
-.vanessa-code-border div.cgmr:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
+.vanessa-code-border.vanessa-use-breakpoints div.cgmr:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
   background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
 }
 .vanessa-code-widget .vanessa-code-lines {

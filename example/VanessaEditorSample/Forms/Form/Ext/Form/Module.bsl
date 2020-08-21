@@ -9,7 +9,7 @@ Var KeyCodeMap;
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
-	VanessaEditorLoad();
+	VanessaEditorLoad(FormAttributeToValue("Object").GetTemplate("VanessaEditor"));
 	ErrorCode = New UUID;
 	ErrorText = "Runtime error info";
 	MessageText = "Hello, world!";
@@ -621,17 +621,16 @@ EndProcedure
 #Region Public
 
 &AtServer
-Procedure VanessaEditorLoad()
+Procedure VanessaEditorLoad(TemplateBinaryData)
 
 	TempFileName = GetTempFileName();
 	DeleteFiles(TempFileName);
 	CreateDirectory(TempFileName);
 
-	BinaryData = FormAttributeToValue("Object").GetTemplate("VanessaEditor");
-	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
+	ZipFileReader = New ZipFileReader(TemplateBinaryData.OpenStreamForRead());
 	For each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-		BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
+		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
 		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID)
 			+ "&localeCode=" + Left(CurrentSystemLanguage(), 2);
 	EndDo;
@@ -776,7 +775,7 @@ Function VanessaStepList(language)
 	For each ZipFileEntry In ZipFileReader.Items Do
 		If ZipFileEntry.BaseName = language Then
 			ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-			BinaryData = New BinaryData(TempFileName + "/" + ZipFileEntry.FullName);
+			BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
 			TextReader = New TextReader(BinaryData.OpenStreamForRead(), TextEncoding.UTF8);
 			Result = TextReader.Read();
 		EndIf;
@@ -908,8 +907,10 @@ Procedure ShowMinimapOnChange(Item)
 EndProcedure
 
 &AtClient
-Procedure EditorTypeПриИзменении(Элемент)
+Procedure EditorTypeOnChange(Элемент)
 
+	View = Items.VanessaEditor.Document.defaultView;
+		
 	If EditorType > 0 Then
 		text1 =
 			"const a = 1;
@@ -925,17 +926,23 @@ Procedure EditorTypeПриИзменении(Элемент)
 			|}";
 
 		SideBySide = 2;
-		defaultView = Items.VanessaEditor.Document.defaultView;
-		DiffEditor = defaultView.createVanessaDiffEditor(text1, text2, "javascript");
+		View.deleteVanessaEditor();
+		DiffEditor = View.createVanessaDiffEditor(text1, text2, "javascript");
 		DiffEditor.setSideBySide(EditorType = SideBySide);
-		DiffEditor.setVisible(True);
 	Else
-		VanessaEditor.setVisible(True);
+		View.deleteVanessaDiffEditor();
+		View.createVanessaEditor();
 	EndIf;
 
 EndProcedure
 
 #EndRegion
+&НаКлиенте
+Процедура UseDebuggerOnChange(Элемент)
+
+	VanessaEditor.useDebugger(useDebugger);
+
+КонецПроцедуры
 
 #EndRegion
 

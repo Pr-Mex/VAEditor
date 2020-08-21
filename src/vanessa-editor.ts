@@ -1,4 +1,5 @@
-import { IVanessaEditor, EventsManager, createModel } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent } from "./common";
+import { SyntaxProvider } from "./languages/turbo-gherkin/provider.syntax";
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
@@ -6,6 +7,7 @@ import { StyleManager } from "./style";
 import { SyntaxManager } from "./syntax";
 import { VanessaTabs } from "./tabs";
 import { Module } from "webpack";
+import { VanessaDiffEditor } from "./vanessa-diff-editor";
 
 export class VanessaEditor implements IVanessaEditor {
 
@@ -63,6 +65,7 @@ export class VanessaEditor implements IVanessaEditor {
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
+  public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public domNode = () => this.editor.getDomNode();
 
   get errorLinks() { return this.actionManager.errorLinks; }
@@ -77,7 +80,7 @@ export class VanessaEditor implements IVanessaEditor {
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
 
-  constructor(model: monaco.editor.ITextModel = null, readOnly: boolean = false) {
+  constructor(model: monaco.editor.ITextModel, readOnly: boolean = false) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
       model: model,
@@ -94,9 +97,13 @@ export class VanessaEditor implements IVanessaEditor {
     this.problemManager = new ProblemManager(this.editor);
     this.syntaxManager = new SyntaxManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
+    VanessaEditor.editors.push(this);
   }
 
   public dispose(): void {
+    if (window["VanessaEditor"] === this) delete window["VanessaEditor"];
+    const index = VanessaEditor.editors.indexOf(this);
+    if (index >= 0) VanessaEditor.editors.splice(index, 1);
     this.runtimeManager.dispose();
     this.problemManager.dispose();
     this.actionManager.dispose();
@@ -105,14 +112,6 @@ export class VanessaEditor implements IVanessaEditor {
     this.editor.dispose();
   }
 
-  private static instance: VanessaEditor;
-
-  public static checkInstanceSyntax() {
-    if (this.instance) this.instance.checkSyntax();
-  }
-
-  public static get() {
-    if (!this.instance) this.instance = new VanessaEditor();
-    return this.instance;
-  }
+  static editors: Array<VanessaEditor> = [];
+  static checkAllSyntax = () => VanessaEditor.editors.forEach(e => SyntaxProvider.checkSyntax(e.editor.getModel()));
 }

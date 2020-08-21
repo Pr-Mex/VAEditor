@@ -61,7 +61,7 @@ export class VanessaGherkinProvider extends ProviderBase {
       };
     });
     VanessaGherkinProvider.updateStepLabels();
-    VanessaEditor.checkInstanceSyntax();
+    VanessaEditor.checkAllSyntax();
   }
 
   public setSyntaxMsg = (message: string): void => {

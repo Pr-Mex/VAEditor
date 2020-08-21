@@ -6,6 +6,11 @@ export class WidgetBase implements monaco.editor.IViewZone {
   public heightInLines: number;
   public marginDomNode: HTMLElement;
   public afterColumn: number = 1;
+  private editor: VanessaEditor;
+
+  constructor(editor: VanessaEditor) {
+    this.editor = editor;
+  }
 
   public div(className: string, parent: HTMLElement = null): HTMLElement {
     let node = document.createElement('div');
@@ -26,7 +31,7 @@ export class WidgetBase implements monaco.editor.IViewZone {
     var linkNode = this.div('vanessa-error-links', parent);
     textNode.innerText = text;
     linkNode.dataset.value = data;
-    VanessaEditor.get().errorLinks.forEach((e: any, i: number) => {
+    this.editor.errorLinks.forEach((e: any, i: number) => {
       if (i) this.span('&nbsp;|&nbsp;', linkNode);
       let node = document.createElement('a');
       node.href = "#";

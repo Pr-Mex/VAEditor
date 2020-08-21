@@ -287,7 +287,7 @@
 							</ToolTip>
 							<ExtendedTooltip name="PageContentExtendedTooltip" id="174"/>
 							<ChildItems>
-								<RadioButtonField name="EditorType" id="394">
+								<RadioButtonField name="EditorType" id="397">
 									<DataPath>EditorType</DataPath>
 									<RadioButtonType>Tumbler</RadioButtonType>
 									<ChoiceList>
@@ -331,10 +331,10 @@
 											</xr:Value>
 										</xr:Item>
 									</ChoiceList>
-									<ContextMenu name="EditorTypeКонтекстноеМеню" id="395"/>
-									<ExtendedTooltip name="EditorTypeРасширеннаяПодсказка" id="396"/>
+									<ContextMenu name="EditorTypeКонтекстноеМеню" id="398"/>
+									<ExtendedTooltip name="EditorTypeРасширеннаяПодсказка" id="399"/>
 									<Events>
-										<Event name="OnChange">EditorTypeПриИзменении</Event>
+										<Event name="OnChange">EditorTypeOnChange</Event>
 									</Events>
 								</RadioButtonField>
 								<InputField name="EditorTheme" id="159">
@@ -677,6 +677,16 @@
 									<ExtendedTooltip name="ShowMinimapExtendedTooltip" id="393"/>
 									<Events>
 										<Event name="OnChange">ShowMinimapOnChange</Event>
+									</Events>
+								</CheckBoxField>
+								<CheckBoxField name="UseDebugger" id="394">
+									<DataPath>UseDebugger</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="UseDebuggerКонтекстноеМеню" id="395"/>
+									<ExtendedTooltip name="UseDebuggerРасширеннаяПодсказка" id="396"/>
+									<Events>
+										<Event name="OnChange">UseDebuggerOnChange</Event>
 									</Events>
 								</CheckBoxField>
 							</ChildItems>
@@ -2278,6 +2288,17 @@
 					<v8:FractionDigits>0</v8:FractionDigits>
 					<v8:AllowedSign>Any</v8:AllowedSign>
 				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="UseDebugger" id="25">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Use debugger</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
 			</Type>
 		</Attribute>
 	</Attributes>
