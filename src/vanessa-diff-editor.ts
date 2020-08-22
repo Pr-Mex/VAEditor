@@ -23,6 +23,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
 
   public dispose(): void {
     if (window["VanessaDiffEditor"] === this) delete window["VanessaDiffEditor"];
+    this.eventsManager.dispose();
     this.editor.dispose();
   }
 
@@ -34,9 +35,9 @@ export class VanessaDiffEditor implements IVanessaEditor {
   }
 
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
-  public popMessage = () => this.eventsManager.popMessage();
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public domNode = () => this.editor["_containerDomElement"];
+  public popMessage = () => EventsManager.popMessage();
 }

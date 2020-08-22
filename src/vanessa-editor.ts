@@ -12,12 +12,12 @@ import { VanessaDiffEditor } from "./vanessa-diff-editor";
 export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
+  public popMessage = () => EventsManager.popMessage();
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
   public redo = () => this.editor.trigger('undo…', 'redo', undefined);
-  public popMessage = () => this.eventsManager.popMessage();
   public getLineContent = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getLineWidgets = (lineNumber: number) => JSON.stringify(this.runtimeManager.getLineWidgets(lineNumber));
   public getWidgetLine = (codeWidget: string) => this.runtimeManager.getWidgetLine(codeWidget);

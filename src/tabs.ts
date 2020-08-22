@@ -90,11 +90,22 @@ export class VanessaTabs {
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
 
+  public static create() {
+    const id = "VanessaTabs";
+    if (window[id]) return window[id];
+    return window[id] = new VanessaTabs;
+  }
+
   private constructor() {
     this.domContainer = document.getElementById("VanessaTabsContainer");
     this.domContainer.classList.remove("vanessa-hidden");
     this.domTabPanel = $("div.vanessa-tab-panel");
     this.domContainer.append(this.domTabPanel);
+  }
+
+  public dispose() {
+    if (window["VanessaTabs"] === this) delete window["VanessaDiffEditor"];
+    this.domContainer.classList.add("vanessa-hidden");
   }
 
   public get current() {
@@ -178,13 +189,6 @@ export class VanessaTabs {
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
-  }
-
-  private static instance: VanessaTabs;
-
-  public static get() {
-    if (!this.instance) this.instance = new VanessaTabs();
-    return this.instance;
   }
 
   show = () => this.setVisible(true);
