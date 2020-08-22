@@ -1,4 +1,4 @@
-import * as dom from '../node_modules/monaco-editor/esm/vs/base/browser/dom';
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel } from "./common";
@@ -86,14 +86,26 @@ class VanessaTabItem {
 }
 
 export class VanessaTabs {
+
+  private static standaloneInstance: VanessaTabs;
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
 
-  public static create() {
-    const id = "VanessaTabs";
-    if (window[id]) return window[id];
-    return window[id] = new VanessaTabs;
+  public static createStandalone() {
+    if (this.standaloneInstance) return this.standaloneInstance;
+    VanessaEditor.disposeStandalone();
+    VanessaDiffEditor.disposeStandalone();
+    return this.standaloneInstance = new VanessaTabs;
+  }
+
+  public static getStandalone() { return this.standaloneInstance; }
+
+  public static disposeStandalone() {
+    if (this.standaloneInstance) {
+      this.standaloneInstance.dispose();
+      this.standaloneInstance = null;
+    }
   }
 
   private constructor() {
@@ -104,7 +116,8 @@ export class VanessaTabs {
   }
 
   public dispose() {
-    if (window["VanessaTabs"] === this) delete window["VanessaDiffEditor"];
+    if (VanessaTabs.standaloneInstance === this) VanessaTabs.standaloneInstance = null;
+    while (this.tabStack.length) this.tabStack.pop().dispose();
     this.domContainer.classList.add("vanessa-hidden");
   }
 

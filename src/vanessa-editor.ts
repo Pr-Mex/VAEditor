@@ -5,7 +5,7 @@ import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
 import { StyleManager } from "./style";
 import { SyntaxManager } from "./syntax";
-import { VanessaTabs } from "./tabs";
+import { VanessaTabs } from "./vanessa-tabs";
 import { Module } from "webpack";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 
@@ -72,6 +72,7 @@ export class VanessaEditor implements IVanessaEditor {
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
   set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
 
+  private static standaloneInstance: VanessaEditor;
   public editor: monaco.editor.IStandaloneCodeEditor;
   public actionManager: ActionManager;
   public eventsManager: EventsManager;
@@ -79,6 +80,26 @@ export class VanessaEditor implements IVanessaEditor {
   public problemManager: ProblemManager;
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
+
+  public static createStandalone(
+    content: string = "",
+    language: string = "turbo-gherkin",
+  ) {
+    if (this.standaloneInstance) return this.standaloneInstance;
+    VanessaDiffEditor.disposeStandalone();
+    VanessaTabs.disposeStandalone();
+    const model = monaco.editor.createModel(content, language);
+    return this.standaloneInstance = new VanessaEditor(model);
+  }
+
+  public static getStandalone() { return this.standaloneInstance; }
+
+  public static disposeStandalone() {
+    if (this.standaloneInstance) {
+      this.standaloneInstance.dispose();
+      this.standaloneInstance = null;
+    }
+  }
 
   constructor(model: monaco.editor.ITextModel, readOnly: boolean = false) {
     let node = document.getElementById("VanessaEditorContainer");
@@ -101,7 +122,7 @@ export class VanessaEditor implements IVanessaEditor {
   }
 
   public dispose(): void {
-    if (window["VanessaEditor"] === this) delete window["VanessaEditor"];
+    if (VanessaEditor.standaloneInstance === this) VanessaEditor.standaloneInstance = null;
     const index = VanessaEditor.editors.indexOf(this);
     if (index >= 0) VanessaEditor.editors.splice(index, 1);
     this.runtimeManager.dispose();

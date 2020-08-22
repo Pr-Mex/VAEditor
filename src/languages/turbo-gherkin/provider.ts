@@ -12,10 +12,13 @@ interface IVanessaStep {
 
 export class VanessaGherkinProvider extends ProviderBase {
 
+  public static standaloneInstance: VanessaGherkinProvider = new VanessaGherkinProvider();
   public get elements(): any { return ProviderBase.elements; }
   public get keywords(): any { return ProviderBase.keywords; }
   public get variables(): any { return ProviderBase.variables; }
   public get steps(): any { return ProviderBase.steps; }
+
+  public static getStandalone() { return this.standaloneInstance; }
 
   public setKeywords = (arg: string): void => {
     ProviderBase.keywords = [];
@@ -88,7 +91,7 @@ export class VanessaGherkinProvider extends ProviderBase {
     }
   }
 
-  constructor() {
+  private constructor() {
     super();
     this.createTheme1C();
   }

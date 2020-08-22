@@ -13,8 +13,7 @@ if (localeCode !== 'en') {
 }
 
 import * as monaco from "monaco-editor"
-
-import { VanessaTabs } from "./tabs";
+import { VanessaTabs } from "./vanessa-tabs";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
@@ -30,56 +29,17 @@ window["MonacoEnvironment"] = { // worker loader
   }
 };
 
-// tslint:disable-next-line: no-string-literal
-window["VanessaGherkinProvider"] = new VanessaGherkinProvider;
-
-// tslint:disable-next-line: no-string-literal
-window["createVanessaEditor"] = (
-  content: string = "",
-  language: string = "turbo-gherkin",
-) => {
-  const id = "VanessaEditor";
-  if (window[id]) return window[id];
-  const model = monaco.editor.createModel(content, language);
-  return window[id] = new VanessaEditor(model);
-};
-
-window["disposeVanessaEditor"] = () => {
-  const id = "VanessaEditor";
-  if (window[id]) window[id].dispose()
-};
-
-// tslint:disable-next-line: no-string-literal
-window["createVanessaDiffEditor"] = (
-  original: string = "",
-  modified: string = "",
-  language: string = "turbo-gherkin",
-) => {
-  const id = "VanessaDiffEditor";
-  if (window[id]) return window[id];
-  const model = {
-    original: monaco.editor.createModel(original, language),
-    modified: monaco.editor.createModel(modified, language),
-  };
-  return window[id] = new VanessaDiffEditor(model);
-};
-
-window["disposeVanessaDiffEditor"] = () => {
-  const id = "VanessaDiffEditor";
-  if (window[id]) window[id].dispose()
-};
-
-window["createVanessaTabs"] = () => {
-  const id = "VanessaTabs";
-  if (window[id]) return window[id];
-  return window[id] = VanessaTabs.create();
-};
-
-window["disposeVanessaTabs"] = () => {
-  const id = "VanessaTabs";
-  if (window[id]) window[id].dispose()
-};
-
-window["popVanessaMessage"] = () => {
-  return EventsManager.popMessage();
-};
+Object.defineProperties(window, {
+  VanessaGherkinProvider: { get: () => VanessaGherkinProvider.getStandalone() },
+  VanessaTabs: { get: () => VanessaTabs.getStandalone() },
+  VanessaEditor: { get: () => VanessaEditor.getStandalone() },
+  VanessaDiffEditor: { get: () => VanessaDiffEditor.getStandalone() },
+  createVanessaTabs: { get: () => () => VanessaTabs.createStandalone() },
+  createVanessaEditor: { get: () => (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language) },
+  createVanessaDiffEditor: { get: () => (original?: string, modified?: string, language: string = "turbo-gherkin") => VanessaDiffEditor.createStandalone(original, modified, language) },
+  disposeVanessaAll: { get: () => () => { VanessaTabs.disposeStandalone(); VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone(); } },
+  disposeVanessaTabs: { get: () => () => VanessaTabs.disposeStandalone() },
+  disposeVanessaEditor: { get: () => () => VanessaEditor.disposeStandalone() },
+  disposeVanessaDiffEditor: { get: () => () => VanessaDiffEditor.disposeStandalone() },
+  popVanessaMessage: { get: () => () => EventsManager.popMessage() },
+});

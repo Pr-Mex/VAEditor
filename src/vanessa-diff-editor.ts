@@ -2,12 +2,38 @@ import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
 import { IVanessaEditor, EventsManager, createModel } from "./common";
-import { VanessaTabs } from "./tabs";
+import { VanessaEditor } from "./vanessa-editor";
+import { VanessaTabs } from "./vanessa-tabs";
 
 export class VanessaDiffEditor implements IVanessaEditor {
 
+  private static standaloneInstance: VanessaDiffEditor;
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
+
+  public static createStandalone(
+    original: string = "",
+    modified: string = "",
+    language: string = "turbo-gherkin",
+  ) {
+    if (this.standaloneInstance) return this.standaloneInstance;
+    VanessaEditor.disposeStandalone();
+    VanessaTabs.disposeStandalone();
+    const model = {
+      original: monaco.editor.createModel(original, language),
+      modified: monaco.editor.createModel(modified, language),
+    };
+      return this.standaloneInstance = new VanessaDiffEditor(model);
+  }
+
+  public static getStandalone() { return this.standaloneInstance; }
+
+  public static disposeStandalone() {
+    if (this.standaloneInstance) {
+      this.standaloneInstance.dispose();
+      this.standaloneInstance = null;
+    }
+  }
 
   constructor(model: monaco.editor.IDiffEditorModel, readOnly: boolean = false) {
     let node = document.getElementById("VanessaEditorContainer");
@@ -22,7 +48,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   }
 
   public dispose(): void {
-    if (window["VanessaDiffEditor"] === this) delete window["VanessaDiffEditor"];
+    if (VanessaDiffEditor.standaloneInstance === this) VanessaDiffEditor.standaloneInstance = null;
     this.eventsManager.dispose();
     this.editor.dispose();
   }
