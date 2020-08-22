@@ -19,6 +19,7 @@ export enum VanessaEditorEvent {
 }
 
 export interface VanessaEditorMessage {
+  editor?: monaco.editor.IEditor;
   type: string;
   data: any;
 }
@@ -48,8 +49,8 @@ export function createModel(value: string, filename: string, uri?: monaco.Uri): 
 
 export class EventsManager {
 
+  private static messages: Array<VanessaEditorMessage> = [];
   private editor: monaco.editor.IEditor;
-  private messages: Array<VanessaEditorMessage> = [];
 
   constructor(
     editor: monaco.editor.IEditor
@@ -65,18 +66,13 @@ export class EventsManager {
     return this.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
   }
 
-  public popMessage = () => this.messages.shift();
+  public static popMessage = () => EventsManager.messages.shift();
 
   public fireEvent(event: any, arg: any = undefined) {
     // tslint:disable-next-line: no-console
     console.debug("fireEvent: ", event, " : ", arg);
-    this.messages.push({ type: event, data: arg });
+    EventsManager.messages.push({ editor: this.editor, type: event, data: arg });
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.click();
-  }
-
-  public show(domNode: HTMLElement, visible: boolean) {
-    document.querySelectorAll("#VanessaEditorContainer>div").forEach((e: HTMLElement) => e.classList.add("vanessa-hidden"));
-    if (visible) { domNode.classList.remove("vanessa-hidden"); this.editor.layout(); }
   }
 }

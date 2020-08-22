@@ -18,7 +18,7 @@ import { VanessaTabs } from "./tabs";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
-import { initPage } from "./common";
+import { EventsManager, initPage } from "./common";
 
 initPage();
 
@@ -44,12 +44,9 @@ window["createVanessaEditor"] = (
   return window[id] = new VanessaEditor(model);
 };
 
-window["deleteVanessaEditor"] = () => {
+window["disposeVanessaEditor"] = () => {
   const id = "VanessaEditor";
-  if (window[id]) {
-    window[id].dispose()
-    delete window[id];
-  }
+  if (window[id]) window[id].dispose()
 };
 
 // tslint:disable-next-line: no-string-literal
@@ -67,19 +64,22 @@ window["createVanessaDiffEditor"] = (
   return window[id] = new VanessaDiffEditor(model);
 };
 
-window["deleteVanessaDiffEditor"] = () => {
+window["disposeVanessaDiffEditor"] = () => {
   const id = "VanessaDiffEditor";
-  if (window[id]) {
-    window[id].dispose()
-    delete window[id];
-  }
+  if (window[id]) window[id].dispose()
 };
 
-// tslint:disable-next-line: no-string-literal
 window["createVanessaTabs"] = () => {
-  return VanessaTabs.get();
+  const id = "VanessaTabs";
+  if (window[id]) return window[id];
+  return window[id] = VanessaTabs.create();
 };
 
-Object.defineProperties(window, {
-  VanessaTabs: { get: () => VanessaTabs.get() },
-});
+window["disposeVanessaTabs"] = () => {
+  const id = "VanessaTabs";
+  if (window[id]) window[id].dispose()
+};
+
+window["popVanessaMessage"] = () => {
+  return EventsManager.popMessage();
+};
