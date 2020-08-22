@@ -5,6 +5,7 @@ const $ = dom.$;
 export interface IVanessaEditor {
   domNode(): HTMLElement;
   dispose(): void;
+  getModel: Function;
   editor: any;
 }
 
@@ -19,7 +20,7 @@ export enum VanessaEditorEvent {
 }
 
 export interface VanessaEditorMessage {
-  editor?: monaco.editor.IEditor;
+  editor: IVanessaEditor;
   type: string;
   data: any;
 }
@@ -50,20 +51,20 @@ export function createModel(value: string, filename: string, uri?: monaco.Uri): 
 export class EventsManager {
 
   private static messages: Array<VanessaEditorMessage> = [];
-  private editor: monaco.editor.IEditor;
+  private owner: IVanessaEditor;
 
   constructor(
-    editor: monaco.editor.IEditor
+    owner: IVanessaEditor
   ) {
-    this.editor = editor;
+    this.owner = owner;
   }
 
   public dispose(): void {
-    this.editor = null;
+    this.owner = null;
   }
 
   get actions(): any {
-    return this.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
+    return this.owner.editor.getSupportedActions().map(e => { return { id: e.id, alias: e.alias, label: e.label } });
   }
 
   public static popMessage = () => EventsManager.messages.shift();
@@ -71,7 +72,15 @@ export class EventsManager {
   public fireEvent(event: any, arg: any = undefined) {
     // tslint:disable-next-line: no-console
     console.debug("fireEvent: ", event, " : ", arg);
-    EventsManager.messages.push({ editor: this.editor, type: event, data: arg });
+    EventsManager.messages.push({ editor: this.owner, type: event, data: arg });
+    let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
+    fakeButtonFireClickEvent.click();
+  }
+
+  public static fireEvent(editor: IVanessaEditor, event: any, arg: any = undefined) {
+    // tslint:disable-next-line: no-console
+    console.debug("fireEvent: ", event, " : ", arg);
+    EventsManager.messages.push({ editor: editor, type: event, data: arg });
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.click();
   }

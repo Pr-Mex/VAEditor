@@ -12,13 +12,11 @@
 document.addEventListener('keydown', e => {
   if (!e) e = window.event
   if (e.ctrlKey && e.keyCode === 83) {
-    const editor = window.VanessaEditor
-    if (editor) {
-      editor.fireEvent('PRESS_CTRL_S')
-      if (e.preventDefault) e.preventDefault()
-      if (e.stopPropagation) e.stopPropagation()
-      return false
-    }
+    const editor = window.VanessaEditor || window.VanessaDiffEditor || window.VanessaTabs
+    if (editor) editor.onFileSave()
+    if (e.preventDefault) e.preventDefault()
+    if (e.stopPropagation) e.stopPropagation()
+    return false
   }
   return true
 }, false)

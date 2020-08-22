@@ -66,6 +66,7 @@ export class VanessaEditor implements IVanessaEditor {
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
+  public getModel = () => this.editor.getModel();
   public domNode = () => this.editor.getDomNode();
 
   get errorLinks() { return this.actionManager.errorLinks; }
@@ -114,7 +115,7 @@ export class VanessaEditor implements IVanessaEditor {
     });
     this.runtimeManager = new RuntimeManager(this);
     this.actionManager = new ActionManager(this);
-    this.eventsManager = new EventsManager(this.editor);
+    this.eventsManager = new EventsManager(this);
     this.problemManager = new ProblemManager(this.editor);
     this.syntaxManager = new SyntaxManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
@@ -135,4 +136,5 @@ export class VanessaEditor implements IVanessaEditor {
 
   static editors: Array<VanessaEditor> = [];
   static checkAllSyntax = () => VanessaEditor.editors.forEach(e => SyntaxProvider.checkSyntax(e.editor.getModel()));
+  public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
 }

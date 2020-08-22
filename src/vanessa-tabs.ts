@@ -1,7 +1,7 @@
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
-import { IVanessaEditor, createModel } from "./common";
+import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager } from "./common";
 
 const $ = dom.$;
 
@@ -203,11 +203,6 @@ export class VanessaTabs {
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
   }
-
-  show = () => this.setVisible(true);
-  hide = () => this.setVisible(false);
-  setVisible = (visible: boolean) => {
-    if (visible) this.domContainer.classList.remove("vanessa-hidden");
-    else this.domContainer.classList.add("vanessa-hidden");
-  }
+  public getModel = () => this.current ? this.current.editor.getModel() : null;
+  public onFileSave = () => this.current ? EventsManager.fireEvent(this.current.editor, VanessaEditorEvent.PRESS_CTRL_S, this.getModel()) : undefined;
 }
