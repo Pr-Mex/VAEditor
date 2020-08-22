@@ -7,9 +7,10 @@ const $ = dom.$;
 
 class VanessaTabItem {
   public editor: IVanessaEditor;
-  public modified: boolean = false;
-  public encoding: number;
   public key: string;
+  private title: string;
+  private filename: string;
+  private encoding: number;
   private owner: VanessaTabs;
   private domNode: HTMLElement;
   private domItem: HTMLElement;
@@ -19,20 +20,23 @@ class VanessaTabItem {
   constructor(
     owner: VanessaTabs,
     editor: IVanessaEditor,
-    title: string,
     key: string,
+    title: string,
+    filename: string,
     encoding: number,
   ) {
     this.owner = owner;
     this.editor = editor;
     this.key = key;
     this.encoding = encoding;
+    this.filename = filename;
+    this.title = title;
     this.domNode = $("div.vanessa-tab-box");
     this.domItem = $("div.vanessa-tab-item", { title: title });
     this.domClose = $("div.vanessa-tab-close", { title: "Close" });
     this.domTitle = $("div.vanessa-tab-title");
-    this.domItem.addEventListener("click", this.select.bind(this), true);
-    this.domClose.addEventListener("click", this.close.bind(this), true);
+    this.domItem.addEventListener("click", this.onSelect.bind(this), true);
+    this.domClose.addEventListener("click", this.onClose.bind(this), true);
     this.domClose.innerText = "\uEA76";
     this.domTitle.innerText = title;
     this.domItem.append(this.domTitle, this.domClose);
@@ -43,17 +47,28 @@ class VanessaTabItem {
 
   public open(
     editor: IVanessaEditor,
-    title: string,
     key: string,
+    title: string,
+    filename: string,
     encoding: number,
   ): VanessaTabItem {
     this.editor.dispose();
     this.editor = editor;
+    this.key = key;
+    this.title = title;
     this.encoding = encoding;
+    this.filename = filename;
     this.domTitle.innerText = title;
     this.domItem.setAttribute("title", title);
-    this.modified = false;
     return this;
+  }
+
+  public onSelect() {
+    this.select();
+  }
+
+  public onClose() {
+    this.close();
   }
 
   public select(): IVanessaEditor {
@@ -83,6 +98,16 @@ class VanessaTabItem {
     this.editor = null;
     this.owner = null;
   }
+
+  public get data() {
+    return {
+      editor: this.editor,
+      model: this.editor.getModel(),
+      title: this.title,
+      filename: this.filename,
+      encoding: this.encoding,
+    }
+  };
 }
 
 export class VanessaTabs {
@@ -140,37 +165,38 @@ export class VanessaTabs {
 
   private open(
     editor: IVanessaEditor,
-    title: string,
     key: string,
+    title: string,
+    filename: string,
     encoding: number,
     newTab: boolean,
   ): IVanessaEditor {
-      let tab: VanessaTabItem;
-    if (!newTab && this.current && !this.current.modified) {
-      tab = this.current.open(editor, title, key, encoding);
+    let tab: VanessaTabItem;
+    if (!newTab && this.current) {
+      tab = this.current.open(editor, key, title, filename, encoding);
     } else {
-      tab = new VanessaTabItem(this, editor, title, key, encoding);
+      tab = new VanessaTabItem(this, editor, key, title, filename, encoding);
     }
     return editor;
   }
 
   public edit = (
     content: string,
-    fileName: string,
-    filePath: string,
+    filename: string,
+    filepath: string,
     title: string,
     encoding: number,
     readOnly: boolean,
     newTab: boolean,
   ): IVanessaEditor => {
-    let key = this.key(filePath);
+    let key = this.key(filepath);
     let tab = this.tabStack.find(t => t.key === key);
     if (tab) return tab.select();
-    const uri = monaco.Uri.parse(filePath);
+    const uri = monaco.Uri.parse(filepath);
     let model = monaco.editor.getModel(uri);
-    if (!model) model = createModel(content, fileName, uri);
+    if (!model) model = createModel(content, filename, uri);
     const editor = new VanessaEditor(model, readOnly);
-    return this.open(editor, title, key, encoding, true);
+    return this.open(editor, key, title, filename, encoding, true);
   }
 
   public diff = (
@@ -195,14 +221,18 @@ export class VanessaTabs {
       modified: monaco.editor.getModel(uriModified),
     };
     if (!model.original) model.original = createModel(oldContent, oldFileName, uriOriginal);
-    if (!model.modified) model.modified = createModel(newContent, oldFileName, uriModified);
+    if (!model.modified) model.modified = createModel(newContent, newFileName, uriModified);
     const editor = new VanessaDiffEditor(model, readOnly);
-    return this.open(editor, title, key, encoding, true);
+    return this.open(editor, key, title, newFileName, encoding, true);
   }
+
+  public onFileSave = () => {
+    const tab = this.current;
+    if (tab) EventsManager.fireEvent(tab.editor, VanessaEditorEvent.PRESS_CTRL_S, tab.data);
+  };
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
   }
   public getModel = () => this.current ? this.current.editor.getModel() : null;
-  public onFileSave = () => this.current ? EventsManager.fireEvent(this.current.editor, VanessaEditorEvent.PRESS_CTRL_S, this.getModel()) : undefined;
 }
