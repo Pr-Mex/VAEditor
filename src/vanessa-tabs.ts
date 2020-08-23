@@ -33,8 +33,8 @@ class VanessaTabItem {
     this.title = title;
     this.domNode = $(".vanessa-tab-box", {},
       this.domItem = $(".vanessa-tab-item", { title: title },
-      this.domTitle = $(".vanessa-tab-title"),
-      this.domClose = $(".vanessa-tab-close", { title: "Close" }),
+        this.domTitle = $(".vanessa-tab-title"),
+        this.domClose = $(".vanessa-tab-close", { title: "Close" }),
       ));
     this.domItem.addEventListener("click", this.onSelect.bind(this), true);
     this.domClose.addEventListener("click", this.onClose.bind(this), true);
@@ -106,7 +106,12 @@ class VanessaTabItem {
       filename: this.filename,
       encoding: this.encoding,
     }
-  };
+  }
+
+  public get modified(): boolean {
+    const model = this.editor.getModel();
+    return model && model.isModified();
+  }
 }
 
 export class VanessaTabs {
@@ -227,11 +232,11 @@ export class VanessaTabs {
 
   public onFileSave = () => {
     const tab = this.current;
-    if (tab) EventsManager.fireEvent(tab.editor, VanessaEditorEvent.PRESS_CTRL_S, tab.data);
+    const model = tab.editor.getModel();
+    if (tab && model) EventsManager.fireEvent(tab.editor, VanessaEditorEvent.PRESS_CTRL_S, tab.data);
   };
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
   }
-  public getModel = () => this.current ? this.current.editor.getModel() : null;
 }
