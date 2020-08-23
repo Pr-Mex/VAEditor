@@ -28,7 +28,7 @@ export interface VanessaEditorMessage {
 
 export function initPage() {
   const domMain = $("div", { id: "VanessaContainer" },
-    $("div.vanessa-hidden", { id: "VanessaTabsContainer"}),
+    $("div.vanessa-hidden", { id: "VanessaTabsContainer" }),
     $("div", { id: "VanessaEditorContainer" }),
     $("botton", { id: "VanessaEditorEventForwarder" }),
   );
@@ -46,7 +46,13 @@ function getLanguage(filename: string): string {
 }
 
 export function createModel(value: string, filename: string, uri?: monaco.Uri): monaco.editor.ITextModel {
-  return monaco.editor.createModel(value, getLanguage(filename), uri);
+  const model = monaco.editor.createModel(value, getLanguage(filename), uri);
+  Object.defineProperties(model, {
+    savedVersionId: { value: model.getAlternativeVersionId(), writable: true },
+    isModified: { get: () => () => model.getAlternativeVersionId() != model["savedVersionId"] },
+    resetModified: { get: () => () => model["savedVersionId"] = model.getAlternativeVersionId() },
+  });
+  return model;
 }
 
 export class EventsManager {
