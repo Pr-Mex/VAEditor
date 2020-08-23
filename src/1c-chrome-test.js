@@ -163,7 +163,7 @@ window.onload = () => {
 
   editor.showRuntimeCode(20, subcode)
   editor.showRuntimeCode(28, subcode)
-/*
+
   tabs.edit(
     subcode,
     'Подсценарий.feature',

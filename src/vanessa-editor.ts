@@ -1,4 +1,4 @@
-import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
 import { SyntaxProvider } from "./languages/turbo-gherkin/provider.syntax";
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
@@ -128,12 +128,18 @@ export class VanessaEditor implements IVanessaEditor {
     if (VanessaEditor.standaloneInstance === this) VanessaEditor.standaloneInstance = null;
     const index = VanessaEditor.editors.indexOf(this);
     if (index >= 0) VanessaEditor.editors.splice(index, 1);
+    const model = this.editor.getModel();
     this.runtimeManager.dispose();
     this.problemManager.dispose();
     this.actionManager.dispose();
     this.syntaxManager.dispose();
     this.styleManager.dispose();
     this.editor.dispose();
+    disposeModel(model);
+  }
+
+  public static findModel(model: monaco.editor.ITextModel): boolean {
+    return this.editors.some(e => e.editor.getModel() === model);
   }
 
   static editors: Array<VanessaEditor> = [];

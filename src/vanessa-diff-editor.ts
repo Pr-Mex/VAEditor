@@ -1,12 +1,13 @@
 import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
-import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaTabs } from "./vanessa-tabs";
 
 export class VanessaDiffEditor implements IVanessaEditor {
 
+  static editors: Array<VanessaDiffEditor> = [];
   private static standaloneInstance: VanessaDiffEditor;
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
@@ -45,18 +46,37 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
+    VanessaDiffEditor.editors.push(this);
   }
 
   public dispose(): void {
     if (VanessaDiffEditor.standaloneInstance === this) VanessaDiffEditor.standaloneInstance = null;
+    const index = VanessaDiffEditor.editors.indexOf(this);
+    if (index >= 0) VanessaDiffEditor.editors.splice(index, 1);
+    const oe = this.editor.getOriginalEditor();
+    const me = this.editor.getModifiedEditor();
+    const original = oe ? oe.getModel() : null;
+    const modified = me ? me.getModel() : null;
     this.eventsManager.dispose();
     this.editor.dispose();
+    disposeModel(original);
+    disposeModel(modified);
   }
 
   public setValue = (oldValue: string, oldFile: string, newValue: string, newFile: string) => {
     this.editor.setModel({
       original: createModel(oldValue, oldFile),
       modified: createModel(newValue, newFile),
+    });
+  }
+
+  public static findModel(model: monaco.editor.ITextModel): boolean {
+    return this.editors.some(e => {
+      const original = e.editor.getOriginalEditor();
+      if (original && original.getModel() === model) return true;
+      const modified = e.editor.getModifiedEditor();
+      if (modified && modified.getModel() === model) return true;
+      return false;
     });
   }
 
