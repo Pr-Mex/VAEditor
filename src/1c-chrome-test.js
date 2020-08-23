@@ -1,4 +1,4 @@
-/* global VanessaGherkinProvider, VanessaEditor createVanessaEditor */
+/* global VanessaGherkinProvider, createVanessaTabs */
 
 window.onload = () => {
   // eslint-disable-next-line
@@ -143,8 +143,8 @@ window.onload = () => {
 
   VanessaGherkinProvider.setSyntaxMsg('Step not found')
 
-  let tabs = createVanessaTabs()
-  let editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
+  const tabs = createVanessaTabs()
+  const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
   const commands = [
     { eventId: 'Win+F6', keyCode: 'F6', keyMod: ['WinCtrl'] },
@@ -171,7 +171,7 @@ window.onload = () => {
     'Подсценарий.feature',
     0,
     false,
-    true,
+    true
   )
   tabs.diff(
     subcode,
@@ -183,7 +183,7 @@ window.onload = () => {
     'Подсценарий.feature',
     0,
     false,
-    true,
+    true
   )
 
   /*
