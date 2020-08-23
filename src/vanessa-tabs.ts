@@ -31,16 +31,15 @@ class VanessaTabItem {
     this.encoding = encoding;
     this.filename = filename;
     this.title = title;
-    this.domNode = $("div.vanessa-tab-box");
-    this.domItem = $("div.vanessa-tab-item", { title: title });
-    this.domClose = $("div.vanessa-tab-close", { title: "Close" });
-    this.domTitle = $("div.vanessa-tab-title");
+    this.domNode = $(".vanessa-tab-box", {},
+      this.domItem = $(".vanessa-tab-item", { title: title },
+      this.domTitle = $(".vanessa-tab-title"),
+      this.domClose = $(".vanessa-tab-close", { title: "Close" }),
+      ));
     this.domItem.addEventListener("click", this.onSelect.bind(this), true);
     this.domClose.addEventListener("click", this.onClose.bind(this), true);
     this.domClose.innerText = "\uEA76";
     this.domTitle.innerText = title;
-    this.domItem.append(this.domTitle, this.domClose);
-    this.domNode.append(this.domItem);
     this.owner.domTabPanel.append(this.domNode);
     this.select();
   }

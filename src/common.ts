@@ -27,10 +27,11 @@ export interface VanessaEditorMessage {
 }
 
 export function initPage() {
-  const domMain  = $("div", {id : "VanessaContainer"});
-  domMain.append($("div", {id : "VanessaTabsContainer", class: "vanessa-hidden"}));
-  domMain.append($("div", {id : "VanessaEditorContainer"}));
-  domMain.append($("botton", {id : "VanessaEditorEventForwarder"}));
+  const domMain = $("div", { id: "VanessaContainer" },
+    $("div.vanessa-hidden", { id: "VanessaTabsContainer"}),
+    $("div", { id: "VanessaEditorContainer" }),
+    $("botton", { id: "VanessaEditorEventForwarder" }),
+  );
   document.body.append(domMain);
 }
 
@@ -44,8 +45,7 @@ function getLanguage(filename: string): string {
   }
 }
 
-export function createModel(value: string, filename: string, uri?: monaco.Uri): monaco.editor.ITextModel
-{
+export function createModel(value: string, filename: string, uri?: monaco.Uri): monaco.editor.ITextModel {
   return monaco.editor.createModel(value, getLanguage(filename), uri);
 }
 

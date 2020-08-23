@@ -3,6 +3,10 @@ import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
 import { FoldingProvider } from "../languages/turbo-gherkin/provider.folding";
 
+import * as dom from '../../node_modules/monaco-editor/esm/vs/base/browser/dom';
+
+const $ = dom.$;
+
 export class SubcodeWidget extends WidgetBase {
 
   public id: string;
@@ -38,9 +42,10 @@ export class SubcodeWidget extends WidgetBase {
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
     this.heightInLines = this.content.length;
-    this.domNode = this.div('vanessa-code-widget');
-    this.textNode = this.div('vanessa-code-lines', this.domNode);
-    this.leftNode = this.div('vanessa-code-border', this.domNode);
+    this.domNode = $(".vanessa-code-widget", {},
+      this.textNode = $(".vanessa-code-lines"),
+      this.leftNode = $('.vanessa-code-border'),
+      );
     this.overlayDom = this.div('vanessa-code-overlays');
     this.overlayDom.classList.add('margin-view-overlays');
     this.overlayWidget = {
