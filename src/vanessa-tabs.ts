@@ -237,7 +237,7 @@ export class VanessaTabs {
     if (!diff.original) diff.original = createModel(oldContent, oldFileName, uriOriginal);
     if (!diff.modified) diff.modified = createModel(newContent, newFileName, uriModified);
     const editor = new VanessaDiffEditor(diff, readOnly);
-    return this.open(editor, key, title, newFileName, encoding, newTab);
+    return this.open(editor, key, title, newFilePath, encoding, newTab);
   }
 
   public onFileSave = () => {
