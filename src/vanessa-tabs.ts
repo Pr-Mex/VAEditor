@@ -99,11 +99,11 @@ class VanessaTabItem {
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     const next = this.owner.tabStack.pop();
     if (next) next.select();
-    this.editor.dispose();
     this.dispose();
   }
 
   dispose() {
+    this.editor.dispose();
     this.domNode.remove();
     this.editor = null;
     this.owner = null;

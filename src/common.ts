@@ -1,4 +1,6 @@
 import * as dom from '../node_modules/monaco-editor/esm/vs/base/browser/dom';
+import { VanessaEditor } from './vanessa-editor';
+import { VanessaDiffEditor } from './vanessa-diff-editor';
 
 const $ = dom.$;
 
@@ -55,6 +57,13 @@ export function createModel(value: string, filename: string, uri?: monaco.Uri): 
   //@ts-ignore
   model["resetModified"] = () => model.savedVersionId = model.getAlternativeVersionId();
   return model;
+}
+
+export function disposeModel(model : monaco.editor.ITextModel): void {
+  if (!model) return;
+  if (VanessaEditor.findModel(model)) return;
+  if (VanessaDiffEditor.findModel(model)) return;
+  if (model) model.dispose();
 }
 
 export class EventsManager {
