@@ -38,7 +38,8 @@ export class ActionManager {
         this.VanessaEditor.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
     );
-    let service = this.editor.getContribution('editor.contrib.hover')["_openerService"];
+    //@ts-ignore
+    let service = this.editor.getContribution('editor.contrib.hover')._openerService;
     service._original_open = service.open;
     service.open = (target: any, options: any) => {
       if (typeof (target) == "string" && /^\s*http:\/\/|^\s*https:\/\//.test(target)) {

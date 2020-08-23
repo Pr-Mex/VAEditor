@@ -27,7 +27,7 @@ window.onload = () => {
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \n'
 
-if (!(['file:', 'http:'].includes(window.location.protocol))) return
+  if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
   VanessaGherkinProvider.setKeywords('["и","и это значит что", "к тому же","вот почему","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]')
 
@@ -163,9 +163,28 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
   editor.showRuntimeCode(20, subcode)
   editor.showRuntimeCode(28, subcode)
-  
-  tabs.edit(subcode, 'Подсценарий.feature', 'Подсценарий.feature', 'Подсценарий.feature', 0, false, true)
-  tabs.diff(subcode, 'blob:Подсценарий.text', 'blob:Подсценарий.text', subcode, 'Подсценарий.feature', 'Подсценарий.feature',  'Подсценарий.feature', 'Подсценарий.feature', 0, false, true)
+/*
+  tabs.edit(
+    subcode,
+    'Подсценарий.feature',
+    'Подсценарий.feature',
+    'Подсценарий.feature',
+    0,
+    false,
+    true,
+  )
+  tabs.diff(
+    subcode,
+    'blob:Подсценарий.text',
+    'blob:Подсценарий.text',
+    subcode,
+    'Подсценарий.feature',
+    'Подсценарий.feature',
+    'Подсценарий.feature',
+    0,
+    false,
+    true,
+  )
 
   /*
     setInterval(() => VanessaEditor.runtimeManager.next(), 500);

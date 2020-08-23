@@ -14,6 +14,7 @@ export class SyntaxManager {
   }
 
   public dispose(): void {
+    clearTimeout(this.timer);
     this.editor = null;
   }
 

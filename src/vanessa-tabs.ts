@@ -175,11 +175,10 @@ export class VanessaTabs {
     encoding: number,
     newTab: boolean,
   ): IVanessaEditor {
-    let tab: VanessaTabItem;
-    if (!newTab && this.current) {
-      tab = this.current.open(editor, key, title, filename, encoding);
+    if (newTab || !this.current || this.current.modified) {
+      new VanessaTabItem(this, editor, key, title, filename, encoding);
     } else {
-      tab = new VanessaTabItem(this, editor, key, title, filename, encoding);
+      this.current.open(editor, key, title, filename, encoding);
     }
     return editor;
   }
@@ -200,7 +199,7 @@ export class VanessaTabs {
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     const editor = new VanessaEditor(model, readOnly);
-    return this.open(editor, key, title, filename, encoding, true);
+    return this.open(editor, key, title, filename, encoding, newTab);
   }
 
   public diff = (
@@ -220,14 +219,14 @@ export class VanessaTabs {
     if (tab) return tab.select();
     const uriOriginal = monaco.Uri.parse(oldFilePath);
     const uriModified = monaco.Uri.parse(newFilePath);
-    const model: monaco.editor.IDiffEditorModel = {
+    const diff: monaco.editor.IDiffEditorModel = {
       original: monaco.editor.getModel(uriOriginal),
       modified: monaco.editor.getModel(uriModified),
     };
-    if (!model.original) model.original = createModel(oldContent, oldFileName, uriOriginal);
-    if (!model.modified) model.modified = createModel(newContent, newFileName, uriModified);
-    const editor = new VanessaDiffEditor(model, readOnly);
-    return this.open(editor, key, title, newFileName, encoding, true);
+    if (!diff.original) diff.original = createModel(oldContent, oldFileName, uriOriginal);
+    if (!diff.modified) diff.modified = createModel(newContent, newFileName, uriModified);
+    const editor = new VanessaDiffEditor(diff, readOnly);
+    return this.open(editor, key, title, newFileName, encoding, newTab);
   }
 
   public onFileSave = () => {

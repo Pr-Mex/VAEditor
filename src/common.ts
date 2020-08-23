@@ -49,8 +49,10 @@ export function createModel(value: string, filename: string, uri?: monaco.Uri): 
   const model = monaco.editor.createModel(value, getLanguage(filename), uri);
   Object.defineProperties(model, {
     savedVersionId: { value: model.getAlternativeVersionId(), writable: true },
-    isModified: { get: () => () => model.getAlternativeVersionId() != model["savedVersionId"] },
-    resetModified: { get: () => () => model["savedVersionId"] = model.getAlternativeVersionId() },
+    //@ts-ignore
+    isModified: { get: () => () => model.getAlternativeVersionId() != model.savedVersionId },
+    //@ts-ignore
+    resetModified: { get: () => () => model.savedVersionId = model.getAlternativeVersionId() },
   });
   return model;
 }

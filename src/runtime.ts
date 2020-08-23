@@ -1,6 +1,6 @@
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaEditorEvent } from "./common";
-import { IRange } from "monaco-editor";
+import { IRange, IDisposable } from "monaco-editor";
 
 import { SubcodeWidget } from "./widgets/subcode";
 import { ErrorWidget } from "./widgets/error";
@@ -62,6 +62,7 @@ export class RuntimeManager {
   private breakpointHintDecorationIds: string[] = [];
   private breakpointUnverifiedDecorationIds: string[] = [];
   private checkBreakpointChangeDecorations: boolean = true;
+  private handlers: Array<IDisposable> = [];
 
   constructor(
     VanessaEditor: VanessaEditor
@@ -69,14 +70,15 @@ export class RuntimeManager {
     this.VanessaEditor = VanessaEditor;
     this.editor = VanessaEditor.editor;
     const model: monaco.editor.ITextModel = this.editor.getModel();
-    model.onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations());
-    this.editor.onDidScrollChange(() => this.checkOverlayVisible());
-    this.editor.onMouseDown(e => { if (this.showBreakpoints) this.breakpointOnMouseDown(e) });
-    this.editor.onMouseMove(e => { if (this.showBreakpoints) this.breakpointsOnMouseMove(e) });
+    this.handlers.push(model.onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations()));
+    this.handlers.push(this.editor.onDidScrollChange(() => this.checkOverlayVisible()));
+    this.handlers.push(this.editor.onMouseDown(e => { if (this.showBreakpoints) this.breakpointOnMouseDown(e) }));
+    this.handlers.push(this.editor.onMouseMove(e => { if (this.showBreakpoints) this.breakpointsOnMouseMove(e) }));
     this.registerOnDidChangeFolding();
   }
 
   public dispose(): void {
+    this.handlers.forEach(h => h.dispose());
     this.VanessaEditor = null;
     this.editor = null;
   }
@@ -92,7 +94,9 @@ export class RuntimeManager {
     let foldingContrib = this.editor.getContribution('editor.contrib.folding');
     //@ts-ignore
     foldingContrib.getFoldingModel().then((foldingModel: any) => {
-      foldingModel.onDidChange(() => this.checkOverlayVisible());
+      if (foldingModel) this.handlers.push(
+        foldingModel.onDidChange(() => this.checkOverlayVisible())
+      );
     });
   };
 
@@ -253,7 +257,7 @@ export class RuntimeManager {
   private currentCodeWidget: string = "";
   private showBreakpoints: boolean = false;
 
-  public set useDebugger (value: boolean) {
+  public set useDebugger(value: boolean) {
     if (!value) this.breakpoints = [];
     this.showBreakpoints = value;
     this.forEachSubcode(w => w.useDebugger = value);

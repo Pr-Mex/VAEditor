@@ -56,13 +56,13 @@ export class SubcodeWidget extends WidgetBase {
     this.runtime.editor.addOverlayWidget(this.overlayWidget);
     monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
       this.textNode.innerHTML = html;
+      const model = this.runtime.editor ? this.runtime.editor.getModel() : null;
       this.domNode.querySelectorAll('.vanessa-code-lines > span').forEach((n: HTMLElement) => new SubcodeLine(this, n));
-      let folding = FoldingProvider.getCodeFolding(
-        this.runtime.editor.getModel().getOptions().tabSize,
+      if (model) FoldingProvider.getCodeFolding(
+        model.getOptions().tabSize,
         this.lines.length,
         lineNumber => this.getLineContent(lineNumber)
-      );
-      folding.forEach(e => (this.lines[e.start - 1] as SubcodeLine).initFolding(e.end));
+      ).forEach(e => (this.lines[e.start - 1] as SubcodeLine).initFolding(e.end));
     });
     this.useDebugger = runtime.useDebugger;
   }
