@@ -60,6 +60,8 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
   }
 
+  //@ts-ignore
+  public domNode = () => this.editor._containerDomElement;
   public popMessage = () => EventsManager.popMessage();
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
@@ -67,5 +69,4 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public getModel = () => this.editor.getModifiedEditor().getModel();
-  public domNode = () => this.editor["_containerDomElement"];
 }
