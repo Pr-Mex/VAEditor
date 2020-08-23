@@ -143,8 +143,6 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
 
   VanessaGherkinProvider.setSyntaxMsg('Step not found')
 
-  return;
-
   let tabs = createVanessaTabs()
   let editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
@@ -163,8 +161,9 @@ if (!(['file:', 'http:'].includes(window.location.protocol))) return
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
   И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9'
 
-//  VanessaEditor.showRuntimeCode(20, subcode)
-//  VanessaEditor.showRuntimeCode(28, subcode)
+  editor.showRuntimeCode(20, subcode)
+  editor.showRuntimeCode(28, subcode)
+  
   tabs.edit(subcode, 'Подсценарий.feature', 'Подсценарий.feature', 'Подсценарий.feature', 0, false, true)
   tabs.diff(subcode, 'blob:Подсценарий.text', 'blob:Подсценарий.text', subcode, 'Подсценарий.feature', 'Подсценарий.feature',  'Подсценарий.feature', 'Подсценарий.feature', 0, false, true)
 
