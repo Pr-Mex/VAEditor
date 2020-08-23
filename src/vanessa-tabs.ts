@@ -67,7 +67,18 @@ class VanessaTabItem {
   }
 
   public onClose() {
-    this.close();
+    if (this.modified) {
+      const data = this.getEventData();
+      data["accept"] = () => this.close();
+      EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_CLOSING, data);
+    } else  this.close();
+  }
+
+  public onFileSave() {
+    const data = this.getEventData();
+    const model = this.editor.getModel();
+    data["accept"] = () => model.resetModified();
+    EventsManager.fireEvent(this.editor, VanessaEditorEvent.PRESS_CTRL_S, data);
   }
 
   public select(): IVanessaEditor {
@@ -98,7 +109,7 @@ class VanessaTabItem {
     this.owner = null;
   }
 
-  public get data() {
+  private getEventData() {
     return {
       editor: this.editor,
       model: this.editor.getModel(),
@@ -231,8 +242,7 @@ export class VanessaTabs {
 
   public onFileSave = () => {
     const tab = this.current;
-    const model = tab.editor.getModel();
-    if (tab && model) EventsManager.fireEvent(tab.editor, VanessaEditorEvent.PRESS_CTRL_S, tab.data);
+    if (tab) tab.onFileSave();
   };
 
   public closeAll = () => {

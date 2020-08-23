@@ -34,12 +34,13 @@ Object.defineProperties(window, {
   VanessaTabs: { get: () => VanessaTabs.getStandalone() },
   VanessaEditor: { get: () => VanessaEditor.getStandalone() },
   VanessaDiffEditor: { get: () => VanessaDiffEditor.getStandalone() },
-  createVanessaTabs: { get: () => () => VanessaTabs.createStandalone() },
-  createVanessaEditor: { get: () => (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language) },
-  createVanessaDiffEditor: { get: () => (original?: string, modified?: string, language: string = "turbo-gherkin") => VanessaDiffEditor.createStandalone(original, modified, language) },
-  disposeVanessaAll: { get: () => () => { VanessaTabs.disposeStandalone(); VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone(); } },
-  disposeVanessaTabs: { get: () => () => VanessaTabs.disposeStandalone() },
-  disposeVanessaEditor: { get: () => () => VanessaEditor.disposeStandalone() },
-  disposeVanessaDiffEditor: { get: () => () => VanessaDiffEditor.disposeStandalone() },
-  popVanessaMessage: { get: () => () => EventsManager.popMessage() },
 });
+
+window["createVanessaTabs"] = () => VanessaTabs.createStandalone();
+window["createVanessaEditor"] = () => (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language);
+window["createVanessaDiffEditor"] = (original?: string, modified?: string, language: string = "turbo-gherkin") => VanessaDiffEditor.createStandalone(original, modified, language);
+window["disposeVanessaAll"] = () => { VanessaTabs.disposeStandalone(); VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone() };
+window["disposeVanessaTabs"] = () => VanessaTabs.disposeStandalone();
+window["disposeVanessaEditor"] = () => VanessaEditor.disposeStandalone();
+window["disposeVanessaDiffEditor"] = () => VanessaDiffEditor.disposeStandalone();
+window["popVanessaMessage"] = () => EventsManager.popMessage();
