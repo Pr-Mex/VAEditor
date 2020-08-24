@@ -1,7 +1,4 @@
 ﻿&AtClient
-Var VanessaEditor, VanessaGherkinProvider;
-
-&AtClient
 Var KeyCodeMap;
 
 #Region FormEvents
@@ -27,24 +24,18 @@ Procedure OnOpen(Cancel)
 EndProcedure
 
 &AtClient
-Procedure OnClose(Exit)
-	VanessaEditor = Undefined;
-	VanessaGherkinProvider = Undefined;
-EndProcedure
-
-&AtClient
 Procedure LoadFile(Command)
 
 	Breakpoints.Clear();
 	Problems.Clear();
-	VanessaEditor.decorateBreakpoints(JsonDump(New Array));
-	VanessaEditor.decorateProblems(JsonDump(New Array));
+	VanessaEditor().decorateBreakpoints(JsonDump(New Array));
+	VanessaEditor().decorateProblems(JsonDump(New Array));
 
 	Dialog = New FileDialog(FileDialogMode.Open);
 	If Dialog.Choose() Then
 		TextReader = New TextReader(Dialog.FullFileName, TextEncoding.UTF8);
 		Text = TextReader.Read();
-		VanessaEditor.setContent(Text);
+		VanessaEditor().setContent(Text);
 	EndIf;
 
 EndProcedure
@@ -53,7 +44,7 @@ EndProcedure
 Procedure GetValue(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = VanessaEditor.getContent();
+	UserMessage.Text = VanessaEditor().getContent();
 	UserMessage.Message();
 
 EndProcedure
@@ -61,34 +52,34 @@ EndProcedure
 &AtClient
 Procedure ReadOnlyModeOnChange(Item)
 
-	VanessaEditor.setReadOnly(ReadOnlyMode);
+	VanessaEditor().setReadOnly(ReadOnlyMode);
 
 EndProcedure
 
 &AtClient
 Procedure EditorThemeOnChange(Item)
 
-	VanessaEditor.setTheme(EditorTheme);
+	VanessaEditor().setTheme(EditorTheme);
 
 EndProcedure
 
 &AtClient
 Procedure PositionOnChange(Item)
 
-	VanessaEditor.setPosition(LineNumber, Column);
-	VanessaEditor.revealLine(LineNumber);
+	VanessaEditor().setPosition(LineNumber, Column);
+	VanessaEditor().revealLine(LineNumber);
 
 EndProcedure
 
 &AtClient
 Procedure GetPosition(Command)
 
-	Arg = VanessaEditor.getPosition();
+	Arg = VanessaEditor().getPosition();
 	UserMessage = New UserMessage;
 	UserMessage.Text = "Position: "
-	+ "lineNumber = " + Format(Arg.lineNumber, "NG=") + ","
-	+ "codeWidget = " + Format(Arg.codeWidget, "NG=") + ","
-	+ "column = " + Format(Arg.column, "NG=");
+		+ "lineNumber = " + Format(Arg.lineNumber, "NG=") + ","
+		+ "codeWidget = " + Format(Arg.codeWidget, "NG=") + ","
+		+ "column = " + Format(Arg.column, "NG=");
 	UserMessage.Message();
 
 EndProcedure
@@ -97,7 +88,7 @@ EndProcedure
 Procedure GetLineContent(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = VanessaEditor.getLineContent(lineNumber);
+	UserMessage.Text = VanessaEditor().getLineContent(lineNumber);
 	UserMessage.Message();
 
 EndProcedure
@@ -106,7 +97,7 @@ EndProcedure
 Procedure GetSelectedContent(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = VanessaEditor.getSelectedContent();
+	UserMessage.Text = VanessaEditor().getSelectedContent();
 	UserMessage.Message();
 
 EndProcedure
@@ -115,7 +106,7 @@ EndProcedure
 Procedure GetCurrentStep(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = "Current step: " + VanessaEditor.getRuntimeProgress("current");
+	UserMessage.Text = "Current step: " + VanessaEditor().getRuntimeProgress("current");
 	UserMessage.Message();
 
 EndProcedure
@@ -124,14 +115,14 @@ EndProcedure
 Procedure GetProgress(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = "Steps " + RuntimeStatus + ": " + VanessaEditor.getRuntimeProgress(RuntimeStatus);
+	UserMessage.Text = "Steps " + RuntimeStatus + ": " + VanessaEditor().getRuntimeProgress(RuntimeStatus);
 	UserMessage.Message();
 
 EndProcedure
 
 &AtClient
 Procedure InsertText(Command)
-	VanessaEditor.insertText(MessageText);
+	VanessaEditor().insertText(MessageText);
 EndProcedure
 
 &AtClient
@@ -142,15 +133,15 @@ Procedure ReplaceText(Command)
 	Map.Insert("startColumn", 1);
 	Map.Insert("endLineNumber", LineNumber);
 	Map.Insert("endColumn", Column);
-	VanessaEditor.insertText(MessageText, JsonDump(Map));
+	VanessaEditor().insertText(MessageText, JsonDump(Map));
 
 EndProcedure
 
 &AtClient
 Procedure ShowError(Command)
 
-	VanessaEditor.setRuntimeProgress("error", CurrentStep);
-	VanessaEditor.showRuntimeError(CurrentStep, 0, ErrorCode, ErrorText);
+	VanessaEditor().setRuntimeProgress("error", CurrentStep);
+	VanessaEditor().showRuntimeError(CurrentStep, 0, ErrorCode, ErrorText);
 
 EndProcedure
 
@@ -159,7 +150,7 @@ Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
 
 	Data = Items.Actions.CurrentData;
 	If Data = Undefined Then Return; EndIf;
-	VanessaEditor.editor.trigger("", Data.Id);
+	VanessaEditor().editor.trigger("", Data.Id);
 
 EndProcedure
 
@@ -192,50 +183,50 @@ Procedure EditorAction(Command)
 	Map.Insert("ViewZoomIn", "editor.action.fontZoomIn");
 	Map.Insert("ViewZoomOut", "editor.action.fontZoomOut");
 	Map.Insert("ViewZoomReset", "editor.action.fontZoomReset");
-	VanessaEditor.editor.trigger("", Map[Command.Name]);
+	VanessaEditor().editor.trigger("", Map[Command.Name]);
 
 EndProcedure
 
 &AtClient
 Procedure LoadStepsAll(Command)
 
-	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
-	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), False);
+	GherkinProvider().setStepList(VanessaStepList("en"), True);
+	GherkinProvider().setStepList(VanessaStepList("ru"), False);
 
 EndProcedure
 
 &AtClient
 Procedure LoadStepsEn(Command)
 
-	VanessaGherkinProvider.setStepList(VanessaStepList("en"), True);
+	GherkinProvider().setStepList(VanessaStepList("en"), True);
 
 EndProcedure
 
 &AtClient
 Procedure LoadStepsRu(Command)
 
-	VanessaGherkinProvider.setStepList(VanessaStepList("ru"), True);
+	GherkinProvider().setStepList(VanessaStepList("ru"), True);
 
 EndProcedure
 
 &AtClient
 Procedure LoadKeywordsAll(Command)
-	VanessaGherkinProvider.setKeywords(GetKeywords());
+	GherkinProvider().setKeywords(GetKeywords());
 EndProcedure
 
 &AtClient
 Procedure LoadKeywordsEn(Command)
-	VanessaGherkinProvider.setKeywords(GetKeywords("en"));
+	GherkinProvider().setKeywords(GetKeywords("en"));
 EndProcedure
 
 &AtClient
 Procedure LoadKeywordsRu(Command)
-	VanessaGherkinProvider.setKeywords(GetKeywords("ru"));
+	GherkinProvider().setKeywords(GetKeywords("ru"));
 EndProcedure
 
 &AtClient
 Procedure ShowMessage(Command)
-	VanessaEditor.showMessage(MessageText);
+	VanessaEditor().showMessage(MessageText);
 EndProcedure
 
 &AtClient
@@ -361,7 +352,7 @@ EndFunction
 
 &AtClient
 Procedure TraceKeyboardOnChange(Item)
-	VanessaEditor.traceKeyboard = TraceKeyboard;
+	VanessaEditor().traceKeyboard = TraceKeyboard;
 EndProcedure
 
 &AtClient
@@ -376,7 +367,7 @@ EndProcedure
 &AtClient
 Procedure BreakpointsOnChange(Item)
 
-	DecorateBreakpoints();
+	DecorateBreakpoints(VanessaEditor());
 
 EndProcedure
 
@@ -404,7 +395,7 @@ Procedure BreakpointsOnActivateRow(Item)
 	EndIf;
 
 	If Item.CurrentData.codeWidget = 0 Then
-		VanessaEditor.revealLine(Item.CurrentData.lineNumber);
+		VanessaEditor().revealLine(Item.CurrentData.lineNumber);
 	EndIf;
 
 EndProcedure
@@ -428,7 +419,7 @@ Procedure UpdateBreakpoints(Json)
 EndProcedure
 
 &AtClient
-Procedure DecorateBreakpoints()
+Procedure DecorateBreakpoints(Editor)
 
 	BreakpointsPacket = New Array;
 
@@ -438,7 +429,7 @@ Procedure DecorateBreakpoints()
 		BreakpointsPacket.Add(Chunk);
 	EndDo;
 
-	VanessaEditor.decorateBreakpoints(JsonDump(BreakpointsPacket));
+	Editor.decorateBreakpoints(JsonDump(BreakpointsPacket));
 
 EndProcedure
 
@@ -468,7 +459,7 @@ Procedure DecorateProblems()
 		ProblemsPacket.Add(Chunk);
 	EndDo;
 
-	VanessaEditor.decorateProblems(JsonDump(ProblemsPacket));
+	VanessaEditor().decorateProblems(JsonDump(ProblemsPacket));
 
 EndProcedure
 
@@ -478,8 +469,8 @@ EndProcedure
 
 &AtClient
 Procedure CurrentStepOnChange(Item)
-	VanessaEditor.setCurrentProgress(CurrentStep);
-	VanessaEditor.revealLine(CurrentStep);
+	VanessaEditor().setCurrentProgress(CurrentStep);
+	VanessaEditor().revealLine(CurrentStep);
 EndProcedure
 
 &AtClient
@@ -494,13 +485,13 @@ Procedure SetProgress(Command)
 		Steps.Add(Row.LineNumber);
 	EndDo;
 	For each KeyValue In Map Do
-		VanessaEditor.setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key);
+		VanessaEditor().setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key);
 	EndDo;
 EndProcedure
 
 &AtClient
 Procedure CleanRuntimeProgress(Command)
-	VanessaEditor.clearRuntimeProgress();
+	VanessaEditor().clearRuntimeProgress();
 EndProcedure
 
 #EndRegion
@@ -548,7 +539,7 @@ EndProcedure
 Procedure AppendEventLog(Event, Data)
 
 	EventRecord = EventLog.Insert(0);
-	EventRecord.Date = CurrentDate();
+	EventRecord.Date = CurrentSessionDate();
 	EventRecord.Type = Event;
 	EventRecord.Data = Data;
 	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
@@ -569,9 +560,9 @@ EndFunction
 
 
 &AtClient
-Procedure CreateStep(lineNumber)
+Procedure CreateStep(Editor, lineNumber)
 
-	Text = VanessaEditor.getLineContent(lineNumber);
+	Text = VanessaEditor().getLineContent(lineNumber);
 
 	Map = New Map;
 	Map.Insert("filterText", Text);
@@ -584,32 +575,32 @@ Procedure CreateStep(lineNumber)
 	Array = New Array;
 	Array.Add(Map);
 
-	VanessaGherkinProvider.setStepList(JsonDump(Array), False);
+	GherkinProvider().setStepList(JsonDump(Array), False);
 
 EndProcedure
 
 
 &AtClient
-Procedure VanessaEditorOnReceiveEventHandler(Event, Arg)
+Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 
 	If Event = "CONTENT_DID_CHANGE" Then
 		ContentDidChange = True;
 		Modified = True;
 	ElsIf Event = "UPDATE_BREAKPOINTS" Then
 		UpdateBreakpoints(Arg);
-		DecorateBreakpoints();
+		DecorateBreakpoints(Editor);
 	ElsIf Event = "POSITION_DID_CHANGE" Then
 		Position = "(" + Format(Arg.lineNumber, "NG=") + ", " + Format(Arg.column, "NG=") + ")";
 	ElsIf Event = "F9" Then
 		AppendEventLog(Event, Arg);
-		VanessaEditor.toggleBreakpoint();
+		Editor.toggleBreakpoint();
 	ElsIf Event = "ON_KEY_DOWN" Then
 		AppendEventLog(Event, GetKeyInfo(Arg));
 	ElsIf Event = "ON_KEY_UP" Then
 		AppendEventLog(Event, GetKeyInfo(Arg));
 	ElsIf Event = "CREATE_STEP" Then
 		AppendEventLog(Event, Arg);
-		CreateStep(Arg);
+		CreateStep(Editor, Arg);
 	Else
 		AppendEventLog(Event, Arg);
 	EndIf;
@@ -648,9 +639,9 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 	Element = EventData.Element;
 	If Element.id = "VanessaEditorEventForwarder" Then
 		While (True) Do
-			msg = VanessaEditor.popMessage();
+			msg = DefaultView().popVanessaMessage();
 			If (msg = Undefined) Then Break; EndIf;
-			VanessaEditorOnReceiveEventHandler(msg.type, msg.data);
+			VanessaEditorOnReceiveEventHandler(msg.editor, msg.type, msg.data);
 		EndDo;
 	ElsIf CharCode(Element.innerText, 1) = 60020 Then
 		Message(Element.title);
@@ -659,9 +650,9 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 EndProcedure
 
 &AtClient
-Procedure FillEditorActions();
+Procedure FillEditorActions(Editor);
 
-	TextJSON = VanessaEditor.getActions();
+	TextJSON = Editor.getActions();
 	JSONReader = New JSONReader;
 	JSONReader.SetString(TextJSON);
 	ActionArray = ReadJSON(JSONReader);
@@ -822,58 +813,80 @@ EndFunction
 &AtClient
 Procedure VanessaEditorDocumentComplete(Item)
 
+	Var Provider, Editor;
+
 	syntaxErrorMsg = "Syntax error: step not found";
 
-	view = Items.VanessaEditor.Document.defaultView;
-	VanessaGherkinProvider = view.VanessaGherkinProvider;
-	VanessaGherkinProvider.setKeywords(GetKeywords());
-	VanessaGherkinProvider.setElements(GetElements());
-	VanessaGherkinProvider.setVariables(GetVariables());
-	VanessaGherkinProvider.setStepList(VanessaStepList("ru"));
-	VanessaGherkinProvider.setSyntaxMsg(syntaxErrorMsg);
+	Provider = DefaultView().VanessaGherkinProvider;
+	Provider.setKeywords(GetKeywords());
+	Provider.setElements(GetElements());
+	Provider.setVariables(GetVariables());
+	Provider.setSyntaxMsg(syntaxErrorMsg);
+	LoadStepsAll(Undefined);
 
-	VanessaEditor = view.createVanessaEditor("", "turbo-gherkin");
-	VanessaEditor.addCommands(GetCommands());
-	FillEditorActions();
+	Editor = DefaultView().createVanessaEditor("", "turbo-gherkin");
+	Editor.addCommands(GetCommands());
+	FillEditorActions(Editor);
 
 EndProcedure
+
+&AtClient
+Function DefaultView()
+
+	Return Items.VanessaEditor.Document.defaultView;
+
+EndFunction
+
+&AtClient
+Function VanessaEditor()
+
+	Return DefaultView().VanessaEditor;
+
+EndFunction
+
+&AtClient
+Function GherkinProvider()
+
+	Return DefaultView().VanessaGherkinProvider;
+
+EndFunction
 
 &AtClient
 Procedure ShowSubcode(Command)
 
 	Cоntent =
-	"Функционал: Проверка формирования отчета Allure
-	|
-	|Как разработчик
-	|Я хочу чтобы корректно формировался отчет Allure
-	|Чтобы я мог видеть результат работы сценариев
-	|
-	|Контекст:
-	|	Дано подсценарий первого уровня номер один
-	|	Дано подсценарий первого уровня номер два
-	|Структура сценария: Прикрепление скриншота, когда используется VanessaExt. Одно окно. Весь экран.
-	|	Дано подсценарий первого уровня номер один
-	|	Дано подсценарий первого уровня номер два
-	|	И нормальная строка
-	|";
+		"Функционал: Проверка формирования отчета Allure
+		|
+		|Как разработчик
+		|Я хочу чтобы корректно формировался отчет Allure
+		|Чтобы я мог видеть результат работы сценариев
+		|
+		|Контекст:
+		|	Дано подсценарий первого уровня номер один
+		|	Дано подсценарий первого уровня номер два
+		|Структура сценария: Прикрепление скриншота, когда используется VanessaExt. Одно окно. Весь экран.
+		|	Дано подсценарий первого уровня номер один
+		|	Дано подсценарий первого уровня номер два
+		|	И нормальная строка
+		|";
 
 	Cоntent1 =
-	"	К тому же шаг подсценария 1
-	|		И шаг подсценария 2
-	|		И шаг подсценария 3
-	|";
+		"	К тому же шаг подсценария 1
+		|		И шаг подсценария 2
+		|		И шаг подсценария 3
+		|";
 
 	Cоntent2 =
-	"	И подсценрий второго уровня
-	|		И шаг подсценария 4
-	|		И шаг подсценария 5
-	|		И шаг подсценария 6
-	|";
+		"	И подсценрий второго уровня
+		|		И шаг подсценария 4
+		|		И шаг подсценария 5
+		|		И шаг подсценария 6
+		|";
 
-	VanessaEditor.setContent(Cоntent);
-	VanessaEditor.showRuntimeCode(8, Cоntent1 + Cоntent2);
-	VanessaEditor.showRuntimeCode(11, Cоntent1);
-	VanessaEditor.showRuntimeCode(12, Cоntent2);
+	VanessaEditor().setContent(Cоntent);
+	VanessaEditor().showRuntimeCode(8, Cоntent1 + Cоntent2);
+	VanessaEditor().showRuntimeCode(11, Cоntent1);
+	VanessaEditor().showRuntimeCode(12, Cоntent2);
 
 EndProcedure
 
@@ -889,49 +902,86 @@ EndProcedure
 
 &AtClient
 Procedure NextRuntimeStep()
-	Pos = VanessaEditor.nextRuntimeProgress();
+	Pos = VanessaEditor().nextRuntimeProgress();
 	If Pos = Undefined Then
 		RuntimePosition = Undefined;
 		RuntimeCode = Undefined;
 	Else
 		RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
-		RuntimeCode = VanessaEditor.getLineContent(Pos.lineNumber, Pos.codeWidget);
+		RuntimeCode = VanessaEditor().getLineContent(Pos.lineNumber, Pos.codeWidget);
 	EndIf;
 EndProcedure
 
 &AtClient
 Procedure ShowMinimapOnChange(Item)
 
-	VanessaEditor.showMinimap(ShowMinimap);
+	VanessaEditor().showMinimap(ShowMinimap);
 
 EndProcedure
 
 &AtClient
 Procedure EditorTypeOnChange(Элемент)
 
-	View = Items.VanessaEditor.Document.defaultView;
-		
-	If EditorType > 0 Then
-		text1 =
-			"const a = 1;
-			|function test(){
-			|	return a + 1;
-			|}";
+	View = DefaultView();
 
-		text2 =
-			"const a = 2;
-			|function test(){
-			|	alert('Hello world!');
-			|	return a + 2;
-			|}";
+	text1 =
+		"#language: en
+		|
+		|@IgnoreOnCIMainBuild
+		|
+		|Feature: <feature description>
+		|
+		|As <Role>
+		|I want <functionality description>
+		|To <business effect>
+		|
+		|
+		|Scenario: Simple startup script
+		|
+		|	And I execute 1C:Enterprise script
+		|		| 'Message(""Hellow world!"")'
+		|
+		|	Then I raise ""Exception text"" exception
+		|";
 
-		SideBySide = 2;
-		View.deleteVanessaEditor();
-		DiffEditor = View.createVanessaDiffEditor(text1, text2, "javascript");
-		DiffEditor.setSideBySide(EditorType = SideBySide);
+	text2 =
+		"#language: en
+		|
+		|@IgnoreOnCIMainBuild
+		|
+		|Feature: <feature description>
+		|
+		|As <Role>
+		|I want <functionality description>
+		|To <business effect>
+		|
+		|
+		|Scenario: <scenario description>
+		|
+		|	Then I stop script execution
+		|
+		|	Then I raise ""Exception text"" exception
+		|";
+
+	Language = "turbo-gherkin";
+	If EditorType = 0 Then
+		View.disposeVanessaTabs();
+		View.disposeVanessaDiffEditor();
+		View.createVanessaEditor(text1, Language);
+	ElsIf EditorType = 3 Then
+		View.disposeVanessaEditor();
+		View.disposeVanessaDiffEditor();
+		tabs = View.createVanessaTabs();
+		f = "Simple.feature";
+		tabs.edit(text1, f, "1" + f, f, 0, false, true);
+		tabs.edit(text2, f, "2" + f, f, 0, false, true);
+		tabs.diff(text1, f, "1" + f, text2, f, "2" + f, f, 0, false, true);
 	Else
-		View.deleteVanessaDiffEditor();
-		View.createVanessaEditor();
+		SideBySide = 2;
+		View.disposeVanessaTabs();
+		View.disposeVanessaEditor();
+		DiffEditor = View.createVanessaDiffEditor(text1, text2, Language);
+		DiffEditor.setSideBySide(EditorType = SideBySide);
 	EndIf;
 
 EndProcedure
@@ -940,9 +990,8 @@ EndProcedure
 &НаКлиенте
 Процедура UseDebuggerOnChange(Элемент)
 
-	VanessaEditor.useDebugger(useDebugger);
+	DefaultView().useVanessaDebugger(useDebugger);
 
 КонецПроцедуры
 
 #EndRegion
-

@@ -17,7 +17,7 @@ interface IVanessaCommand {
 
 export class ActionManager {
 
-  public VanessaEditor: VanessaEditor;
+  public owner: VanessaEditor;
   public editor: monaco.editor.IStandaloneCodeEditor;
   public codeActions: Array<IVanessaAction> = [];
   public errorLinks: Array<IVanessaAction> = [];
@@ -26,16 +26,16 @@ export class ActionManager {
   public traceKeyboard: boolean = false;
 
   constructor(
-    VanessaEditor: VanessaEditor
+    owner: VanessaEditor
   ) {
-    this.VanessaEditor = VanessaEditor;
-    this.editor = VanessaEditor.editor;
-    this.editor.onKeyDown(e => { if (this.traceKeyboard) this.VanessaEditor.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
-    this.editor.onKeyUp(e => { if (this.traceKeyboard) this.VanessaEditor.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
-    this.editor.onDidChangeModelContent(() => this.VanessaEditor.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
+    this.owner = owner;
+    this.editor = owner.editor;
+    this.editor.onKeyDown(e => { if (this.traceKeyboard) this.owner.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
+    this.editor.onKeyUp(e => { if (this.traceKeyboard) this.owner.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
+    this.editor.onDidChangeModelContent(() => this.owner.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
     this.editor.onDidChangeCursorPosition(
       (e: monaco.editor.ICursorPositionChangedEvent) => {
-        this.VanessaEditor.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
+        this.owner.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
       }
     );
     //@ts-ignore
@@ -43,7 +43,7 @@ export class ActionManager {
     service._original_open = service.open;
     service.open = (target: any, options: any) => {
       if (typeof (target) == "string" && /^\s*http:\/\/|^\s*https:\/\//.test(target)) {
-        this.VanessaEditor.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
+        this.owner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
         return { catch: () => { } };
       }
       return service._original_open(target, options);
@@ -73,8 +73,8 @@ export class ActionManager {
         let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
         if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
         let id: string = this.editor.addCommand(keybinding, (c, a) => {
-          let n = a ? a : this.VanessaEditor.getPosition().lineNumber;
-          this.VanessaEditor.fireEvent(`${e.eventId}`, n);
+          let n = a ? a : this.owner.getPosition().lineNumber;
+          this.owner.fireEvent(`${e.eventId}`, n);
           eval.apply(null, [`${e.script}`]);
         });
         if (e.title) { this.codeActions.push({ id: id, title: e.title }); }

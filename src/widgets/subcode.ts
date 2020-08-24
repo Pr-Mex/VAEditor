@@ -38,7 +38,7 @@ export class SubcodeWidget extends WidgetBase {
   private showBreakpoints: boolean = false;
 
   constructor(runtime: RuntimeManager, content: string) {
-    super(runtime.VanessaEditor);
+    super(runtime.owner);
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
     this.heightInLines = this.content.length;

@@ -43,4 +43,6 @@ window["disposeVanessaAll"] = () => { VanessaTabs.disposeStandalone(); VanessaTa
 window["disposeVanessaTabs"] = () => VanessaTabs.disposeStandalone();
 window["disposeVanessaEditor"] = () => VanessaEditor.disposeStandalone();
 window["disposeVanessaDiffEditor"] = () => VanessaDiffEditor.disposeStandalone();
+window["useVanessaDebugger"] = (value: boolean) => VanessaTabs.useDebugger(value);
 window["popVanessaMessage"] = () => EventsManager.popMessage();
+

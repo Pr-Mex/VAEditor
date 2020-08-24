@@ -76,6 +76,7 @@ export class VanessaEditor implements IVanessaEditor {
   set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
 
   private static standaloneInstance: VanessaEditor;
+  public static useDebuggerDefault: boolean = false;
   public editor: monaco.editor.IStandaloneCodeEditor;
   public actionManager: ActionManager;
   public eventsManager: EventsManager;
