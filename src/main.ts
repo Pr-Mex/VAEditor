@@ -37,7 +37,7 @@ Object.defineProperties(window, {
 });
 
 window["createVanessaTabs"] = () => VanessaTabs.createStandalone();
-window["createVanessaEditor"] = () => (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language);
+window["createVanessaEditor"] = (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language);
 window["createVanessaDiffEditor"] = (original?: string, modified?: string, language: string = "turbo-gherkin") => VanessaDiffEditor.createStandalone(original, modified, language);
 window["disposeVanessaAll"] = () => { VanessaTabs.disposeStandalone(); VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone() };
 window["disposeVanessaTabs"] = () => VanessaTabs.disposeStandalone();
