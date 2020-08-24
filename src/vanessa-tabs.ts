@@ -159,6 +159,7 @@ export class VanessaTabs {
     if (VanessaTabs.standaloneInstance === this) VanessaTabs.standaloneInstance = null;
     while (this.tabStack.length) this.tabStack.pop().dispose();
     this.domContainer.classList.add("vanessa-hidden");
+    this.domTabPanel.remove();
   }
 
   public get current() {
@@ -243,7 +244,12 @@ export class VanessaTabs {
   public onFileSave = () => {
     const tab = this.current;
     if (tab) tab.onFileSave();
-  };
+  }
+
+  public static useDebugger = (value: boolean) => {
+    VanessaEditor.editors.forEach(e => e.useDebugger(value));
+    VanessaEditor.useDebuggerDefault = value;
+  }
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();

@@ -21,14 +21,14 @@ export class VanessaGherkinProvider extends ProviderBase {
   public static getStandalone() { return this.standaloneInstance; }
 
   public setKeywords = (arg: string): void => {
-    ProviderBase.keywords = [];
+    this.clearArray(ProviderBase.keywords);
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
     list.forEach((w: string) => ProviderBase.keywords.push(w.split(" ")));
     ProviderBase.keywords = ProviderBase.keywords.sort((a: any, b: any) => b.length - a.length);
   }
 
   public setElements = (values: string, clear: boolean = false): void => {
-    if (clear) ProviderBase.elements = {};
+    if (clear) this.clearObject(ProviderBase.elements);
     let obj = JSON.parse(values);
     for (let key in obj) {
       ProviderBase.elements[key.toLowerCase()] = obj[key];
@@ -37,7 +37,7 @@ export class VanessaGherkinProvider extends ProviderBase {
   }
 
   public setVariables = (values: string, clear: boolean = false): void => {
-    if (clear) ProviderBase.variables = {};
+    if (clear) this.clearObject(ProviderBase.variables);
     let obj = JSON.parse(values);
     for (let key in obj) {
       ProviderBase.variables[key.toLowerCase()] = { name: key, value: String(obj[key]) };
@@ -46,7 +46,7 @@ export class VanessaGherkinProvider extends ProviderBase {
   }
 
   public setStepList = (list: string, clear: boolean = false): void => {
-    if (clear) VanessaGherkinProvider.steps = {};
+    if (clear) this.clearObject(VanessaGherkinProvider.steps);
     JSON.parse(list).forEach((e: IVanessaStep) => {
       let body = e.insertText.split('\n');
       let text = body.shift();
@@ -69,6 +69,10 @@ export class VanessaGherkinProvider extends ProviderBase {
 
   public setSyntaxMsg = (message: string): void => {
     ProviderBase.syntaxMsg = message;
+  }
+
+  public getSyntaxMsg = (): string => {
+    return ProviderBase.syntaxMsg;
   }
 
   private static updateStepLabels() {
@@ -94,6 +98,14 @@ export class VanessaGherkinProvider extends ProviderBase {
   private constructor() {
     super();
     this.createTheme1C();
+  }
+
+  private clearObject(target: Object) {
+    Object.keys(target).forEach(key => delete target[key]);
+  }
+
+  private clearArray(target: Array<any>) {
+    target.splice(0, target.length);
   }
 
   private createTheme1C() {

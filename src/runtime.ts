@@ -55,7 +55,7 @@ class RuntimePosition implements IRuntimePosition {
 
 export class RuntimeManager {
 
-  public VanessaEditor: VanessaEditor;
+  public owner: VanessaEditor;
   public editor: monaco.editor.IStandaloneCodeEditor;
   private breakpointDecorations: IBreakpointDecoration[] = [];
   private breakpointDecorationIds: string[] = [];
@@ -65,11 +65,12 @@ export class RuntimeManager {
   private handlers: Array<IDisposable> = [];
 
   constructor(
-    VanessaEditor: VanessaEditor
+    owner: VanessaEditor
   ) {
-    this.VanessaEditor = VanessaEditor;
-    this.editor = VanessaEditor.editor;
+    this.owner = owner;
+    this.editor = owner.editor;
     const model: monaco.editor.ITextModel = this.editor.getModel();
+    if (VanessaEditor.useDebuggerDefault) this.useDebugger = true;
     this.handlers.push(model.onDidChangeDecorations(() => this.breakpointOnDidChangeDecorations()));
     this.handlers.push(this.editor.onDidScrollChange(() => this.checkOverlayVisible()));
     this.handlers.push(this.editor.onMouseDown(e => { if (this.showBreakpoints) this.breakpointOnMouseDown(e) }));
@@ -79,7 +80,7 @@ export class RuntimeManager {
 
   public dispose(): void {
     this.handlers.forEach(h => h.dispose());
-    this.VanessaEditor = null;
+    this.owner = null;
     this.editor = null;
   }
 
@@ -240,7 +241,7 @@ export class RuntimeManager {
   public updateBreakpoints(): void {
     clearTimeout(this.updateTimer);
     this.updateTimer = setTimeout(() => {
-      this.VanessaEditor.fireEvent(VanessaEditorEvent.UPDATE_BREAKPOINTS, JSON.stringify(this.breakpoints));
+      this.owner.fireEvent(VanessaEditorEvent.UPDATE_BREAKPOINTS, JSON.stringify(this.breakpoints));
     }, 100);
   }
 
@@ -475,7 +476,7 @@ export class RuntimeManager {
       let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
       if (widget) widget.showError(lineNumber, data, text);
     } else {
-      let widget = new ErrorWidget(this.VanessaEditor, data, text);
+      let widget = new ErrorWidget(this.owner, data, text);
       let id = widget.show(this.editor, lineNumber);
       this.errorViewZoneIds.push(id);
       return id;

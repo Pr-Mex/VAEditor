@@ -213,7 +213,6 @@
 	<Events>
 		<Event name="OnOpen">OnOpen</Event>
 		<Event name="OnCreateAtServer">OnCreateAtServer</Event>
-		<Event name="OnClose">OnClose</Event>
 	</Events>
 	<ChildItems>
 		<UsualGroup name="Body" id="34">
@@ -298,7 +297,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Single Editor</v8:content>
+														<v8:content>Single</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">0</Value>
@@ -311,7 +310,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Joint Diff</v8:content>
+														<v8:content>1 Diff</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">1</Value>
@@ -324,10 +323,23 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Split Diff</v8:content>
+														<v8:content>2 Diff</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">2</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Tabs</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:decimal">3</Value>
 											</xr:Value>
 										</xr:Item>
 									</ChoiceList>

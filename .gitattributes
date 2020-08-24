@@ -1,2 +1,9 @@
 *.bin binary
+*.xml text eol=input
+*.bsl text eol=crlf
+*.css text eol=lf
+*.svg text eol=lf
+*.ts text eol=lf
+*.js text eol=lf
+*.json text eol=lf
 * text=auto
