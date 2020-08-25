@@ -539,7 +539,7 @@ EndProcedure
 Procedure AppendEventLog(Event, Data)
 
 	EventRecord = EventLog.Insert(0);
-	EventRecord.Date = CurrentSessionDate();
+	EventRecord.Date = CurrentDate();
 	EventRecord.Type = Event;
 	EventRecord.Data = Data;
 	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
