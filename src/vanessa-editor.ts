@@ -67,6 +67,10 @@ export class VanessaEditor implements IVanessaEditor {
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public getModel = () => this.editor.getModel();
   public domNode = () => this.editor.getDomNode();
+  public setTabSize = (arg: number) => this.editor.updateOptions({ tabSize: arg });
+  public getTabSize = () => this.editor.getOptions();
+  public setInsertSpaces = (arg: boolean) => this.editor.updateOptions({ insertSpaces: arg });
+  public getInsertSpaces = () => this.editor.getOptions();
 
   //@ts-ignore
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController').showMessage(arg, this.getPosition());
