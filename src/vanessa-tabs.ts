@@ -71,7 +71,7 @@ class VanessaTabItem {
       const data = this.getEventData();
       data["accept"] = () => this.close();
       EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_CLOSING, data);
-    } else  this.close();
+    } else this.close();
   }
 
   public onFileSave() {
@@ -253,5 +253,9 @@ export class VanessaTabs {
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
+  }
+
+  public close = () => {
+    if (this.current) this.current.onClose();
   }
 }
