@@ -67,6 +67,10 @@ export class VanessaEditor implements IVanessaEditor {
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public getModel = () => this.editor.getModel();
   public domNode = () => this.editor.getDomNode();
+  public setTabSize = (arg: number) => this.editor.getModel().updateOptions({ tabSize: arg });
+  public setInsertSpaces = (arg: boolean) => this.editor.getModel().updateOptions({ insertSpaces: arg });
+  public setDetectIndentation = (arg: boolean) => this.editor.updateOptions({ detectIndentation: arg });
+  public normalizeIndentation = () => this.syntaxManager.normalizeIndentation();
 
   //@ts-ignore
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController').showMessage(arg, this.getPosition());
@@ -113,6 +117,7 @@ export class VanessaEditor implements IVanessaEditor {
       scrollBeyondLastLine: false,
       glyphMargin: true,
       automaticLayout: true,
+      detectIndentation: false,
       insertSpaces: false,
       lightbulb: { enabled: true }
     });

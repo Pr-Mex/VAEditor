@@ -475,41 +475,103 @@
 										</Button>
 									</ChildItems>
 								</CommandBar>
-								<UsualGroup name="GroupPosition" id="175">
+								<UsualGroup name="GroupVisual" id="400">
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Set cursor position</v8:content>
+											<v8:content>Group visual</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group position</v8:content>
+											<v8:content>Group visual</v8:content>
 										</v8:item>
 									</ToolTip>
-									<Group>Vertical</Group>
 									<Representation>None</Representation>
-									<ExtendedTooltip name="GroupPositionExtendedTooltip" id="176"/>
+									<ShowTitle>false</ShowTitle>
+									<ExtendedTooltip name="GroupVisualExtendedTooltip" id="401"/>
 									<ChildItems>
-										<InputField name="LineNumber" id="180">
-											<DataPath>LineNumber</DataPath>
-											<SpinButton>true</SpinButton>
-											<ContextMenu name="LineNumberContextMenu" id="181"/>
-											<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
-											<Events>
-												<Event name="OnChange">PositionOnChange</Event>
-											</Events>
-										</InputField>
-										<InputField name="Column" id="177">
-											<DataPath>Column</DataPath>
-											<SpinButton>true</SpinButton>
-											<ContextMenu name="ColumnContextMenu" id="178"/>
-											<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
-											<Events>
-												<Event name="OnChange">PositionOnChange</Event>
-											</Events>
-										</InputField>
+										<UsualGroup name="GroupIndentation" id="402">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Indentation</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group indentation</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Group>Vertical</Group>
+											<ExtendedTooltip name="GroupIndentationExtendedTooltip" id="403"/>
+											<ChildItems>
+												<InputField name="TabSize" id="404">
+													<DataPath>TabSize</DataPath>
+													<SpinButton>true</SpinButton>
+													<ContextMenu name="TabSizeContextMenu" id="405"/>
+													<ExtendedTooltip name="TabSizeExtendedTooltip" id="406"/>
+													<Events>
+														<Event name="OnChange">TabSizeOnChange</Event>
+													</Events>
+												</InputField>
+												<CheckBoxField name="InsertSpaces" id="407">
+													<DataPath>InsertSpaces</DataPath>
+													<TitleLocation>Right</TitleLocation>
+													<CheckBoxType>Auto</CheckBoxType>
+													<ContextMenu name="InsertSpacesContextMenu" id="408"/>
+													<ExtendedTooltip name="InsertSpacesExtendedTooltip" id="409"/>
+													<Events>
+														<Event name="OnChange">InsertSpacesOnChange</Event>
+													</Events>
+												</CheckBoxField>
+												<Button name="NormalizeIndentation" id="410">
+													<Type>UsualButton</Type>
+													<CommandName>Form.Command.NormalizeIndentation</CommandName>
+													<ExtendedTooltip name="NormalizeIndentationExtendedTooltip" id="411"/>
+												</Button>
+											</ChildItems>
+										</UsualGroup>
+										<UsualGroup name="GroupPosition" id="175">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Cursor position</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group position</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Group>Vertical</Group>
+											<ExtendedTooltip name="GroupPositionExtendedTooltip" id="176"/>
+											<ChildItems>
+												<InputField name="LineNumber" id="180">
+													<DataPath>LineNumber</DataPath>
+													<Width>5</Width>
+													<SpinButton>true</SpinButton>
+													<ContextMenu name="LineNumberContextMenu" id="181"/>
+													<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
+													<Events>
+														<Event name="OnChange">PositionOnChange</Event>
+													</Events>
+												</InputField>
+												<InputField name="Column" id="177">
+													<DataPath>Column</DataPath>
+													<Width>5</Width>
+													<SpinButton>true</SpinButton>
+													<ContextMenu name="ColumnContextMenu" id="178"/>
+													<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
+													<Events>
+														<Event name="OnChange">PositionOnChange</Event>
+													</Events>
+												</InputField>
+											</ChildItems>
+										</UsualGroup>
 									</ChildItems>
 								</UsualGroup>
 								<CommandBar name="PanelPosition" id="186">
@@ -700,157 +762,6 @@
 									<Events>
 										<Event name="OnChange">UseDebuggerOnChange</Event>
 									</Events>
-								</CheckBoxField>
-							</ChildItems>
-						</Page>
-						<Page name="PageBreakpoints" id="36">
-							<Title>
-								<v8:item>
-									<v8:lang>en</v8:lang>
-									<v8:content>Left side</v8:content>
-								</v8:item>
-								<v8:item>
-									<v8:lang>ru</v8:lang>
-									<v8:content>Breakpoints</v8:content>
-								</v8:item>
-							</Title>
-							<ToolTip>
-								<v8:item>
-									<v8:lang>ru</v8:lang>
-									<v8:content>Page breakpoints</v8:content>
-								</v8:item>
-							</ToolTip>
-							<Width>7</Width>
-							<ExtendedTooltip name="PageBreakpointsExtendedTooltip" id="37"/>
-							<ChildItems>
-								<Table name="Breakpoints" id="18">
-									<Representation>List</Representation>
-									<TitleLocation>Auto</TitleLocation>
-									<HorizontalLines>false</HorizontalLines>
-									<VerticalLines>false</VerticalLines>
-									<AutoInsertNewRow>true</AutoInsertNewRow>
-									<EnableStartDrag>true</EnableStartDrag>
-									<EnableDrag>true</EnableDrag>
-									<DataPath>Breakpoints</DataPath>
-									<RowPictureDataPath>Breakpoints.Enable</RowPictureDataPath>
-									<Title>
-										<v8:item>
-											<v8:lang>en</v8:lang>
-											<v8:content>Breakpoints</v8:content>
-										</v8:item>
-									</Title>
-									<CommandSet>
-										<ExcludedCommand>Copy</ExcludedCommand>
-										<ExcludedCommand>SortListAsc</ExcludedCommand>
-										<ExcludedCommand>MoveUp</ExcludedCommand>
-										<ExcludedCommand>SelectAll</ExcludedCommand>
-										<ExcludedCommand>SortListDesc</ExcludedCommand>
-										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
-										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
-										<ExcludedCommand>EndEdit</ExcludedCommand>
-										<ExcludedCommand>Change</ExcludedCommand>
-										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
-										<ExcludedCommand>MoveDown</ExcludedCommand>
-									</CommandSet>
-									<RowFilter xsi:nil="true"/>
-									<ContextMenu name="BreakpointsContextMenu" id="19"/>
-									<AutoCommandBar name="BreakpointsCommandBar" id="20">
-										<Autofill>false</Autofill>
-										<ChildItems>
-											<Button name="BreakpointsAdd" id="40">
-												<Type>CommandBarButton</Type>
-												<Representation>Picture</Representation>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Item.Breakpoints.StandardCommand.Add</CommandName>
-												<ExtendedTooltip name="BreakpointsAddExtendedTooltip" id="41"/>
-											</Button>
-											<Button name="BreakpointsDelete" id="42">
-												<Type>CommandBarButton</Type>
-												<Representation>Picture</Representation>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>Form.Item.Breakpoints.StandardCommand.Delete</CommandName>
-												<ExtendedTooltip name="BreakpointsDeleteExtendedTooltip" id="43"/>
-											</Button>
-											<Button name="BreakpointsCheckAll" id="44">
-												<Type>CommandBarButton</Type>
-												<Representation>Picture</Representation>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>18:18248aa8-e621-4e19-a611-54fb8923644c</CommandName>
-												<ExtendedTooltip name="BreakpointsCheckAllExtendedTooltip" id="45"/>
-											</Button>
-											<Button name="BreakpointsUncheckAll" id="46">
-												<Type>CommandBarButton</Type>
-												<Representation>Picture</Representation>
-												<OnlyInAllActions>true</OnlyInAllActions>
-												<CommandName>18:5048cc44-702b-44e3-8445-9af75c02724d</CommandName>
-												<ExtendedTooltip name="BreakpointsUncheckAllExtendedTooltip" id="47"/>
-											</Button>
-										</ChildItems>
-									</AutoCommandBar>
-									<ExtendedTooltip name="BreakpointsExtendedTooltip" id="21"/>
-									<SearchStringAddition name="BreakpointsSearchString" id="22">
-										<AdditionSource>
-											<Item>Breakpoints</Item>
-											<Type>SearchStringRepresentation</Type>
-										</AdditionSource>
-										<ContextMenu name="BreakpointsSearchStringContextMenu" id="23"/>
-										<ExtendedTooltip name="BreakpointsSearchStringExtendedTooltip" id="24"/>
-									</SearchStringAddition>
-									<ViewStatusAddition name="BreakpointsViewStatus" id="25">
-										<AdditionSource>
-											<Item>Breakpoints</Item>
-											<Type>ViewStatusRepresentation</Type>
-										</AdditionSource>
-										<ContextMenu name="BreakpointsViewStatusContextMenu" id="26"/>
-										<ExtendedTooltip name="BreakpointsViewStatusExtendedTooltip" id="27"/>
-									</ViewStatusAddition>
-									<SearchControlAddition name="BreakpointsSearchControl" id="28">
-										<AdditionSource>
-											<Item>Breakpoints</Item>
-											<Type>SearchControl</Type>
-										</AdditionSource>
-										<ContextMenu name="BreakpointsSearchControlContextMenu" id="29"/>
-										<ExtendedTooltip name="BreakpointsSearchControlExtendedTooltip" id="30"/>
-									</SearchControlAddition>
-									<Events>
-										<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
-										<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
-										<Event name="OnChange">BreakpointsOnChange</Event>
-									</Events>
-									<ChildItems>
-										<CheckBoxField name="BreakpointsEnable" id="385">
-											<DataPath>Breakpoints.Enable</DataPath>
-											<Title>
-												<v8:item>
-													<v8:lang>ru</v8:lang>
-													<v8:content> </v8:content>
-												</v8:item>
-											</Title>
-											<EditMode>EnterOnInput</EditMode>
-											<CheckBoxType>Auto</CheckBoxType>
-											<ContextMenu name="BreakpointsEnableContextMenu" id="386"/>
-											<ExtendedTooltip name="BreakpointsEnableExtendedTooltip" id="387"/>
-										</CheckBoxField>
-										<InputField name="BreakpointsLineNumber" id="379">
-											<DataPath>Breakpoints.LineNumber</DataPath>
-											<EditMode>EnterOnInput</EditMode>
-											<ContextMenu name="BreakpointsLineNumberContextMenu" id="380"/>
-											<ExtendedTooltip name="BreakpointsLineNumberExtendedTooltip" id="381"/>
-										</InputField>
-										<InputField name="BreakpointsCodeWidget" id="382">
-											<DataPath>Breakpoints.CodeWidget</DataPath>
-											<EditMode>EnterOnInput</EditMode>
-											<ContextMenu name="BreakpointsCodeWidgetContextMenu" id="383"/>
-											<ExtendedTooltip name="BreakpointsCodeWidgetExtendedTooltip" id="384"/>
-										</InputField>
-									</ChildItems>
-								</Table>
-								<CheckBoxField name="EmulateBreakpointUpdateDelay" id="51">
-									<DataPath>EmulateBreakpointUpdateDelay</DataPath>
-									<TitleLocation>Right</TitleLocation>
-									<CheckBoxType>Auto</CheckBoxType>
-									<ContextMenu name="EmulateBreakpointUpdateDelayContextMenu" id="52"/>
-									<ExtendedTooltip name="EmulateBreakpointUpdateDelayExtendedTooltip" id="53"/>
 								</CheckBoxField>
 							</ChildItems>
 						</Page>
@@ -1284,6 +1195,157 @@
 								</InputField>
 							</ChildItems>
 						</Page>
+						<Page name="PageBreakpoints" id="36">
+							<Title>
+								<v8:item>
+									<v8:lang>en</v8:lang>
+									<v8:content>Left side</v8:content>
+								</v8:item>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Breakpoints</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page breakpoints</v8:content>
+								</v8:item>
+							</ToolTip>
+							<Width>7</Width>
+							<ExtendedTooltip name="PageBreakpointsExtendedTooltip" id="37"/>
+							<ChildItems>
+								<Table name="Breakpoints" id="18">
+									<Representation>List</Representation>
+									<TitleLocation>Auto</TitleLocation>
+									<HorizontalLines>false</HorizontalLines>
+									<VerticalLines>false</VerticalLines>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>Breakpoints</DataPath>
+									<RowPictureDataPath>Breakpoints.Enable</RowPictureDataPath>
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Breakpoints</v8:content>
+										</v8:item>
+									</Title>
+									<CommandSet>
+										<ExcludedCommand>Copy</ExcludedCommand>
+										<ExcludedCommand>SortListAsc</ExcludedCommand>
+										<ExcludedCommand>MoveUp</ExcludedCommand>
+										<ExcludedCommand>SelectAll</ExcludedCommand>
+										<ExcludedCommand>SortListDesc</ExcludedCommand>
+										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
+										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
+										<ExcludedCommand>EndEdit</ExcludedCommand>
+										<ExcludedCommand>Change</ExcludedCommand>
+										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
+										<ExcludedCommand>MoveDown</ExcludedCommand>
+									</CommandSet>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="BreakpointsContextMenu" id="19"/>
+									<AutoCommandBar name="BreakpointsCommandBar" id="20">
+										<Autofill>false</Autofill>
+										<ChildItems>
+											<Button name="BreakpointsAdd" id="40">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.Add</CommandName>
+												<ExtendedTooltip name="BreakpointsAddExtendedTooltip" id="41"/>
+											</Button>
+											<Button name="BreakpointsDelete" id="42">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.Delete</CommandName>
+												<ExtendedTooltip name="BreakpointsDeleteExtendedTooltip" id="43"/>
+											</Button>
+											<Button name="BreakpointsCheckAll" id="44">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>18:18248aa8-e621-4e19-a611-54fb8923644c</CommandName>
+												<ExtendedTooltip name="BreakpointsCheckAllExtendedTooltip" id="45"/>
+											</Button>
+											<Button name="BreakpointsUncheckAll" id="46">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>18:5048cc44-702b-44e3-8445-9af75c02724d</CommandName>
+												<ExtendedTooltip name="BreakpointsUncheckAllExtendedTooltip" id="47"/>
+											</Button>
+										</ChildItems>
+									</AutoCommandBar>
+									<ExtendedTooltip name="BreakpointsExtendedTooltip" id="21"/>
+									<SearchStringAddition name="BreakpointsSearchString" id="22">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsSearchStringContextMenu" id="23"/>
+										<ExtendedTooltip name="BreakpointsSearchStringExtendedTooltip" id="24"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="BreakpointsViewStatus" id="25">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsViewStatusContextMenu" id="26"/>
+										<ExtendedTooltip name="BreakpointsViewStatusExtendedTooltip" id="27"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="BreakpointsSearchControl" id="28">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsSearchControlContextMenu" id="29"/>
+										<ExtendedTooltip name="BreakpointsSearchControlExtendedTooltip" id="30"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
+										<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
+										<Event name="OnChange">BreakpointsOnChange</Event>
+									</Events>
+									<ChildItems>
+										<CheckBoxField name="BreakpointsEnable" id="385">
+											<DataPath>Breakpoints.Enable</DataPath>
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content> </v8:content>
+												</v8:item>
+											</Title>
+											<EditMode>EnterOnInput</EditMode>
+											<CheckBoxType>Auto</CheckBoxType>
+											<ContextMenu name="BreakpointsEnableContextMenu" id="386"/>
+											<ExtendedTooltip name="BreakpointsEnableExtendedTooltip" id="387"/>
+										</CheckBoxField>
+										<InputField name="BreakpointsLineNumber" id="379">
+											<DataPath>Breakpoints.LineNumber</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="BreakpointsLineNumberContextMenu" id="380"/>
+											<ExtendedTooltip name="BreakpointsLineNumberExtendedTooltip" id="381"/>
+										</InputField>
+										<InputField name="BreakpointsCodeWidget" id="382">
+											<DataPath>Breakpoints.CodeWidget</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="BreakpointsCodeWidgetContextMenu" id="383"/>
+											<ExtendedTooltip name="BreakpointsCodeWidgetExtendedTooltip" id="384"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+								<CheckBoxField name="EmulateBreakpointUpdateDelay" id="51">
+									<DataPath>EmulateBreakpointUpdateDelay</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="EmulateBreakpointUpdateDelayContextMenu" id="52"/>
+									<ExtendedTooltip name="EmulateBreakpointUpdateDelayExtendedTooltip" id="53"/>
+								</CheckBoxField>
+							</ChildItems>
+						</Page>
 						<Page name="PageProblems" id="200">
 							<Title>
 								<v8:item>
@@ -1533,6 +1595,81 @@
 								</Table>
 							</ChildItems>
 						</Page>
+						<Page name="PageActions" id="260">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Actions</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page actions</v8:content>
+								</v8:item>
+							</ToolTip>
+							<ExtendedTooltip name="PageActionsExtendedTooltip" id="261"/>
+							<ChildItems>
+								<Table name="Actions" id="262">
+									<Representation>List</Representation>
+									<ReadOnly>true</ReadOnly>
+									<ChangeRowSet>false</ChangeRowSet>
+									<ChangeRowOrder>false</ChangeRowOrder>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>Actions</DataPath>
+									<SearchStringLocation>CommandBar</SearchStringLocation>
+									<ViewStatusLocation>Top</ViewStatusLocation>
+									<SearchControlLocation>CommandBar</SearchControlLocation>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="ActionsContextMenu" id="263"/>
+									<AutoCommandBar name="ActionsCommandBar" id="264"/>
+									<ExtendedTooltip name="ActionsExtendedTooltip" id="265"/>
+									<SearchStringAddition name="ActionsSearchString" id="266">
+										<AdditionSource>
+											<Item>Actions</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ActionsSearchStringContextMenu" id="267"/>
+										<ExtendedTooltip name="ActionsSearchStringExtendedTooltip" id="268"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="ActionsViewStatus" id="269">
+										<AdditionSource>
+											<Item>Actions</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ActionsViewStatusContextMenu" id="270"/>
+										<ExtendedTooltip name="ActionsViewStatusExtendedTooltip" id="271"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="ActionsSearchControl" id="272">
+										<AdditionSource>
+											<Item>Actions</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="ActionsSearchControlContextMenu" id="273"/>
+										<ExtendedTooltip name="ActionsSearchControlExtendedTooltip" id="274"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="Selection">ActionsSelection</Event>
+									</Events>
+									<ChildItems>
+										<InputField name="Actionsid" id="275">
+											<DataPath>Actions.id</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="ActionsidContextMenu" id="276"/>
+											<ExtendedTooltip name="ActionsidExtendedTooltip" id="277"/>
+										</InputField>
+										<InputField name="Actionslabel" id="278">
+											<DataPath>Actions.label</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="ActionslabelContextMenu" id="279"/>
+											<ExtendedTooltip name="ActionslabelExtendedTooltip" id="280"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+							</ChildItems>
+						</Page>
 						<Page name="PageEvents" id="232">
 							<Title>
 								<v8:item>
@@ -1642,81 +1779,6 @@
 											<EditMode>EnterOnInput</EditMode>
 											<ContextMenu name="EventLogDataContextMenu" id="251"/>
 											<ExtendedTooltip name="EventLogDataExtendedTooltip" id="252"/>
-										</InputField>
-									</ChildItems>
-								</Table>
-							</ChildItems>
-						</Page>
-						<Page name="PageActions" id="260">
-							<Title>
-								<v8:item>
-									<v8:lang>ru</v8:lang>
-									<v8:content>Actions</v8:content>
-								</v8:item>
-							</Title>
-							<ToolTip>
-								<v8:item>
-									<v8:lang>ru</v8:lang>
-									<v8:content>Page actions</v8:content>
-								</v8:item>
-							</ToolTip>
-							<ExtendedTooltip name="PageActionsExtendedTooltip" id="261"/>
-							<ChildItems>
-								<Table name="Actions" id="262">
-									<Representation>List</Representation>
-									<ReadOnly>true</ReadOnly>
-									<ChangeRowSet>false</ChangeRowSet>
-									<ChangeRowOrder>false</ChangeRowOrder>
-									<AutoInsertNewRow>true</AutoInsertNewRow>
-									<EnableStartDrag>true</EnableStartDrag>
-									<EnableDrag>true</EnableDrag>
-									<DataPath>Actions</DataPath>
-									<SearchStringLocation>CommandBar</SearchStringLocation>
-									<ViewStatusLocation>Top</ViewStatusLocation>
-									<SearchControlLocation>CommandBar</SearchControlLocation>
-									<RowFilter xsi:nil="true"/>
-									<ContextMenu name="ActionsContextMenu" id="263"/>
-									<AutoCommandBar name="ActionsCommandBar" id="264"/>
-									<ExtendedTooltip name="ActionsExtendedTooltip" id="265"/>
-									<SearchStringAddition name="ActionsSearchString" id="266">
-										<AdditionSource>
-											<Item>Actions</Item>
-											<Type>SearchStringRepresentation</Type>
-										</AdditionSource>
-										<ContextMenu name="ActionsSearchStringContextMenu" id="267"/>
-										<ExtendedTooltip name="ActionsSearchStringExtendedTooltip" id="268"/>
-									</SearchStringAddition>
-									<ViewStatusAddition name="ActionsViewStatus" id="269">
-										<AdditionSource>
-											<Item>Actions</Item>
-											<Type>ViewStatusRepresentation</Type>
-										</AdditionSource>
-										<ContextMenu name="ActionsViewStatusContextMenu" id="270"/>
-										<ExtendedTooltip name="ActionsViewStatusExtendedTooltip" id="271"/>
-									</ViewStatusAddition>
-									<SearchControlAddition name="ActionsSearchControl" id="272">
-										<AdditionSource>
-											<Item>Actions</Item>
-											<Type>SearchControl</Type>
-										</AdditionSource>
-										<ContextMenu name="ActionsSearchControlContextMenu" id="273"/>
-										<ExtendedTooltip name="ActionsSearchControlExtendedTooltip" id="274"/>
-									</SearchControlAddition>
-									<Events>
-										<Event name="Selection">ActionsSelection</Event>
-									</Events>
-									<ChildItems>
-										<InputField name="Actionsid" id="275">
-											<DataPath>Actions.id</DataPath>
-											<EditMode>EnterOnInput</EditMode>
-											<ContextMenu name="ActionsidContextMenu" id="276"/>
-											<ExtendedTooltip name="ActionsidExtendedTooltip" id="277"/>
-										</InputField>
-										<InputField name="Actionslabel" id="278">
-											<DataPath>Actions.label</DataPath>
-											<EditMode>EnterOnInput</EditMode>
-											<ContextMenu name="ActionslabelContextMenu" id="279"/>
-											<ExtendedTooltip name="ActionslabelExtendedTooltip" id="280"/>
 										</InputField>
 									</ChildItems>
 								</Table>
@@ -2307,6 +2369,33 @@
 				<v8:item>
 					<v8:lang>ru</v8:lang>
 					<v8:content>Use debugger</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="TabSize" id="26">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Tab size</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>2</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Any</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="InsertSpaces" id="27">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Insert Spaces</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -3028,6 +3117,21 @@
 			</Picture>
 			<Action>StopSubcode</Action>
 			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="NormalizeIndentation" id="41">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Normalize indentation</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Normalize indentation</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>NormalizeIndentation</Action>
 		</Command>
 	</Commands>
 </Form>
