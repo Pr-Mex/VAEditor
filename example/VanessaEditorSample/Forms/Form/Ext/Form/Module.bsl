@@ -14,6 +14,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	EditorTheme = "vs";
 	ShowMinimap = True;
 	LineNumber = 1;
+	TabSize = 4;
 	Column = 1;
 
 EndProcedure
@@ -993,5 +994,20 @@ EndProcedure
 	DefaultView().useVanessaDebugger(useDebugger);
 
 КонецПроцедуры
+
+&AtClient
+Procedure TabSizeOnChange(Item)
+	VanessaEditor().setTabSize(TabSize);
+EndProcedure
+
+&AtClient
+Procedure InsertSpacesOnChange(Item)
+	VanessaEditor().setInsertSpaces(InsertSpaces);
+EndProcedure
+
+&AtClient
+Procedure NormalizeIndentation(Command)
+	VanessaEditor().normalizeIndentation();
+EndProcedure
 
 #EndRegion
