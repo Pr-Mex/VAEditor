@@ -121,6 +121,7 @@ export class VanessaEditor implements IVanessaEditor {
       insertSpaces: false,
       lightbulb: { enabled: true }
     });
+    this.editor.getModel().updateOptions({ insertSpaces: false });
     this.runtimeManager = new RuntimeManager(this);
     this.actionManager = new ActionManager(this);
     this.eventsManager = new EventsManager(this);
