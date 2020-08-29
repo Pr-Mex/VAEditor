@@ -4,9 +4,10 @@ import { VanessaDiffEditor } from './vanessa-diff-editor';
 
 const $ = dom.$;
 
-export interface IVanessaEditor {
+export interface IVanessaEditor  {
   domNode(): HTMLElement;
   dispose(): void;
+  resetModel: Function;
   getModel: Function;
   editor: any;
 }

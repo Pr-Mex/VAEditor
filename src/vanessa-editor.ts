@@ -149,6 +149,13 @@ export class VanessaEditor implements IVanessaEditor {
     return this.editors.some(e => e.editor.getModel() === model);
   }
 
+  public resetModel() {
+    const newModel = monaco.editor.createModel('');
+    const oldModel = this.getModel();
+    this.editor.setModel(newModel);
+    disposeModel(oldModel);
+  };
+
   static editors: Array<VanessaEditor> = [];
   static checkAllSyntax = () => VanessaEditor.editors.forEach(e => SyntaxProvider.checkSyntax(e.editor.getModel()));
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
