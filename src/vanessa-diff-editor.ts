@@ -24,7 +24,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
       original: monaco.editor.createModel(original, language),
       modified: monaco.editor.createModel(modified, language),
     };
-      return this.standaloneInstance = new VanessaDiffEditor(model);
+    return this.standaloneInstance = new VanessaDiffEditor(model);
   }
 
   public static getStandalone() { return this.standaloneInstance; }
@@ -62,6 +62,19 @@ export class VanessaDiffEditor implements IVanessaEditor {
     disposeModel(original);
     disposeModel(modified);
   }
+
+  public resetModel() {
+    const oe = this.editor.getOriginalEditor();
+    const me = this.editor.getModifiedEditor();
+    const original = oe ? oe.getModel() : null;
+    const modified = me ? me.getModel() : null;
+    this.editor.setModel({
+      original: monaco.editor.createModel(''),
+      modified: monaco.editor.createModel(''),
+    });
+    disposeModel(original);
+    disposeModel(modified);
+  };
 
   public setValue = (oldValue: string, oldFile: string, newValue: string, newFile: string) => {
     this.editor.setModel({

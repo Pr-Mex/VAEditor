@@ -36,8 +36,7 @@ class VanessaTabItem {
         this.domTitle = $(".vanessa-tab-title"),
         this.domClose = $(".vanessa-tab-close", { title: "Close" }),
       ));
-    this.domItem.addEventListener("click", this.onSelect.bind(this), true);
-    this.domClose.addEventListener("click", this.onClose.bind(this), true);
+    this.domItem.addEventListener("click", this.onClick.bind(this), true);
     this.domClose.innerText = "\uEA76";
     this.domTitle.innerText = title;
     this.owner.domTabPanel.append(this.domNode);
@@ -60,6 +59,14 @@ class VanessaTabItem {
     this.domTitle.innerText = title;
     this.domItem.setAttribute("title", title);
     return this;
+  }
+
+  private onClick() {
+    if (event.target === this.domClose) {
+      this.onClose();
+    } else {
+      this.onSelect();
+    }
   }
 
   public onSelect() {
@@ -87,7 +94,7 @@ class VanessaTabItem {
     this.domNode.classList.add(className);
     this.domNode.scrollIntoView();
     let domEditor = this.editor.domNode();
-    domEditor.parentElement.appendChild(domEditor);
+    setTimeout(() => domEditor.parentElement.appendChild(domEditor), 100);
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
@@ -103,7 +110,8 @@ class VanessaTabItem {
   }
 
   dispose() {
-    this.editor.dispose();
+    this.owner.hideEditor(this.editor);
+    if (this.owner.tabStack.length == 0) this.owner.disposeHidden();
     this.domNode.remove();
     this.editor = null;
     this.owner = null;
@@ -131,6 +139,7 @@ export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
+  private hiddenEditors: Array<IVanessaEditor> = [];
 
   public static createStandalone() {
     if (this.standaloneInstance) return this.standaloneInstance;
@@ -160,6 +169,7 @@ export class VanessaTabs {
     while (this.tabStack.length) this.tabStack.pop().dispose();
     this.domContainer.classList.add("vanessa-hidden");
     this.domTabPanel.remove();
+    this.disposeHidden();
   }
 
   public get current() {
@@ -168,6 +178,19 @@ export class VanessaTabs {
 
   private key(original: string, modified: string = undefined) {
     return modified ? original + "\n" + modified : original;
+  }
+
+  public hideEditor(editor: IVanessaEditor) {
+    editor.resetModel();
+    this.hiddenEditors.push(editor);
+    const domEditor = editor.domNode();
+    domEditor.classList.add("vanessa-hidden");
+  }
+
+  public disposeHidden() {
+    while (this.hiddenEditors.length) {
+      this.hiddenEditors.pop().dispose();
+    }
   }
 
   public find = (
@@ -210,6 +233,7 @@ export class VanessaTabs {
     const uri = monaco.Uri.parse(filepath);
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
+    this.disposeHidden();
     const editor = new VanessaEditor(model, readOnly);
     return this.open(editor, key, title, filename, encoding, newTab);
   }
@@ -237,6 +261,7 @@ export class VanessaTabs {
     };
     if (!diff.original) diff.original = createModel(oldContent, oldFileName, uriOriginal);
     if (!diff.modified) diff.modified = createModel(newContent, newFileName, uriModified);
+    this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
     return this.open(editor, key, title, newFilePath, encoding, newTab);
   }
@@ -253,6 +278,7 @@ export class VanessaTabs {
 
   public closeAll = () => {
     while (this.tabStack.length) this.tabStack.pop().dispose();
+    this.disposeHidden();
   }
 
   public close = () => {
