@@ -74,11 +74,9 @@ class VanessaTabItem {
   }
 
   public onClose() {
-    if (this.modified) {
-      const data = this.getEventData();
-      data["accept"] = () => this.close();
-      EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_CLOSING, data);
-    } else this.close();
+    const data = this.getEventData();
+    data["accept"] = () => this.close();
+    EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_CLOSING, data);
   }
 
   public onFileSave() {
@@ -98,6 +96,7 @@ class VanessaTabItem {
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
+    EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_SELECT, this.getEventData());
     return this.editor;
   }
 
@@ -119,11 +118,13 @@ class VanessaTabItem {
 
   private getEventData() {
     return {
+      tab: this,
       editor: this.editor,
       model: this.editor.getModel(),
       title: this.title,
       filename: this.filename,
       encoding: this.encoding,
+      modified: this.modified,
     }
   }
 
