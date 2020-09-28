@@ -127,16 +127,20 @@ body {
     height: 1.2em;
 }
 
-.vanessa-tab-close:HOVER:before {
-    content: '';
-    border-radius: 50%;
+.vanessa-tab-close:before {
+    font-size: 1.2em;
+    text-align: center;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    opacity: .15;
-    box-shadow: 0 0 0 1em inset
+}
+
+.vanessa-tab-close:HOVER:before {
+    border-radius: 50%;
+    box-shadow: 0 0 0 1em silver inset;
+    content: "\ea76" !important;
 }
 
 .vanessa-tab-select .vanessa-tab-item {

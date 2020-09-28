@@ -34,12 +34,12 @@ class VanessaTabItem {
     this.domNode = $(".vanessa-tab-box", {},
       this.domItem = $(".vanessa-tab-item", { title: title },
         this.domTitle = $(".vanessa-tab-title"),
-        this.domClose = $(".vanessa-tab-close", { title: "Close" }),
+        this.domClose = $(".vanessa-tab-close.codicon-close", { title: "Close" }),
       ));
     this.domItem.addEventListener("click", this.onClick.bind(this), true);
-    this.domClose.innerText = "\uEA76";
     this.domTitle.innerText = title;
     this.owner.domTabPanel.append(this.domNode);
+    this.registerOnDidChangeContent();
     this.select();
   }
 
@@ -50,7 +50,8 @@ class VanessaTabItem {
     filename: string,
     encoding: number,
   ): VanessaTabItem {
-    this.editor.dispose();
+    if (this.onChangeHandler) this.onChangeHandler.dispose();
+    this.owner.hideEditor(this.editor);
     this.editor = editor;
     this.key = key;
     this.title = title;
@@ -58,10 +59,32 @@ class VanessaTabItem {
     this.filename = filename;
     this.domTitle.innerText = title;
     this.domItem.setAttribute("title", title);
+    this.registerOnDidChangeContent();
     return this;
   }
 
-  private onClick() {
+  private onChangeHandler: monaco.IDisposable;
+
+  private registerOnDidChangeContent()
+  {
+    setTimeout(() => {
+      const model = this.editor.getModel();
+      this.onChangeHandler = model.onDidChangeContent(() => this.onModified());
+      this.onModified();
+    }, 500);
+  }
+
+  private onModified() {
+    if (this.modified) {
+      this.domClose.classList.remove('codicon-close');
+      this.domClose.classList.add('codicon-circle-filled');
+    } else {
+      this.domClose.classList.remove('codicon-circle-filled');
+      this.domClose.classList.add('codicon-close');
+    }
+  }
+
+  private onClick(event: any) {
     if (event.target === this.domClose) {
       this.onClose();
     } else {
@@ -110,6 +133,7 @@ class VanessaTabItem {
 
   dispose() {
     this.owner.hideEditor(this.editor);
+    if (this.onChangeHandler) this.onChangeHandler.dispose();
     if (this.owner.tabStack.length == 0) this.owner.disposeHidden();
     this.domNode.remove();
     this.editor = null;
@@ -131,6 +155,17 @@ class VanessaTabItem {
   public get modified(): boolean {
     const model = this.editor.getModel();
     return model && model.isModified();
+  }
+
+  public getVersionId = () => {
+    const model = this.editor.getModel();
+    return model ? 0 : model.getVersionId();
+  }
+
+  public resetModified = () => {
+    const model = this.editor.getModel();
+    model.resetModified();
+    this.onModified();
   }
 }
 
@@ -285,4 +320,15 @@ export class VanessaTabs {
   public close = () => {
     if (this.current) this.current.onClose();
   }
+
+  public count = () => this.tabStack.length;
+  public tab = (index: number) => this.tabStack[index];
+  public select = (index: number) => this.tabStack[index].select();
 }
+
+/*
+
+monaco.editor.getModels();
+model._associatedResource.toString();
+
+*/
