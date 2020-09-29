@@ -2,6 +2,7 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager } from "./common";
+import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 
 const $ = dom.$;
 
@@ -65,8 +66,7 @@ class VanessaTabItem {
 
   private onChangeHandler: monaco.IDisposable;
 
-  private registerOnDidChangeContent()
-  {
+  private registerOnDidChangeContent() {
     setTimeout(() => {
       const model = this.editor.getModel();
       this.onChangeHandler = model.onDidChangeContent(() => this.onModified());
@@ -167,6 +167,40 @@ class VanessaTabItem {
     model.resetModified();
     this.onModified();
   }
+
+  public doSaveAs = (filepath: string, title: string) => {
+    this.domTitle.innerText = title;
+    const uri = monaco.Uri.parse(filepath);
+    const oldKey = this.editor.getModel().uri.toString();
+    const newKey = uri.toString();
+    this.resetModified();
+    if (oldKey === newKey) return;
+    const tab = this.owner.tabStack.find((t: VanessaTabItem) =>
+      t !== this
+      && t.editor.getModel().uri.toString() === newKey
+      && this.editor.editor.getEditorType() == "vs.editor.ICodeEditor"
+    );
+    if (tab) {
+      const model = tab.editor.getModel();
+      model.pushEditOperations("save-file-as", [{
+        text: this.editor.getModel().getValue(),
+        range: model.getFullModelRange(),
+        forceMoveMarkers: true,
+      }]);
+      model.pushStackElement();
+      tab.encoding = this.encoding;
+      tab.resetModified();
+      tab.select();
+      this.close();
+    } else {
+      this.editor.getModel()._associatedResource = uri;
+      const service = StaticServices.modelService.get();
+      const data = service._models[oldKey];
+      delete service._models[oldKey];
+      service._models[newKey] = data;
+      this.resetModified();
+    }
+  }
 }
 
 export class VanessaTabs {
@@ -259,9 +293,9 @@ export class VanessaTabs {
     filename: string,
     filepath: string,
     title: string,
-    encoding: number,
-    readOnly: boolean,
-    newTab: boolean,
+    encoding: number = 0,
+    readOnly: boolean = false,
+    newTab: boolean = true,
   ): IVanessaEditor => {
     let key = this.key(filepath);
     let tab = this.tabStack.find(t => t.key === key);
@@ -282,9 +316,9 @@ export class VanessaTabs {
     newFileName: string,
     newFilePath: string,
     title: string,
-    encoding: number,
-    readOnly: boolean,
-    newTab: boolean,
+    encoding: number = 0,
+    readOnly: boolean = false,
+    newTab: boolean = true,
   ) => {
     const key = this.key(oldFilePath, newFilePath);
     let tab = this.tabStack.find(t => t.key === key);
@@ -325,10 +359,3 @@ export class VanessaTabs {
   public tab = (index: number) => this.tabStack[index];
   public select = (index: number) => this.tabStack[index].select();
 }
-
-/*
-
-monaco.editor.getModels();
-model._associatedResource.toString();
-
-*/
