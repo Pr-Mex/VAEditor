@@ -1,4 +1,4 @@
-import * as dom from '../node_modules/monaco-editor/esm/vs/base/browser/dom';
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from './vanessa-editor';
 import { VanessaDiffEditor } from './vanessa-diff-editor';
 

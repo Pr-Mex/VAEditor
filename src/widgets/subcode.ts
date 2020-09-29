@@ -3,7 +3,7 @@ import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
 import { FoldingProvider } from "../languages/turbo-gherkin/provider.folding";
 
-import * as dom from '../../node_modules/monaco-editor/esm/vs/base/browser/dom';
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 
 const $ = dom.$;
 

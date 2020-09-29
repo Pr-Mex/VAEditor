@@ -1,7 +1,7 @@
 import { ProviderBase } from "./provider.base";
-import { createTokenizationSupport } from '../../../node_modules/monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
-import { StaticServices } from '../../../node_modules/monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
-import { compile } from '../../../node_modules/monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
+import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
+import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 
 export class TokensProvider extends ProviderBase {
 
