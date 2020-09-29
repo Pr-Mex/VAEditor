@@ -205,4 +205,8 @@ export class SubcodeLine {
   get heightInLines(): number {
     return this.visible ? (this.errorNodes.length ? 3 : 1) : 0;
   }
+
+  public get value(): string {
+    return this.lineNode.innerText;
+  }
 }

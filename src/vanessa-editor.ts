@@ -26,6 +26,7 @@ export class VanessaEditor implements IVanessaEditor {
   public getSelection = () => this.runtimeManager.selection;
   public setPosition = (lineNumber: number, column: number, codeWidget: string = "") => this.runtimeManager.position = { lineNumber: lineNumber, column: column, codeWidget: codeWidget };
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
+  public selectSubcodeLine = (codeWidget: string, lineNumber: number) => this.runtimeManager.selectSubcodeLine(codeWidget, lineNumber);
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setTheme = (arg: string) => this.styleManager.theme = arg;
   public revealLine = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.revealLine(lineNumber, codeWidget);

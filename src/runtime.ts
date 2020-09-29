@@ -616,6 +616,19 @@ export class RuntimeManager {
     return result;
   }
 
+  public selectSubcodeLine(codeWidget: string, lineNumber: number) {
+    let line = undefined;
+    this.forEachSubcode(w => {
+      if (w.id == codeWidget) {
+        line = w.lines[lineNumber];
+      }
+    })
+    if (line) {
+      line.select();
+      return line.value;
+    }
+  }
+
   public clear(): void {
     this.clearStyle();
     this.clearStack();
