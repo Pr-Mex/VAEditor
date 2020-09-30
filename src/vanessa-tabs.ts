@@ -1,15 +1,13 @@
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
-import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager } from "./common";
+import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 
 const $ = dom.$;
 
 class VanessaTabItem {
   public editor: IVanessaEditor;
-  public key: string;
-  private title: string;
   private filename: string;
   private encoding: number;
   private owner: VanessaTabs;
@@ -21,17 +19,14 @@ class VanessaTabItem {
   constructor(
     owner: VanessaTabs,
     editor: IVanessaEditor,
-    key: string,
     title: string,
     filename: string,
     encoding: number,
   ) {
     this.owner = owner;
     this.editor = editor;
-    this.key = key;
     this.encoding = encoding;
     this.filename = filename;
-    this.title = title;
     this.domNode = $(".vanessa-tab-box", {},
       this.domItem = $(".vanessa-tab-item", { title: title },
         this.domTitle = $(".vanessa-tab-title"),
@@ -46,7 +41,6 @@ class VanessaTabItem {
 
   public open(
     editor: IVanessaEditor,
-    key: string,
     title: string,
     filename: string,
     encoding: number,
@@ -54,8 +48,6 @@ class VanessaTabItem {
     if (this.onChangeHandler) this.onChangeHandler.dispose();
     this.owner.hideEditor(this.editor);
     this.editor = editor;
-    this.key = key;
-    this.title = title;
     this.encoding = encoding;
     this.filename = filename;
     this.domTitle.innerText = title;
@@ -157,6 +149,26 @@ class VanessaTabItem {
     return model && model.isModified();
   }
 
+  public get uri(): string {
+    return this.editor.getModel().uri;
+  }
+
+  public get key(): string {
+    return this.editor.getModel().uri.toString();
+  }
+
+  public get type(): string {
+    return this.editor.editor.getEditorType();
+  }
+
+  public get title(): string {
+    return this.domTitle.innerText;
+  }
+
+  public set title(value: string) {
+    this.domTitle.innerText = value;
+  }
+
   public getVersionId = () => {
     const model = this.editor.getModel();
     return model ? 0 : model.getVersionId();
@@ -168,6 +180,15 @@ class VanessaTabItem {
     this.onModified();
   }
 
+  private rewriteModel(model: any) {
+    model.pushEditOperations("save-file-as", [{
+      text: this.editor.getModel().getValue(),
+      range: model.getFullModelRange(),
+      forceMoveMarkers: true,
+    }]);
+    model.pushStackElement();
+  }
+
   public doSaveAs = (filepath: string, title: string) => {
     this.domTitle.innerText = title;
     const uri = monaco.Uri.parse(filepath);
@@ -175,31 +196,33 @@ class VanessaTabItem {
     const newKey = uri.toString();
     this.resetModified();
     if (oldKey === newKey) return;
-    const tab = this.owner.tabStack.find((t: VanessaTabItem) =>
-      t !== this
-      && t.editor.getModel().uri.toString() === newKey
-      && this.editor.editor.getEditorType() == "vs.editor.ICodeEditor"
+    const tab = this.owner.tabStack.find((tab: VanessaTabItem) =>
+      tab !== this && tab.type === "vs.editor.ICodeEditor"
+      && tab.editor.editor.getModel().uri.toString() === newKey
     );
     if (tab) {
-      const model = tab.editor.getModel();
-      model.pushEditOperations("save-file-as", [{
-        text: this.editor.getModel().getValue(),
-        range: model.getFullModelRange(),
-        forceMoveMarkers: true,
-      }]);
-      model.pushStackElement();
+      this.rewriteModel(tab.editor.getModel());
       tab.encoding = this.encoding;
       tab.resetModified();
       tab.select();
       this.close();
+      return;
+    }
+    const model = monaco.editor.getModel(uri);
+    if (model) {
+      this.rewriteModel(model);
+      const oldModel = this.editor.getModel();
+      this.editor.editor.setModel(model);
+      disposeModel(oldModel);
     } else {
       this.editor.getModel()._associatedResource = uri;
       const service = StaticServices.modelService.get();
       const data = service._models[oldKey];
       delete service._models[oldKey];
       service._models[newKey] = data;
-      this.resetModified();
     }
+    this.filename = filepath;
+    this.resetModified();
   }
 }
 
@@ -274,16 +297,15 @@ export class VanessaTabs {
 
   private open(
     editor: IVanessaEditor,
-    key: string,
     title: string,
-    filename: string,
+    filepath: string,
     encoding: number,
     newTab: boolean,
   ): IVanessaEditor {
     if (newTab || !this.current || this.current.modified) {
-      new VanessaTabItem(this, editor, key, title, filename, encoding);
+      new VanessaTabItem(this, editor, title, filepath, encoding);
     } else {
-      this.current.open(editor, key, title, filename, encoding);
+      this.current.open(editor, title, filepath, encoding);
     }
     return editor;
   }
@@ -297,15 +319,17 @@ export class VanessaTabs {
     readOnly: boolean = false,
     newTab: boolean = true,
   ): IVanessaEditor => {
-    let key = this.key(filepath);
-    let tab = this.tabStack.find(t => t.key === key);
-    if (tab) return tab.select();
     const uri = monaco.Uri.parse(filepath);
+    const key = uri.toString();
+    const tab = this.tabStack.find((tab: VanessaTabItem) =>
+      tab.key === key && tab.type === "vs.editor.ICodeEditor"
+    );
+    if (tab) return tab.select();
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
     const editor = new VanessaEditor(model, readOnly);
-    return this.open(editor, key, title, filename, encoding, newTab);
+    return this.open(editor, title, filepath, encoding, newTab);
   }
 
   public diff = (
@@ -320,8 +344,13 @@ export class VanessaTabs {
     readOnly: boolean = false,
     newTab: boolean = true,
   ) => {
-    const key = this.key(oldFilePath, newFilePath);
-    let tab = this.tabStack.find(t => t.key === key);
+    const originalKey = monaco.Uri.parse(oldFilePath).toString();
+    const modifiedKey = monaco.Uri.parse(newFilePath).toString();
+    const tab = this.tabStack.find((tab: VanessaTabItem) =>
+      tab.type === "vs.editor.IDiffEditor"
+      && tab.editor.editor.getModel().original.uri.toString() === originalKey
+      && tab.editor.editor.getModel().modified.uri.toString() === modifiedKey
+    );
     if (tab) return tab.select();
     const uriOriginal = monaco.Uri.parse(oldFilePath);
     const uriModified = monaco.Uri.parse(newFilePath);
@@ -333,7 +362,7 @@ export class VanessaTabs {
     if (!diff.modified) diff.modified = createModel(newContent, newFileName, uriModified);
     this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
-    return this.open(editor, key, title, newFilePath, encoding, newTab);
+    return this.open(editor, title, newFilePath, encoding, newTab);
   }
 
   public onFileSave = () => {
