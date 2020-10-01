@@ -70,7 +70,7 @@ export class SuggestProvider extends base {
         let keytext = keyword.join(' ');
         keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
         for (let key in base.steps) {
-          var e = base.steps[key];
+          let e = base.steps[key];
           if (e.documentation) {
             result.push({
               label: e.label,
@@ -86,7 +86,7 @@ export class SuggestProvider extends base {
         }
       } else {
         for (let key in base.steps) {
-          var e = base.steps[key];
+          let e = base.steps[key];
           if (e.documentation) {
             result.push({
               label: e.label,

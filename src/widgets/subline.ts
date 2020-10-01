@@ -10,7 +10,7 @@ export enum BreakpointState {
   Unmarked = 0,
   Unverified = 1,
   Breakpoint = 2,
-};
+}
 
 export class SubcodeLine {
   private owner: SubcodeWidget;
@@ -74,7 +74,7 @@ export class SubcodeLine {
   private updateFolding() {
     let forEachLine = (handler: (line: SubcodeLine) => void) => {
       for (let i = this.lineNumber; i < this.foldNumber; i++) {
-        handler(this.owner.lines[i] as SubcodeLine);
+        handler(this.owner.lines[i]);
       }
     };
     if (this.collapsed) {

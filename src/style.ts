@@ -24,7 +24,7 @@ export class StyleManager {
     if (this.lineHeight == lineHeight) return;
 
     const id = 'vanessa-widget-style';
-    let style = document.getElementById(id) as HTMLElement;
+    let style = document.getElementById(id);
     if (style == null) {
       style = document.createElement('style');
       style.setAttribute("type", "text/css");
