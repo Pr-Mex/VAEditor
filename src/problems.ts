@@ -30,7 +30,7 @@ export class ProblemManager {
         case "Info": severity = monaco.MarkerSeverity.Info; break;
         case "Warning": severity = monaco.MarkerSeverity.Warning; break;
         case "Error": severity = monaco.MarkerSeverity.Error; break;
-        default: severity = severity = monaco.MarkerSeverity.Error;
+        default: severity = monaco.MarkerSeverity.Error;
       }
       data.push(<monaco.editor.IMarkerData>{
         startLineNumber: problem.lineNumber,

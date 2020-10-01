@@ -28,7 +28,7 @@ export class Breakpoint implements IBreakpoint {
 
 interface IBreakpointDecoration {
   id: string;
-  range: IRange;
+  range: any;
   enable: boolean;
   verified: boolean;
 }
@@ -171,7 +171,7 @@ export class RuntimeManager {
         return;
       }
       const newBreakpointRange: monaco.Range = this.editor.getModel().getDecorationRange(breakpoint.id);
-      if (newBreakpointRange && (!(breakpoint.range as monaco.Range).equalsRange(newBreakpointRange))) {
+      if (newBreakpointRange && !breakpoint.range.equalsRange(newBreakpointRange)) {
         somethingChanged = true;
       }
     });
@@ -228,7 +228,7 @@ export class RuntimeManager {
     this.breakpointDecorations.forEach(breakpoint => {
       const range: monaco.Range = this.editor.getModel().getDecorationRange(breakpoint.id);
       if (range !== null) {
-        const found: Boolean = breakpoints.some(b => (b.lineNumber === range.startLineNumber));
+        const found = breakpoints.some(b => (b.lineNumber === range.startLineNumber));
         if (!found) breakpoints.push(new Breakpoint(range.startLineNumber, "", breakpoint.enable));
       }
     });
@@ -300,7 +300,6 @@ export class RuntimeManager {
   }
 
   public setStack(status: boolean, lineNumber: number) {
-    const model: monaco.editor.ITextModel = this.editor.getModel();
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     if (status) decorations.push({
       range: new monaco.Range(lineNumber, 1, lineNumber, 1),
@@ -388,7 +387,7 @@ export class RuntimeManager {
       return widget ? widget.getContent() : undefined;
     }
     return this.editor.getValue();
-  };
+  }
 
   public getLineContent(lineNumber: number, codeWidget: string = "") {
     if (codeWidget) {
@@ -396,7 +395,7 @@ export class RuntimeManager {
       return widhet ? widhet.getLineContent(lineNumber) : undefined;
     }
     return this.editor.getModel().getLineContent(lineNumber);
-  };
+  }
 
   public getCurrent(): IRuntimePosition {
     const model = this.editor.getModel();

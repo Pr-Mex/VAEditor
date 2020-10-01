@@ -89,8 +89,8 @@ export class VanessaGherkinProvider extends ProviderBase {
         return `${Q1}${elem}${Q2}`;
       });
       let keyword = this.findKeyword(words);
-      e.label = words.filter((w, i) => (keyword && i < keyword.length) ? false : true).join(' ');
-      e.keyword = words.filter((w, i) => (keyword && i < keyword.length) ? true : false).join(' ');
+      e.label = words.filter((w, i) => !(keyword && i < keyword.length)).join(' ');
+      e.keyword = words.filter((w, i) => (keyword && i < keyword.length)).join(' ');
       e.insertText = e.label + (e.body.length ? '\n' + e.body.join('\n') : '');
     }
   }

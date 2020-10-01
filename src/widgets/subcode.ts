@@ -45,7 +45,7 @@ export class SubcodeWidget extends WidgetBase {
     this.domNode = $(".vanessa-code-widget", {},
       this.textNode = $(".vanessa-code-lines"),
       this.leftNode = $('.vanessa-code-border'),
-      );
+    );
     this.overlayDom = this.div('vanessa-code-overlays');
     this.overlayDom.classList.add('margin-view-overlays');
     this.overlayWidget = {
@@ -62,7 +62,7 @@ export class SubcodeWidget extends WidgetBase {
         model.getOptions().tabSize,
         this.lines.length,
         lineNumber => this.getLineContent(lineNumber)
-      ).forEach(e => (this.lines[e.start - 1] as SubcodeLine).initFolding(e.end));
+      ).forEach(e => this.lines[e.start - 1].initFolding(e.end));
     });
     this.useDebugger = runtime.useDebugger;
   }

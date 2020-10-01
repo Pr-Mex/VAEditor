@@ -125,7 +125,7 @@ export class ActionManager {
 
   public setSuggestWidgetWidth(arg: any) {
     const id = 'vanessa-suggest-widget-style';
-    let style = document.getElementById(id) as HTMLElement;
+    let style = document.getElementById(id);
     if (style == null) {
       style = document.createElement('style');
       style.setAttribute("type", "text/css");
