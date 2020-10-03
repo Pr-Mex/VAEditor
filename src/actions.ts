@@ -1,10 +1,6 @@
 import { VanessaEditor } from "./vanessa-editor";
-import { VanessaEditorEvent } from "./common";
-
-export interface IVanessaAction {
-  id: string;
-  title: string;
-}
+import { VanessaEditorEvent, IVanessaAction } from "./common";
+import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 
 interface IVanessaCommand {
   eventId: string;
@@ -20,7 +16,6 @@ export class ActionManager {
   public owner: VanessaEditor;
   public editor: monaco.editor.IStandaloneCodeEditor;
   public codeActions: Array<IVanessaAction> = [];
-  public errorLinks: Array<IVanessaAction> = [];
   public codeLens: Array<IVanessaAction> = [];
   private codiconDecorations: string[] = [];
   public traceKeyboard: boolean = false;
@@ -67,9 +62,6 @@ export class ActionManager {
 
   public addCommands(commands: Array<IVanessaCommand>) {
     commands.forEach((e: IVanessaCommand) => {
-      if (e.errorLink) {
-        this.errorLinks.push({ id: e.eventId, title: e.errorLink });
-      } else {
         let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
         if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
         let id: string = this.editor.addCommand(keybinding, (c, a) => {
@@ -78,7 +70,6 @@ export class ActionManager {
           eval.apply(null, [`${e.script}`]);
         });
         if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
-      }
     });
   }
 

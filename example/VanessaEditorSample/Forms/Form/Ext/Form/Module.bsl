@@ -812,6 +812,16 @@ Function GetCommands()
 EndFunction
 
 &AtClient
+Function GetErrorLinks()
+
+	Links = New Array;
+	Links.Add(New Structure("id, title", "ERROR_DATA", "Details"));
+	Links.Add(New Structure("id, title", "ERROR_COPY", "Copy error"));
+	Return JsonDump(Links);
+
+EndFunction
+
+&AtClient
 Procedure VanessaEditorDocumentComplete(Item)
 
 	Var Provider, Editor;
@@ -819,6 +829,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	syntaxErrorMsg = "Syntax error: step not found";
 
 	Provider = DefaultView().VanessaGherkinProvider;
+	Provider.setErrorLinks(GetErrorLinks());
 	Provider.setKeywords(GetKeywords());
 	Provider.setElements(GetElements());
 	Provider.setVariables(GetVariables());

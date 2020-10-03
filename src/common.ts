@@ -12,6 +12,11 @@ export interface IVanessaEditor  {
   editor: any;
 }
 
+export interface IVanessaAction {
+  id: string;
+  title: string;
+}
+
 export enum VanessaEditorEvent {
   UPDATE_BREAKPOINTS = "UPDATE_BREAKPOINTS",
   CONTENT_DID_CHANGE = "CONTENT_DID_CHANGE",

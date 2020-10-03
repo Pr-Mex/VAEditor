@@ -8,6 +8,7 @@ import { SyntaxManager } from "./syntax";
 import { VanessaTabs } from "./vanessa-tabs";
 import { Module } from "webpack";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
+import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 
 export class VanessaEditor implements IVanessaEditor {
 
@@ -61,7 +62,6 @@ export class VanessaEditor implements IVanessaEditor {
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setSuggestWidgetWidth = (arg: any) => this.actionManager.setSuggestWidgetWidth(arg);
-  public onErrorLink = (e: HTMLElement) => this.fireEvent(e.dataset.id, e.parentElement.dataset.value);
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
@@ -76,7 +76,7 @@ export class VanessaEditor implements IVanessaEditor {
   //@ts-ignore
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController').showMessage(arg, this.getPosition());
 
-  get errorLinks() { return this.actionManager.errorLinks; }
+  get errorLinks() { return VanessaGherkinProvider.getStandalone().errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
   set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
 
