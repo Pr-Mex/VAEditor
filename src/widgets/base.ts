@@ -26,18 +26,20 @@ export class WidgetBase implements monaco.editor.IViewZone {
     return node;
   }
 
+  public onErrorLink(id: string, data: string) {
+    this.editor.fireEvent(id, data);
+  }
+
   public error(data: string, text: string, parent: HTMLElement) {
     var textNode = this.div('vanessa-error-text', parent);
     var linkNode = this.div('vanessa-error-links', parent);
     textNode.innerText = text;
-    linkNode.dataset.value = data;
     this.editor.errorLinks.forEach((e: any, i: number) => {
       if (i) this.span('&nbsp;|&nbsp;', linkNode);
       let node = document.createElement('a');
       node.href = "#";
-      node.dataset.id = e.id;
       node.innerText = e.title;
-      node.setAttribute("onclick", "VanessaEditor.onErrorLink(this)");
+      node.addEventListener("click", this.onErrorLink.bind(this, e.id, data));
       linkNode.appendChild(node);
     });
   }

@@ -5,6 +5,7 @@ export class ProviderBase {
   protected static steps = {};
   protected static elements = {};
   protected static variables = {};
+  protected static errorLinks = [];
 
   public static get singleWords(): string[] {
     return this.keywords.filter(w => w.length == 1).map(w => w[0]);

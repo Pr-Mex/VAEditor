@@ -1,5 +1,6 @@
 import { ProviderBase } from "./provider.base";
 import { VanessaEditor } from "../../vanessa-editor";
+import { IVanessaAction } from "../../common";
 
 interface IVanessaStep {
   filterText: string;
@@ -13,12 +14,21 @@ interface IVanessaStep {
 export class VanessaGherkinProvider extends ProviderBase {
 
   public static standaloneInstance: VanessaGherkinProvider = new VanessaGherkinProvider();
+  public get errorLinks(): any { return ProviderBase.errorLinks; }
   public get elements(): any { return ProviderBase.elements; }
   public get keywords(): any { return ProviderBase.keywords; }
   public get variables(): any { return ProviderBase.variables; }
   public get steps(): any { return ProviderBase.steps; }
 
   public static getStandalone() { return this.standaloneInstance; }
+
+  public setErrorLinks = (arg: string): void => {
+    const commands = JSON.parse(arg)
+    this.clearArray(ProviderBase.errorLinks);
+    commands.forEach((e: IVanessaAction) => {
+      ProviderBase.errorLinks.push(e);
+    });
+  }
 
   public setKeywords = (arg: string): void => {
     this.clearArray(ProviderBase.keywords);

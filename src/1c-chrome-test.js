@@ -154,8 +154,13 @@ window.onload = () => {
     { eventId: 'CODE_LENS_DATA', errorLink: 'Details', script: "alert('Details!')" },
     { eventId: 'CODE_LENS_COPY', errorLink: 'Copy error', script: "alert('Copy error!')" }
   ]
-
   editor.addCommands(JSON.stringify(commands))
+
+  const errorLinks = [
+    { id: 'CODE_LENS_DATA', title: 'Details' },
+    { id: 'CODE_LENS_COPY', title: 'Copy error' }
+  ]
+  VanessaGherkinProvider.setErrorLinks(JSON.stringify(errorLinks))
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
@@ -196,19 +201,18 @@ window.onload = () => {
       "source": "Data info",
     }];
     VanessaEditor.decorateProblems(JSON.stringify(problems));
+  */
 
     let error = "Runtime error info";
-    VanessaEditor.setRuntimeProgress("complete", 15);
-    VanessaEditor.setRuntimeProgress("error", 17);
-    VanessaEditor.setRuntimeProgress("disabled", 19);
-    VanessaEditor.setRuntimeProgress("pending", 24);
-    VanessaEditor.setCurrentProgress(21);
-    VanessaEditor.showRuntimeError(17, 0, "0x01", error);
-    VanessaEditor.setTheme("vs-dark");
+    editor.setRuntimeProgress("complete", 15);
+    editor.setRuntimeProgress("error", 17);
+    editor.setRuntimeProgress("disabled", 19);
+    editor.setRuntimeProgress("pending", 24);
+    editor.setCurrentProgress(21);
+    editor.showRuntimeError(17, 0, "0x01", error);
 
     setTimeout(() => {
-      VanessaEditor.setRuntimeProgress("error", 3, "b1");
-      VanessaEditor.showRuntimeError(3, "b1", "0x01", error);
+      editor.setRuntimeProgress("error", 3, "b1");
+      editor.showRuntimeError(3, "b1", "0x01", error);
     }, 1000);
-  */
 }
