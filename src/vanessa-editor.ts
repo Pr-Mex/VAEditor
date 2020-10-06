@@ -68,6 +68,7 @@ export class VanessaEditor implements IVanessaEditor {
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public getModel = () => this.editor.getModel();
   public domNode = () => this.editor.getDomNode();
+  public setHoverDelay = (value: number) => this.editor.updateOptions({ hover: { enabled: true, sticky: true, delay: value } });
   public setTabSize = (arg: number) => this.editor.getModel().updateOptions({ tabSize: arg });
   public setInsertSpaces = (arg: boolean) => this.editor.getModel().updateOptions({ insertSpaces: arg });
   public setDetectIndentation = (arg: boolean) => this.editor.updateOptions({ detectIndentation: arg });
