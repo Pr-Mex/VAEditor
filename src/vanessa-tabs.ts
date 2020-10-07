@@ -224,6 +224,10 @@ class VanessaTabItem {
     this.filename = filepath;
     this.resetModified();
   }
+
+  public get dom(): HTMLElement {
+    return this.domNode;
+  }
 }
 
 export class VanessaTabs {
@@ -363,6 +367,22 @@ export class VanessaTabs {
     this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
     return this.open(editor, title, newFilePath, encoding, newTab);
+  }
+
+  public onPageNext = (forward: boolean) => {
+    const count = this.tabStack.length;
+    if (count === 0) return;
+    let index = 0;
+    const delta = forward ? 1 : - 1;
+    const selected = this.current.dom;
+    this.domTabPanel.childNodes.forEach((n, i) => {
+      if (n === selected) index = (i + delta + count) % count;
+    });
+    let next = undefined;
+    this.domTabPanel.childNodes.forEach((n, i) => {
+      if (index === i) next = n;
+    });
+     this.tabStack.find(t => t.dom === next).select();
   }
 
   public onFileSave = () => {

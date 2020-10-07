@@ -10,13 +10,26 @@
 })()
 
 document.addEventListener('keydown', e => {
-  if (!e) e = window.event
-  if (e.ctrlKey && e.keyCode === 83) {
-    const editor = window.VanessaEditor || window.VanessaDiffEditor || window.VanessaTabs
-    if (editor) editor.onFileSave()
+  let stop = e => {
     if (e.preventDefault) e.preventDefault()
     if (e.stopPropagation) e.stopPropagation()
     return false
+  }
+  if (!e) e = window.event
+  if (e.ctrlKey) {
+    switch (e.keyCode) {
+      case 33:
+      case 34: {
+        const tabs = window.VanessaTabs
+        if (tabs) tabs.onPageNext(e.keyCode === 34)
+        return stop(e)
+      }
+      case 83: {
+        const editor = window.VanessaEditor || window.VanessaDiffEditor || window.VanessaTabs
+        if (editor) editor.onFileSave()
+        return stop(e)
+      }
+    }
   }
   return true
 }, false)
