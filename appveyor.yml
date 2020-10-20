@@ -1,0 +1,41 @@
+version: 0.{build}
+image: Visual Studio 2019
+configuration: Release
+platform: x64
+
+environment:
+  URL_1CV8T:
+    secure: z47uplaqZaQ0ZkroXy0GP00nv6ACPwovtb+EjfPgpS1UVp1iZSkRJGz8uOWarUXi
+
+install:
+  - ps: $env:PACKAGE_VERSION = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
+  - ps: Update-AppveyorBuild -Version "$env:PACKAGE_VERSION.$env:APPVEYOR_BUILD_NUMBER"
+  - npm -q --no-progress install .
+
+build_script:
+  - npm -q run build
+  - 7z a VAEditor.zip %CD%/dist/index.html
+  - 7z a StepList.zip %CD%/example/StepList/*.json
+
+after_build:
+  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaEditor | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaEditor/Ext | Out-Null
+  - ps: Copy-Item -Path VAEditor.zip -Destination example/VanessaEditorSample/Templates/VanessaEditor/Ext/Template.bin
+  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaStepList | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaStepList/Ext | Out-Null
+  - ps: Copy-Item -Path StepList.zip -Destination example/VanessaEditorSample/Templates/VanessaStepList/Ext/Template.bin
+  - ps: Set-Content -Path app_port.txt -Value ([uri] $env:APPVEYOR_API_URL).Port
+  - ps: if (!(Test-Path 1cv8t.7z)) { Invoke-WebRequest -Uri $env:URL_1CV8T -OutFile 1cv8t.7z }
+  - 7z x 1cv8t.7z
+  - mkdir database
+  - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VanessaEditorSample.xml VanessaEditorSample.epf /Out example.log
+
+cache:
+  - 1cv8t.7z
+
+artifacts:
+  - path: VAEditor.zip
+  - path: VanessaEditorSample.epf
