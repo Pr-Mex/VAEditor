@@ -10,7 +10,7 @@
 })()
 
 document.addEventListener('keydown', e => {
-  let stop = e => {
+  const stop = e => {
     if (e.preventDefault) e.preventDefault()
     if (e.stopPropagation) e.stopPropagation()
     return false
