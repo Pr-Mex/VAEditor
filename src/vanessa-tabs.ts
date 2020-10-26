@@ -101,7 +101,7 @@ class VanessaTabItem {
     EventsManager.fireEvent(this.editor, VanessaEditorEvent.PRESS_CTRL_S, data);
   }
 
-  public select(): IVanessaEditor {
+  public select = () => {
     const className = "vanessa-tab-select";
     this.domNode.parentElement.querySelectorAll("." + className).forEach(e => e.classList.remove(className));
     this.domNode.classList.add(className);
@@ -115,7 +115,7 @@ class VanessaTabItem {
     return this.editor;
   }
 
-  private close() {
+  public close = () => {
     const index = this.owner.tabStack.findIndex(e => e === this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     const next = this.owner.tabStack.pop();
