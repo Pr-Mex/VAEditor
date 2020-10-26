@@ -18,10 +18,10 @@ window.onload = () => {
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \t\tИ видеовставка картинки "ИмяКартинки" "ТекстДиктора"\n\
 \t* Проверка шагов\n\
-\t\tЕсли в сообщениях пользователю есть строка "МояСтрока" Тогда\n\
-\t\tК тому же в окне предупреждения нет текста "Нужный текст" тогда\n\
-\t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
-\t\tЕсли в таблице "Номенклатура" есть колонка с именем "ИмяКолонки" Тогда\n\
+\t\tЕсли в сообщениях пользователю есть строка \'МояСтрока\' Тогда\n\
+\t\tК тому же в окне предупреждения нет текста \'Нужный текст\' тогда\n\
+\t\tЕсли в панели открытых есть команда \'ЗаписатьИЗакрыть\' Тогда\n\
+\t\tЕсли в таблице \'Номенклатура\' есть колонка с именем \'ИмяКолонки\' Тогда\n\
 \t\tИ видеовставка картинки "ИмяКартинки" "ТекстДиктора"\n\
 \t\tИ это значит что в таблице "$ИмяТаблицы$" есть колонка с именем \'$ИмяРеквизита$\' Тогда\n\
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
@@ -40,9 +40,9 @@ window.onload = () => {
     section: 'Прочее.Версия платформы'
   },
   {
-    filterText: "я показываю подсказку \"ТекстПодсказки\" EnjoyHint у элемента \"ИмяЭлемента\"\n\u0009\u0009|'selector'|'button'|\n\u0009\u0009|'showSkip'|'false'|\n\u0009\u0009|'shape'|'rect'|\n\u0009\u0009|'timeout'|'5000'|",
-    insertText: "И я показываю подсказку \"ТекстПодсказки\" EnjoyHint у элемента \"ИмяЭлемента\"\n\u0009\u0009|'selector'|'button'|\n\u0009\u0009|'showSkip'|'false'|\n\u0009\u0009|'shape'|'rect'|\n\u0009\u0009|'timeout'|'5000'|",
-    sortText: "И я показываю подсказку \"ТекстПодсказки\" EnjoyHint у элемента \"ИмяЭлемента\"\n\u0009\u0009|'selector'|'button'|\n\u0009\u0009|'showSkip'|'false'|\n\u0009\u0009|'shape'|'rect'|\n\u0009\u0009|'timeout'|'5000'|",
+    filterText: 'я показываю подсказку \'ТекстПодсказки\' EnjoyHint у элемента \'ИмяЭлемента\'\n\u0009\u0009|"selector"|"button"|\n\u0009\u0009|"showSkip"|"false"|\n\u0009\u0009|"shape"|"rect"|\n\u0009\u0009|"timeout"|"5000"|',
+    insertText: 'И я показываю подсказку \'ТекстПодсказки\' EnjoyHint у элемента \'ИмяЭлемента\'\n\u0009\u0009|"selector"|"button"|\n\u0009\u0009|"showSkip"|"false"|\n\u0009\u0009|"shape"|"rect"|\n\u0009\u0009|"timeout"|"5000"|',
+    sortText: 'И я показываю подсказку \'ТекстПодсказки\' EnjoyHint у элемента \'ИмяЭлемента\'\n\u0009\u0009|"selector"|"button"|\n\u0009\u0009|"showSkip"|"false"|\n\u0009\u0009|"shape"|"rect"|\n\u0009\u0009|"timeout"|"5000"|',
     documentation: 'Рисует фигуры в барузере. Параметры описаны тут: https://github.com/xbsoftware/enjoyhint/blob/master/README.md',
     kind: 4,
     section: 'Прочее.Браузер'
@@ -150,9 +150,9 @@ window.onload = () => {
     { eventId: 'Win+F6', keyCode: 'F6', keyMod: ['WinCtrl'] },
     { eventId: 'Shift+F6', keyCode: 'F6', keyMod: ['Shift'], title: 'Some new command!' },
     { eventId: 'Ctrl+Alt+F6', keyCode: 'F6', keyMod: ['CtrlCmd', 'Alt'] },
-    { eventId: 'CREATE_STEP', title: 'Create new step!', script: "alert('New step!')" },
-    { eventId: 'CODE_LENS_DATA', errorLink: 'Details', script: "alert('Details!')" },
-    { eventId: 'CODE_LENS_COPY', errorLink: 'Copy error', script: "alert('Copy error!')" }
+    { eventId: 'CREATE_STEP', title: 'Create new step!', script: 'alert("New step!")' },
+    { eventId: 'CODE_LENS_DATA', errorLink: 'Details', script: 'alert("Details!")' },
+    { eventId: 'CODE_LENS_COPY', errorLink: 'Copy error', script: 'alert("Copy error!")' }
   ]
   editor.addCommands(JSON.stringify(commands))
 
@@ -187,32 +187,32 @@ window.onload = () => {
     'Подсценарий.feature',
     'Подсценарий.feature',
     0,
-    false,
+    true,
     true
   )
 
   /*
     setInterval(() => VanessaEditor.runtimeManager.next(), 500);
     let problems = [{
-      "lineNumber": 12,
-      "severity": "Warning",
-      "message": "Runtime error",
-      "code": "0x1005",
-      "source": "Data info",
+      'lineNumber': 12,
+      'severity': 'Warning',
+      'message': 'Runtime error',
+      'code': '0x1005',
+      'source': 'Data info',
     }];
     VanessaEditor.decorateProblems(JSON.stringify(problems));
   */
 
-    let error = "Runtime error info";
-    editor.setRuntimeProgress("complete", 15);
-    editor.setRuntimeProgress("error", 17);
-    editor.setRuntimeProgress("disabled", 19);
-    editor.setRuntimeProgress("pending", 24);
-    editor.setCurrentProgress(21);
-    editor.showRuntimeError(17, 0, "0x01", error);
+  const error = 'Runtime error info'
+  editor.setRuntimeProgress('complete', 15)
+  editor.setRuntimeProgress('error', 17)
+  editor.setRuntimeProgress('disabled', 19)
+  editor.setRuntimeProgress('pending', 24)
+  editor.setCurrentProgress(21)
+  editor.showRuntimeError(17, 0, '0x01', error)
 
-    setTimeout(() => {
-      editor.setRuntimeProgress("error", 3, "b1");
-      editor.showRuntimeError(3, "b1", "0x01", error);
-    }, 1000);
+  setTimeout(() => {
+    editor.setRuntimeProgress('error', 3, 'b1')
+    editor.showRuntimeError(3, 'b1', '0x01', error)
+  }, 1000)
 }
