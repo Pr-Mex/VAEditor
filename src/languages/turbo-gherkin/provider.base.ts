@@ -15,7 +15,7 @@ export class ProviderBase {
     let regexp = /^[^:]+/;
     let line = text.match(regexp);
     if (line == null) return false;
-    let words = line[0].split(/\s+/);
+    let words = line[0].trim().split(/\s+/);
     if (words == undefined) return false;
     return this.keywords.some((item: string[]) =>
       item.length == words.length && item.every(
