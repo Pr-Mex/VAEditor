@@ -3,3 +3,4 @@
 *.epf
 fileversion
 /package-lock.json
+/debug.log
