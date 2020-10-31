@@ -41,7 +41,7 @@ export function initPage() {
     $("div", { id: "VanessaEditorContainer" }),
     $("botton", { id: "VanessaEditorEventForwarder" }),
   );
-  document.body.append(domMain);
+  document.body.appendChild(domMain);
 }
 
 function getLanguage(filename: string): string {

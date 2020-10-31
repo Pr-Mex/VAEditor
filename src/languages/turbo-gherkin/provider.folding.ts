@@ -39,6 +39,14 @@ export class FoldingProvider extends base {
     );
   }
 
+  private static getTocken(text: string) {
+    if (/^\s*$/.test(text)) return VAToken.Empty;
+    if (/^[\s]*@/.test(text)) return VAToken.Instruction;
+    if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
+    if (/^[\s]*[#|//]/.test(text)) return VAToken.Comment;
+    return VAToken.Operator;
+}
+
   public static getCodeFolding(
     tabSize: number,
     lineCount: number,
@@ -46,19 +54,12 @@ export class FoldingProvider extends base {
   ): Array<monaco.languages.FoldingRange> {
     let lines: Array<VAIndent> = [{ token: VAToken.Empty, indent: 0 }];
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      let regexp = /(?<empty>^\s*$)|(?<instr>^[\s]*@)|(?<param>^[\s]*\|)|(?<comnt>^[\s]*[#|//])/;
       let text = getLineContent(lineNumber);
-      let reg = regexp.exec(text);
-      if (reg) {
-        let token = VAToken.Empty;
-        if (reg.groups.empty) token = VAToken.Empty;
-        else if (reg.groups.comnt) token = VAToken.Comment;
-        else if (reg.groups.param) token = VAToken.Parameter;
-        else if (reg.groups.instr) token = VAToken.Instruction;
+      let token = this.getTocken(text);
+      if (token != VAToken.Operator) {
         lines.push({ token: token, indent: 0 });
       } else {
         let ident = 0;
-        let token = VAToken.Operator;
         if (this.isSection(text)) token = VAToken.Section;
         else ident = this.getIndent(text, tabSize);
         lines.push({ token: token, indent: ident });
