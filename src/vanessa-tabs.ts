@@ -34,7 +34,7 @@ class VanessaTabItem {
       ));
     this.domItem.addEventListener("click", this.onClick.bind(this), true);
     this.domTitle.innerText = title;
-    this.owner.domTabPanel.append(this.domNode);
+    this.owner.domTabPanel.appendChild(this.domNode);
     this.registerOnDidChangeContent();
     this.select();
   }
@@ -258,7 +258,7 @@ export class VanessaTabs {
     this.domContainer = document.getElementById("VanessaTabsContainer");
     this.domContainer.classList.remove("vanessa-hidden");
     this.domTabPanel = $("div.vanessa-tab-panel");
-    this.domContainer.append(this.domTabPanel);
+    this.domContainer.appendChild(this.domTabPanel);
   }
 
   public dispose() {

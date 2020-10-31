@@ -184,7 +184,7 @@ export class SubcodeLine {
     let e = this.owner.div(className)
     let n = node.nextSibling;
     if (n) node.parentElement.insertBefore(e, n);
-    else node.parentElement.append(e);
+    else node.parentElement.appendChild(e);
     this.errorNodes.push(e);
     return e;
   }
