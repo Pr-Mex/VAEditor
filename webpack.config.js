@@ -32,7 +32,7 @@ module.exports = {
         options: {
           multiple: [{
             search: 'let CURRENT_LOCALE_DATA = null;',
-            replace: 'var CURRENT_LOCALE_DATA = null;',
+            replace: 'var CURRENT_LOCALE_DATA = null;'
           }]
         }
       },
@@ -42,7 +42,7 @@ module.exports = {
         options: {
           multiple: [{
             search: 'let __insane_func;',
-            replace: 'var __insane_func;',
+            replace: 'var __insane_func;'
           }]
         }
       },
@@ -77,7 +77,6 @@ module.exports = {
       maxChunks: 1
     }),
     new CleanWebpackPlugin(),
-/*
     new HtmlWebpackPlugin({
       cache: false
     }),
@@ -86,11 +85,7 @@ module.exports = {
         'app.js'
       ]
     })
-*/
   ],
-  optimization: {
-    minimize: false
-  },
   devServer: {
     port: 4000,
     hot: process.env.NODE_ENV === 'development',
