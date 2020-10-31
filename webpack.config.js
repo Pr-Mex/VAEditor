@@ -25,22 +25,44 @@ module.exports = {
     }
   },
   module: {
-    rules: [{
-      test: /\.js/,
-      enforce: 'pre',
-      include: /node_modules[\\/]monaco-editor[\\/]esm/,
-      use: 'monaco-nls'
-    }, {
-      test: /\.ts$/,
-      loader: 'ts-loader'
-    }, {
-      test: /\.css$/,
-      use: [
-        'style-loader',
-        'css-loader',
-        'postcss-loader'
-      ]
-    }]
+    rules: [
+      {
+        test: /node_modules[\\/]monaco-editor-nls[\\/].+\.js$/,
+        loader: 'string-replace-loader',
+        options: {
+          multiple: [{
+            search: 'let CURRENT_LOCALE_DATA = null;',
+            replace: 'var CURRENT_LOCALE_DATA = null;',
+          }]
+        }
+      },
+      {
+        test: /node_modules[\\/]monaco-editor[\\/]esm[\\/].+\.js$/,
+        loader: 'string-replace-loader',
+        options: {
+          multiple: [{
+            search: 'let __insane_func;',
+            replace: 'var __insane_func;',
+          }]
+        }
+      },
+      {
+        test: /\.js/,
+        enforce: 'pre',
+        include: /node_modules[\\/]monaco-editor[\\/]esm/,
+        use: 'monaco-nls'
+      },
+      {
+        test: /\.ts$/,
+        use: ['ts-loader']
+      }, {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'postcss-loader'
+        ]
+      }]
   },
   plugins: [
     new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js/, function (resource) {
@@ -51,6 +73,7 @@ module.exports = {
       maxChunks: 1
     }),
     new CleanWebpackPlugin(),
+/*
     new HtmlWebpackPlugin({
       cache: false
     }),
@@ -59,7 +82,11 @@ module.exports = {
         'app.js'
       ]
     })
+*/
   ],
+  optimization: {
+    minimize: false
+  },
   devServer: {
     port: 4000,
     hot: process.env.NODE_ENV === 'development',

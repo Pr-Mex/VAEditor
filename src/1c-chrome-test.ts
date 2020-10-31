@@ -1,6 +1,7 @@
-/* global VanessaGherkinProvider, createVanessaTabs */
+export function runChromeTest() {
 
-window.onload = () => {
+  if (!(['file:', 'http:'].includes(window.location.protocol))) return
+
   // eslint-disable-next-line
   const content = '\
 # language: ru\n# encoding: utf-8\n@UA30_Прочие_макеты\n\n\
@@ -27,9 +28,9 @@ window.onload = () => {
 \t\tЕсли в панели открытых есть команда "ЗаписатьИЗакрыть" Тогда\n\
 \n'
 
-  if (!(['file:', 'http:'].includes(window.location.protocol))) return
+  let provider = window["VanessaGherkinProvider"];
 
-  VanessaGherkinProvider.setKeywords('["и","и это значит что", "к тому же","вот почему","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]')
+  provider.setKeywords('["и","и это значит что", "к тому же","вот почему","когда","тогда","затем","дано","функция","функционал","функциональность","свойство","предыстория","контекст","сценарий","структура сценария","примеры","допустим","пусть","если","иначеесли","иначе","то","к тому же","также","но","а","feature","functionality","business need","ability","background","scenario outline","scenario","examples","given","when","then","and","but","if","elseif","else"]')
 
   const steps = [{
     filterText: 'Версия платформы ">=" "8.3.6" Тогда',
@@ -121,7 +122,7 @@ window.onload = () => {
   }
   ]
 
-  VanessaGherkinProvider.setStepList(JSON.stringify(steps))
+  provider.setStepList(JSON.stringify(steps))
 
   const elements = {
     ИмяКоманды: 'ЗаписатьИЗакрыть',
@@ -130,7 +131,7 @@ window.onload = () => {
     ИмяРеквизита: 'Количество'
   }
 
-  VanessaGherkinProvider.setElements(JSON.stringify(elements))
+  provider.setElements(JSON.stringify(elements))
 
   const variables = {
     ИмяКоманды: 'ЗаписатьИЗакрыть',
@@ -139,11 +140,11 @@ window.onload = () => {
     ИмяРеквизита: 'Количество'
   }
 
-  VanessaGherkinProvider.setVariables(JSON.stringify(variables))
+  provider.setVariables(JSON.stringify(variables))
 
-  VanessaGherkinProvider.setSyntaxMsg('Step not found')
+  provider.setSyntaxMsg('Step not found')
 
-  const tabs = createVanessaTabs()
+  const tabs = window["createVanessaTabs"]()
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
   const commands = [
@@ -160,7 +161,7 @@ window.onload = () => {
     { id: 'CODE_LENS_DATA', title: 'Details' },
     { id: 'CODE_LENS_COPY', title: 'Copy error' }
   ]
-  VanessaGherkinProvider.setErrorLinks(JSON.stringify(errorLinks))
+  provider.setErrorLinks(JSON.stringify(errorLinks))
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
@@ -215,4 +216,6 @@ window.onload = () => {
     editor.setRuntimeProgress('error', 3, 'b1')
     editor.showRuntimeError(3, 'b1', '0x01', error)
   }, 1000)
+
+  tabs.tab(0).select();
 }
