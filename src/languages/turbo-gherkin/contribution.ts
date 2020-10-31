@@ -1,8 +1,4 @@
-import { ActionProvider } from "./provider.action";
-import { FoldingProvider } from "./provider.folding";
-import { HoverProvider } from "./provider.hover";
-import { SuggestProvider } from "./provider.suggest";
-import { TokensProvider } from "./provider.tokens";
+import { VanessaGherkinProvider } from "./provider";
 
 interface ILangImpl {
   conf: monaco.languages.LanguageConfiguration;
@@ -18,11 +14,13 @@ monaco.languages.register(language);
 
 monaco.languages.onLanguage(language.id, () => {
   import("./configuration").then((module: ILangImpl) => {
+    let provider = VanessaGherkinProvider.instance;
+    provider.init(language.id, module.language);
     monaco.languages.setLanguageConfiguration(language.id, module.conf);
-    monaco.languages.setTokensProvider(language.id, new TokensProvider(language.id, module.language));
-    monaco.languages.registerCodeActionProvider(language.id, new ActionProvider);
-    monaco.languages.registerCompletionItemProvider(language.id, new SuggestProvider);
-    monaco.languages.registerFoldingRangeProvider(language.id, new FoldingProvider);
-    monaco.languages.registerHoverProvider(language.id, new HoverProvider);
+    monaco.languages.registerCodeActionProvider(language.id, provider);
+    monaco.languages.registerCompletionItemProvider(language.id, provider);
+    monaco.languages.registerFoldingRangeProvider(language.id, provider);
+    monaco.languages.registerHoverProvider(language.id, provider);
+    monaco.languages.setTokensProvider(language.id, provider);
   });
 });

@@ -30,12 +30,12 @@ window.MonacoEnvironment = { // worker loader
 };
 
 Object.defineProperties(window, {
-  VanessaGherkinProvider: { get: () => VanessaGherkinProvider.getStandalone() },
   VanessaTabs: { get: () => VanessaTabs.getStandalone() },
   VanessaEditor: { get: () => VanessaEditor.getStandalone() },
   VanessaDiffEditor: { get: () => VanessaDiffEditor.getStandalone() },
 });
 
+window["VanessaGherkinProvider"] = new VanessaGherkinProvider();
 window["createVanessaTabs"] = () => VanessaTabs.createStandalone();
 window["createVanessaEditor"] = (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language);
 window["createVanessaDiffEditor"] = (original?: string, modified?: string, language: string = "turbo-gherkin") => VanessaDiffEditor.createStandalone(original, modified, language);

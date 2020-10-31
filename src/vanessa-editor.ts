@@ -1,5 +1,4 @@
 import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
-import { SyntaxProvider } from "./languages/turbo-gherkin/provider.syntax";
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
@@ -77,7 +76,7 @@ export class VanessaEditor implements IVanessaEditor {
   //@ts-ignore
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController').showMessage(arg, this.getPosition());
 
-  get errorLinks() { return VanessaGherkinProvider.getStandalone().errorLinks; }
+  get errorLinks() { return VanessaGherkinProvider.instance.errorLinks; }
   get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
   set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
 
@@ -159,6 +158,6 @@ export class VanessaEditor implements IVanessaEditor {
   };
 
   static editors: Array<VanessaEditor> = [];
-  static checkAllSyntax = () => VanessaEditor.editors.forEach(e => SyntaxProvider.checkSyntax(e.editor.getModel()));
+  static checkAllSyntax = () => VanessaEditor.editors.forEach(e => VanessaGherkinProvider.instance.checkSyntax(e.editor.getModel()));
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
 }

@@ -1,5 +1,4 @@
-import { ProviderBase } from "./provider.base";
-
+import { VanessaGherkinProvider } from "./provider";
 import LanguageConfiguration = monaco.languages.LanguageConfiguration;
 import IMonarchLanguage = monaco.languages.IMonarchLanguage;
 
@@ -23,7 +22,7 @@ export const conf: LanguageConfiguration = {
 export const language: IMonarchLanguage = <IMonarchLanguage>{
   ignoreCase: true,
 
-  keywords: ProviderBase.singleWords.concat(["if"]),
+  keywords: VanessaGherkinProvider.instance.singleWords.concat(["if"]),
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 
