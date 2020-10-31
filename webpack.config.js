@@ -54,8 +54,12 @@ module.exports = {
       },
       {
         test: /\.ts$/,
-        use: ['ts-loader']
-      }, {
+        use: [
+          { loader: 'babel-loader', options: { presets: ["env"] } },
+          { loader: 'ts-loader' }
+        ]
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',

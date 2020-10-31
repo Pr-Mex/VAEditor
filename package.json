@@ -35,9 +35,14 @@
 	],
 	"dependencies": {
 		"monaco-editor": "^0.20.0",
-		"monaco-editor-nls": "^1.0.4"
+		"monaco-editor-nls": "^1.0.4",
+		"string-replace-loader": "^2.3.0"
 	},
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-core": "^6.26.3",
+		"babel-loader": "^7.1.5",
+		"babel-preset-env": "^1.7.0",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^2.1.1",
 		"html-webpack-plugin": "^3.2.0",
