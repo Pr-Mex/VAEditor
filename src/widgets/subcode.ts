@@ -140,8 +140,9 @@ export class SubcodeWidget extends WidgetBase {
   set breakpoints(breakpoints: Array<IBreakpoint>) {
     let State = BreakpointState;
     this.lines.forEach((line: SubcodeLine) => {
-      let b = breakpoints.find(b => b.lineNumber == line.lineNumber && b.codeWidget == this.id);
-      line.setBreakpoint(b ? (b.enable ? State.Breakpoint : State.Unverified) : State.Unmarked);
+      let breakpoint = undefined;
+      breakpoints.forEach(b => { if (b.lineNumber == line.lineNumber && b.codeWidget == this.id) breakpoint = b; });
+      line.setBreakpoint(breakpoint ? (breakpoint.enable ? State.Breakpoint : State.Unverified) : State.Unmarked);
     });
   }
 

@@ -50,7 +50,7 @@ function getLanguage(filename: string): string {
   for (let key in languages) {
     let lang = languages[key];
     if (lang.extensions == undefined) continue;
-    if (lang.extensions.find(e => e == ext)) return lang.id;
+    if (lang.extensions.some(e => e == ext)) return lang.id;
   }
 }
 

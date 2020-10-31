@@ -601,7 +601,7 @@ export class RuntimeManager {
     let result = [];
     const model: monaco.editor.ITextModel = this.editor.getModel();
     const decor = model.getLinesDecorations(lineNumber, lineNumber);
-    this.forEachSubcode(w => { if (decor.find(d => d.id == w.decoration)) result.push(w.id); });
+    this.forEachSubcode(w => { if (decor.some(d => d.id == w.decoration)) result.push(w.id); });
     return result;
   }
 

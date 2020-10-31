@@ -1,6 +1,6 @@
 export function runChromeTest() {
 
-  if (!(['file:', 'http:'].find(prot => prot === window.location.protocol))) return
+  if ((['file:', 'http:'].every(prot => prot !== window.location.protocol))) return
 
   // eslint-disable-next-line
   const content = '\

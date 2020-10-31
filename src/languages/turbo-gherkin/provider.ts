@@ -68,7 +68,11 @@ export class VanessaGherkinProvider {
 
   protected findKeyword(words: Array<string>): Array<string> {
     if (words.length == 0) return undefined;
-    return this.keywords.find((item: string[]) => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
+    let result = undefined;
+    this.keywords.forEach((item: string[]) => {
+      if (item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())) result = item;
+    });
+    return result;
   }
 
   protected filterWords(words: Array<string>): Array<string> {
@@ -511,7 +515,7 @@ export class VanessaGherkinProvider {
     if (/^[\s]*[#|@|//]/.test(line)) return false;
     if (this.isSection(line)) return false;
     let words = this.splitWords(line);
-    let keyword = this.keywords.find(item => item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase()));
+    let keyword = this.findKeyword(words);
     if (keyword == undefined) return false;
     let s = true;
     let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));

@@ -196,7 +196,7 @@ class VanessaTabItem {
     const newKey = uri.toString();
     this.resetModified();
     if (oldKey === newKey) return;
-    const tab = this.owner.tabStack.find((tab: VanessaTabItem) =>
+    const tab = this.owner.findTab((tab: VanessaTabItem) =>
       tab !== this && tab.type === "vs.editor.ICodeEditor"
       && tab.editor.editor.getModel().uri.toString() === newKey
     );
@@ -269,6 +269,12 @@ export class VanessaTabs {
     this.disposeHidden();
   }
 
+  public findTab(callback: any) {
+    let index = this.tabStack.findIndex(callback);
+    if (index < 0) return undefined;
+    return this.tabStack[index];
+  }
+
   public get current() {
     if (this.tabStack.length) return this.tabStack[this.tabStack.length - 1];
   }
@@ -295,7 +301,7 @@ export class VanessaTabs {
     modified: string = "",
   ): IVanessaEditor => {
     const key = this.key(original, modified);
-    let tab = this.tabStack.find(t => t.key === key);
+    let tab = this.findTab(t => t.key === key);
     if (tab) return tab.select();
   }
 
@@ -325,7 +331,7 @@ export class VanessaTabs {
   ): IVanessaEditor => {
     const uri = monaco.Uri.parse(filepath);
     const key = uri.toString();
-    const tab = this.tabStack.find((tab: VanessaTabItem) =>
+    const tab = this.findTab((tab: VanessaTabItem) =>
       tab.key === key && tab.type === "vs.editor.ICodeEditor"
     );
     if (tab) return tab.select();
@@ -350,7 +356,7 @@ export class VanessaTabs {
   ) => {
     const originalKey = monaco.Uri.parse(oldFilePath).toString();
     const modifiedKey = monaco.Uri.parse(newFilePath).toString();
-    const tab = this.tabStack.find((tab: VanessaTabItem) =>
+    const tab = this.findTab((tab: VanessaTabItem) =>
       tab.type === "vs.editor.IDiffEditor"
       && tab.editor.editor.getModel().original.uri.toString() === originalKey
       && tab.editor.editor.getModel().modified.uri.toString() === modifiedKey
@@ -382,7 +388,7 @@ export class VanessaTabs {
     this.domTabPanel.childNodes.forEach((n, i) => {
       if (index === i) next = n;
     });
-     this.tabStack.find(t => t.dom === next).select();
+     this.findTab(t => t.dom === next).select();
   }
 
   public onFileSave = () => {
