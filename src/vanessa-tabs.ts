@@ -112,6 +112,7 @@ class VanessaTabItem {
     this.domNode.scrollIntoView();
     let domEditor = this.editor.domNode();
     setTimeout(() => domEditor.parentElement.appendChild(domEditor), 100);
+    setTimeout(() => domEditor.parentElement.appendChild(domEditor), 1000);
     const index = this.owner.tabStack.indexOf(this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
