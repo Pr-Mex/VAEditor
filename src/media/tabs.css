@@ -125,6 +125,7 @@ body {
     position: relative;
     width: 1.2em;
     height: 1.2em;
+    top: 0.4em;
 }
 
 .vanessa-tab-close:before {
@@ -186,4 +187,9 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis
+}
+
+#VanessaEditorContainer > div.monaco-diff-editor {
+    position: absolute !important;
+    height: 100%;
 }
