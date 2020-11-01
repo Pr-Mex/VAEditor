@@ -108,7 +108,7 @@ class VanessaTabItem {
     this.domNode.scrollIntoView();
     let domEditor = this.editor.domNode();
     setTimeout(() => domEditor.parentElement.appendChild(domEditor), 100);
-    const index = this.owner.tabStack.findIndex(e => e === this);
+    const index = this.owner.tabStack.indexOf(this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
     EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_SELECT, this.getEventData());
@@ -116,7 +116,7 @@ class VanessaTabItem {
   }
 
   public close = () => {
-    const index = this.owner.tabStack.findIndex(e => e === this);
+    const index = this.owner.tabStack.indexOf(this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     const next = this.owner.tabStack.pop();
     if (next) next.select();
@@ -270,7 +270,8 @@ export class VanessaTabs {
   }
 
   public findTab(callback: any) {
-    let index = this.tabStack.findIndex(callback);
+    let index = -1;
+    this.tabStack.forEach((t, i) => { if (callback(t)) index = i; });
     if (index < 0) return undefined;
     return this.tabStack[index];
   }
@@ -388,7 +389,7 @@ export class VanessaTabs {
     this.domTabPanel.childNodes.forEach((n, i) => {
       if (index === i) next = n;
     });
-     this.findTab(t => t.dom === next).select();
+    this.findTab((tab: VanessaTabItem) => tab.dom === next).select();
   }
 
   public onFileSave = () => {
