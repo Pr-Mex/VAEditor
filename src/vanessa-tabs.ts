@@ -103,7 +103,11 @@ class VanessaTabItem {
 
   public select = () => {
     const className = "vanessa-tab-select";
-    this.domNode.parentElement.querySelectorAll("." + className).forEach(e => e.classList.remove(className));
+    let tabDomElement = this.domNode.parentElement.firstElementChild;
+    while (tabDomElement) {
+      tabDomElement.classList.remove(className);
+      tabDomElement = tabDomElement.nextElementSibling;
+    }
     this.domNode.classList.add(className);
     this.domNode.scrollIntoView();
     let domEditor = this.editor.domNode();
