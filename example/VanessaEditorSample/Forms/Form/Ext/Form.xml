@@ -1712,7 +1712,7 @@
 									<ChildItems>
 										<Button name="ClearEvents" id="255">
 											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.ClearEventLog</CommandName>
+											<CommandName>Form.Command.ClearEditorEvens</CommandName>
 											<ExtendedTooltip name="ClearEventsExtendedTooltip" id="256"/>
 										</Button>
 									</ChildItems>
@@ -2643,7 +2643,7 @@
 			<Action>ShowMessage</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="ClearEventLog" id="15">
+		<Command name="ClearEditorEvens" id="15">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2653,10 +2653,10 @@
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Clear event log</v8:content>
+					<v8:content>Clear editor evens</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ClearEventLog</Action>
+			<Action>ClearEditorEvents</Action>
 		</Command>
 		<Command name="EditReplace" id="16">
 			<Title>

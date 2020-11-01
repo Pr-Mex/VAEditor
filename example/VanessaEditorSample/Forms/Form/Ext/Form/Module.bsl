@@ -357,7 +357,7 @@ Procedure TraceKeyboardOnChange(Item)
 EndProcedure
 
 &AtClient
-Procedure ClearEventLog(Command)
+Procedure ClearEditorEvents(Command)
 	EventLog.Clear();
 EndProcedure
 
