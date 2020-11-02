@@ -1,8 +1,13 @@
 const base64 = require('./tools/postcss/postcss-base64')
 const alter = require('postcss-alter-property-value')
+const autoprefixer = require('autoprefixer')
 
 module.exports = {
   plugins: [
+    autoprefixer({
+      overrideBrowserslist: ['ie >= 8', 'last 4 version'],
+      extensions: ['.css']
+    }),
     base64({
       extensions: ['.svg']
     }),

@@ -8,7 +8,7 @@ body {
 }
 
 body {
-    display: -webkit-flex;
+    display: flex;
     color: #4b4b4b;
     background-color: #fff;
     font-family: Almarai, Arial, sans-serif;
@@ -31,8 +31,8 @@ body {
 }
 
 #VanessaContainer {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
+    display: flex;
+    flex-direction: column;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -41,8 +41,8 @@ body {
 }
 
 #VanessaEditorContainer {
-    display: -webkit-flex;
-    -webkit-flex: 1 1 100%;
+    display: flex;
+    flex: 1 1 100%;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -65,8 +65,8 @@ body {
 }
 
 #VanessaTabsContainer {
-    display: -webkit-flex;
-    -webkit-flex: 0 0 2em;
+    display: flex;
+    flex: 0 0 2em;
     fill: #4b4b4b;
     z-index: 0;
     overflow: hidden;
@@ -75,16 +75,14 @@ body {
     padding: 0;
     border-style: solid;
     border-color: rgba(0, 0, 0, .4);
-    -ms-user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none
+    user-select: none
 }
 
 .vanessa-tab-panel {
     background-color: #f2f2f2;
     position: relative;
     overflow: hidden;
-    -webkit-flex: 1 1 100%;
+    flex: 1 1 100%;
     display: inherit;
     margin: 0;
     padding: 0;
@@ -94,7 +92,7 @@ body {
     margin: 0 0 0 -1px;
     padding: 0 5px;
     display: inherit;
-    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
     align-items: center;
     border-width: 0 1px;
     border-style: solid;
@@ -118,14 +116,13 @@ body {
 
 .vanessa-tab-close {
     fill: #4b4b4b;
-    display: -webkit-inline-flex;
-    -webkit-flex: 0 0 auto;
+    display: inline-flex;
+    flex: 0 0 auto;
     justify-content: center;
     align-items: center;
     position: relative;
     width: 1.2em;
     height: 1.2em;
-    top: 0.4em;
 }
 
 .vanessa-tab-close:before {
@@ -163,9 +160,6 @@ body {
 
 .vanessa-tab-item {
     transition: width .1s;
-    -webkit-transition: width .1s;
-    -moz-transition: width .1s;
-    -ms-transition: width .1s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -173,16 +167,13 @@ body {
 
 .vanessa-tab-box {
     transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
-    -webkit-transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
-    -moz-transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
-    -ms-transition: padding .1s linear, left .1s linear, right .1s linear, top .1s linear;
-    display: -webkit-flex;
+    display: flex;
     margin: 0;
     padding: 0;
 }
 
 .vanessa-tab-title {
-    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
     margin: 0 5px;
     white-space: nowrap;
     overflow: hidden;

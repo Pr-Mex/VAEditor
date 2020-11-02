@@ -86,6 +86,9 @@ module.exports = {
       ]
     })
   ],
+  optimization: {
+    minimize: true
+  },
   devServer: {
     port: 4000,
     hot: process.env.NODE_ENV === 'development',
