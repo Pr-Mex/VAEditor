@@ -62,14 +62,14 @@ export class ActionManager {
 
   public addCommands(commands: Array<IVanessaCommand>) {
     commands.forEach((e: IVanessaCommand) => {
-        let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
-        if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
-        let id: string = this.editor.addCommand(keybinding, (c, a) => {
-          let n = a ? a : this.owner.getPosition().lineNumber;
-          this.owner.fireEvent(`${e.eventId}`, n);
-          eval.apply(null, [`${e.script}`]);
-        });
-        if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
+      let keybinding: number = e.keyCode ? Number(monaco.KeyCode[e.keyCode]) : undefined;
+      if (e.keyMod) e.keyMod.forEach((id: string) => keybinding |= Number(monaco.KeyMod[id]));
+      let id: string = this.editor.addCommand(keybinding, (c, a) => {
+        let n = a ? a : this.owner.getPosition().lineNumber;
+        this.owner.fireEvent(`${e.eventId}`, n);
+        eval.apply(null, [`${e.script}`]);
+      });
+      if (e.title) { this.codeActions.push({ id: id, title: e.title }); }
     });
   }
 
@@ -77,7 +77,7 @@ export class ActionManager {
     const codicons = [];
     const model: monaco.editor.ITextModel = this.editor.getModel();
     model.getLinesDecorations(line, line).forEach(d => {
-      if (this.codiconDecorations.indexOf(d.id) >= 0) {
+      if (this.codiconDecorations.some(id => id === d.id)) {
         codicons.push(d.options.glyphMarginClassName);
       }
     });
