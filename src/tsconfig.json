@@ -9,7 +9,7 @@
       "node_modules"
   ],
   "include": [
-    "**/*.ts"
+    "**/*.ts", "1c-webkit-style-patch.js"
   ],
   "files": [
     "../node_modules/monaco-editor/monaco.d.ts"
