@@ -246,7 +246,11 @@ export class RuntimeManager {
   }
 
   private breakpointIndexByLineNumber(lineNumber: any): number {
-    return this.breakpointDecorations.findIndex(breakpoint => (breakpoint.range.startLineNumber === lineNumber));
+    let index = -1;
+    this.breakpointDecorations.forEach((b, i) => {
+      if (b.range.startLineNumber === lineNumber) index = i;
+    })
+    return index;
   }
 
   private stepDecorationIds: string[] = [];
