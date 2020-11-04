@@ -564,12 +564,16 @@ export class VanessaGherkinProvider {
       let regexp = "^[\\s]*";
       keyword.forEach(w => regexp += w + "[\\s]*");
       let match = line.toLowerCase().match(new RegExp(regexp));
-      if (match) line = (' ').repeat(match[0].length - 3) + "if " + line.substring(match[0].length);
+      if (match) {
+        line = "if";
+        let length = match[0].length;
+        for (let i = 2; i < length; i++) line += " ";
+        line += line.substring(length);
+      }
     }
     let tokens = [];
     let result = this.tokenizer.tokenize(line, state, 0);
     result.tokens.forEach((t: monaco.Token) => tokens.push({ startIndex: t.offset, scopes: t.type }));
     return { tokens: tokens, endState: result.endState };
   }
-
 }
