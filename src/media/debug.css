@@ -86,7 +86,7 @@ body[data-theme="vs-dark"] .vanessa-code-border {
   -webkit-text-decoration: none;
 }
 .vanessa-code-widget {
-  background: #CCDDDD80;
+  background: #DDEEEE;
   overflow: hidden;
   white-space: nowrap;
   z-index: 9999;

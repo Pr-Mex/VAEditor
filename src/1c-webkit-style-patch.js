@@ -14,10 +14,6 @@ export function patchWebKit1C () {
     return false
   }
 
-  if ([].indexOf === undefined) {
-    document.addEventListener('contextmenu', dummy, false)
-  }
-
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey) {
       switch (e.keyCode) {
