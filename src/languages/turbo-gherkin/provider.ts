@@ -85,7 +85,7 @@ export class VanessaGherkinProvider {
   protected key(words: Array<string>): string {
     let result = [];
     words.forEach((w: string) => {
-      if (/^[A-zА-я]+$/.test(w)) result.push(w.toLowerCase());
+      if (/^[A-zА-яЁё]+$/.test(w)) result.push(w.toLowerCase());
     });
     return result.join(" ");
   }

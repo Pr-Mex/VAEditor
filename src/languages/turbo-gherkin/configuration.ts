@@ -48,7 +48,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     ],
 
     section: [
-      [/^\s*([A-zА-я]+)(?:\s*\:)/, {
+      [/^\s*([A-zА-яЁё]+)(?:\s*\:)/, {
         cases: {
           "$1@keywords": { token: "metatag.php", switchTo: "@root" },
           "@default": { token: "identifier", switchTo: "@root" },
@@ -57,7 +57,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     ],
 
     keyword: [
-      [/^\s*([A-zА-я]+)/, {
+      [/^\s*([A-zА-яЁё]+)/, {
         cases: {
           "$1@keywords": { token: "keyword", next: "@operator" },
           "@default": { token: "emphasis" },
@@ -68,7 +68,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
     operator: [
       [/^/, { token: "white", next: "@pop" }],
-      [/\s*([A-zА-я]+)/, "identifier"],
+      [/\s*([A-zА-яЁё]+)/, "identifier"],
       { include: "@common" },
     ],
 
