@@ -10,7 +10,6 @@ export const conf: LanguageConfiguration = {
     { open: "\"", close: "\"", notIn: ["string"] },
     { open: "'", close: "'", notIn: ["string"] },
     { open: "<", close: ">", notIn: ["string"] },
-    { open: "$", close: "$" },
   ],
   surroundingPairs: [
     { open: "\"", close: "\"" },
