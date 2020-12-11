@@ -4,10 +4,15 @@ configuration: Release
 platform: x64
 
 environment:
-  URL_1CV8T:
-    secure: z47uplaqZaQ0ZkroXy0GP00nv6ACPwovtb+EjfPgpS1UVp1iZSkRJGz8uOWarUXi
+  KEY_1CV8T:
+    secure: OolAVEKkEg1cGCpG/VK2FaM0LWrPgMR/Kn4nTLYyKR0=
 
 install:
+  - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
+  - cd bin
+  - 7z x tools1c.part01.rar -p%KEY_1CV8T%
+  - cd ..
+
   - ps: $env:PACKAGE_VERSION = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
   - ps: Update-AppveyorBuild -Version "$env:PACKAGE_VERSION.$env:APPVEYOR_BUILD_NUMBER"
   - npm -q --no-progress install .
@@ -26,15 +31,10 @@ after_build:
   - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaStepList/Ext | Out-Null
   - ps: Copy-Item -Path StepList.zip -Destination example/VanessaEditorSample/Templates/VanessaStepList/Ext/Template.bin
   - ps: Set-Content -Path app_port.txt -Value ([uri] $env:APPVEYOR_API_URL).Port
-  - ps: if (!(Test-Path 1cv8t.7z)) { Invoke-WebRequest -Uri $env:URL_1CV8T -OutFile 1cv8t.7z }
-  - 7z x 1cv8t.7z
   - mkdir database
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VanessaEditorSample.xml VanessaEditorSample.epf /Out example.log
-
-cache:
-  - 1cv8t.7z
 
 artifacts:
   - path: VAEditor.zip
