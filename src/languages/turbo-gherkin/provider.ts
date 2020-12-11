@@ -454,7 +454,7 @@ export class VanessaGherkinProvider {
         wordRange = e.range;
       }
     });
-    let result = [];
+    let result: Array<monaco.languages.CompletionItem> = [];
     if (wordRange) {
       let variable = model.getValueInRange(wordRange);
       let Q1 = variable.charAt(0);
@@ -502,6 +502,14 @@ export class VanessaGherkinProvider {
           }
         }
       } else {
+        this.metatags.forEach(word => {
+          result.push({
+            label: word,
+            kind: monaco.languages.CompletionItemKind.Keyword,
+            insertText: word + '\n',
+            range: range
+          });
+        });
         for (let key in this.steps) {
           let e = this.steps[key];
           if (e.documentation) {
