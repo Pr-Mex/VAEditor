@@ -416,6 +416,12 @@ export class VanessaTabs {
     if (this.current) this.current.onClose();
   }
 
+  public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }
+  public get diffEditor(): VanessaDiffEditor { return this.current.editor as VanessaDiffEditor; }
+  public canNavigateDiff = () => this.isDiffEditor && this.diffEditor.canNavigate();
+  public previousDiff = () => { if (this.isDiffEditor) this.diffEditor.previous(); }
+  public nextDiff = () => { if (this.isDiffEditor) this.diffEditor.next(); }
+
   public count = () => this.tabStack.length;
   public tab = (index: number) => this.tabStack[index];
   public select = (index: number) => this.tabStack[index].select();
