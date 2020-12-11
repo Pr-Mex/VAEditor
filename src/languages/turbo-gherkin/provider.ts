@@ -39,6 +39,7 @@ export class VanessaGherkinProvider {
 
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
+  protected _metatags: string[] = ["try", "except", "endtry"];
   protected _steps = {};
   protected _elements = {};
   protected _variables = {};
@@ -46,6 +47,10 @@ export class VanessaGherkinProvider {
 
   public get singleWords(): string[] {
     return this.keywords.filter(w => w.length == 1).map(w => w[0]);
+  }
+
+  public get metatags(): string[] {
+    return this._metatags;
   }
 
   protected isSection(text: string) {
@@ -103,6 +108,12 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
     list.forEach((w: string) => this.keywords.push(w.split(" ")));
     this._keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
+  }
+
+  public setMetatags = (arg: string): void => {
+    let list = JSON.parse(arg);
+    this.clearArray(this._metatags);
+    list.forEach((w: string) => this._metatags.push(w));
   }
 
   public setElements = (values: string, clear: boolean = false): void => {

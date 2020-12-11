@@ -21,6 +21,8 @@ export const conf: LanguageConfiguration = {
 export const language: IMonarchLanguage = <IMonarchLanguage>{
   ignoreCase: true,
 
+  metatags: VanessaGherkinProvider.instance.metatags,
+
   keywords: VanessaGherkinProvider.instance.singleWords.concat(["if"]),
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
@@ -58,6 +60,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     keyword: [
       [/^\s*([A-zА-яЁё]+)/, {
         cases: {
+          "$1@metatags": { token: "metatag", next: "@operator" },
           "$1@keywords": { token: "keyword", next: "@operator" },
           "@default": { token: "emphasis" },
         },

@@ -754,6 +754,27 @@ Function GetVariables()
 
 EndFunction
 
+&AtClient
+Function GetMetatags()
+
+	words = "
+		|try
+		|except
+		|endtry
+		|попытка
+		|исключение
+		|конецпопытки
+		|";
+
+	split = "
+	|";
+
+	Metatags = StrSplit(words, split, False);
+
+	Return JsonDump(Metatags);
+
+EndFunction
+
 &AtServer
 Function VanessaStepList(language)
 
@@ -830,6 +851,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 
 	Provider = DefaultView().VanessaGherkinProvider;
 	Provider.setErrorLinks(GetErrorLinks());
+	Provider.setMetatags(GetMetatags());
 	Provider.setKeywords(GetKeywords());
 	Provider.setElements(GetElements());
 	Provider.setVariables(GetVariables());
