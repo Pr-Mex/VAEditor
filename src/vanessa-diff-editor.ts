@@ -9,6 +9,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
 
   static editors: Array<VanessaDiffEditor> = [];
   private static standaloneInstance: VanessaDiffEditor;
+  public navigator: monaco.editor.IDiffNavigator;
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
 
@@ -47,6 +48,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
+    this.navigator = monaco.editor.createDiffNavigator(this.editor);
     VanessaDiffEditor.editors.push(this);
   }
 
@@ -59,6 +61,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
     const original = oe ? oe.getModel() : null;
     const modified = me ? me.getModel() : null;
     this.eventsManager.dispose();
+    this.navigator.dispose();
     this.editor.dispose();
     disposeModel(original);
     disposeModel(modified);
@@ -103,4 +106,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public getModel = () => this.editor.getModifiedEditor().getModel();
+  public canNavigate = () => this.navigator.canNavigate();
+  public previous = () => this.navigator.previous();
+  public next = () => this.navigator.next();
 }
