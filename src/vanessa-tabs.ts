@@ -53,6 +53,8 @@ class VanessaTabItem {
     this.domTitle.innerText = title;
     this.domItem.setAttribute("title", title);
     this.registerOnDidChangeContent();
+    setTimeout(() => this.showEditor(), 100);
+    setTimeout(() => this.showEditor(), 1000);
     return this;
   }
 
@@ -101,6 +103,12 @@ class VanessaTabItem {
     EventsManager.fireEvent(this.editor, VanessaEditorEvent.PRESS_CTRL_S, data);
   }
 
+  private showEditor() {
+    let node = this.editor.domNode();
+    if (node.nextSibling)
+      node.parentElement.appendChild(node);
+  };
+
   public select = () => {
     const className = "vanessa-tab-select";
     let tabDomElement = this.domNode.parentElement.firstElementChild;
@@ -110,9 +118,8 @@ class VanessaTabItem {
     }
     this.domNode.classList.add(className);
     this.domNode.scrollIntoView();
-    let domEditor = this.editor.domNode();
-    setTimeout(() => domEditor.parentElement.appendChild(domEditor), 100);
-    setTimeout(() => domEditor.parentElement.appendChild(domEditor), 1000);
+    setTimeout(() => this.showEditor(), 100);
+    setTimeout(() => this.showEditor(), 1000);
     const index = this.owner.tabStack.indexOf(this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
