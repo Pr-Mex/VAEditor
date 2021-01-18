@@ -53,8 +53,7 @@ class VanessaTabItem {
     this.domTitle.innerText = title;
     this.domItem.setAttribute("title", title);
     this.registerOnDidChangeContent();
-    setTimeout(() => this.showEditor(), 100);
-    setTimeout(() => this.showEditor(), 1000);
+    this.showEditor();
     return this;
   }
 
@@ -104,9 +103,14 @@ class VanessaTabItem {
   }
 
   private showEditor() {
+    clearTimeout(this.owner.timer);
     let node = this.editor.domNode();
-    if (node.nextSibling)
-      node.parentElement.appendChild(node);
+    let show = () => {
+      if (node.nextSibling)
+        node.parentElement.appendChild(node);
+    }
+    setTimeout(() => show(), 100);
+    this.owner.timer = setTimeout(() => show(), 1000);
   };
 
   public select = () => {
@@ -118,11 +122,10 @@ class VanessaTabItem {
     }
     this.domNode.classList.add(className);
     this.domNode.scrollIntoView();
-    setTimeout(() => this.showEditor(), 100);
-    setTimeout(() => this.showEditor(), 1000);
     const index = this.owner.tabStack.indexOf(this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
+    this.showEditor();
     EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_SELECT, this.getEventData());
     return this.editor;
   }
@@ -250,6 +253,7 @@ export class VanessaTabs {
   public tabStack: Array<VanessaTabItem> = [];
   private hiddenEditors: Array<IVanessaEditor> = [];
   private checkSyntax: boolean = true;
+  public timer: NodeJS.Timeout;
 
   public static createStandalone() {
     if (this.standaloneInstance) return this.standaloneInstance;
