@@ -249,6 +249,7 @@ export class VanessaTabs {
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
   private hiddenEditors: Array<IVanessaEditor> = [];
+  private checkSyntax: boolean = true;
 
   public static createStandalone() {
     if (this.standaloneInstance) return this.standaloneInstance;
@@ -351,7 +352,7 @@ export class VanessaTabs {
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
-    const editor = new VanessaEditor(model, readOnly);
+    const editor = new VanessaEditor(model, readOnly, this.checkSyntax);
     return this.open(editor, title, filepath, encoding, newTab);
   }
 
@@ -421,6 +422,12 @@ export class VanessaTabs {
 
   public close = () => {
     if (this.current) this.current.onClose();
+  }
+
+  public get enableSyntaxCheck(): boolean { return this.checkSyntax; }
+  public set enableSyntaxCheck(value: boolean ) {
+    VanessaEditor.editors.forEach(e => { e.enableSyntaxCheck = value});
+    this.checkSyntax = value;
   }
 
   public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }

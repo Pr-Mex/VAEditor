@@ -78,7 +78,6 @@ export class VanessaEditor implements IVanessaEditor {
     if (value) {
       if (this.syntaxManager == null) {
         this.syntaxManager = new SyntaxManager(this.editor);
-        this.syntaxManager.checkSyntax();
       }
     } else {
       if (this.syntaxManager != null) {
@@ -127,7 +126,7 @@ export class VanessaEditor implements IVanessaEditor {
     }
   }
 
-  constructor(model: monaco.editor.ITextModel, readOnly: boolean = false) {
+  constructor(model: monaco.editor.ITextModel, readOnly: boolean = false, checkSyntax = true) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
       model: model,
@@ -144,8 +143,8 @@ export class VanessaEditor implements IVanessaEditor {
     this.actionManager = new ActionManager(this);
     this.eventsManager = new EventsManager(this);
     this.problemManager = new ProblemManager(this.editor);
-    this.syntaxManager = new SyntaxManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
+    if (checkSyntax) this.syntaxManager = new SyntaxManager(this.editor);
     VanessaEditor.editors.push(this);
   }
 
