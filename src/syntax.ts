@@ -3,6 +3,7 @@ import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 export class SyntaxManager {
 
   private editor: monaco.editor.IStandaloneCodeEditor;
+  private onChangeModelContent: monaco.IDisposable;
   private timer: NodeJS.Timeout;
 
   constructor(
@@ -10,10 +11,11 @@ export class SyntaxManager {
   ) {
     this.editor = editor;
     this.checkSyntax();
-    this.editor.onDidChangeModelContent(() => this.checkSyntax());
+    this.onChangeModelContent = this.editor.onDidChangeModelContent(() => this.checkSyntax());
   }
 
   public dispose(): void {
+    this.onChangeModelContent.dispose();
     clearTimeout(this.timer);
     this.editor = null;
   }

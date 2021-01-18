@@ -62,7 +62,6 @@ export class VanessaEditor implements IVanessaEditor {
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setSuggestWidgetWidth = (arg: any) => this.actionManager.setSuggestWidgetWidth(arg);
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
-  public checkSyntax = () => this.syntaxManager.checkSyntax();
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public getModel = () => this.editor.getModel();
@@ -72,6 +71,24 @@ export class VanessaEditor implements IVanessaEditor {
   public setInsertSpaces = (arg: boolean) => this.editor.getModel().updateOptions({ insertSpaces: arg });
   public setDetectIndentation = (arg: boolean) => this.editor.updateOptions({ detectIndentation: arg });
   public normalizeIndentation = () => this.syntaxManager.normalizeIndentation();
+
+  public checkSyntax = () => { if (this.syntaxManager) this.syntaxManager.checkSyntax(); }
+  public get enableSyntaxCheck(): boolean { return this.syntaxManager !== null; }
+  public set enableSyntaxCheck(value: boolean) {
+    if (value) {
+      if (this.syntaxManager == null) {
+        this.syntaxManager = new SyntaxManager(this.editor);
+        this.syntaxManager.checkSyntax();
+      }
+    } else {
+      if (this.syntaxManager != null) {
+        this.syntaxManager.dispose();
+        this.syntaxManager = null;
+        const model = this.editor.getModel();
+        monaco.editor.setModelMarkers(model, "syntax", []);
+      }
+    }
+  }
 
   //@ts-ignore
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController').showMessage(arg, this.getPosition());
@@ -158,6 +175,8 @@ export class VanessaEditor implements IVanessaEditor {
   };
 
   static editors: Array<VanessaEditor> = [];
-  static checkAllSyntax = () => VanessaEditor.editors.forEach(e => VanessaGherkinProvider.instance.checkSyntax(e.editor.getModel()));
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
+  static checkAllSyntax = () => VanessaEditor.editors.forEach(e => {
+    if (e.syntaxManager) VanessaGherkinProvider.instance.checkSyntax(e.editor.getModel())
+  });
 }
