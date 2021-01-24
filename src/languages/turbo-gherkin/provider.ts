@@ -54,7 +54,7 @@ export class VanessaGherkinProvider {
   }
 
   protected isSection(text: string) {
-    let regexp = /^[^:]+/;
+    let regexp = /^[^:#\/]+(?=:)/;
     let line = text.match(regexp);
     if (line == null) return false;
     let words = line[0].trim().split(/\s+/);
