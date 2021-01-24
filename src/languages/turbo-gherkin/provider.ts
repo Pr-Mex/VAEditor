@@ -323,7 +323,7 @@ export class VanessaGherkinProvider {
     );
   }
 
-  private getTocken(text: string) {
+  private getToken(text: string) {
     if (/^\s*$/.test(text)) return VAToken.Empty;
     if (/^[\s]*@/.test(text)) return VAToken.Instruction;
     if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
@@ -339,7 +339,7 @@ export class VanessaGherkinProvider {
     let lines: Array<VAIndent> = [{ token: VAToken.Empty, indent: 0 }];
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
       let text = getLineContent(lineNumber);
-      let token = this.getTocken(text);
+      let token = this.getToken(text);
       if (token != VAToken.Operator) {
         lines.push({ token: token, indent: 0 });
       } else {
