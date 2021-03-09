@@ -4,6 +4,8 @@ import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 
+type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
+
 const $ = dom.$;
 
 class VanessaTabItem {
@@ -251,6 +253,7 @@ export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
+  private _renderWhitespace: WhitespaceType = "none";
   private hiddenEditors: Array<IVanessaEditor> = [];
   private checkSyntax: boolean = true;
   public timer: NodeJS.Timeout;
@@ -357,6 +360,7 @@ export class VanessaTabs {
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
     const editor = new VanessaEditor(model, readOnly, this.checkSyntax);
+    editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
     return this.open(editor, title, filepath, encoding, newTab);
   }
 
@@ -390,6 +394,7 @@ export class VanessaTabs {
     if (!diff.modified) diff.modified = createModel(newContent, newFileName, uriModified);
     this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
+    editor.editor.updateOptions({renderWhitespace: this.renderWhitespace});
     return this.open(editor, title, newFilePath, encoding, newTab);
   }
 
@@ -429,9 +434,15 @@ export class VanessaTabs {
   }
 
   public get enableSyntaxCheck(): boolean { return this.checkSyntax; }
-  public set enableSyntaxCheck(value: boolean ) {
-    VanessaEditor.editors.forEach(e => { e.enableSyntaxCheck = value});
+  public set enableSyntaxCheck(value: boolean) {
+    VanessaEditor.editors.forEach(e => { e.enableSyntaxCheck = value });
     this.checkSyntax = value;
+  }
+
+  public get renderWhitespace(): WhitespaceType { return this._renderWhitespace; }
+  public set renderWhitespace(value: WhitespaceType) {
+    this.tabStack.forEach(tab => tab.editor.editor.updateOptions({ renderWhitespace: value }));
+    this._renderWhitespace = value;
   }
 
   public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }
