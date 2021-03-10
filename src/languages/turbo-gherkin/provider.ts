@@ -75,7 +75,7 @@ export class VanessaGherkinProvider {
     if (words.length == 0) return undefined;
     let result = undefined;
     this.keywords.forEach((item: string[]) => {
-      if (item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())) result = item;
+      if (!result && item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())) result = item;
     });
     return result;
   }
@@ -580,14 +580,14 @@ export class VanessaGherkinProvider {
     let words = this.splitWords(line);
     let keyword = this.findKeyword(words);
     if (keyword && keyword.length > 1) {
-      let regexp = "^[\\s]*";
-      keyword.forEach(w => regexp += w + "[\\s]*");
+      let regexp = "^";
+      keyword.forEach((w, i) => regexp += "[\\s]" + (i ? "+" : "*") + w);
       let match = line.toLowerCase().match(new RegExp(regexp));
       if (match) {
-        line = "if";
+        let text = "";
         let length = match[0].length;
-        for (let i = 2; i < length; i++) line += " ";
-        line += line.substring(length);
+        for (let i = 2; i < length; ++i) text += " ";
+        line = text + "if" + line.substring(length);
       }
     }
     let tokens = [];
