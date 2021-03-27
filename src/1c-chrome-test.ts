@@ -57,8 +57,8 @@ export function runChromeTest() {
     section: 'UI.Всплывающие окна'
   },
   {
-    filterText: 'в панели открытых есть команда "ИмяКоманды" Тогда',
-    insertText: 'Если в панели открытых есть команда "ИмяКоманды" Тогда',
+    filterText: 'в панели открытых есть команда "ИмяКоманды"',
+    insertText: 'Если в панели открытых есть команда "ИмяКоманды"',
     sortText: '',
     documentation: 'Условие. Проверяет наличие команды в панели открытых.',
     kind: 0,
@@ -89,8 +89,8 @@ export function runChromeTest() {
     section: 'UI.Сообщения пользователю.Условие'
   },
   {
-    filterText: 'в таблице "ИмяТаблицы" есть колонка с именем "ИмяКолонки" Тогда',
-    insertText: 'Если в таблице "ИмяТаблицы" есть колонка с именем "ИмяКолонки" Тогда',
+    filterText: 'в таблице "ИмяТаблицы" есть колонка с именем "ИмяКолонки" ',
+    insertText: 'Если в таблице "ИмяТаблицы" есть колонка с именем "ИмяКолонки"',
     sortText: '',
     documentation: 'Условие.Проверяет наличие колонки в таблице.',
     kind: 0,
@@ -143,6 +143,9 @@ export function runChromeTest() {
   provider.setVariables(JSON.stringify(variables))
 
   provider.setSyntaxMsg('Step not found')
+
+  let keypairs = {"if":["then"], "Если":["Тогда"]};
+  provider.setKeypairs(JSON.stringify(keypairs));
 
   const tabs = window["createVanessaTabs"]()
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)

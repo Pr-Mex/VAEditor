@@ -46,6 +46,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       [/"/, "string", "@string_double"],
       [/'/, "string", "@string_single"],
       [/</, "string", "@string_angle"],
+      [/҂+$/, { token: "keyword" }]
     ],
 
     section: [
