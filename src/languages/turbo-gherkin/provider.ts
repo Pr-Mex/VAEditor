@@ -552,7 +552,8 @@ export class VanessaGherkinProvider {
     words = words.filter((w, i) => (i < keyword.length) ? false : (notComment(w) ? true : s = false));
     if (words.length == 0) return false;
     if (this.steps[this.key(words)]) return false;
-    let keypair = this.keypairs[keyword.join(" ")]||[];
+    let keypair = this.keypairs[keyword.join(" ")];
+    if (!keypair) return true;
     let lastnum = words.length - 1;
     let lastword = words[lastnum].toLowerCase();
     let step = words.filter((w, i) => i < lastnum);
@@ -595,15 +596,31 @@ export class VanessaGherkinProvider {
   public tokenize(line: string, state: monaco.languages.IState): monaco.languages.ILineTokens {
     let words = this.splitWords(line);
     let keyword = this.findKeyword(words);
-    if (keyword && keyword.length > 1) {
-      let regexp = "^";
-      keyword.forEach((w, i) => regexp += "[\\s]" + (i ? "+" : "*") + w);
-      let match = line.toLowerCase().match(new RegExp(regexp));
-      if (match) {
-        let text = "";
-        let length = match[0].length;
-        for (let i = 2; i < length; ++i) text += " ";
-        line = text + "if" + line.substring(length);
+    if (keyword) {
+      if (keyword.length > 1) {
+        let regexp = "^";
+        keyword.forEach((w, i) => regexp += "[\\s]" + (i ? "+" : "*") + w);
+        let match = line.toLowerCase().match(new RegExp(regexp));
+        if (match) {
+          let text = "";
+          let length = match[0].length;
+          for (let i = 2; i < length; ++i) text += " ";
+          line = text + "if" + line.substring(length);
+        }
+      }
+      if (words.length > keyword.length) {
+        let keypair = this.keypairs[keyword.join(" ")] || [];
+        let lastnum = words.length - 1;
+        let lastword = words[lastnum].toLowerCase();
+        if (keypair.some((w: string) => w == lastword)) {
+          let regexp = new RegExp(lastword + "\\s*$");
+          let match = line.toLowerCase().match(regexp);
+          if (match) {
+            let length = match[0].length;
+            line = line.substring(0, match.index);
+            for (let i = 0; i < length; ++i) line += "҂";
+          }
+        }
       }
     }
     let tokens = [];
