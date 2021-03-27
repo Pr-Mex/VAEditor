@@ -862,6 +862,20 @@ Procedure VanessaEditorDocumentComplete(Item)
 	Editor.addCommands(GetCommands());
 	FillEditorActions(Editor);
 
+	УсловныеОператоры = Новый Соответствие;
+	МассивСлов = Новый Массив;
+	МассивСлов.Добавить("then");
+	УсловныеОператоры.Вставить("if", МассивСлов);
+	МассивСлов = Новый Массив;
+	МассивСлов.Добавить("Тогда");
+	УсловныеОператоры.Вставить("Если", МассивСлов);
+
+	ЗаписьJSON = Новый ЗаписьJSON;
+	ЗаписьJSON.УстановитьСтроку();
+	ЗаписатьJSON(ЗаписьJSON, УсловныеОператоры);
+	УсловныеОператоры = ЗаписьJSON.Закрыть();
+	Provider.setKeypairs(УсловныеОператоры);
+
 EndProcedure
 
 &AtClient
@@ -1042,5 +1056,12 @@ EndProcedure
 Procedure NormalizeIndentation(Command)
 	VanessaEditor().normalizeIndentation();
 EndProcedure
+
+&НаКлиенте
+Процедура Whitespaces(Команда)
+
+	Элементы.VanessaEditor.Документ.defaultView.VanessaTabs.renderWhitespace = "boundary";
+
+КонецПроцедуры
 
 #EndRegion
