@@ -33,6 +33,7 @@ export class VanessaGherkinProvider {
   public get errorLinks(): any { return this._errorLinks; }
   public get elements(): any { return this._elements; }
   public get keywords(): any { return this._keywords; }
+  public get keypairs(): any { return this._keypairs; }
   public get syntaxMsg(): any { return this._syntaxMsg; }
   public get variables(): any { return this._variables; }
   public get steps(): any { return this._steps; }
@@ -40,6 +41,7 @@ export class VanessaGherkinProvider {
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
   protected _metatags: string[] = ["try", "except", "endtry"];
+  protected _keypairs: any = {};
   protected _steps = {};
   protected _elements = {};
   protected _variables = {};
@@ -108,6 +110,15 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
     list.forEach((w: string) => this.keywords.push(w.split(" ")));
     this._keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
+  }
+
+  public setKeypairs = (arg: string): void => {
+    let pairs = JSON.parse(arg);
+    this.clearObject(this.keypairs);
+    Object.keys(pairs).forEach((key: string) => {
+      let list = pairs[key].map((w: string) => w.toLowerCase());;
+      this.keypairs[key.toLowerCase()] = list;
+    });
   }
 
   public setMetatags = (arg: string): void => {
@@ -540,7 +551,12 @@ export class VanessaGherkinProvider {
     let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
     words = words.filter((w, i) => (i < keyword.length) ? false : (notComment(w) ? true : s = false));
     if (words.length == 0) return false;
-    return this.steps[this.key(words)] == undefined;
+    if (this.steps[this.key(words)]) return false;
+    let keypair = this.keypairs[keyword.join(" ")]||[];
+    let lastnum = words.length - 1;
+    let lastword = words[lastnum].toLowerCase();
+    let step = words.filter((w, i) => i < lastnum);
+    return !(this.steps[this.key(step)] && keypair.some((w: string) => w == lastword));
   }
 
   public checkSyntax(model: monaco.editor.ITextModel) {
