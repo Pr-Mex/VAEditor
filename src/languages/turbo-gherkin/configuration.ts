@@ -39,6 +39,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       [/@.*/, "annotation"],
       [/^\s*\*.*$/, "strong"],
       [/^\s*\|/, { token: "operator", next: "@params" }],
+      [/^\s*""".*$/, { token: "string", next: "@multyline" }],
       { include: "@whitespace" },
       { include: "@numbers" },
       [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
@@ -88,6 +89,11 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
     numbers: [
       [/-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/, "number"]
+    ],
+
+    multyline: [
+      [/^\s*""".*$/, { token: "string", switchTo: "@pop" }],
+      [/^.*$/, "string"],
     ],
 
     string_double: [

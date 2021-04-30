@@ -564,8 +564,12 @@ export class VanessaGherkinProvider {
     if (model.getModeId() != "turbo-gherkin") return;
     let problems: monaco.editor.IMarkerData[] = [];
     let lineCount = model.getLineCount();
+    let multiline = false;
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      let error = this.lineSyntaxError(model.getLineContent(lineNumber));
+      let line: string = model.getLineContent(lineNumber);
+      if (/^\s*""".*$/.test(line)) { multiline = !multiline; continue; }
+      if (multiline) continue;
+      let error = this.lineSyntaxError(line);
       if (error) problems.push({
         severity: monaco.MarkerSeverity.Error,
         message: this.syntaxMsg,
