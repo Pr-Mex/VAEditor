@@ -92,7 +92,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     ],
 
     multyline: [
-      [/^\s*""".*$/, { token: "string", switchTo: "@pop" }],
+      [/^\s*""".*$/, { token: "string", next: "@pop" }],
       [/^.*$/, "string"],
     ],
 
