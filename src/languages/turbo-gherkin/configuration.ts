@@ -23,6 +23,8 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
   metatags: VanessaGherkinProvider.instance.metatags,
 
+  hyperlinks: VanessaGherkinProvider.instance.hyperlinks,
+
   keywords: VanessaGherkinProvider.instance.singleWords.concat(["if"]),
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
@@ -54,6 +56,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       [/^\s*([A-zА-яЁё]+)(?:\s*\:)/, {
         cases: {
           "$1@keywords": { token: "metatag.php", switchTo: "@root" },
+          "$1@hyperlinks": { token: "metatag.php", switchTo: "@root" },
           "@default": { token: "identifier", switchTo: "@root" },
         },
       }],

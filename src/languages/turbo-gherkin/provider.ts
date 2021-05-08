@@ -1,6 +1,7 @@
 import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
+import { TokenizationRegistry } from 'monaco-editor/esm/vs/editor/common/modes';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 
@@ -40,7 +41,8 @@ export class VanessaGherkinProvider {
 
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
-  protected _metatags: string[] = ["try", "except", "endtry"];
+  protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
+  protected _hyperlinks: string[] = ["links", "hyperlinks", "ссылки", "гиперссылки"];
   protected _keypairs: any = {};
   protected _steps = {};
   protected _elements = {};
@@ -53,6 +55,10 @@ export class VanessaGherkinProvider {
 
   public get metatags(): string[] {
     return this._metatags;
+  }
+
+  public get hyperlinks(): string[] {
+    return this._hyperlinks;
   }
 
   protected isSection(text: string) {
@@ -69,7 +75,7 @@ export class VanessaGherkinProvider {
   };
 
   protected splitWords(line: string): Array<string> {
-    let regexp = /([^\s"'\.:;,?!-]+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g;
+    let regexp = /(-?(\d*\.)?\d+|[A-zА-яЁё]+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>)/g;
     return line.match(regexp) || [];
   }
 
@@ -125,6 +131,12 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg);
     this.clearArray(this._metatags);
     list.forEach((w: string) => this._metatags.push(w));
+  }
+
+  public setHyperlinks = (arg: string): void => {
+    let list = JSON.parse(arg);
+    this.clearArray(this._hyperlinks);
+    list.forEach((w: string) => this._hyperlinks.push(w));
   }
 
   public setElements = (values: string, clear: boolean = false): void => {
@@ -629,5 +641,31 @@ export class VanessaGherkinProvider {
     let result = this.tokenizer.tokenize(line, state, 0);
     result.tokens.forEach((t: monaco.Token) => tokens.push({ startIndex: t.offset, scopes: t.type }));
     return { tokens: tokens, endState: result.endState };
+  }
+
+  public logTokens(model: monaco.editor.ITextModel) {
+    let tokenizationSupport = TokenizationRegistry.get("turbo-gherkin");
+    if (tokenizationSupport) {
+      var state = tokenizationSupport.getInitialState();
+      let lineCount = model.getLineCount();
+      for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
+        let line: string = model.getLineContent(lineNumber);
+        var tokenizationResult = tokenizationSupport.tokenize(line, state, 0);
+        state = tokenizationResult.endState;
+        console.log(lineNumber, state.stack.state, tokenizationResult.tokens);
+      }
+    };
+  }
+
+  public provideLinks(model: monaco.editor.ITextModel, token: monaco.CancellationToken)
+    : monaco.languages.ProviderResult<monaco.languages.ILinksList> {
+    let lineCount = model.getLineCount();
+    for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
+      //@ts-ignore
+      let tokens = model.getLineTokens(lineNumber);
+      if (tokens.getStandardTokenType(0) == 2) {}
+      let line: string = model.getLineContent(lineNumber);
+    }
+  return undefined;
   }
 }
