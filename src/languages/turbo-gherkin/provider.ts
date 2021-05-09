@@ -682,9 +682,13 @@ export class VanessaGherkinProvider {
               for (let col = 0; col < columns.length; col++) row.data[columns[col]] = match[col];
               links[match[0].toLowerCase()] = row;
             }
+          } else if (line.match(/^\s*(#|@|\/\/)/)) {
+            continue;
           } else if (this.isSection(line)) {
             position.lineNumber = i;
             return links;
+          } else {
+            columns = null;
           };
         }
       }
