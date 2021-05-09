@@ -709,18 +709,25 @@ export class VanessaGherkinProvider {
     let pos = { lineNumber: 1, lineCount: model.getLineCount() };
     let links = this.getLinks(model, pos);
     let lineCount = model.getLineCount();
-    let exp = "['<\\\"](" + Object.keys(links).join("|") + ")['>\\\"]";
+    let exp = "['<\\\"](" + Object.keys(links).join("|") + "|e1cib\\/[^\s]+)['>\\\"]";
     for (var lineNumber = pos.lineNumber + 1; lineNumber <= pos.lineCount; lineNumber++) {
       let matches = undefined;
       let regexp = new RegExp(exp, "ig");
       let line: string = model.getLineContent(lineNumber);
       while ((matches = regexp.exec(line)) !== null) {
-        let key = trimQuotes(matches[0]).toLowerCase();
-        result.push({
-          range: new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex),
-          tooltip: links[key].name,
-          url: "link:" + key,
-        });
+        if (matches[0].substr(1, 6) == "e1cib/") {
+          result.push({
+            range: new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex),
+            url: trimQuotes(matches[0]),
+          });
+        } else {
+          let key = trimQuotes(matches[0]).toLowerCase();
+          result.push({
+            range: new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex),
+            tooltip: links[key].name,
+            url: "link:" + key,
+          });
+        }
       }
     }
     return { links: result };

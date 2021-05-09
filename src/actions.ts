@@ -37,15 +37,16 @@ export class ActionManager {
     let service = this.editor.getContribution('editor.contrib.hover')._openerService;
     service._original_open = service.open;
     service.open = (target: any, options: any) => {
-      if (typeof (target) == "string" && /^\s*http:\/\/|^\s*https:\/\//.test(target)) {
-        this.owner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
-        return { catch: () => { } };
-      }
-      if (typeof (target) == "string" && /^\s*link:/.test(target)) {
-        let key = target.substr(5);
-        let data = VanessaGherkinProvider.instance.getLinkData(this.editor, key);
-        this.owner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data));
-        return { catch: () => { } };
+      if (typeof (target) == "string") {
+        if (/^\s*(https?:\/\/|e1cib\/)/.test(target)) {
+          this.owner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
+          return { catch: () => { } };
+        }
+        if (/^\s*link:/.test(target)) {
+          let data = VanessaGherkinProvider.instance.getLinkData(this.editor, target.substr(5));
+          this.owner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data));
+          return { catch: () => { } };
+        }
       }
       return service._original_open(target, options);
     };
