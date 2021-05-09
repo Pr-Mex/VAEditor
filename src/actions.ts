@@ -41,6 +41,12 @@ export class ActionManager {
         this.owner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
         return { catch: () => { } };
       }
+      if (typeof (target) == "string" && /^\s*link:/.test(target)) {
+        let key = target.substr(5);
+        let data = VanessaGherkinProvider.instance.getLinkData(this.editor, key);
+        this.owner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data));
+        return { catch: () => { } };
+      }
       return service._original_open(target, options);
     };
   }

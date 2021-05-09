@@ -661,15 +661,14 @@ export class VanessaGherkinProvider {
     };
   }
 
-  public getLinks(model: monaco.editor.ITextModel) {
+  private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
     let regexp = new RegExp("\\s*(" + this.hyperlinks.join("|") + ")\\s*:.*", "i");
-    let lineCount = model.getLineCount();
-    for (let lineNumber = 1; lineNumber <= lineCount - 1; lineNumber++) {
+    for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
       let line: string = model.getLineContent(lineNumber);
       if (line.match(regexp)) {
         let columns = null;
         let links = {};
-        for (let i = lineNumber + 1; i <= lineCount; i++) {
+        for (let i = lineNumber + 1; i <= position.lineCount; i++) {
           let line: string = model.getLineContent(i);
           if (line.match(/^\s*\|/)) {
             let match = line.match(/"[^"]*"|'[^']*'|<[^>]*>|[^\s\|][^\|]*[^\s\|]|[^\s\|]/g);
@@ -677,39 +676,49 @@ export class VanessaGherkinProvider {
             if (columns === null) {
               columns = match.map(trimQuotes);
             } else {
-              let row = {};
               match = match.map(trimQuotes);
               while (match.length < columns.length) match.push("");
-              for (let col = 0; col < columns.length; col++) row[columns[col]] = match[col];
-              if (match.length > 1) row[""] = match[1];
+              let row = { key: match[0], name: match[1], data: {} };
+              for (let col = 0; col < columns.length; col++) row.data[columns[col]] = match[col];
               links[match[0].toLowerCase()] = row;
             }
-          } else if (this.isSection(line)) return { links: links, lineNumber: i };
+          } else if (this.isSection(line)) {
+            position.lineNumber = i;
+            return links;
+          };
         }
       }
     }
-    return { links: [], lineNumber: lineCount };
+    position.lineNumber = position.lineCount;
+    return {};
+  }
+
+  public getLinkData(editor: monaco.editor.IStandaloneCodeEditor, key: string) {
+    const model = editor.getModel();
+    let position = { lineNumber: 1, lineCount: model.getLineCount() };
+    return this.getLinks(model, position)[key];
   }
 
   public provideLinks(model: monaco.editor.ITextModel, token: monaco.CancellationToken)
     : monaco.languages.ProviderResult<monaco.languages.ILinksList> {
-    let links = [];
-    let data = this.getLinks(model);
+    let result = [];
+    let pos = { lineNumber: 1, lineCount: model.getLineCount() };
+    let links = this.getLinks(model, pos);
     let lineCount = model.getLineCount();
-    let exp = "['<\\\"](" + Object.keys(data.links).join("|") + ")['>\\\"]";
-    for (var lineNumber = data.lineNumber + 1; lineNumber <= lineCount; lineNumber++) {
+    let exp = "['<\\\"](" + Object.keys(links).join("|") + ")['>\\\"]";
+    for (var lineNumber = pos.lineNumber + 1; lineNumber <= pos.lineCount; lineNumber++) {
       let matches = undefined;
       let regexp = new RegExp(exp, "ig");
       let line: string = model.getLineContent(lineNumber);
       while ((matches = regexp.exec(line)) !== null) {
         let key = trimQuotes(matches[0]).toLowerCase();
-        links.push({
+        result.push({
           range: new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex),
-          tooltip: data.links[key][""],
-          url: "javascript:alert(" + key + ")",
+          tooltip: links[key].name,
+          url: "link:" + key,
         });
       }
     }
-    return { links: links };
+    return { links: result };
   }
 }
