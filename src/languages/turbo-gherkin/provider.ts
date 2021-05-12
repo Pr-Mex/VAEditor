@@ -79,7 +79,7 @@ export class VanessaGherkinProvider {
   };
 
   protected splitWords(line: string): Array<string> {
-    let regexp = /(-?(\d*\.)?\d+|[A-zА-яЁё]+|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>)/g;
+    let regexp = /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>|[A-zА-яЁё]+|[^A-zА-яЁё\s]+/g;
     return line.match(regexp) || [];
   }
 
