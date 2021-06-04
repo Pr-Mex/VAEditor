@@ -110,6 +110,7 @@ class VanessaTabItem {
     let show = () => {
       if (node.nextSibling)
         node.parentElement.appendChild(node);
+      this.editor.editor.focus();
     }
     setTimeout(() => show(), 100);
     this.owner.timer = setTimeout(() => show(), 1000);
