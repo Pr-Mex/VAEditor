@@ -109,4 +109,5 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public canNavigate = () => this.navigator.canNavigate();
   public previous = () => this.navigator.previous();
   public next = () => this.navigator.next();
+  public focus() { this.editor.focus(); }
 }

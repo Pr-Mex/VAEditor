@@ -7,6 +7,7 @@ const $ = dom.$;
 export interface IVanessaEditor  {
   domNode(): HTMLElement;
   dispose(): void;
+  focus(): void;
   resetModel: Function;
   getModel: Function;
   editor: any;

@@ -3,6 +3,7 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { VanessaViwer } from './vanessa-viewer';
 
 type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 
@@ -64,7 +65,7 @@ class VanessaTabItem {
   private registerOnDidChangeContent() {
     setTimeout(() => {
       const model = this.editor.getModel();
-      this.onChangeHandler = model.onDidChangeContent(() => this.onModified());
+      if (model) this.onChangeHandler = model.onDidChangeContent(() => this.onModified());
       this.onModified();
     }, 500);
   }
@@ -110,7 +111,7 @@ class VanessaTabItem {
     let show = () => {
       if (node.nextSibling)
         node.parentElement.appendChild(node);
-      this.editor.editor.focus();
+      this.editor.focus();
     }
     setTimeout(() => show(), 100);
     this.owner.timer = setTimeout(() => show(), 1000);
@@ -397,6 +398,15 @@ export class VanessaTabs {
     const editor = new VanessaDiffEditor(diff, readOnly);
     editor.editor.updateOptions({renderWhitespace: this.renderWhitespace});
     return this.open(editor, title, newFilePath, encoding, newTab);
+  }
+
+  public view = (
+    title: string,
+    src: string,
+    newTab: boolean = true,
+  ): IVanessaEditor => {
+    const editor = new VanessaViwer(src);
+    return this.open(editor, title, src, 0, newTab);
   }
 
   public onPageNext = (forward: boolean) => {

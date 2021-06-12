@@ -173,6 +173,7 @@ export class VanessaEditor implements IVanessaEditor {
     disposeModel(oldModel);
   };
 
+  public focus() { this.editor.focus(); }
   static editors: Array<VanessaEditor> = [];
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   static checkAllSyntax = () => VanessaEditor.editors.forEach(e => {
