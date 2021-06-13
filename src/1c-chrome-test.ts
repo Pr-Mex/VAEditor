@@ -158,6 +158,9 @@ export function runChromeTest() {
   const tabs = window["createVanessaTabs"]()
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
+  let text = content.replace(/(\r\n|\n|\r)/gm, '\n\n')
+  const viewer = tabs.view('Markdown', text)
+
   return
 
   const commands = [

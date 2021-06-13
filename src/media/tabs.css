@@ -180,11 +180,13 @@ body {
     text-overflow: ellipsis
 }
 
-#VanessaEditorContainer > div.vanessa-viewer {
-    padding: 0 1em 0 1em;
-}
-
 #VanessaEditorContainer > div.monaco-diff-editor {
     position: absolute !important;
     height: 100%;
+}
+
+#VanessaEditorContainer > div.vanessa-viewer {
+    position: absolute !important;
+    padding: 0 1em 0 1em;
+    overflow-y: auto;
 }
