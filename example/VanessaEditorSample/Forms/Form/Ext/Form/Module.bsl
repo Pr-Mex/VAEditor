@@ -624,7 +624,7 @@ Procedure VanessaEditorLoad(TemplateBinaryData)
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
 		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
 		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID)
-			+ "&localeCode=" + Left(CurrentSystemLanguage(), 2);
+			+ "&localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 	EndDo;
 	DeleteFiles(TempFileName);
 
@@ -968,7 +968,20 @@ Procedure ShowMinimapOnChange(Item)
 EndProcedure
 
 &AtClient
-Procedure EditorTypeOnChange(Элемент)
+Function GetMarkdownText()
+
+	Try
+		TextDocument = New TextDocument;
+		TextDocument.Read("C:\Cpp\VAEditor\README.md", TextEncoding.UTF8);
+		return TextDocument.GetText();
+	Except
+		return Undefined;
+	EndTry;
+
+EndFunction
+
+&AtClient
+Procedure EditorTypeOnChange(Item)
 
 	View = DefaultView();
 
@@ -1024,6 +1037,11 @@ Procedure EditorTypeOnChange(Элемент)
 		tabs.edit(text1, f, "1" + f, f, 0, false, true);
 		tabs.edit(text2, f, "2" + f, f, 0, false, true);
 		tabs.diff(text1, f, "1" + f, text2, f, "2" + f, f, 0, false, true);
+		MarkdownText = GetMarkdownText();
+		If Not IsBlankString(MarkdownText) Then
+			f = "readme.md";
+			tabs.view(f, f, MarkdownText, true);
+		EndIf;
 	Else
 		SideBySide = 2;
 		View.disposeVanessaTabs();

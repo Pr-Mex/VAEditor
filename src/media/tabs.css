@@ -196,25 +196,14 @@ div.vanessa-inner {
     overflow-y: auto;
 }
 
-div.vanessa-inner > div {
-    padding: 0 1em 0 1em;
+div.vanessa-inner>div {
+    padding: 0.5em;
 }
 
-div.vanessa-inner::-webkit-scrollbar {
-    display: block;
-    width: 6px;
-}
+div.vanessa-inner::-webkit-scrollbar {}
 
-div.vanessa-inner::-webkit-scrollbar-track {
-    background: #999;
-    border-radius: 5px;
-}
+div.vanessa-inner::-webkit-scrollbar-track {}
 
-div.vanessa-inner::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 5px;
-}
+div.vanessa-inner::-webkit-scrollbar-thumb {}
 
-div.vanessa-inner::-webkit-scrollbar-thumb:hover {
-    background: #666;
-}
+div.vanessa-inner::-webkit-scrollbar-thumb:hover {}

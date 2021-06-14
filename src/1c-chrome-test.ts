@@ -9,6 +9,7 @@ export function runChromeTest() {
 \t|"Имя"         |"Представление"       |"Значение"          |\n\
 \t|"ИмяЭлемента" |"Имя ссылки элемента" |"Значение элемента" |\n\
 \t|"ИмяРеквизита"|"Имя ссылки реквизита"|"Значение реквизита"|\n\
+\n###\tВнешняя ссылка: https://github.com/Pr-Mex/VAEditor\n\
 \nКонтекст:\n\
 \tДано Я запускаю сценарий открытия TestClient или подключаю уже существующий\n\
 \tОткрывается тест-клиент\n\nСтруктура сценария:\n\t* Открытие формы элемента\n\
@@ -159,7 +160,7 @@ export function runChromeTest() {
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
   let text = content.replace(/(\r\n|\n|\r)/gm, '\n\n')
-  const viewer = tabs.view('Markdown', text)
+  const viewer = tabs.view('Markdown', 'Markdown.txt', text)
 
   return
 

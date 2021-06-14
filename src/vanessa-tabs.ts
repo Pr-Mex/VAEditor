@@ -402,11 +402,12 @@ export class VanessaTabs {
 
   public view = (
     title: string,
+    url: string,
     src: string,
     newTab: boolean = true,
   ): IVanessaEditor => {
     const editor = new VanessaViwer(src);
-    return this.open(editor, title, src, 0, newTab);
+    return this.open(editor, title, url, 0, newTab);
   }
 
   public onPageNext = (forward: boolean) => {
