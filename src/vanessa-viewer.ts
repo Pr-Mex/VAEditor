@@ -1,7 +1,7 @@
 import * as monaco from "monaco-editor"
 import { renderMarkdown } from 'monaco-editor/esm/vs/base/browser/markdownRenderer.js';
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
-import { IVanessaEditor } from "./common";
+import { EventsManager, IVanessaEditor, VanessaEditorEvent } from "./common";
 const $ = dom.$;
 
 
@@ -34,6 +34,14 @@ export class VanessaViwer implements IVanessaEditor {
     this._domNode = $("div", { class: "vanessa-viewer" },
       this._domInner = $("div", { class: "vanessa-inner" }));
     this._domInner.appendChild(markdownToHTML(src));
+    this._domInner.addEventListener("click", this.onClick.bind(this), true);
     node.appendChild(this._domNode);
+  }
+
+  private onClick(event: any) {
+    if (event.target instanceof HTMLAnchorElement) {
+      const data = (event.target as HTMLAnchorElement).dataset.href;
+      EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_MARK_CLICK, data);
+    }
   }
 }
