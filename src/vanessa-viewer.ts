@@ -27,11 +27,13 @@ export class VanessaViwer implements IVanessaEditor {
   editor: any;
 
   private _domNode: HTMLElement;
+  private _domInner: HTMLElement;
 
   constructor(src: string) {
     let node = document.getElementById("VanessaEditorContainer");
-    this._domNode = $("div", { class: "vanessa-viewer" });
-    this._domNode.appendChild(markdownToHTML(src));
+    this._domNode = $("div", { class: "vanessa-viewer" },
+      this._domInner = $("div", { class: "vanessa-inner" }));
+    this._domInner.appendChild(markdownToHTML(src));
     node.appendChild(this._domNode);
   }
 }
