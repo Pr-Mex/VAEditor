@@ -39,7 +39,8 @@
 		"monaco-editor-nls": "^1.0.4",
 		"postcss-base64": "^0.7.1",
 		"postcss-cli": "^8.2.0",
-		"string-replace-loader": "^2.3.0"
+		"string-replace-loader": "^2.3.0",
+		"vscode-codicons": "0.0.17"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",

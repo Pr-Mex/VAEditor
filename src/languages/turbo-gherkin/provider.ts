@@ -46,7 +46,7 @@ export class VanessaGherkinProvider {
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
-  protected _hyperlinks: string[] = ["links", "hyperlinks", "ссылки", "гиперссылки"];
+  protected _hyperlinks: string[] = ["links", "hyperlinks", "variables", "ссылки", "гиперссылки", "переменные"];
   protected _keypairs: any = {};
   protected _steps = {};
   protected _elements = {};
@@ -142,6 +142,8 @@ export class VanessaGherkinProvider {
     this.clearArray(this._hyperlinks);
     list.forEach((w: string) => this._hyperlinks.push(w));
   }
+
+  public setVariablesArea = this.setHyperlinks;
 
   public setElements = (values: string, clear: boolean = false): void => {
     if (clear) this.clearObject(this.elements);
@@ -415,27 +417,43 @@ export class VanessaGherkinProvider {
     return result;
   }
 
+  private escapeMarkdown(text: string): string {
+    // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
+    return text.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&');
+  }
+
   public provideHover(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
   ): monaco.languages.Hover {
     let contents = [];
     let line = model.getLineContent(position.lineNumber)
-    let words = this.splitWords(line);
-    let key = this.key(this.filterWords(words));
-    let char = String.fromCharCode(60020);
-    let step = this.steps[key];
-    if (step) {
-      let href = "#info:" + key.replace(/ /g, "-");
-      contents.push({ value: `**${step.section}** [${char}](${href})` });
-      contents.push({ value: step.documentation });
-      let values = this.variables;
-      let vars = line.match(/"[^"]+"|'[^']+'/g) || [];
-      vars.forEach(function (part: string) {
-        let d = /^.\$.+\$.$/.test(part) ? 2 : 1;
-        let v = values[part.substring(d, part.length - d).toLowerCase()];
-        if (v) contents.push({ value: "**" + v.name + "** = " + v.value });
-      });
+    let match = line.match(/^\s*\*/);
+    if (match) {
+      let head = "Озвучить фразу";
+      let char = String.fromCharCode(60277);
+      let href = "#sound:" + position.lineNumber;
+      let text = line.substr(match[0].length);
+      contents.push({ value: `**${head}** [${char}](${href})` });
+      contents.push({ value: this.escapeMarkdown(text) });
+    } else {
+      let words = this.splitWords(line);
+      let key = this.key(this.filterWords(words));
+      let step = this.steps[key];
+      if (step) {
+        let char = String.fromCharCode(60020);
+        let head = this.escapeMarkdown(step.section);
+        let href = "#info:" + key.replace(/ /g, "-");
+        contents.push({ value: `**${head}** [${char}](${href})` });
+        contents.push({ value: this.escapeMarkdown(step.documentation) });
+        let values = this.variables;
+        let vars = line.match(/"[^"]+"|'[^']+'/g) || [];
+        vars.forEach(function (part: string) {
+          let d = /^.\$.+\$.$/.test(part) ? 2 : 1;
+          let v = values[part.substring(d, part.length - d).toLowerCase()];
+          if (v) contents.push({ value: "**" + v.name + "** = " + v.value });
+        });
+      }
     }
     let range = {
       startLineNumber: position.lineNumber,

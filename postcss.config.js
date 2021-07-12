@@ -14,7 +14,7 @@ module.exports = {
     base64({
       extensions: ['.ttf'],
       excludeAtFontFace: false,
-      root: 'node_modules/monaco-editor/esm/vs/base/browser/ui/codiconLabel/codicon'
+      root: 'node_modules/vscode-codicons/dist'
     }),
     alter({
       declarations: {
