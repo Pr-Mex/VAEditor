@@ -43,6 +43,7 @@ export class VanessaGherkinProvider {
   public get variables(): any { return this._variables; }
   public get steps(): any { return this._steps; }
 
+  protected _soundHint = "Sound";
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
@@ -144,6 +145,10 @@ export class VanessaGherkinProvider {
   }
 
   public setVariablesArea = this.setHyperlinks;
+
+  public setSoundHint = (arg: string): void => {
+    this._soundHint = arg;
+  }
 
   public setElements = (values: string, clear: boolean = false): void => {
     if (clear) this.clearObject(this.elements);
@@ -430,7 +435,7 @@ export class VanessaGherkinProvider {
     let line = model.getLineContent(position.lineNumber)
     let match = line.match(/^\s*\*/);
     if (match) {
-      let head = "Озвучить фразу";
+      let head = this._soundHint;
       let char = String.fromCharCode(60277);
       let href = "#sound:" + position.lineNumber;
       let text = line.substr(match[0].length);
