@@ -37,6 +37,7 @@
 		"autoprefixer": "^9.8.6",
 		"monaco-editor": "^0.20.0",
 		"monaco-editor-nls": "^1.0.4",
+		"postcss-base64": "^0.7.1",
 		"postcss-cli": "^8.2.0",
 		"string-replace-loader": "^2.3.0"
 	},

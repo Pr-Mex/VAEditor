@@ -1,6 +1,6 @@
-const base64 = require('./tools/postcss/postcss-base64')
 const alter = require('postcss-alter-property-value')
 const autoprefixer = require('autoprefixer')
+const base64 = require('postcss-base64')
 
 module.exports = {
   plugins: [
