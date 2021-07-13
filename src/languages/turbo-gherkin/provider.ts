@@ -446,10 +446,12 @@ export class VanessaGherkinProvider {
       let key = this.key(this.filterWords(words));
       let step = this.steps[key];
       if (step) {
-        let char = String.fromCharCode(60020);
-        let head = this.escapeMarkdown(step.section);
-        let href = "#info:" + key.replace(/ /g, "-");
-        contents.push({ value: `**${head}** [${char}](${href})` });
+        let i = String.fromCharCode(60020);
+        let s = String.fromCharCode(60277);
+        let t = this.escapeMarkdown(step.section);
+        let ih = "#info:" + key.replace(/ /g, "-");
+        let sh = "#sound:" + position.lineNumber;
+        contents.push({ value: `**${t}** [${i}](${ih}) [${s}](${sh})` });
         contents.push({ value: this.escapeMarkdown(step.documentation) });
         let values = this.variables;
         let vars = line.match(/"[^"]+"|'[^']+'/g) || [];

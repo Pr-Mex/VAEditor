@@ -646,6 +646,8 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 		EndDo;
 	ElsIf CharCode(Element.innerText, 1) = 60020 Then
 		Message(Element.title);
+	ElsIf CharCode(Element.innerText, 1) = 60277 Then
+		Message(Element.title);
 	EndIf;
 
 EndProcedure
