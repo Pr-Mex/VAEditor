@@ -691,6 +691,7 @@ export class VanessaGherkinProvider {
     for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
       let line: string = model.getLineContent(lineNumber);
       if (line.match(hyperlinks)) {
+        let matches = undefined;
         let tableName = "";
         let columns = null;
         let links = {};
@@ -706,16 +707,18 @@ export class VanessaGherkinProvider {
               while (match.length < columns.length) match.push("");
               let row = { key: match[0], name: match[1], data: {} };
               for (let col = 0; col < columns.length; col++) row.data[columns[col]] = match[col];
-              links[match[0].toLowerCase()] = row;
+              if (links[tableName] == undefined) links[tableName] = {};
+              links[tableName][match[0].toLowerCase()] = row;
             }
           } else if (line.match(/^\s*(#|@|\/\/)/)) {
             continue;
-          } else if (line.match(/^\s*\*/)) {
-            tableName = "";
+          } else if ((matches = line.match(/^\s*\*/)) !== null) {
+            tableName = line.substr(matches[0].length).trim().toLowerCase();
           } else if (this.isSection(line)) {
             position.lineNumber = i;
             return links;
           } else {
+            if (columns) tableName = "";
             columns = null;
           };
         }
@@ -728,7 +731,22 @@ export class VanessaGherkinProvider {
   public getLinkData(editor: monaco.editor.IStandaloneCodeEditor, key: string) {
     const model = editor.getModel();
     let position = { lineNumber: 1, lineCount: model.getLineCount() };
-    return this.getLinks(model, position)[key.toLowerCase()];
+    let words = key.split(".").map((w: string) => w.toLowerCase());
+    let links = this.getLinks(model, position);
+    let data = (table: string, row: string, col: string = undefined): any => {
+      if (links[table] && links[table][row]) {
+        let obj = links[table][row];
+        if (col) obj["column"] = col;
+        obj["table"] = table;
+        obj["param"] = key;
+        return obj;
+      } else if (col == undefined) return data("", table, row);
+    }
+    switch (words.length) {
+      case 1: return data("", words[0]);
+      case 2: return data(words[0], words[1]);
+      case 3: return data(words[0], words[1], words[2]);
+    }
   }
 
   public provideLinks(model: monaco.editor.ITextModel, token: monaco.CancellationToken)
@@ -748,14 +766,23 @@ export class VanessaGherkinProvider {
         if (e1cib.test(param)) {
           result.push({ range: range, url: trimQuotes(matches[0]) });
         } else if (lineNumber > pos.lineNumber) {
-          let object = /^([A-zА-яЁё][0-9A-zА-яЁё]*)(\.[A-zА-яЁё][0-9A-zА-яЁё]*)*$/;
-          if (object.test(param)) {
+          let pattern = /^([A-zА-яЁё][0-9A-zА-яЁё]*)(\.[A-zА-яЁё][0-9A-zА-яЁё]*)*$/;
+          let add = (table: string, row: string, col: string = undefined): any => {
+            if (links[table] && links[table][row]) {
+              let obj = links[table][row];
+              let text = obj.name;
+              if (col) Object.keys(obj.data).forEach((key: string) => {
+                if (key.toLowerCase() == col) text = obj.data[key];
+              });
+              result.push({ range: range, tooltip: text, url: "link:" + param });
+            } else if (col == undefined) add("", table, row);
+          }
+          if (pattern.test(param)) {
             let words = param.split(".").map((w: string) => w.toLowerCase());
             switch (words.length) {
-              case 1: {
-                if (links[words[0]])
-                  result.push({ range: range, tooltip: links[words[0]].name, url: "link:" + param });
-              } break;
+              case 1: add("", words[0]); break;
+              case 2: add(words[0], words[1]); break;
+              case 3: add(words[0], words[1], words[2]); break;
             }
           }
         }
