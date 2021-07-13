@@ -685,16 +685,17 @@ export class VanessaGherkinProvider {
   }
 
   private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
-    let regexp = new RegExp("\\s*(" + this.hyperlinks.join("|") + ")\\s*:.*", "i");
+    let hyperlinks = new RegExp("\\s*(" + this.hyperlinks.join("|") + ")\\s*:.*", "i");
     for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
       let line: string = model.getLineContent(lineNumber);
-      if (line.match(regexp)) {
+      if (line.match(hyperlinks)) {
+        let tableName = "";
         let columns = null;
         let links = {};
         for (let i = lineNumber + 1; i <= position.lineCount; i++) {
           let line: string = model.getLineContent(i);
           if (line.match(/^\s*\|/)) {
-            let match = line.match(/"[^"]*"|'[^']*'|<[^>]*>|[^\s\|][^\|]*[^\s\|]|[^\s\|]/g);
+            let match = line.match(/"(\\\|[^"])*"|'(\\'|[^'])*'|[^\s\|][^\|]*[^\s\|]|[^\s\|]/g);
             if (match === null) continue;
             if (columns === null) {
               columns = match.map(trimQuotes);
@@ -707,6 +708,8 @@ export class VanessaGherkinProvider {
             }
           } else if (line.match(/^\s*(#|@|\/\/)/)) {
             continue;
+          } else if (line.match(/^\s*\*/)) {
+            tableName = "";
           } else if (this.isSection(line)) {
             position.lineNumber = i;
             return links;
@@ -723,7 +726,7 @@ export class VanessaGherkinProvider {
   public getLinkData(editor: monaco.editor.IStandaloneCodeEditor, key: string) {
     const model = editor.getModel();
     let position = { lineNumber: 1, lineCount: model.getLineCount() };
-    return this.getLinks(model, position)[key];
+    return this.getLinks(model, position)[key.toLowerCase()];
   }
 
   public provideLinks(model: monaco.editor.ITextModel, token: monaco.CancellationToken)
@@ -731,25 +734,28 @@ export class VanessaGherkinProvider {
     let result = [];
     let pos = { lineNumber: 1, lineCount: model.getLineCount() };
     let links = this.getLinks(model, pos);
-    let lineCount = model.getLineCount();
-    let exp = "['<\\\"](" + Object.keys(links).join("|") + "|e1cib\\/[^\s]+)['>\\\"]";
-    for (var lineNumber = pos.lineNumber + 1; lineNumber <= pos.lineCount; lineNumber++) {
+    let pattern = /(["'])((?:\\\1|(?:(?!\1)).)*)(\1)/;
+    for (var lineNumber = 1; lineNumber <= pos.lineCount; lineNumber++) {
       let matches = undefined;
-      let regexp = new RegExp(exp, "ig");
+      let regexp = new RegExp(pattern.source, "g");
       let line: string = model.getLineContent(lineNumber);
       while ((matches = regexp.exec(line)) !== null) {
-        if (matches[0].substr(1, 6) == "e1cib/") {
-          result.push({
-            range: new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex),
-            url: trimQuotes(matches[0]),
-          });
-        } else {
-          let key = trimQuotes(matches[0]).toLowerCase();
-          result.push({
-            range: new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex),
-            tooltip: links[key].name,
-            url: "link:" + key,
-          });
+        let range = new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex);
+        let param = matches[0].substring(1, matches[0].length - 1);
+        let e1cib = /e1cib\/[^\s]+/;
+        if (e1cib.test(param)) {
+          result.push({ range: range, url: trimQuotes(matches[0]) });
+        } else if (lineNumber > pos.lineNumber) {
+          let object = /^([A-zА-яЁё][0-9A-zА-яЁё]*)(\.[A-zА-яЁё][0-9A-zА-яЁё]*)*$/;
+          if (object.test(param)) {
+            let words = param.split(".").map((w: string) => w.toLowerCase());
+            switch (words.length) {
+              case 1: {
+                if (links[words[0]])
+                  result.push({ range: range, tooltip: links[words[0]].name, url: "link:" + param });
+              } break;
+            }
+          }
         }
       }
     }
