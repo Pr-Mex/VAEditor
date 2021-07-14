@@ -762,7 +762,7 @@ export class VanessaGherkinProvider {
       while ((matches = regexp.exec(line)) !== null) {
         let range = new monaco.Range(lineNumber, matches.index + 2, lineNumber, regexp.lastIndex);
         let param = matches[0].substring(1, matches[0].length - 1);
-        let e1cib = /e1cib\/[^\s]+/;
+        let e1cib = /^e1cib\/[^\s]+$/;
         if (e1cib.test(param)) {
           result.push({ range: range, url: trimQuotes(matches[0]) });
         } else if (lineNumber > pos.lineNumber) {
