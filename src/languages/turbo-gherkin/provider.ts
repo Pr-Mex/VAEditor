@@ -718,6 +718,7 @@ export class VanessaGherkinProvider {
           } else if ((matches = line.match(/^\s*([A-zА-яЁё][0-9A-zА-яЁё]*)\s*=\s*(.*)\s*$/)) != null) {
             tableName = "";
             columns = null;
+            multidata = {};
             let key = matches[1].toLowerCase();
             let value = matches[2].trim();
             if (links[tableName] == undefined) links[tableName] = {};
@@ -732,7 +733,8 @@ export class VanessaGherkinProvider {
           } else {
             if (columns) tableName = "";
             columns = null;
-          };
+            multidata = {};
+          }
         }
       }
     }
