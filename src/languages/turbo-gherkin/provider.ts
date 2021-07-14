@@ -710,6 +710,13 @@ export class VanessaGherkinProvider {
               if (links[tableName] == undefined) links[tableName] = {};
               links[tableName][match[0].toLowerCase()] = row;
             }
+          } else if ((matches = line.match(/^\s*([A-zА-яЁё][0-9A-zА-яЁё]*)\s*=\s*(.*)\s*$/)) != null) {
+            tableName = "";
+            columns = null;
+            let key = matches[1].toLowerCase();
+            let value = matches[2].trim();
+            if (links[tableName] == undefined) links[tableName] = {};
+            links[tableName][key] = { key: key, name: value, value: value };
           } else if (line.match(/^\s*(#|@|\/\/)/)) {
             continue;
           } else if ((matches = line.match(/^\s*\*/)) !== null) {
