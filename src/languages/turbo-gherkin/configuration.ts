@@ -29,6 +29,8 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 
+  word: /[A-zА-яЁё][0-9A-zА-яЁё]*/,
+
   tokenizer: {
     root: [
       { include: "@section" },
@@ -53,7 +55,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     ],
 
     section: [
-      [/^\s*([A-zА-яЁё]+)(?:\s*\:)/, {
+      [/^\s*(@word)(?:\s*\:)/, {
         cases: {
           "$1@keywords": { token: "metatag.php", switchTo: "@root" },
           "$1@hyperlinks": { token: "metatag.php", switchTo: "@root" },
@@ -63,7 +65,8 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     ],
 
     keyword: [
-      [/^\s*([A-zА-яЁё]+)/, {
+      [/^\s*(@word)\s*=/, { token: "operator", next: "@operator" }],
+      [/^\s*(@word)/, {
         cases: {
           "$1@metatags": { token: "metatag", next: "@operator" },
           "$1@keywords": { token: "keyword", next: "@operator" },
@@ -75,7 +78,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
     operator: [
       [/^/, { token: "white", next: "@pop" }],
-      [/\s*([A-zА-яЁё]+)/, "identifier"],
+      [/\s*(@word)/, "identifier"],
       { include: "@common" },
     ],
 
