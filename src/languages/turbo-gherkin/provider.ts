@@ -695,8 +695,13 @@ export class VanessaGherkinProvider {
         let tableName = "";
         let columns = null;
         let links = {};
+        let multiline = false;
+        let multitext = "";
+        let multidata = {};
         for (let i = lineNumber + 1; i <= position.lineCount; i++) {
           let line: string = model.getLineContent(i);
+          if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
+          if (multiline) { multitext += (multitext == "" ? "" : "\n") + line; multidata["name"] = multitext; continue; }
           if (line.match(/^\s*\|/)) {
             let match = line.match(/"(\\\|[^"])*"|'(\\'|[^'])*'|[^\s\|][^\|]*[^\s\|]|[^\s\|]/g);
             if (match === null) continue;
@@ -716,7 +721,7 @@ export class VanessaGherkinProvider {
             let key = matches[1].toLowerCase();
             let value = matches[2].trim();
             if (links[tableName] == undefined) links[tableName] = {};
-            links[tableName][key] = { key: key, name: value, value: value };
+            multidata = links[tableName][key] = { key: key, name: value };
           } else if (line.match(/^\s*(#|@|\/\/)/)) {
             continue;
           } else if ((matches = line.match(/^\s*\*/)) !== null) {
