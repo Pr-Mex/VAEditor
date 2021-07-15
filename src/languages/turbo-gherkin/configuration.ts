@@ -27,7 +27,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
   keywords: VanessaGherkinProvider.instance.singleWords.concat(["if"]),
 
-  escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+  escapes: /\\(?:[abfnrtv\\"'{}]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
 
   word: /[A-zА-яЁё][0-9A-zА-яЁё]*/,
 
@@ -48,6 +48,10 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       { include: "@numbers" },
       [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
       [/'([^'\\]|\\.)*$/, "string.invalid"], // non-teminated string
+      [/"{!/, "keyword.flow", "server_double" ],
+      [/'{!/, "keyword.flow", "server_single" ],
+      [/"{/, "predefined.sql", "client_double" ],
+      [/'{/, "predefined.sql", "client_single" ],
       [/"/, "string", "@string_double"],
       [/'/, "string", "@string_single"],
       [/</, "string", "@string_angle"],
@@ -121,6 +125,34 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       [/@escapes/, "string.escape"],
       [/\\./, "string.escape.invalid"],
       [/>/, "string", "@pop"]
+    ],
+
+    client_double: [
+      [/[^\\}]+/, "predefined.sql"],
+      [/@escapes/, "predefined.sql"],
+      [/\\./, "string.escape.invalid"],
+      [/}"/, "predefined.sql", "@pop"],
+    ],
+
+    client_single: [
+      [/[^\\}]+/, "predefined.sql"],
+      [/@escapes/, "predefined.sql"],
+      [/\\./, "string.escape.invalid"],
+      [/}'/, "predefined.sql", "@pop"],
+    ],
+
+    server_double: [
+      [/[^\\}]+/, "keyword.flow"],
+      [/@escapes/, "keyword.flow"],
+      [/\\./, "string.escape.invalid"],
+      [/}"/, "keyword.flow", "@pop"],
+    ],
+
+    server_single: [
+      [/[^\\}]+/, "keyword.flow"],
+      [/@escapes/, "keyword.flow"],
+      [/\\./, "string.escape.invalid"],
+      [/}'/, "keyword.flow", "@pop"],
     ],
   }
 };
