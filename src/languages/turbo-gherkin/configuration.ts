@@ -43,6 +43,7 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       [/@.*/, "annotation"],
       [/^\s*\*.*$/, "strong"],
       [/^\s*\|/, { token: "operator", next: "@params" }],
+      [/^\s*"""(@word).*$/, { token: "string", next: "@embeded", nextEmbedded: "$1" }],
       [/^\s*""".*$/, { token: "string", next: "@multyline" }],
       { include: "@whitespace" },
       { include: "@numbers" },
@@ -99,6 +100,11 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
 
     multyline: [
       [/^\s*""".*$/, { token: "string", next: "@pop" }],
+      [/^.*$/, "string"],
+    ],
+
+    embeded: [
+      [/^\s*""".*$/, { token: "string", next: "@pop", nextEmbedded: "@pop" }],
       [/^.*$/, "string"],
     ],
 
