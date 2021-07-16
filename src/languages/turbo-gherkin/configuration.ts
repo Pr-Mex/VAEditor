@@ -108,43 +108,66 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
       [/^.*$/, "string"],
     ],
 
-    string_double: [
-      [/[^\\"{]+/, "string"],
-      [/{!/, { token: "keyword.flow", bracket: "@open", next: "server" } ],
-      [/{/, { token: "predefined.sql", bracket: "@open", next: "client" } ],
+    escapes: [
       [/@escapes/, "string.escape"],
       [/\\./, "string.escape.invalid"],
-      [/"/, "string", "@pop"]
+    ],
+
+    string: [
+      [/\$\$/, { bracket: "@open", token: "variable.predefined", next: "predefined" }],
+      [/\$/, { bracket: "@open", token: "variable", next: "variable" }],
+      [/\[/, { bracket: "@open", token: "constant", next: "index" }],
+      [/{!/, { bracket: "@open", token: "keyword.flow", next: "server" }],
+      [/{/, { bracket: "@open", token: "predefined.sql", next: "client" }],
+      { include: "@escapes" },
+    ],
+
+    string_double: [
+      [/[^"\\\{\[\$]+/, "string"],
+      { include: "@string" },
+      [/"/, "string", "@pop"],
     ],
 
     string_single: [
-      [/[^\\'{]+/, "string"],
-      [/{!/, { token: "keyword.flow", bracket: "@open", next: "server" } ],
-      [/{/, { token: "predefined.sql", bracket: "@open", next: "client" } ],
-      [/@escapes/, "string.escape"],
-      [/\\./, "string.escape.invalid"],
+      [/[^'\\\{\[\$]+/, "string"],
+      { include: "@string" },
       [/'/, "string", "@pop"]
     ],
 
     string_angle: [
-      [/[^\\>]+/, "string"],
-      [/@escapes/, "string.escape"],
-      [/\\./, "string.escape.invalid"],
+      [/[^>\\\{\[\$]+/, "string"],
+      { include: "@string" },
       [/>/, "string", "@pop"]
+    ],
+
+    index: [
+      [/[^\\\]]+/, "constant"],
+      { include: "@escapes" },
+      [/\]/, { bracket: "@close", next: "@pop", token: "constant" }],
+    ],
+
+    predefined: [
+      [/[^\\\$]+/, "variable.predefined"],
+      { include: "@escapes" },
+      [/\$\$/, { bracket: "@close", next: "@pop", token: "variable.predefined" }],
+    ],
+
+    variable: [
+      [/[^\\\$]+/, "variable"],
+      { include: "@escapes" },
+      [/\$/, { bracket: "@close", next: "@pop", token: "variable" }],
     ],
 
     server: [
       [/[^\\}]+/, "keyword.flow"],
-      [/@escapes/, "keyword.flow"],
-      [/\\./, "string.escape.invalid"],
-      [/}/, { token: "keyword.flow", bracket: "@close", next: "@pop"}],
+      { include: "@escapes" },
+      [/}/, { bracket: "@close", next: "@pop", token: "keyword.flow" }],
     ],
 
     client: [
       [/[^\\}]+/, "predefined.sql"],
-      [/@escapes/, "predefined.sql"],
-      [/\\./, "string.escape.invalid"],
-      [/}/, { token: "predefined.sql", bracket: "@close", next: "@pop"}],
+      { include: "@escapes" },
+      [/}/, { bracket: "@close", next: "@pop", token: "predefined.sql" }],
     ],
   }
 };
