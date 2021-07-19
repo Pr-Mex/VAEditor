@@ -1,0 +1,106 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
+const webpack = require('webpack')
+const nls = require.resolve('monaco-editor-nls')
+const glob = require("glob");
+
+module.exports = (env, argv) => {
+  return {
+    node: {
+      child_process: "empty",
+      net: 'empty',
+      tls: 'empty',
+      fs: 'empty'
+    },
+    entry: {
+      test: './test/test.ts'
+    },
+    resolve: {
+      extensions: ['.ts', '.js', '.css']
+    },
+    output: {
+      globalObject: 'self',
+      filename: '[name].js',
+      path: path.resolve(__dirname, 'dist')
+    },
+    resolveLoader: {
+      alias: {
+        'blob-url-loader': require.resolve('./tools/loaders/blobUrl'),
+        'compile-loader': require.resolve('./tools/loaders/compile'),
+        'monaco-nls': require.resolve('./tools/loaders/monacoNls')
+      }
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules[\\/]monaco-editor-nls[\\/].+\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            multiple: [{
+              search: 'let CURRENT_LOCALE_DATA = null;',
+              replace: 'var CURRENT_LOCALE_DATA = null;'
+            }]
+          }
+        },
+        {
+          test: /node_modules[\\/]monaco-editor[\\/]esm[\\/].+\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            multiple: [{
+              search: 'let __insane_func;',
+              replace: 'var __insane_func;'
+            }]
+          }
+        },
+        {
+          test: /\.js/,
+          enforce: 'pre',
+          include: /node_modules[\\/]monaco-editor[\\/]esm/,
+          use: 'monaco-nls'
+        },
+        {
+          test: /\.ts$/,
+          use: [
+            'babel-loader',
+            'ts-loader'
+          ]
+        },
+        {
+          test: /\.css$/,
+          use: [
+            'style-loader',
+            'css-loader',
+            'postcss-loader'
+          ]
+        }]
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        'document': 'min-document',
+        'self': 'node-noop',
+        'self.navigator.userAgent': 'empty-string',
+        'window': 'node-noop'
+      }),
+      new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js/, function (resource) {
+        resource.request = nls
+        resource.resource = nls
+      }),
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1
+      }),
+      new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        cache: false
+      })
+    ],
+    optimization: {
+      minimize: false
+    },
+    devServer: {
+      port: 4000,
+      hot: argv.mode === 'development',
+      open: true
+    }
+  }
+}
