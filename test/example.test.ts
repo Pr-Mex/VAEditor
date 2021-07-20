@@ -1,6 +1,6 @@
-import * as monaco from 'monaco-editor';
 let assert = require('assert');
 let expect = require('chai').expect;
+import * as monaco from 'monaco-editor';
 
 describe('Array', function () {
   describe('Monaco editor: Model', function () {

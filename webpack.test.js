@@ -1,20 +1,14 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const nls = require.resolve('monaco-editor-nls')
 const path = require('path')
 const webpack = require('webpack')
-const nls = require.resolve('monaco-editor-nls')
-const glob = require("glob");
 
 module.exports = (env, argv) => {
   return {
-    node: {
-      child_process: "empty",
-      net: 'empty',
-      tls: 'empty',
-      fs: 'empty'
-    },
     entry: {
-      test: './test/test.ts'
+      mocha: './node_modules/mocha/mocha.js',
+      test: './test/autotest.js'
     },
     resolve: {
       extensions: ['.ts', '.js', '.css']
@@ -85,8 +79,7 @@ module.exports = (env, argv) => {
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
-      template: "./test/index.html",
-      title: "Mocha Browser Tests",
+        title: "Mocha Browser Tests",
         cache: false
       })
     ],
