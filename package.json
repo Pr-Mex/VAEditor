@@ -5,7 +5,6 @@
 	"homepage": "https://github.com/Pr-Mex/VAEditor/",
 	"private": true,
 	"scripts": {
-		"autotest": "webpack-dev-server --progress --mode development --config webpack.test.js",
 		"debug": "webpack-dev-server --progress --mode development",
 		"build": "webpack --progress --mode production",
 		"compile": "run-script-os",
@@ -16,7 +15,6 @@
 		"decompile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example",
 		"decompile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/Decompile.os ./example",
 		"decompile:linux": "oscript ./tools/onescript/Decompile.os ./example",
-		"test": "webpack --config webpack.test.js",
 		"codestyle": "standard"
 	},
 	"keywords": [],

@@ -3,13 +3,10 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 document.body.appendChild(dom.$("div", { id: "mocha" }));
 
 mocha.setup('bdd');
-
-const context = require.context("../test", true, /.+\.ts$/ );
-
-// Require each within build
+const context = require.context(".", true, /.+\.ts$/ );
 context.keys().forEach(context);
 
-window.onload = function () {
+const autotest = () => {
   var runner = mocha.run();
   var failedTests = [];
 
@@ -38,4 +35,12 @@ window.onload = function () {
       titles: flattenTitles(test)
     });
   };
+
+  delete window['VanessaAutotest'];
 };
+
+if (process.argv.mode === 'autotest') {
+  window.onload = autotest;
+} else {
+  window['VanessaAutotest'] = autotest;
+}

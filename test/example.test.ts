@@ -25,6 +25,5 @@ describe('Options tests', () => { // the tests container
     expect(30).to.equal(30); // As I said 3 lines above
     expect([]).to.be.empty; // emitters property is an array and for this test must be empty, this syntax works with strings too
     expect({ value: "#fff" }).to.be.an("object").to.have.property("value").to.equal("#fff"); // this is a little more complex, but still really clear
-    console.log(monaco.editor.createModel(''));
   });
 });

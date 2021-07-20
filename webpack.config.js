@@ -70,6 +70,10 @@ module.exports = (env, argv) => {
         }]
     },
     plugins: [
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(process.env),
+        'process.argv': JSON.stringify(argv),
+      }),
       new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js/, function (resource) {
         resource.request = nls
         resource.resource = nls
