@@ -76,12 +76,6 @@ module.exports = (env, argv) => {
         }]
     },
     plugins: [
-      new webpack.ProvidePlugin({
-        'document': 'min-document',
-        'self': 'node-noop',
-        'self.navigator.userAgent': 'empty-string',
-        'window': 'node-noop'
-      }),
       new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js/, function (resource) {
         resource.request = nls
         resource.resource = nls
@@ -91,6 +85,8 @@ module.exports = (env, argv) => {
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
+      template: "./test/index.html",
+      title: "Mocha Browser Tests",
         cache: false
       })
     ],
