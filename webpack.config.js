@@ -8,7 +8,7 @@ const nls = require.resolve('monaco-editor-nls')
 module.exports = (env, argv) => {
   return {
     entry: {
-      app: './src/main'
+      app: './test/autotest.js'
     },
     resolve: {
       extensions: ['.ts', '.js', '.css']
