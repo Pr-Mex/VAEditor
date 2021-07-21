@@ -20,16 +20,14 @@ const autotest = () => {
   var runner = mocha.run()
   var failedTests = []
 
-  runner.on('end', function () {
+  runner.on('end', () => {
     window.mochaResults = runner.stats
     window.mochaResults.reports = failedTests
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
     dom.removeClass(domMain, 'vanessa-hidden')
   })
 
-  runner.on('fail', logFailure)
-
-  function logFailure (test, err) {
+  runner.on('fail', (test, err) => {
     var flattenTitles = function (test) {
       var titles = []
       while (test.parent.title) {
@@ -38,7 +36,6 @@ const autotest = () => {
       }
       return titles.reverse()
     }
-
     failedTests.push({
       name: test.title,
       result: false,
@@ -46,7 +43,7 @@ const autotest = () => {
       stack: err.stack,
       titles: flattenTitles(test)
     })
-  }
+  });
 
   delete window.VanessaAutotest
 }
