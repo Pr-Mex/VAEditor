@@ -21,39 +21,39 @@ describe('Vanessa Automation Editor', function () {
   it('Событие на открытие вкладки', () => {
     //@ts-ignore
     let message = window.popVanessaMessage()
-    expect(message.type).equal("ON_TAB_SELECT");
-    expect(message.data.filename).equal(url);
-    expect(message.data.title).equal(title);
+    expect(message.type).to.equal("ON_TAB_SELECT");
+    expect(message.data.filename).to.equal(url);
+    expect(message.data.title).to.equal(title);
   });
   it('Содержимое вкладки редактора', () => {
     const editor = tabs.current.editor;
-    expect(editor.getContent()).equal(content);
-    expect(editor.getLineContent(1)).equal(line1);
-    expect(editor.getLineContent(2)).equal(line2);
+    expect(editor.getContent()).to.equal(content);
+    expect(editor.getLineContent(1)).to.equal(line1);
+    expect(editor.getLineContent(2)).to.equal(line2);
   });
   it('Выделение текста', () => {
     const editor = tabs.current.editor;
     editor.setSelection(1, 1, 3, 1);
-    expect(editor.getSelectedContent()).equal(content);
+    expect(editor.getSelectedContent()).to.equal(content);
     editor.setSelection(1, 1, 1, 100);
-    expect(editor.getSelectedContent()).equal(line1);
+    expect(editor.getSelectedContent()).to.equal(line1);
     editor.setSelection(2, 1, 2, 100);
-    expect(editor.getSelectedContent()).equal(line2);
+    expect(editor.getSelectedContent()).to.equal(line2);
   });
   it('Вставка текста', () => {
     const editor = tabs.current.editor;
     editor.setPosition(2, 1);
     editor.insertText(line1);
-    expect(editor.getLineContent(2)).equal(line1 + line2);
+    expect(editor.getLineContent(2)).to.equal(line1 + line2);
     editor.undo();
-    expect(editor.getLineContent(2)).equal(line2);
+    expect(editor.getLineContent(2)).to.equal(line2);
   });
   it('Позиция курсора', () => {
     const editor = tabs.current.editor;
     editor.setPosition(2, 5);
     let pos = editor.getPosition();
-    expect(pos).an("object");
-    expect(pos).property("lineNumber").equal(2);
-    expect(pos).property("column").equal(5);
+    expect(pos).to.be.an("object");
+    expect(pos).to.have.property("lineNumber").to.equal(2);
+    expect(pos).to.have.property("column").to.equal(5);
   });
 })
