@@ -3,10 +3,17 @@ import mocha from 'mocha'
 import '../node_modules/mocha/mocha.css'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
 
+const $ = dom.$
+
 const autotest = () => {
+  const domMain = $(
+    'div.vanessa-hidden',
+    { id: 'mocha-container' },
+    $('div', { id: 'mocha' })
+  )
+  document.body.appendChild(domMain)
+
   window.createVanessaTabs()
-  const domNode = dom.$('div.vanessa-hidden', { id: 'mocha' })
-  document.body.appendChild(domNode)
   mocha.setup('bdd')
   const context = require.context('.', true, /.+\.ts$/)
   context.keys().forEach(context)
@@ -17,7 +24,7 @@ const autotest = () => {
     window.mochaResults = runner.stats
     window.mochaResults.reports = failedTests
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
-    dom.removeClass(domNode, 'vanessa-hidden')
+    dom.removeClass(domMain, 'vanessa-hidden')
   })
 
   runner.on('fail', logFailure)

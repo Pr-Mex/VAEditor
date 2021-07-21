@@ -201,9 +201,21 @@ div.vanessa-inner>div {
 }
 
 div.vanessa-inner::-webkit-scrollbar {}
-
 div.vanessa-inner::-webkit-scrollbar-track {}
-
 div.vanessa-inner::-webkit-scrollbar-thumb {}
-
 div.vanessa-inner::-webkit-scrollbar-thumb:hover {}
+
+#mocha-container {
+    position: absolute !important;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
+
+#mocha { margin: 60px 10px 10px 5px !important; }
+#mocha-stats { position: absolute !important; }
+
+#mocha::-webkit-scrollbar {}
+#mocha::-webkit-scrollbar-track {}
+#mocha::-webkit-scrollbar-thumb {}
+#mocha::-webkit-scrollbar-thumb:hover {}
