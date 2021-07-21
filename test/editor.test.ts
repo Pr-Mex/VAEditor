@@ -1,10 +1,13 @@
-let assert = require('assert');
 let expect = require('chai').expect;
-import * as monaco from 'monaco-editor';
 import { } from '../src/main';
+import { VanessaEditor } from '../src/vanessa-editor';
+import { VanessaTabs } from '../src/vanessa-tabs';
 
 //@ts-ignore
-const tabs = window.VanessaTabs;
+const popVanessaMessage = window.popVanessaMessage;
+//@ts-ignore
+const tabs = window.VanessaTabs as VanessaTabs;
+
 const line1 = 'Пример текста';
 const line2 = 'Вторая строка';
 const content = line1 + '\n' + line2;
@@ -12,27 +15,24 @@ const url = 'Браузер.feature';
 const title = 'Заголовок файла';
 
 describe('Vanessa Automation Editor', function () {
+  let editor: VanessaEditor;
   it('Открытие вкладки редактора', () => {
-    //@ts-ignore
-    while (window.popVanessaMessage()) {}
-    tabs.edit(content, url, url, title, 0, false, true);
+    while (popVanessaMessage()) { }
+    editor = tabs.edit(content, url, url, title, 0, false, true) as VanessaEditor;
     this.timeout(100);
   });
   it('Событие на открытие вкладки', () => {
-    //@ts-ignore
-    let message = window.popVanessaMessage()
+    let message = popVanessaMessage();
     expect(message.type).to.equal("ON_TAB_SELECT");
     expect(message.data.filename).to.equal(url);
     expect(message.data.title).to.equal(title);
   });
   it('Содержимое вкладки редактора', () => {
-    const editor = tabs.current.editor;
     expect(editor.getContent()).to.equal(content);
     expect(editor.getLineContent(1)).to.equal(line1);
     expect(editor.getLineContent(2)).to.equal(line2);
   });
   it('Выделение текста', () => {
-    const editor = tabs.current.editor;
     editor.setSelection(1, 1, 3, 1);
     expect(editor.getSelectedContent()).to.equal(content);
     editor.setSelection(1, 1, 1, 100);
@@ -41,7 +41,6 @@ describe('Vanessa Automation Editor', function () {
     expect(editor.getSelectedContent()).to.equal(line2);
   });
   it('Вставка текста', () => {
-    const editor = tabs.current.editor;
     editor.setPosition(2, 1);
     editor.insertText(line1);
     expect(editor.getLineContent(2)).to.equal(line1 + line2);
@@ -49,7 +48,6 @@ describe('Vanessa Automation Editor', function () {
     expect(editor.getLineContent(2)).to.equal(line2);
   });
   it('Позиция курсора', () => {
-    const editor = tabs.current.editor;
     editor.setPosition(2, 5);
     let pos = editor.getPosition();
     expect(pos).to.be.an("object");
