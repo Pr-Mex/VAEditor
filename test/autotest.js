@@ -5,6 +5,9 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
 
 const $ = dom.$
 
+import example from './example.feature'
+window.testfile = example
+
 const autotest = () => {
   const domMain = $(
     'div.vanessa-hidden',

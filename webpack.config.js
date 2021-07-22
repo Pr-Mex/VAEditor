@@ -67,6 +67,10 @@ module.exports = (env, argv) => {
             'css-loader',
             'postcss-loader'
           ]
+        },
+        {
+          test: /\.feature$/,
+          use: 'raw-loader',
         }]
     },
     plugins: [
