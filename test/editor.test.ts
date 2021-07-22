@@ -16,7 +16,7 @@ const title = 'Заголовок файла';
 
 describe('Vanessa Automation Editor', function () {
   let editor: VanessaEditor;
-  it('Открытие вкладки редактора', () => {
+  before(() => {
     while (popVanessaMessage()) { }
     editor = tabs.edit(content, url, url, title, 0, false, true) as VanessaEditor;
     this.timeout(100);
