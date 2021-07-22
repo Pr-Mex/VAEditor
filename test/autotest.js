@@ -43,7 +43,7 @@ const autotest = () => {
       stack: err.stack,
       titles: flattenTitles(test)
     })
-  });
+  })
 
   delete window.VanessaAutotest
 }
