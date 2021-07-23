@@ -22,8 +22,8 @@ const autotest = () => {
   const provider = window.VanessaGherkinProvider
   provider.setKeywords(JSON.stringify(keywords))
 
-  let keypairs = {"if":["then"], "Если":["Тогда"]};
-  provider.setKeypairs(JSON.stringify(keypairs));
+  const keypairs = { if: ['then'], Если: ['Тогда'] }
+  provider.setKeypairs(JSON.stringify(keypairs))
 
   window.createVanessaTabs()
   mocha.setup('bdd')
