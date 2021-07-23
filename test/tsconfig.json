@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-      "target": "es5",
-      "module": "commonjs",
-      "removeComments": true,
-      "resolveJsonModule": true
+    "target": "es5",
+    "module": "commonjs",
+    "removeComments": true,
+    "resolveJsonModule": true
   },
   "exclude": [
-      "node_modules"
+    "node_modules"
   ],
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.js"
   ],
   "files": [
     "../node_modules/monaco-editor/monaco.d.ts"

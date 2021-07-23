@@ -5,9 +5,6 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
 
 const $ = dom.$
 
-import example from './example.feature'
-window.testfile = example
-
 const autotest = () => {
   const domMain = $(
     'div.vanessa-hidden',
@@ -15,6 +12,18 @@ const autotest = () => {
     $('div', { id: 'mocha' })
   )
   document.body.appendChild(domMain)
+
+  const keywords = [
+    'функционал', 'контекст', 'сценарий', 'структура сценария',
+    'и', 'и это значит что', 'к тому же', 'и вот почему',
+    'когда', 'тогда', 'затем', 'дано', 'если', 'тогда'
+  ]
+
+  const provider = window.VanessaGherkinProvider
+  provider.setKeywords(JSON.stringify(keywords))
+
+  let keypairs = {"if":["then"], "Если":["Тогда"]};
+  provider.setKeypairs(JSON.stringify(keypairs));
 
   window.createVanessaTabs()
   mocha.setup('bdd')

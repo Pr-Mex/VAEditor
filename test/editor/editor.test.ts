@@ -1,7 +1,8 @@
+import { } from '../../src/main';
+import { VanessaEditor } from '../../src/vanessa-editor';
+import { VanessaTabs } from '../../src/vanessa-tabs';
+let emulator = require('./key-emulator');
 let expect = require('chai').expect;
-import { } from '../src/main';
-import { VanessaEditor } from '../src/vanessa-editor';
-import { VanessaTabs } from '../src/vanessa-tabs';
 
 //@ts-ignore
 const popVanessaMessage = window.popVanessaMessage;
@@ -24,6 +25,23 @@ describe('Vanessa Automation Editor', function () {
   it('Событие на открытие вкладки', () => {
     let message = popVanessaMessage();
     expect(message.type).to.equal("ON_TAB_SELECT");
+    expect(message.data.filename).to.equal(url);
+    expect(message.data.title).to.equal(title);
+  });
+  it('Событие на закрытие вкладки', () => {
+    while (popVanessaMessage()) { }
+    //@ts-ignore
+    tabs.current.domClose.click()
+    let message = popVanessaMessage();
+    expect(message.type).to.equal("ON_TAB_CLOSING");
+    expect(message.data.filename).to.equal(url);
+    expect(message.data.title).to.equal(title);
+  });
+  it('Событие на запись документа', () => {
+    while (popVanessaMessage()) { }
+    emulator.keyboard("keydown", { keyCode: 83, ctrlKey: true });
+    let message = popVanessaMessage();
+    expect(message.type).to.equal("PRESS_CTRL_S");
     expect(message.data.filename).to.equal(url);
     expect(message.data.title).to.equal(title);
   });
