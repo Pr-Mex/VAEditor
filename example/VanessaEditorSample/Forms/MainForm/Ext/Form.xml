@@ -1,0 +1,3158 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Form xmlns="http://v8.1c.ru/8.3/xcf/logform" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:dcscor="http://v8.1c.ru/8.1/data-composition-system/core" xmlns:dcsset="http://v8.1c.ru/8.1/data-composition-system/settings" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4">
+	<AutoCommandBar name="FormCommandBar" id="-1">
+		<ChildItems>
+			<Button name="FormAutotest" id="412">
+				<Type>CommandBarButton</Type>
+				<DefaultButton>true</DefaultButton>
+				<CommandName>Form.Command.Autotest</CommandName>
+				<ExtendedTooltip name="FormAutotestExtendedTooltip" id="413"/>
+			</Button>
+			<ButtonGroup name="FormGroupFile" id="192">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group file</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group file</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupFileExtendedTooltip" id="193"/>
+				<ChildItems>
+					<Button name="LoadFile" id="6">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.LoadFile</CommandName>
+						<ExtendedTooltip name="LoadFileExtendedTooltip" id="7"/>
+					</Button>
+					<Button name="GetValue" id="8">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.GetValue</CommandName>
+						<ExtendedTooltip name="GetValueExtendedTooltip" id="9"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<ButtonGroup name="FormGroupClipboard" id="309">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group clipboard</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group clipboard</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupClipboardExtendedTooltip" id="310"/>
+				<ChildItems>
+					<Button name="FormClipboardCut" id="311">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ClipboardCut</CommandName>
+						<ExtendedTooltip name="FormClipboardCutExtendedTooltip" id="312"/>
+					</Button>
+					<Button name="FormClipboardCopy" id="313">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ClipboardCopy</CommandName>
+						<ExtendedTooltip name="FormClipboardCopyExtendedTooltip" id="314"/>
+					</Button>
+					<Button name="FormClipboardPaste" id="315">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ClipboardPaste</CommandName>
+						<ExtendedTooltip name="FormClipboardPasteExtendedTooltip" id="316"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<ButtonGroup name="FormGroupEdit" id="194">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group edit</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group edit</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupEditExtendedTooltip" id="195"/>
+				<ChildItems>
+					<Button name="FormEditUndo" id="196">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditUndo</CommandName>
+						<ExtendedTooltip name="FormEditUndoExtendedTooltip" id="197"/>
+					</Button>
+					<Button name="FormEditRedo" id="198">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditRedo</CommandName>
+						<ExtendedTooltip name="FormEditRedoExtendedTooltip" id="199"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<ButtonGroup name="FormGroupFind" id="281">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group find</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group find</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupFindExtendedTooltip" id="282"/>
+				<ChildItems>
+					<Button name="FormEditFind" id="283">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditFind</CommandName>
+						<ExtendedTooltip name="FormEditFindExtendedTooltip" id="284"/>
+					</Button>
+					<Button name="FormEditFindPrevious" id="287">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditFindPrevious</CommandName>
+						<ExtendedTooltip name="FormEditFindPreviousExtendedTooltip" id="288"/>
+					</Button>
+					<Button name="FormEditFindNext" id="289">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditFindNext</CommandName>
+						<ExtendedTooltip name="FormEditFindNextExtendedTooltip" id="290"/>
+					</Button>
+					<Button name="FormEditReplace" id="285">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.EditReplace</CommandName>
+						<ExtendedTooltip name="FormEditReplaceExtendedTooltip" id="286"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<ButtonGroup name="FormGroupFold" id="291">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group fold</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Form group fold</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="FormGroupFoldExtendedTooltip" id="292"/>
+				<ChildItems>
+					<Button name="FormEditFoldAll" id="293">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewFoldAll</CommandName>
+						<ExtendedTooltip name="FormEditFoldAllExtendedTooltip" id="294"/>
+					</Button>
+					<Button name="FormViewUnfold1" id="305">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewUnfold1</CommandName>
+						<ExtendedTooltip name="FormViewUnfold1ExtendedTooltip" id="306"/>
+					</Button>
+					<Button name="FormViewUnfold2" id="307">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewUnfold2</CommandName>
+						<ExtendedTooltip name="FormViewUnfold2ExtendedTooltip" id="308"/>
+					</Button>
+					<Button name="FormViewUnfold3" id="317">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewUnfold3</CommandName>
+						<ExtendedTooltip name="FormViewUnfold3ExtendedTooltip" id="318"/>
+					</Button>
+					<Button name="FormEditUnfoldAll" id="295">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewUnfoldAll</CommandName>
+						<ExtendedTooltip name="FormEditUnfoldAllExtendedTooltip" id="296"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<Popup name="FormGroupZoom" id="297">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Zoom</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Zoom</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Picture>
+					<xr:Ref>0:b9cb1339-815d-4e11-84d3-aebfa5a58459</xr:Ref>
+					<xr:LoadTransparent>true</xr:LoadTransparent>
+				</Picture>
+				<ExtendedTooltip name="FormGroupZoomExtendedTooltip" id="298"/>
+				<ChildItems>
+					<Button name="FormViewZoomIn" id="299">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewZoomIn</CommandName>
+						<ExtendedTooltip name="FormViewZoomInExtendedTooltip" id="300"/>
+					</Button>
+					<Button name="FormViewZoomOut" id="301">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewZoomOut</CommandName>
+						<ExtendedTooltip name="FormViewZoomOutExtendedTooltip" id="302"/>
+					</Button>
+					<Button name="FormViewZoomReset" id="303">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ViewZoomReset</CommandName>
+						<ExtendedTooltip name="FormViewZoomResetExtendedTooltip" id="304"/>
+					</Button>
+				</ChildItems>
+			</Popup>
+		</ChildItems>
+	</AutoCommandBar>
+	<Events>
+		<Event name="OnOpen">OnOpen</Event>
+		<Event name="OnCreateAtServer">OnCreateAtServer</Event>
+	</Events>
+	<ChildItems>
+		<UsualGroup name="Body" id="34">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Body</v8:content>
+				</v8:item>
+			</Title>
+			<Group>Horizontal</Group>
+			<Representation>None</Representation>
+			<ShowTitle>false</ShowTitle>
+			<ExtendedTooltip name="BodyExtendedTooltip" id="35"/>
+			<ChildItems>
+				<UsualGroup name="Center" id="38">
+					<Title>
+						<v8:item>
+							<v8:lang>en</v8:lang>
+							<v8:content>Center</v8:content>
+						</v8:item>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Center</v8:content>
+						</v8:item>
+					</Title>
+					<Group>Vertical</Group>
+					<Representation>None</Representation>
+					<ShowTitle>false</ShowTitle>
+					<ExtendedTooltip name="CenterExtendedTooltip" id="39"/>
+					<ChildItems>
+						<HTMLDocumentField name="VanessaEditor" id="1">
+							<DataPath>VanessaEditorURL</DataPath>
+							<TitleLocation>None</TitleLocation>
+							<ContextMenu name="VanessaEditorContextMenu" id="2"/>
+							<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
+							<Events>
+								<Event name="DocumentComplete">VanessaEditorDocumentComplete</Event>
+								<Event name="OnClick">VanessaEditorOnClick</Event>
+							</Events>
+						</HTMLDocumentField>
+					</ChildItems>
+				</UsualGroup>
+				<Pages name="GroupPages" id="171">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Group pages</v8:content>
+						</v8:item>
+					</Title>
+					<ToolTip>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Group pages</v8:content>
+						</v8:item>
+					</ToolTip>
+					<PagesRepresentation>TabsOnRightHorizontal</PagesRepresentation>
+					<ExtendedTooltip name="GroupPagesExtendedTooltip" id="172"/>
+					<ChildItems>
+						<Page name="PageContent" id="173">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Content</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page content</v8:content>
+								</v8:item>
+							</ToolTip>
+							<ExtendedTooltip name="PageContentExtendedTooltip" id="174"/>
+							<ChildItems>
+								<RadioButtonField name="EditorType" id="397">
+									<DataPath>EditorType</DataPath>
+									<RadioButtonType>Tumbler</RadioButtonType>
+									<ChoiceList>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Single</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">0</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>1 Diff</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">1</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>2 Diff</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">2</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Tabs</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:decimal">3</Value>
+											</xr:Value>
+										</xr:Item>
+									</ChoiceList>
+									<ContextMenu name="EditorTypeКонтекстноеМеню" id="398"/>
+									<ExtendedTooltip name="EditorTypeРасширеннаяПодсказка" id="399"/>
+									<Events>
+										<Event name="OnChange">EditorTypeOnChange</Event>
+									</Events>
+								</RadioButtonField>
+								<InputField name="EditorTheme" id="159">
+									<DataPath>EditorTheme</DataPath>
+									<ExtendedEdit>false</ExtendedEdit>
+									<ListChoiceMode>true</ListChoiceMode>
+									<ChoiceList>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>1C:Enterprise</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">1c</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Visual Studio</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">vs</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Visual Studio Dark</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">vs-dark</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>High Contrast Dark</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">hc-black</Value>
+											</xr:Value>
+										</xr:Item>
+									</ChoiceList>
+									<ContextMenu name="EditorThemeContextMenu" id="160"/>
+									<ExtendedTooltip name="EditorThemeExtendedTooltip" id="161"/>
+									<Events>
+										<Event name="OnChange">EditorThemeOnChange</Event>
+									</Events>
+								</InputField>
+								<InputField name="Position" id="183">
+									<DataPath>Position</DataPath>
+									<ReadOnly>true</ReadOnly>
+									<ContextMenu name="PositionContextMenu" id="184"/>
+									<ExtendedTooltip name="PositionExtendedTooltip" id="185"/>
+								</InputField>
+								<InputField name="Message" id="220">
+									<DataPath>MessageText</DataPath>
+									<MultiLine>false</MultiLine>
+									<ContextMenu name="MessageContextMenu" id="221"/>
+									<ExtendedTooltip name="MessageExtendedTooltip" id="222"/>
+								</InputField>
+								<CommandBar name="GroupText" id="319">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group text</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group text</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="GroupTextExtendedTooltip" id="320"/>
+									<ChildItems>
+										<ButtonGroup name="GroupEditText" id="323">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group edit text</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group edit text</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Representation>Compact</Representation>
+											<ExtendedTooltip name="GroupEditTextExtendedTooltip" id="324"/>
+											<ChildItems>
+												<Button name="InsertText" id="321">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.InsertText</CommandName>
+													<ExtendedTooltip name="InsertTextExtendedTooltip" id="322"/>
+												</Button>
+												<Button name="ReplaceText" id="325">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.ReplaceText</CommandName>
+													<ExtendedTooltip name="ReplaceTextExtendedTooltip" id="326"/>
+												</Button>
+											</ChildItems>
+										</ButtonGroup>
+										<Button name="ShowMessage" id="225">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.ShowMessage</CommandName>
+											<ExtendedTooltip name="ShowMessageExtendedTooltip" id="226"/>
+										</Button>
+									</ChildItems>
+								</CommandBar>
+								<UsualGroup name="GroupVisual" id="400">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group visual</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group visual</v8:content>
+										</v8:item>
+									</ToolTip>
+									<Representation>None</Representation>
+									<ShowTitle>false</ShowTitle>
+									<ExtendedTooltip name="GroupVisualExtendedTooltip" id="401"/>
+									<ChildItems>
+										<UsualGroup name="GroupIndentation" id="402">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Indentation</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group indentation</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Group>Vertical</Group>
+											<ExtendedTooltip name="GroupIndentationExtendedTooltip" id="403"/>
+											<ChildItems>
+												<InputField name="TabSize" id="404">
+													<DataPath>TabSize</DataPath>
+													<SpinButton>true</SpinButton>
+													<ContextMenu name="TabSizeContextMenu" id="405"/>
+													<ExtendedTooltip name="TabSizeExtendedTooltip" id="406"/>
+													<Events>
+														<Event name="OnChange">TabSizeOnChange</Event>
+													</Events>
+												</InputField>
+												<CheckBoxField name="InsertSpaces" id="407">
+													<DataPath>InsertSpaces</DataPath>
+													<TitleLocation>Right</TitleLocation>
+													<CheckBoxType>Auto</CheckBoxType>
+													<ContextMenu name="InsertSpacesContextMenu" id="408"/>
+													<ExtendedTooltip name="InsertSpacesExtendedTooltip" id="409"/>
+													<Events>
+														<Event name="OnChange">InsertSpacesOnChange</Event>
+													</Events>
+												</CheckBoxField>
+												<Button name="NormalizeIndentation" id="410">
+													<Type>UsualButton</Type>
+													<CommandName>Form.Command.NormalizeIndentation</CommandName>
+													<ExtendedTooltip name="NormalizeIndentationExtendedTooltip" id="411"/>
+												</Button>
+											</ChildItems>
+										</UsualGroup>
+										<UsualGroup name="GroupPosition" id="175">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Cursor position</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group position</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Group>Vertical</Group>
+											<ExtendedTooltip name="GroupPositionExtendedTooltip" id="176"/>
+											<ChildItems>
+												<InputField name="LineNumber" id="180">
+													<DataPath>LineNumber</DataPath>
+													<Width>5</Width>
+													<SpinButton>true</SpinButton>
+													<ContextMenu name="LineNumberContextMenu" id="181"/>
+													<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
+													<Events>
+														<Event name="OnChange">PositionOnChange</Event>
+													</Events>
+												</InputField>
+												<InputField name="Column" id="177">
+													<DataPath>Column</DataPath>
+													<Width>5</Width>
+													<SpinButton>true</SpinButton>
+													<ContextMenu name="ColumnContextMenu" id="178"/>
+													<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
+													<Events>
+														<Event name="OnChange">PositionOnChange</Event>
+													</Events>
+												</InputField>
+											</ChildItems>
+										</UsualGroup>
+									</ChildItems>
+								</UsualGroup>
+								<CommandBar name="PanelPosition" id="186">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Panel position</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Panel position</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="PanelPositionExtendedTooltip" id="187"/>
+									<ChildItems>
+										<ButtonGroup name="GroupPositionButtons" id="227">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group position buttons</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group position buttons</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Representation>Compact</Representation>
+											<ExtendedTooltip name="GroupPositionButtonsExtendedTooltip" id="228"/>
+											<ChildItems>
+												<Button name="GetPosition" id="188">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.GetPosition</CommandName>
+													<ExtendedTooltip name="GetPositionExtendedTooltip" id="189"/>
+												</Button>
+												<Button name="GetLineContent" id="190">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.GetLineContent</CommandName>
+													<ExtendedTooltip name="GetLineContentExtendedTooltip" id="191"/>
+												</Button>
+												<Button name="GetSelectedContent" id="338">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.GetSelectedContent</CommandName>
+													<ExtendedTooltip name="GetSelectedContentExtendedTooltip" id="339"/>
+												</Button>
+											</ChildItems>
+										</ButtonGroup>
+									</ChildItems>
+								</CommandBar>
+								<UsualGroup name="State" id="16">
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>State:</v8:content>
+										</v8:item>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>State:</v8:content>
+										</v8:item>
+									</Title>
+									<Group>Vertical</Group>
+									<Representation>None</Representation>
+									<ExtendedTooltip name="StateExtendedTooltip" id="17"/>
+									<ChildItems>
+										<CheckBoxField name="ContentDidChange" id="10">
+											<DataPath>ContentDidChange</DataPath>
+											<TitleLocation>Right</TitleLocation>
+											<CheckBoxType>Auto</CheckBoxType>
+											<ContextMenu name="ContentDidChangeContextMenu" id="11"/>
+											<ExtendedTooltip name="ContentDidChangeExtendedTooltip" id="12"/>
+										</CheckBoxField>
+										<CheckBoxField name="ReadOnlyMode" id="13">
+											<DataPath>ReadOnlyMode</DataPath>
+											<TitleLocation>Right</TitleLocation>
+											<CheckBoxType>Auto</CheckBoxType>
+											<ContextMenu name="ReadOnlyModeContextMenu" id="14"/>
+											<ExtendedTooltip name="ReadOnlyModeExtendedTooltip" id="15"/>
+											<Events>
+												<Event name="OnChange">ReadOnlyModeOnChange</Event>
+											</Events>
+										</CheckBoxField>
+									</ChildItems>
+								</UsualGroup>
+								<CommandBar name="GroupProvider" id="218">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group provider</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group provider</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="GroupProviderExtendedTooltip" id="219"/>
+									<ChildItems>
+										<Popup name="GroupSteps" id="210">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Load step list</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group steps</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Picture>
+												<xr:Ref>StdPicture.CreateInitialImage</xr:Ref>
+												<xr:LoadTransparent>true</xr:LoadTransparent>
+											</Picture>
+											<ExtendedTooltip name="GroupStepsРасширеннаяПодсказка" id="211"/>
+											<ChildItems>
+												<Button name="LoadStepsAll" id="216">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadStepsAll</CommandName>
+													<ExtendedTooltip name="LoadStepsAllРасширеннаяПодсказка" id="217"/>
+												</Button>
+												<Button name="LoadStepsEn" id="212">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadStepsEn</CommandName>
+													<ExtendedTooltip name="LoadStepsEnРасширеннаяПодсказка" id="213"/>
+												</Button>
+												<Button name="LoadStepsRu" id="214">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadStepsRu</CommandName>
+													<ExtendedTooltip name="LoadStepsRuРасширеннаяПодсказка" id="215"/>
+												</Button>
+											</ChildItems>
+										</Popup>
+										<Popup name="GroupKeywords" id="327">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Load keywords</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group keywords</v8:content>
+												</v8:item>
+											</ToolTip>
+											<ExtendedTooltip name="GroupKeywordsExtendedTooltip" id="328"/>
+											<ChildItems>
+												<Button name="LoadKeywordsAll" id="333">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadKeywordsAll</CommandName>
+													<ExtendedTooltip name="LoadKeywordsAllExtendedTooltip" id="334"/>
+												</Button>
+												<Button name="LoadKeywordsEn" id="329">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadKeywordsEn</CommandName>
+													<ExtendedTooltip name="LoadKeywordsEnExtendedTooltip" id="330"/>
+												</Button>
+												<Button name="LoadKeywordsRu" id="331">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.LoadKeywordsRu</CommandName>
+													<ExtendedTooltip name="LoadKeywordsRuExtendedTooltip" id="332"/>
+												</Button>
+											</ChildItems>
+										</Popup>
+									</ChildItems>
+								</CommandBar>
+								<CheckBoxField name="ShowMinimap" id="391">
+									<DataPath>ShowMinimap</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="ShowMinimapContextMenu" id="392"/>
+									<ExtendedTooltip name="ShowMinimapExtendedTooltip" id="393"/>
+									<Events>
+										<Event name="OnChange">ShowMinimapOnChange</Event>
+									</Events>
+								</CheckBoxField>
+								<CheckBoxField name="UseDebugger" id="394">
+									<DataPath>UseDebugger</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="UseDebuggerКонтекстноеМеню" id="395"/>
+									<ExtendedTooltip name="UseDebuggerРасширеннаяПодсказка" id="396"/>
+									<Events>
+										<Event name="OnChange">UseDebuggerOnChange</Event>
+									</Events>
+								</CheckBoxField>
+							</ChildItems>
+						</Page>
+						<Page name="PageRuntime" id="94">
+							<Title>
+								<v8:item>
+									<v8:lang>en</v8:lang>
+									<v8:content>Right side</v8:content>
+								</v8:item>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Runtime</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>en</v8:lang>
+									<v8:content>Right side</v8:content>
+								</v8:item>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page runtime</v8:content>
+								</v8:item>
+							</ToolTip>
+							<Width>25</Width>
+							<ExtendedTooltip name="PageRuntimeExtendedTooltip" id="95"/>
+							<ChildItems>
+								<UsualGroup name="CurrentStepGroup" id="148">
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Current step:</v8:content>
+										</v8:item>
+									</Title>
+									<Group>Horizontal</Group>
+									<Representation>None</Representation>
+									<ShowTitle>false</ShowTitle>
+									<ExtendedTooltip name="CurrentStepGroupExtendedTooltip" id="149"/>
+									<ChildItems>
+										<InputField name="CurrentStep" id="143">
+											<DataPath>CurrentStep</DataPath>
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Step</v8:content>
+												</v8:item>
+											</Title>
+											<SpinButton>true</SpinButton>
+											<MinValue xsi:type="xs:decimal">1</MinValue>
+											<ContextMenu name="CurrentStepContextMenu" id="144"/>
+											<ExtendedTooltip name="CurrentStepExtendedTooltip" id="145"/>
+											<Events>
+												<Event name="OnChange">CurrentStepOnChange</Event>
+											</Events>
+										</InputField>
+										<CommandBar name="CurrentStepBar" id="150">
+											<Title>
+												<v8:item>
+													<v8:lang>en</v8:lang>
+													<v8:content>Current step bar</v8:content>
+												</v8:item>
+											</Title>
+											<ExtendedTooltip name="CurrentStepBarExtendedTooltip" id="151"/>
+											<ChildItems>
+												<Button name="GetCurrentStep" id="340">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.GetCurrentStep</CommandName>
+													<ExtendedTooltip name="GetCurrentStepExtendedTooltip" id="341"/>
+												</Button>
+											</ChildItems>
+										</CommandBar>
+									</ChildItems>
+								</UsualGroup>
+								<InputField name="RuntimeStatus" id="335">
+									<DataPath>RuntimeStatus</DataPath>
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Status</v8:content>
+										</v8:item>
+									</Title>
+									<ListChoiceMode>true</ListChoiceMode>
+									<ChoiceList>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">complete</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Pending</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">pending</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Disabled</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">disabled</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Error</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">error</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>&lt;empty&gt;</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string"/>
+											</xr:Value>
+										</xr:Item>
+									</ChoiceList>
+									<ContextMenu name="RuntimeStatusContextMenu" id="336"/>
+									<ExtendedTooltip name="RuntimeStatusExtendedTooltip" id="337"/>
+								</InputField>
+								<Table name="CompleteSteps" id="96">
+									<Representation>List</Representation>
+									<TitleLocation>Auto</TitleLocation>
+									<HeightControlVariant>UseContentHeight</HeightControlVariant>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>CompleteSteps</DataPath>
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Complete steps</v8:content>
+										</v8:item>
+									</Title>
+									<CommandSet>
+										<ExcludedCommand>Copy</ExcludedCommand>
+										<ExcludedCommand>SortListAsc</ExcludedCommand>
+										<ExcludedCommand>MoveUp</ExcludedCommand>
+										<ExcludedCommand>CancelSearch</ExcludedCommand>
+										<ExcludedCommand>OutputList</ExcludedCommand>
+										<ExcludedCommand>SelectAll</ExcludedCommand>
+										<ExcludedCommand>SortListDesc</ExcludedCommand>
+										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
+										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
+										<ExcludedCommand>EndEdit</ExcludedCommand>
+										<ExcludedCommand>Change</ExcludedCommand>
+										<ExcludedCommand>Find</ExcludedCommand>
+										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
+										<ExcludedCommand>MoveDown</ExcludedCommand>
+									</CommandSet>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="CompleteStepsContextMenu" id="97"/>
+									<AutoCommandBar name="CompleteStepsCommandBar" id="98">
+										<Autofill>false</Autofill>
+										<ChildItems>
+											<ButtonGroup name="CompleteStepsGroup" id="356">
+												<Title>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps group</v8:content>
+													</v8:item>
+												</Title>
+												<ToolTip>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps group</v8:content>
+													</v8:item>
+												</ToolTip>
+												<Representation>Compact</Representation>
+												<ExtendedTooltip name="CompleteStepsGroupExtendedTooltip" id="357"/>
+												<ChildItems>
+													<Button name="CompleteStepsAdd" id="112">
+														<Type>CommandBarButton</Type>
+														<Representation>Picture</Representation>
+														<OnlyInAllActions>true</OnlyInAllActions>
+														<CommandName>Form.Item.CompleteSteps.StandardCommand.Add</CommandName>
+														<ExtendedTooltip name="CompleteStepsAddExtendedTooltip" id="113"/>
+													</Button>
+													<Button name="CompleteStepsDelete" id="114">
+														<Type>CommandBarButton</Type>
+														<Representation>Picture</Representation>
+														<OnlyInAllActions>true</OnlyInAllActions>
+														<CommandName>Form.Item.CompleteSteps.StandardCommand.Delete</CommandName>
+														<ExtendedTooltip name="CompleteStepsDeleteExtendedTooltip" id="115"/>
+													</Button>
+													<Button name="CompleteStepsSetProgress" id="342">
+														<Type>CommandBarButton</Type>
+														<CommandName>Form.Command.SetProgress</CommandName>
+														<Title>
+															<v8:item>
+																<v8:lang>ru</v8:lang>
+																<v8:content>Set</v8:content>
+															</v8:item>
+														</Title>
+														<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
+													</Button>
+													<Button name="CompleteStepsGetProgress" id="344">
+														<Type>CommandBarButton</Type>
+														<CommandName>Form.Command.GetProgress</CommandName>
+														<Title>
+															<v8:item>
+																<v8:lang>ru</v8:lang>
+																<v8:content>Get</v8:content>
+															</v8:item>
+														</Title>
+														<ExtendedTooltip name="CompleteStepsGetProgressExtendedTooltip" id="345"/>
+													</Button>
+												</ChildItems>
+											</ButtonGroup>
+											<ButtonGroup name="CompleteStepsSubcode" id="360">
+												<Title>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps subcode</v8:content>
+													</v8:item>
+												</Title>
+												<ToolTip>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Complete steps subcode</v8:content>
+													</v8:item>
+												</ToolTip>
+												<ExtendedTooltip name="CompleteStepsSubcodeExtendedTooltip" id="361"/>
+											</ButtonGroup>
+										</ChildItems>
+									</AutoCommandBar>
+									<ExtendedTooltip name="CompleteStepsExtendedTooltip" id="99"/>
+									<SearchStringAddition name="CompleteStepsSearchString" id="100">
+										<AdditionSource>
+											<Item>CompleteSteps</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="CompleteStepsSearchStringContextMenu" id="101"/>
+										<ExtendedTooltip name="CompleteStepsSearchStringExtendedTooltip" id="102"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="CompleteStepsViewStatus" id="103">
+										<AdditionSource>
+											<Item>CompleteSteps</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="CompleteStepsViewStatusContextMenu" id="104"/>
+										<ExtendedTooltip name="CompleteStepsViewStatusExtendedTooltip" id="105"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="CompleteStepsSearchControl" id="106">
+										<AdditionSource>
+											<Item>CompleteSteps</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="CompleteStepsSearchControlContextMenu" id="107"/>
+										<ExtendedTooltip name="CompleteStepsSearchControlExtendedTooltip" id="108"/>
+									</SearchControlAddition>
+									<ChildItems>
+										<InputField name="CompleteStepsLineNumber" id="109">
+											<DataPath>CompleteSteps.LineNumber</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<SpinButton>true</SpinButton>
+											<ContextMenu name="CompleteStepsLineNumberContextMenu" id="110"/>
+											<ExtendedTooltip name="CompleteStepsLineNumberExtendedTooltip" id="111"/>
+										</InputField>
+										<InputField name="CompleteStepsCodeWidget" id="388">
+											<DataPath>CompleteSteps.CodeWidget</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="CompleteStepsCodeWidgetContextMenu" id="389"/>
+											<ExtendedTooltip name="CompleteStepsCodeWidgetExtendedTooltip" id="390"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+								<UsualGroup name="GroupError" id="351">
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group error</v8:content>
+										</v8:item>
+									</ToolTip>
+									<Representation>None</Representation>
+									<ShowTitle>false</ShowTitle>
+									<ExtendedTooltip name="GroupErrorExtendedTooltip" id="352"/>
+									<ChildItems>
+										<InputField name="ErrorCode" id="353">
+											<DataPath>ErrorCode</DataPath>
+											<ContextMenu name="ErrorCodeContextMenu" id="354"/>
+											<ExtendedTooltip name="ErrorCodeExtendedTooltip" id="355"/>
+										</InputField>
+										<InputField name="ErrorText" id="346">
+											<DataPath>ErrorText</DataPath>
+											<MultiLine>false</MultiLine>
+											<ContextMenu name="ErrorTextContextMenu" id="347"/>
+											<ExtendedTooltip name="ErrorTextExtendedTooltip" id="348"/>
+										</InputField>
+									</ChildItems>
+								</UsualGroup>
+								<CommandBar name="CleanRuntimeProgressBar" id="154">
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Clean runtime progress bar</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Clean runtime progress bar</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="CleanRuntimeProgressBarExtendedTooltip" id="155"/>
+									<ChildItems>
+										<Button name="ShowError" id="349">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.ShowError</CommandName>
+											<ExtendedTooltip name="ShowErrorExtendedTooltip" id="350"/>
+										</Button>
+										<Button name="CleanRuntimeProgress" id="152">
+											<Type>CommandBarButton</Type>
+											<OnlyInAllActions>true</OnlyInAllActions>
+											<CommandName>Form.Command.CleanRuntimeProgress</CommandName>
+											<ExtendedTooltip name="CleanRuntimeProgressExtendedTooltip" id="153"/>
+										</Button>
+									</ChildItems>
+								</CommandBar>
+								<CommandBar name="GroupSubcode" id="362">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group subcode</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Group subcode</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="GroupSubcodeExtendedTooltip" id="363"/>
+									<ChildItems>
+										<Button name="ShowSubcode" id="358">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.SubcodeExample</CommandName>
+											<ExtendedTooltip name="ShowSubcodeExtendedTooltip" id="359"/>
+										</Button>
+										<ButtonGroup name="GroupSubcodeRun" id="368">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group subcode run</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Group subcode run</v8:content>
+												</v8:item>
+											</ToolTip>
+											<Representation>Compact</Representation>
+											<ExtendedTooltip name="GroupSubcodeRunExtendedTooltip" id="369"/>
+											<ChildItems>
+												<Button name="RunSubcode" id="364">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.RunSubcode</CommandName>
+													<Title>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Run</v8:content>
+														</v8:item>
+													</Title>
+													<ExtendedTooltip name="RunSubcodeExtendedTooltip" id="365"/>
+												</Button>
+												<Button name="StopSubcode" id="366">
+													<Type>CommandBarButton</Type>
+													<CommandName>Form.Command.StopSubcode</CommandName>
+													<Title>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Stop</v8:content>
+														</v8:item>
+													</Title>
+													<ExtendedTooltip name="StopSubcodeExtendedTooltip" id="367"/>
+												</Button>
+											</ChildItems>
+										</ButtonGroup>
+									</ChildItems>
+								</CommandBar>
+								<InputField name="RuntimePosition" id="373">
+									<DataPath>RuntimePosition</DataPath>
+									<ReadOnly>true</ReadOnly>
+									<ContextMenu name="RuntimePositionContextMenu" id="374"/>
+									<ExtendedTooltip name="RuntimePositionExtendedTooltip" id="375"/>
+								</InputField>
+								<InputField name="RuntimeCode" id="376">
+									<DataPath>RuntimeCode</DataPath>
+									<ReadOnly>true</ReadOnly>
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Code</v8:content>
+										</v8:item>
+									</Title>
+									<ContextMenu name="RuntimeCodeContextMenu" id="377"/>
+									<ExtendedTooltip name="RuntimeCodeExtendedTooltip" id="378"/>
+								</InputField>
+							</ChildItems>
+						</Page>
+						<Page name="PageBreakpoints" id="36">
+							<Title>
+								<v8:item>
+									<v8:lang>en</v8:lang>
+									<v8:content>Left side</v8:content>
+								</v8:item>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Breakpoints</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page breakpoints</v8:content>
+								</v8:item>
+							</ToolTip>
+							<Width>7</Width>
+							<ExtendedTooltip name="PageBreakpointsExtendedTooltip" id="37"/>
+							<ChildItems>
+								<Table name="Breakpoints" id="18">
+									<Representation>List</Representation>
+									<TitleLocation>Auto</TitleLocation>
+									<HorizontalLines>false</HorizontalLines>
+									<VerticalLines>false</VerticalLines>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>Breakpoints</DataPath>
+									<RowPictureDataPath>Breakpoints.Enable</RowPictureDataPath>
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Breakpoints</v8:content>
+										</v8:item>
+									</Title>
+									<CommandSet>
+										<ExcludedCommand>Copy</ExcludedCommand>
+										<ExcludedCommand>SortListAsc</ExcludedCommand>
+										<ExcludedCommand>MoveUp</ExcludedCommand>
+										<ExcludedCommand>SelectAll</ExcludedCommand>
+										<ExcludedCommand>SortListDesc</ExcludedCommand>
+										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
+										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
+										<ExcludedCommand>EndEdit</ExcludedCommand>
+										<ExcludedCommand>Change</ExcludedCommand>
+										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
+										<ExcludedCommand>MoveDown</ExcludedCommand>
+									</CommandSet>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="BreakpointsContextMenu" id="19"/>
+									<AutoCommandBar name="BreakpointsCommandBar" id="20">
+										<Autofill>false</Autofill>
+										<ChildItems>
+											<Button name="BreakpointsAdd" id="40">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.Add</CommandName>
+												<ExtendedTooltip name="BreakpointsAddExtendedTooltip" id="41"/>
+											</Button>
+											<Button name="BreakpointsDelete" id="42">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Breakpoints.StandardCommand.Delete</CommandName>
+												<ExtendedTooltip name="BreakpointsDeleteExtendedTooltip" id="43"/>
+											</Button>
+											<Button name="BreakpointsCheckAll" id="44">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>18:18248aa8-e621-4e19-a611-54fb8923644c</CommandName>
+												<ExtendedTooltip name="BreakpointsCheckAllExtendedTooltip" id="45"/>
+											</Button>
+											<Button name="BreakpointsUncheckAll" id="46">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>18:5048cc44-702b-44e3-8445-9af75c02724d</CommandName>
+												<ExtendedTooltip name="BreakpointsUncheckAllExtendedTooltip" id="47"/>
+											</Button>
+										</ChildItems>
+									</AutoCommandBar>
+									<ExtendedTooltip name="BreakpointsExtendedTooltip" id="21"/>
+									<SearchStringAddition name="BreakpointsSearchString" id="22">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsSearchStringContextMenu" id="23"/>
+										<ExtendedTooltip name="BreakpointsSearchStringExtendedTooltip" id="24"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="BreakpointsViewStatus" id="25">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsViewStatusContextMenu" id="26"/>
+										<ExtendedTooltip name="BreakpointsViewStatusExtendedTooltip" id="27"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="BreakpointsSearchControl" id="28">
+										<AdditionSource>
+											<Item>Breakpoints</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="BreakpointsSearchControlContextMenu" id="29"/>
+										<ExtendedTooltip name="BreakpointsSearchControlExtendedTooltip" id="30"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
+										<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
+										<Event name="OnChange">BreakpointsOnChange</Event>
+									</Events>
+									<ChildItems>
+										<CheckBoxField name="BreakpointsEnable" id="385">
+											<DataPath>Breakpoints.Enable</DataPath>
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content> </v8:content>
+												</v8:item>
+											</Title>
+											<EditMode>EnterOnInput</EditMode>
+											<CheckBoxType>Auto</CheckBoxType>
+											<ContextMenu name="BreakpointsEnableContextMenu" id="386"/>
+											<ExtendedTooltip name="BreakpointsEnableExtendedTooltip" id="387"/>
+										</CheckBoxField>
+										<InputField name="BreakpointsLineNumber" id="379">
+											<DataPath>Breakpoints.LineNumber</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="BreakpointsLineNumberContextMenu" id="380"/>
+											<ExtendedTooltip name="BreakpointsLineNumberExtendedTooltip" id="381"/>
+										</InputField>
+										<InputField name="BreakpointsCodeWidget" id="382">
+											<DataPath>Breakpoints.CodeWidget</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="BreakpointsCodeWidgetContextMenu" id="383"/>
+											<ExtendedTooltip name="BreakpointsCodeWidgetExtendedTooltip" id="384"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+								<CheckBoxField name="EmulateBreakpointUpdateDelay" id="51">
+									<DataPath>EmulateBreakpointUpdateDelay</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="EmulateBreakpointUpdateDelayContextMenu" id="52"/>
+									<ExtendedTooltip name="EmulateBreakpointUpdateDelayExtendedTooltip" id="53"/>
+								</CheckBoxField>
+							</ChildItems>
+						</Page>
+						<Page name="PageProblems" id="200">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Problems</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page problems</v8:content>
+								</v8:item>
+							</ToolTip>
+							<ExtendedTooltip name="PageProblemsРасширеннаяПодсказка" id="201"/>
+							<ChildItems>
+								<Table name="Problems" id="56">
+									<Representation>List</Representation>
+									<TitleLocation>Auto</TitleLocation>
+									<Height>3</Height>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>Problems</DataPath>
+									<Title>
+										<v8:item>
+											<v8:lang>en</v8:lang>
+											<v8:content>Problems</v8:content>
+										</v8:item>
+									</Title>
+									<CommandSet>
+										<ExcludedCommand>SortListAsc</ExcludedCommand>
+										<ExcludedCommand>MoveUp</ExcludedCommand>
+										<ExcludedCommand>CancelSearch</ExcludedCommand>
+										<ExcludedCommand>OutputList</ExcludedCommand>
+										<ExcludedCommand>SelectAll</ExcludedCommand>
+										<ExcludedCommand>SortListDesc</ExcludedCommand>
+										<ExcludedCommand>CopyToClipboard</ExcludedCommand>
+										<ExcludedCommand>ShowRowRearrangement</ExcludedCommand>
+										<ExcludedCommand>EndEdit</ExcludedCommand>
+										<ExcludedCommand>Change</ExcludedCommand>
+										<ExcludedCommand>Find</ExcludedCommand>
+										<ExcludedCommand>ShowMultipleSelection</ExcludedCommand>
+										<ExcludedCommand>MoveDown</ExcludedCommand>
+									</CommandSet>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="ProblemsContextMenu" id="57"/>
+									<AutoCommandBar name="ProblemsCommandBar" id="58">
+										<Autofill>false</Autofill>
+										<ChildItems>
+											<Button name="ProblemsAdd" id="84">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Problems.StandardCommand.Add</CommandName>
+												<ExtendedTooltip name="ProblemsAddExtendedTooltip" id="85"/>
+											</Button>
+											<Button name="ProblemsCopy" id="86">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Problems.StandardCommand.Copy</CommandName>
+												<ExtendedTooltip name="ProblemsCopyExtendedTooltip" id="87"/>
+											</Button>
+											<Button name="ProblemsDelete" id="88">
+												<Type>CommandBarButton</Type>
+												<Representation>Picture</Representation>
+												<OnlyInAllActions>true</OnlyInAllActions>
+												<CommandName>Form.Item.Problems.StandardCommand.Delete</CommandName>
+												<ExtendedTooltip name="ProblemsDeleteExtendedTooltip" id="89"/>
+											</Button>
+										</ChildItems>
+									</AutoCommandBar>
+									<ExtendedTooltip name="ProblemsExtendedTooltip" id="59"/>
+									<SearchStringAddition name="ProblemsSearchString" id="60">
+										<AdditionSource>
+											<Item>Problems</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ProblemsSearchStringContextMenu" id="61"/>
+										<ExtendedTooltip name="ProblemsSearchStringExtendedTooltip" id="62"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="ProblemsViewStatus" id="63">
+										<AdditionSource>
+											<Item>Problems</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ProblemsViewStatusContextMenu" id="64"/>
+										<ExtendedTooltip name="ProblemsViewStatusExtendedTooltip" id="65"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="ProblemsSearchControl" id="66">
+										<AdditionSource>
+											<Item>Problems</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="ProblemsSearchControlContextMenu" id="67"/>
+										<ExtendedTooltip name="ProblemsSearchControlExtendedTooltip" id="68"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="OnChange">ProblemsOnChange</Event>
+									</Events>
+									<ChildItems>
+										<ColumnGroup name="ProblemsGroupNumbewr" id="202">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group numbewr</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group numbewr</v8:content>
+												</v8:item>
+											</ToolTip>
+											<ExtendedTooltip name="ProblemsGroupNumbewrРасширеннаяПодсказка" id="203"/>
+											<ChildItems>
+												<InputField name="ProblemsLineNumber" id="81">
+													<DataPath>Problems.LineNumber</DataPath>
+													<EditMode>EnterOnInput</EditMode>
+													<Width>4</Width>
+													<MinValue xsi:type="xs:decimal">1</MinValue>
+													<ContextMenu name="ProblemsLineNumberContextMenu" id="82"/>
+													<ExtendedTooltip name="ProblemsLineNumberExtendedTooltip" id="83"/>
+												</InputField>
+												<InputField name="ProblemsSeverity" id="69">
+													<DataPath>Problems.Severity</DataPath>
+													<EditMode>EnterOnInput</EditMode>
+													<Width>4</Width>
+													<ListChoiceMode>true</ListChoiceMode>
+													<TextEdit>false</TextEdit>
+													<ChoiceList>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Hint</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Hint</Value>
+															</xr:Value>
+														</xr:Item>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Info</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Info</Value>
+															</xr:Value>
+														</xr:Item>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Warning</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Warning</Value>
+															</xr:Value>
+														</xr:Item>
+														<xr:Item>
+															<xr:Presentation/>
+															<xr:CheckState>0</xr:CheckState>
+															<xr:Value xsi:type="FormChoiceListDesTimeValue">
+																<Presentation>
+																	<v8:item>
+																		<v8:lang>ru</v8:lang>
+																		<v8:content>Error</v8:content>
+																	</v8:item>
+																</Presentation>
+																<Value xsi:type="xs:string">Error</Value>
+															</xr:Value>
+														</xr:Item>
+													</ChoiceList>
+													<ContextMenu name="ProblemsSeverityContextMenu" id="70"/>
+													<ExtendedTooltip name="ProblemsSeverityExtendedTooltip" id="71"/>
+												</InputField>
+											</ChildItems>
+										</ColumnGroup>
+										<ColumnGroup name="ProblemsGroupMessage" id="204">
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group message</v8:content>
+												</v8:item>
+											</Title>
+											<ToolTip>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Problems group message</v8:content>
+												</v8:item>
+											</ToolTip>
+											<ExtendedTooltip name="ProblemsGroupMessageРасширеннаяПодсказка" id="205"/>
+											<ChildItems>
+												<InputField name="ProblemsMessage" id="72">
+													<DataPath>Problems.Message</DataPath>
+													<EditMode>EnterOnInput</EditMode>
+													<Width>16</Width>
+													<ContextMenu name="ProblemsMessageContextMenu" id="73"/>
+													<ExtendedTooltip name="ProblemsMessageExtendedTooltip" id="74"/>
+												</InputField>
+												<ColumnGroup name="ProblemsGroupCode" id="206">
+													<Title>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Problems group code</v8:content>
+														</v8:item>
+													</Title>
+													<ToolTip>
+														<v8:item>
+															<v8:lang>ru</v8:lang>
+															<v8:content>Problems group code</v8:content>
+														</v8:item>
+													</ToolTip>
+													<Group>Horizontal</Group>
+													<ExtendedTooltip name="ProblemsGroupCodeРасширеннаяПодсказка" id="207"/>
+													<ChildItems>
+														<InputField name="ProblemsCode" id="75">
+															<DataPath>Problems.Code</DataPath>
+															<EditMode>EnterOnInput</EditMode>
+															<Width>8</Width>
+															<ContextMenu name="ProblemsCodeContextMenu" id="76"/>
+															<ExtendedTooltip name="ProblemsCodeExtendedTooltip" id="77"/>
+														</InputField>
+														<InputField name="ProblemsSource" id="78">
+															<DataPath>Problems.Source</DataPath>
+															<EditMode>EnterOnInput</EditMode>
+															<Width>8</Width>
+															<ContextMenu name="ProblemsSourceContextMenu" id="79"/>
+															<ExtendedTooltip name="ProblemsSourceExtendedTooltip" id="80"/>
+														</InputField>
+													</ChildItems>
+												</ColumnGroup>
+											</ChildItems>
+										</ColumnGroup>
+									</ChildItems>
+								</Table>
+							</ChildItems>
+						</Page>
+						<Page name="PageActions" id="260">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Actions</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page actions</v8:content>
+								</v8:item>
+							</ToolTip>
+							<ExtendedTooltip name="PageActionsExtendedTooltip" id="261"/>
+							<ChildItems>
+								<Table name="Actions" id="262">
+									<Representation>List</Representation>
+									<ReadOnly>true</ReadOnly>
+									<ChangeRowSet>false</ChangeRowSet>
+									<ChangeRowOrder>false</ChangeRowOrder>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>Actions</DataPath>
+									<SearchStringLocation>CommandBar</SearchStringLocation>
+									<ViewStatusLocation>Top</ViewStatusLocation>
+									<SearchControlLocation>CommandBar</SearchControlLocation>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="ActionsContextMenu" id="263"/>
+									<AutoCommandBar name="ActionsCommandBar" id="264"/>
+									<ExtendedTooltip name="ActionsExtendedTooltip" id="265"/>
+									<SearchStringAddition name="ActionsSearchString" id="266">
+										<AdditionSource>
+											<Item>Actions</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ActionsSearchStringContextMenu" id="267"/>
+										<ExtendedTooltip name="ActionsSearchStringExtendedTooltip" id="268"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="ActionsViewStatus" id="269">
+										<AdditionSource>
+											<Item>Actions</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="ActionsViewStatusContextMenu" id="270"/>
+										<ExtendedTooltip name="ActionsViewStatusExtendedTooltip" id="271"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="ActionsSearchControl" id="272">
+										<AdditionSource>
+											<Item>Actions</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="ActionsSearchControlContextMenu" id="273"/>
+										<ExtendedTooltip name="ActionsSearchControlExtendedTooltip" id="274"/>
+									</SearchControlAddition>
+									<Events>
+										<Event name="Selection">ActionsSelection</Event>
+									</Events>
+									<ChildItems>
+										<InputField name="Actionsid" id="275">
+											<DataPath>Actions.id</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="ActionsidContextMenu" id="276"/>
+											<ExtendedTooltip name="ActionsidExtendedTooltip" id="277"/>
+										</InputField>
+										<InputField name="Actionslabel" id="278">
+											<DataPath>Actions.label</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="ActionslabelContextMenu" id="279"/>
+											<ExtendedTooltip name="ActionslabelExtendedTooltip" id="280"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+							</ChildItems>
+						</Page>
+						<Page name="PageEvents" id="232">
+							<Title>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Events</v8:content>
+								</v8:item>
+							</Title>
+							<ToolTip>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>Page events</v8:content>
+								</v8:item>
+							</ToolTip>
+							<ExtendedTooltip name="PageEventsExtendedTooltip" id="233"/>
+							<ChildItems>
+								<CheckBoxField name="TraceKeyboard" id="229">
+									<DataPath>TraceKeyboard</DataPath>
+									<TitleLocation>Right</TitleLocation>
+									<CheckBoxType>Auto</CheckBoxType>
+									<ContextMenu name="TraceKeyboardContextMenu" id="230"/>
+									<ExtendedTooltip name="TraceKeyboardExtendedTooltip" id="231"/>
+									<Events>
+										<Event name="OnChange">TraceKeyboardOnChange</Event>
+									</Events>
+								</CheckBoxField>
+								<CommandBar name="PanelEventLog" id="253">
+									<Title>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Panel event log</v8:content>
+										</v8:item>
+									</Title>
+									<ToolTip>
+										<v8:item>
+											<v8:lang>ru</v8:lang>
+											<v8:content>Panel event log</v8:content>
+										</v8:item>
+									</ToolTip>
+									<ExtendedTooltip name="PanelEventLogExtendedTooltip" id="254"/>
+									<ChildItems>
+										<Button name="ClearEvents" id="255">
+											<Type>CommandBarButton</Type>
+											<CommandName>Form.Command.ClearEditorEvens</CommandName>
+											<ExtendedTooltip name="ClearEventsExtendedTooltip" id="256"/>
+										</Button>
+									</ChildItems>
+								</CommandBar>
+								<Table name="EventLog" id="234">
+									<Representation>List</Representation>
+									<CommandBarLocation>None</CommandBarLocation>
+									<ReadOnly>true</ReadOnly>
+									<ChangeRowSet>false</ChangeRowSet>
+									<ChangeRowOrder>false</ChangeRowOrder>
+									<AutoInsertNewRow>true</AutoInsertNewRow>
+									<EnableStartDrag>true</EnableStartDrag>
+									<EnableDrag>true</EnableDrag>
+									<DataPath>EventLog</DataPath>
+									<RowFilter xsi:nil="true"/>
+									<ContextMenu name="EventLogContextMenu" id="235"/>
+									<AutoCommandBar name="EventLogCommandBar" id="236"/>
+									<ExtendedTooltip name="EventLogExtendedTooltip" id="237"/>
+									<SearchStringAddition name="EventLogSearchString" id="238">
+										<AdditionSource>
+											<Item>EventLog</Item>
+											<Type>SearchStringRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="EventLogSearchStringContextMenu" id="239"/>
+										<ExtendedTooltip name="EventLogSearchStringExtendedTooltip" id="240"/>
+									</SearchStringAddition>
+									<ViewStatusAddition name="EventLogViewStatus" id="241">
+										<AdditionSource>
+											<Item>EventLog</Item>
+											<Type>ViewStatusRepresentation</Type>
+										</AdditionSource>
+										<ContextMenu name="EventLogViewStatusContextMenu" id="242"/>
+										<ExtendedTooltip name="EventLogViewStatusExtendedTooltip" id="243"/>
+									</ViewStatusAddition>
+									<SearchControlAddition name="EventLogSearchControl" id="244">
+										<AdditionSource>
+											<Item>EventLog</Item>
+											<Type>SearchControl</Type>
+										</AdditionSource>
+										<ContextMenu name="EventLogSearchControlContextMenu" id="245"/>
+										<ExtendedTooltip name="EventLogSearchControlExtendedTooltip" id="246"/>
+									</SearchControlAddition>
+									<ChildItems>
+										<InputField name="EventLogDate" id="257">
+											<DataPath>EventLog.Date</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="EventLogDateContextMenu" id="258"/>
+											<ExtendedTooltip name="EventLogDateExtendedTooltip" id="259"/>
+										</InputField>
+										<InputField name="EventLogType" id="247">
+											<DataPath>EventLog.Type</DataPath>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="EventLogTypeContextMenu" id="248"/>
+											<ExtendedTooltip name="EventLogTypeExtendedTooltip" id="249"/>
+										</InputField>
+										<InputField name="EventLogData" id="250">
+											<DataPath>EventLog.Data</DataPath>
+											<Title>
+												<v8:item>
+													<v8:lang>ru</v8:lang>
+													<v8:content>Info</v8:content>
+												</v8:item>
+											</Title>
+											<EditMode>EnterOnInput</EditMode>
+											<ContextMenu name="EventLogDataContextMenu" id="251"/>
+											<ExtendedTooltip name="EventLogDataExtendedTooltip" id="252"/>
+										</InputField>
+									</ChildItems>
+								</Table>
+							</ChildItems>
+						</Page>
+					</ChildItems>
+				</Pages>
+			</ChildItems>
+		</UsualGroup>
+	</ChildItems>
+	<Attributes>
+		<Attribute name="Object" id="1">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Object</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>cfg:ExternalDataProcessorObject.VanessaEditorSample</v8:Type>
+			</Type>
+			<MainAttribute>true</MainAttribute>
+		</Attribute>
+		<Attribute name="VanessaEditorURL" id="2">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Vanessa editor URL</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="ContentDidChange" id="3">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Content did change</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Content did change</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="ReadOnlyMode" id="4">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Read only mode</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Read only mode</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="EmulateBreakpointUpdateDelay" id="5">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Emulate breakpoint update delay</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Emulate breakpoint update delay</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="Problems" id="6">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Problems</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueTable</v8:Type>
+			</Type>
+			<Columns>
+				<Column name="Severity" id="1">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Severity</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="Message" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Message</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="Code" id="3">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Code</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="Source" id="4">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Source</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="LineNumber" id="5">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Line number</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:decimal</v8:Type>
+						<v8:NumberQualifiers>
+							<v8:Digits>10</v8:Digits>
+							<v8:FractionDigits>0</v8:FractionDigits>
+							<v8:AllowedSign>Any</v8:AllowedSign>
+						</v8:NumberQualifiers>
+					</Type>
+				</Column>
+			</Columns>
+		</Attribute>
+		<Attribute name="CompleteSteps" id="8">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Complete steps</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Complete steps</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueTable</v8:Type>
+			</Type>
+			<Columns>
+				<Column name="LineNumber" id="1">
+					<Title>
+						<v8:item>
+							<v8:lang>en</v8:lang>
+							<v8:content>Line number</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:decimal</v8:Type>
+						<v8:NumberQualifiers>
+							<v8:Digits>10</v8:Digits>
+							<v8:FractionDigits>0</v8:FractionDigits>
+							<v8:AllowedSign>Any</v8:AllowedSign>
+						</v8:NumberQualifiers>
+					</Type>
+				</Column>
+				<Column name="CodeWidget" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Code widget</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+			</Columns>
+		</Attribute>
+		<Attribute name="CurrentStep" id="10">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Current step</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>10</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Any</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="EditorTheme" id="11">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Theme</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Editor theme</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="LineNumber" id="12">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Line number</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>10</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Nonnegative</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="Column" id="13">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Column</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>10</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Nonnegative</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="Position" id="14">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Position</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="MessageText" id="15">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Message</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="TraceKeyboard" id="16">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Trace keyboard</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="EventLog" id="17">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Event log</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueTable</v8:Type>
+			</Type>
+			<Columns>
+				<Column name="Type" id="1">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Type</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="Data" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Data</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="Date" id="3">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Date</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:dateTime</v8:Type>
+						<v8:DateQualifiers>
+							<v8:DateFractions>Time</v8:DateFractions>
+						</v8:DateQualifiers>
+					</Type>
+				</Column>
+			</Columns>
+		</Attribute>
+		<Attribute name="Actions" id="18">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Actions</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueTable</v8:Type>
+			</Type>
+			<Columns>
+				<Column name="id" id="1">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Id</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="label" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Label</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+			</Columns>
+		</Attribute>
+		<Attribute name="RuntimeStatus" id="9">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Runtime status</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="ErrorText" id="19">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Text</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="ErrorCode" id="20">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Code</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="RuntimePosition" id="21">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Position</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="RuntimeCode" id="22">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Runtime code</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="Breakpoints" id="23">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Breakpoints</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>v8:ValueTable</v8:Type>
+			</Type>
+			<Columns>
+				<Column name="LineNumber" id="1">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Line number</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:decimal</v8:Type>
+						<v8:NumberQualifiers>
+							<v8:Digits>10</v8:Digits>
+							<v8:FractionDigits>0</v8:FractionDigits>
+							<v8:AllowedSign>Any</v8:AllowedSign>
+						</v8:NumberQualifiers>
+					</Type>
+				</Column>
+				<Column name="CodeWidget" id="2">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Code widget</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:string</v8:Type>
+						<v8:StringQualifiers>
+							<v8:Length>0</v8:Length>
+							<v8:AllowedLength>Variable</v8:AllowedLength>
+						</v8:StringQualifiers>
+					</Type>
+				</Column>
+				<Column name="Enable" id="3">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Enable</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:boolean</v8:Type>
+					</Type>
+				</Column>
+			</Columns>
+		</Attribute>
+		<Attribute name="ShowMinimap" id="7">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Show minimap</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="EditorType" id="24">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Editor type</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>10</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Any</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="UseDebugger" id="25">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Use debugger</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+		<Attribute name="TabSize" id="26">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Tab size</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:decimal</v8:Type>
+				<v8:NumberQualifiers>
+					<v8:Digits>2</v8:Digits>
+					<v8:FractionDigits>0</v8:FractionDigits>
+					<v8:AllowedSign>Any</v8:AllowedSign>
+				</v8:NumberQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="InsertSpaces" id="27">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Insert Spaces</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:boolean</v8:Type>
+			</Type>
+		</Attribute>
+	</Attributes>
+	<Commands>
+		<Command name="LoadFile" id="2">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Load file</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load file</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load file</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+O</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.OpenFile</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>LoadFile</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="GetValue" id="3">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Get value</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get value</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get value</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.RestoreValues</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>GetValue</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="SetProgress" id="1">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Send complete steps</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Set progress</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Send complete steps</v8:content>
+				</v8:item>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Set progress</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>SetProgress</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="CleanRuntimeProgress" id="6">
+			<Title>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Clean runtime progress</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>en</v8:lang>
+					<v8:content>Clean runtime progress</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.SpreadsheetDeletePageBreak</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>CleanRuntimeProgress</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="GetPosition" id="7">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get position</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get position</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.Next</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>GetPosition</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="GetLineContent" id="8">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get line content</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get line content</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetLineContent</Action>
+		</Command>
+		<Command name="EditUndo" id="9">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Undo</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit undo</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+Z</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.MoveLeft</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+			<Representation>Picture</Representation>
+		</Command>
+		<Command name="EditRedo" id="10">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Redo</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit redo</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+Y</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.MoveRight</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+			<Representation>Picture</Representation>
+		</Command>
+		<Command name="LoadStepsEn" id="11">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>English</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load steps en</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadStepsEn</Action>
+		</Command>
+		<Command name="LoadStepsRu" id="12">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Russian</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load steps ru</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadStepsRu</Action>
+		</Command>
+		<Command name="LoadStepsAll" id="13">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>EN + RU</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load steps all</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadStepsAll</Action>
+		</Command>
+		<Command name="ShowMessage" id="14">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Show message</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Show message</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>0:78da2c47-172f-4d57-ab52-a06e40548136</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>ShowMessage</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ClearEditorEvens" id="15">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Clear Event log</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Clear editor evens</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ClearEditorEvents</Action>
+		</Command>
+		<Command name="EditReplace" id="16">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Replace</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit replace</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+H</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.Replace</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="EditFind" id="17">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Find</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit find</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Shortcut>Ctrl+F</Shortcut>
+			<Picture>
+				<xr:Ref>StdPicture.Find</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="EditFindNext" id="18">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Find next</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit find next</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.FindNext</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="EditFindPrevious" id="19">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Find previous</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Edit find previous</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.FindPrevious</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewFoldAll" id="20">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Fold all</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View fold all</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.CollapseAll</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewUnfoldAll" id="21">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Unfold all</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View unfold all</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.ExpandAll</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewZoomIn" id="22">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Zoom in</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View zoom in</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>-16</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewZoomOut" id="23">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Zoom out</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View zoom out</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>-15</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewZoomReset" id="24">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Reset zoom</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View zoom reset</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewUnfold1" id="25">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>1</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View unfold1</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewUnfold2" id="26">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>2</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View unfold2</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ClipboardPaste" id="27">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Paste</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Clipboard paste</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ClipboardCut" id="28">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Cut</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Clipboard cut</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ClipboardCopy" id="29">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Copy</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Clipboard copy</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="ViewUnfold3" id="30">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>3</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>View unfold3</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>EditorAction</Action>
+		</Command>
+		<Command name="InsertText" id="31">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Insert text</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Insert text</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.Rename</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>InsertText</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ReplaceText" id="32">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Replace text</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Replace text</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ReplaceText</Action>
+		</Command>
+		<Command name="LoadKeywordsRu" id="33">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Russian</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load keywords ru</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadKeywordsRu</Action>
+		</Command>
+		<Command name="LoadKeywordsEn" id="34">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>English</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load keywords en</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadKeywordsEn</Action>
+		</Command>
+		<Command name="LoadKeywordsAll" id="35">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>EN+RU</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Load keywords all</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>LoadKeywordsAll</Action>
+		</Command>
+		<Command name="GetSelectedContent" id="4">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Selected content</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get selected content</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetSelectedContent</Action>
+		</Command>
+		<Command name="GetCurrentStep" id="5">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get current step</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get current step</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetCurrentStep</Action>
+		</Command>
+		<Command name="GetProgress" id="36">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get progress</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Get progress</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>GetProgress</Action>
+		</Command>
+		<Command name="ShowError" id="37">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Show error</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Show error</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ShowError</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="SubcodeExample" id="38">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Subcode example</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Subcode example</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.ExternalDataSourceFunction</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>ShowSubcode</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="RunSubcode" id="39">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Run subcode</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Run subcode</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.GenerateReport</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>RunSubcode</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="StopSubcode" id="40">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Stop subcode</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Stop subcode</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Picture>
+				<xr:Ref>StdPicture.Stop</xr:Ref>
+				<xr:LoadTransparent>true</xr:LoadTransparent>
+			</Picture>
+			<Action>StopSubcode</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="NormalizeIndentation" id="41">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Normalize indentation</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Normalize indentation</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>NormalizeIndentation</Action>
+		</Command>
+		<Command name="Autotest" id="42">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Autotest</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Autotest</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>Autotest</Action>
+		</Command>
+	</Commands>
+</Form>
