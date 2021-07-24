@@ -42,7 +42,7 @@ export function initPage() {
   const domMain = $("div", { id: "VanessaContainer" },
     $("div.vanessa-hidden", { id: "VanessaTabsContainer" }),
     $("div", { id: "VanessaEditorContainer" }),
-    $("botton", { id: "VanessaEditorEventForwarder" }),
+    $("button", { id: "VanessaEditorEventForwarder" }),
   );
   document.body.appendChild(domMain);
 }
