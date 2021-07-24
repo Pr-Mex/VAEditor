@@ -59,6 +59,8 @@ const autotest = (url) => {
     window.mochaResults.reports = failedTests
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
     dom.removeClass(domMain, 'vanessa-hidden')
+    const button = $("button.vanessa-hidden", { id: "AutotestResult" })
+    document.body.appendChild(button).click()
   })
 
   runner.on('fail', (test, err) => {
