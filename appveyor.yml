@@ -6,6 +6,8 @@ platform: x64
 environment:
   KEY_1CV8T:
     secure: OolAVEKkEg1cGCpG/VK2FaM0LWrPgMR/Kn4nTLYyKR0=
+  APPVEYOR_RDP_PASSWORD:
+    secure: Eh+U4U31T7wawjBeINftkw==
 
 install:
   - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
@@ -36,7 +38,7 @@ after_build:
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
   - appveyor PushArtifact VAEditorSample.epf
-  - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: VAEditor.zip
