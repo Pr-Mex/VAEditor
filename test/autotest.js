@@ -5,7 +5,29 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
 
 const $ = dom.$
 
-const autotest = () => {
+const SendData = (url, data) => {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(JSON.stringify(data));
+}
+
+const autotest = (url) => {
+
+  if (url) SendData(url + "api/tests", {
+    outcome: "Passed",
+    testName: "Простой тест",
+    fileName: "VAEditor",
+    ErrorMessage: "",
+    durationMilliseconds: 0,
+  });
+
+  if (url) SendData(url + "api/build/messages", {
+    category: "Warning",
+    message: "Simple message",
+    details: "Детали сообщения VAEditor",
+  });
+
   const domMain = $(
     'div.vanessa-hidden',
     { id: 'mocha-container' },
