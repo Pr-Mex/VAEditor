@@ -27,7 +27,7 @@ Procedure VanessaEditorURLDocumentComplete(Item)
 	Else
 		URL = Undefined;
 	EndIf;
-	
+
 	Items.VanessaEditor.Document.defaultView.VanessaAutotest(URL);
-	
+
 EndProcedure

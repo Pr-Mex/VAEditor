@@ -35,6 +35,8 @@ after_build:
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
+  - appveyor PushArtifact VAEditorSample.epf
+  - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
 
 artifacts:
   - path: VAEditor.zip
