@@ -6,7 +6,7 @@ Var KeyCodeMap;
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
-	VanessaEditorLoad(FormAttributeToValue("Object").GetTemplate("VanessaEditor"));
+	VanessaEditorLoad(FormAttributeToValue("Object").GetTemplate("VAEditor"));
 	ErrorCode = New UUID;
 	ErrorText = "Runtime error info";
 	MessageText = "Hello, world!";
@@ -785,7 +785,7 @@ Function VanessaStepList(language)
 	DeleteFiles(TempFileName);
 	CreateDirectory(TempFileName);
 
-	BinaryData = FormAttributeToValue("Object").GetTemplate("VanessaStepList");
+	BinaryData = FormAttributeToValue("Object").GetTemplate("StepList");
 	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
 	For each ZipFileEntry In ZipFileReader.Items Do
 		If ZipFileEntry.BaseName = language Then

@@ -1804,7 +1804,7 @@
 				</v8:item>
 			</Title>
 			<Type>
-				<v8:Type>cfg:ExternalDataProcessorObject.VanessaEditorSample</v8:Type>
+				<v8:Type>cfg:ExternalDataProcessorObject.VAEditorSample</v8:Type>
 			</Type>
 			<MainAttribute>true</MainAttribute>
 		</Attribute>
