@@ -14,7 +14,6 @@ const send = (url, test, err, status) => {
     testName: test.title,
     fileName: test.parent.title,
     ErrorMessage: err.message,
-    ErrorStackTrace: err.stack,
     durationMilliseconds: test.duration,
   }))
 }
