@@ -92,7 +92,7 @@
 КонецПроцедуры
 
 КаталогФайлов = "./dist/";
-ПутьФайлаМакета = "./example/VanessaEditorSample/Templates/VanessaEditor/Ext/Template.bin";
+ПутьФайлаМакета = "./example/VAEditorSample/Templates/VAEditor/Ext/Template.bin";
 Информация("Сборка макета редактора.");
 Если ФайлыРазличаются(КаталогФайлов, ПутьФайлаМакета) Тогда
 	УпаковатьМакет(КаталогФайлов, ПутьФайлаМакета);
@@ -101,7 +101,7 @@
 КонецЕсли;
 
 КаталогФайлов = "./example/StepList/";
-ПутьФайлаМакета = "./example/VanessaEditorSample/Templates/VanessaStepList/Ext/Template.bin";
+ПутьФайлаМакета = "./example/VAEditorSample/Templates/StepList/Ext/Template.bin";
 Информация("Сборка макета библиотеки шагов.");
 Если ФайлыРазличаются(КаталогФайлов, ПутьФайлаМакета) Тогда
 	УпаковатьМакет(КаталогФайлов, ПутьФайлаМакета);

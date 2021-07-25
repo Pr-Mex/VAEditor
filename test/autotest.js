@@ -5,7 +5,21 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
 
 const $ = dom.$
 
-const autotest = () => {
+const send = (url, test, err, status) => {
+  var xhr = new XMLHttpRequest()
+  xhr.open("POST", url, true)
+  xhr.setRequestHeader("Content-Type", "application/json")
+  xhr.send(JSON.stringify({
+    outcome: status,
+    testName: test.title,
+    fileName: test.parent.title,
+    ErrorMessage: err.message,
+    durationMilliseconds: test.duration,
+  }))
+}
+
+const autotest = (url) => {
+
   const domMain = $(
     'div.vanessa-hidden',
     { id: 'mocha-container' },
@@ -26,42 +40,31 @@ const autotest = () => {
   provider.setKeypairs(JSON.stringify(keypairs))
 
   window.createVanessaTabs()
+
   mocha.setup('bdd')
   const context = require.context('.', true, /.+\.ts$/)
   context.keys().forEach(context)
   var runner = mocha.run()
-  var failedTests = []
+
+  if (url) {
+    runner.on('test', (test) => send(url + "api/tests", test, {}, "Running"))
+    runner.on('pass', (test) => send(url + "api/tests", test, {}, "Passed"))
+    runner.on('fail', (test, err) => send(url + "api/tests", test, err, "Failed"))
+  }
 
   runner.on('end', () => {
     window.mochaResults = runner.stats
-    window.mochaResults.reports = failedTests
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
+    const button = $("button.vanessa-hidden", { id: "AutotestResult" })
+    document.body.appendChild(button).click()
     dom.removeClass(domMain, 'vanessa-hidden')
-  })
-
-  runner.on('fail', (test, err) => {
-    var flattenTitles = function (test) {
-      var titles = []
-      while (test.parent.title) {
-        titles.push(test.parent.title)
-        test = test.parent
-      }
-      return titles.reverse()
-    }
-    failedTests.push({
-      name: test.title,
-      result: false,
-      message: err.message,
-      stack: err.stack,
-      titles: flattenTitles(test)
-    })
   })
 
   delete window.VanessaAutotest
 }
 
 if (process.argv.mode === 'development') {
-  window.onload = autotest
+  window.onload = () => autotest()
 } else {
   window.VanessaAutotest = autotest
 }

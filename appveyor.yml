@@ -6,6 +6,8 @@ platform: x64
 environment:
   KEY_1CV8T:
     secure: OolAVEKkEg1cGCpG/VK2FaM0LWrPgMR/Kn4nTLYyKR0=
+  APPVEYOR_RDP_PASSWORD:
+    secure: Eh+U4U31T7wawjBeINftkw==
 
 install:
   - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
@@ -23,29 +25,32 @@ build_script:
   - 7z a StepList.zip %CD%/example/StepList/*.json
 
 after_build:
-  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates | Out-Null
-  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaEditor | Out-Null
-  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaEditor/Ext | Out-Null
-  - ps: Copy-Item -Path VAEditor.zip -Destination example/VanessaEditorSample/Templates/VanessaEditor/Ext/Template.bin
-  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaStepList | Out-Null
-  - ps: New-Item -ItemType Directory -Force -Path example/VanessaEditorSample/Templates/VanessaStepList/Ext | Out-Null
-  - ps: Copy-Item -Path StepList.zip -Destination example/VanessaEditorSample/Templates/VanessaStepList/Ext/Template.bin
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/VAEditor | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/VAEditor/Ext | Out-Null
+  - ps: Copy-Item -Path VAEditor.zip -Destination example/VAEditorSample/Templates/VAEditor/Ext/Template.bin
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/StepList | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/StepList/Ext | Out-Null
+  - ps: Copy-Item -Path StepList.zip -Destination example/VAEditorSample/Templates/StepList/Ext/Template.bin
   - ps: Set-Content -Path app_port.txt -Value ([uri] $env:APPVEYOR_API_URL).Port
   - mkdir database
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
-  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VanessaEditorSample.xml VanessaEditorSample.epf /Out example.log
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
+  - appveyor PushArtifact VAEditorSample.epf
+  - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
+  - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
 
 artifacts:
   - path: VAEditor.zip
-  - path: VanessaEditorSample.epf
+  - path: VAEditorSample.epf
 
 deploy:
   - provider: GitHub
     auth_token:
       secure: v7P89NQ2I5+WGNNdhpFrZEt6OCTPf8A8VSC5rttZMXh3DJ2fTChNEjZ1Wvm3kfBt
     repository: Pr-Mex/VAEditor
-    artifact: VAEditor.zip, VanessaEditorSample.epf
+    artifact: VAEditor.zip, VAEditorSample.epf
     draft: true
     prerelease: true
     force_update: true
