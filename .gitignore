@@ -5,3 +5,4 @@ fileversion
 Template.bin
 /package-lock.json
 /debug.log
+example/success.txt
