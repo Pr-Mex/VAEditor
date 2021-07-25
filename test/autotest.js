@@ -41,14 +41,15 @@ const autotest = (url) => {
   provider.setKeypairs(JSON.stringify(keypairs))
 
   window.createVanessaTabs()
+
   mocha.setup('bdd')
   const context = require.context('.', true, /.+\.ts$/)
   context.keys().forEach(context)
   var runner = mocha.run()
 
   if (url) {
-    runner.on('test', (test, err) => send(url + "api/tests", test, err, "Running"))
-    runner.on('pass', (test, err) => send(url + "api/tests", test, err, "Passed"))
+    runner.on('test', (test) => send(url + "api/tests", test, {}, "Running"))
+    runner.on('pass', (test) => send(url + "api/tests", test, {}, "Passed"))
     runner.on('fail', (test, err) => send(url + "api/tests", test, err, "Failed"))
   }
 
