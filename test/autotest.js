@@ -5,7 +5,7 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
 
 const $ = dom.$
 
-const SendData = (url, data) => {
+const send = (url, data) => {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
@@ -13,20 +13,6 @@ const SendData = (url, data) => {
 }
 
 const autotest = (url) => {
-
-  if (url) SendData(url + "api/tests", {
-    outcome: "Passed",
-    testName: "Простой тест",
-    fileName: "VAEditor",
-    ErrorMessage: "",
-    durationMilliseconds: 0,
-  });
-
-  if (url) SendData(url + "api/build/messages", {
-    category: "Warning",
-    message: "Simple message",
-    details: "Детали сообщения VAEditor",
-  });
 
   const domMain = $(
     'div.vanessa-hidden',
@@ -53,6 +39,34 @@ const autotest = (url) => {
   context.keys().forEach(context)
   var runner = mocha.run()
   var failedTests = []
+
+  if (url) runner.on('test', (test) =>
+    send(url + "api/tests", {
+      outcome: "Running",
+      testName: test.title,
+      fileName: test.parent.title,
+      durationMilliseconds: 0,
+    })
+  );
+
+  if (url) runner.on('pass', (test) =>
+    send(url + "api/tests", {
+      outcome: "Passed",
+      testName: test.title,
+      fileName: test.parent.title,
+      durationMilliseconds: test.duration,
+    })
+  );
+
+  if (url) runner.on('fail', (test) =>
+    send(url + "api/tests", {
+      outcome: "Failed",
+      testName: test.title,
+      fileName: test.parent.title,
+      ErrorMessage: err.message,
+      durationMilliseconds: test.duration,
+    })
+  );
 
   runner.on('end', () => {
     window.mochaResults = runner.stats
@@ -85,7 +99,7 @@ const autotest = (url) => {
 }
 
 if (process.argv.mode === 'development') {
-  window.onload = autotest
+  window.onload = () => autotest()
 } else {
   window.VanessaAutotest = autotest
 }
