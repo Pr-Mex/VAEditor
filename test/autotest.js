@@ -7,19 +7,18 @@ const $ = dom.$
 
 const send = (url, test, err, status) => {
   var xhr = new XMLHttpRequest()
-  xhr.open("POST", url, true)
-  xhr.setRequestHeader("Content-Type", "application/json")
+  xhr.open('POST', url, true)
+  xhr.setRequestHeader('Content-Type', 'application/json')
   xhr.send(JSON.stringify({
     outcome: status,
     testName: test.title,
     fileName: test.parent.title,
     ErrorMessage: err.message,
-    durationMilliseconds: test.duration,
+    durationMilliseconds: test.duration
   }))
 }
 
 const autotest = (url) => {
-
   const domMain = $(
     'div.vanessa-hidden',
     { id: 'mocha-container' },
@@ -33,10 +32,10 @@ const autotest = (url) => {
     'когда', 'тогда', 'затем', 'дано', 'если', 'тогда'
   ]
 
+  const keypairs = { if: ['then'], Если: ['Тогда'] }
+
   const provider = window.VanessaGherkinProvider
   provider.setKeywords(JSON.stringify(keywords))
-
-  const keypairs = { if: ['then'], Если: ['Тогда'] }
   provider.setKeypairs(JSON.stringify(keypairs))
 
   window.createVanessaTabs()
@@ -47,15 +46,14 @@ const autotest = (url) => {
   var runner = mocha.run()
 
   if (url) {
-    runner.on('test', (test) => send(url + "api/tests", test, {}, "Running"))
-    runner.on('pass', (test) => send(url + "api/tests", test, {}, "Passed"))
-    runner.on('fail', (test, err) => send(url + "api/tests", test, err, "Failed"))
+    runner.on('pass', (test) => send(url + 'api/tests', test, {}, 'Passed'))
+    runner.on('fail', (test, err) => send(url + 'api/tests', test, err, 'Failed'))
   }
 
   runner.on('end', () => {
     window.mochaResults = runner.stats
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
-    const button = $("button.vanessa-hidden", { id: "AutotestResult" })
+    const button = $('button.vanessa-hidden', { id: 'AutotestResult' })
     document.body.appendChild(button).click()
     dom.removeClass(domMain, 'vanessa-hidden')
   })

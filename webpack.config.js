@@ -87,7 +87,7 @@ module.exports = (env, argv) => {
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
-        title: "VAEditor",
+        title: 'VAEditor',
         cache: false
       }),
       new ScriptExtHtmlWebpackPlugin({
