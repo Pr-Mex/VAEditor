@@ -1,8 +1,11 @@
 import { VanessaGherkinProvider } from "./provider";
-import LanguageConfiguration = monaco.languages.LanguageConfiguration;
-import IMonarchLanguage = monaco.languages.IMonarchLanguage;
 
-export const conf: LanguageConfiguration = {
+export const language: monaco.languages.ILanguageExtensionPoint = {
+  id: "turbo-gherkin",
+  extensions: [".feature"],
+};
+
+export const conf: monaco.languages.LanguageConfiguration = {
   comments: {
     lineComment: "//"
   },
@@ -18,20 +21,21 @@ export const conf: LanguageConfiguration = {
   ]
 };
 
-export const language: IMonarchLanguage = <IMonarchLanguage>{
-  ignoreCase: true,
+export class GherkinLanguage {
 
-  metatags: VanessaGherkinProvider.instance.metatags,
+  ignoreCase  = true;
 
-  hyperlinks: VanessaGherkinProvider.instance.hyperlinks,
+  metatags = VanessaGherkinProvider.instance.metatags;
 
-  keywords: VanessaGherkinProvider.instance.singleWords.concat(["if"]),
+  hyperlinks = VanessaGherkinProvider.instance.hyperlinks;
 
-  escapes: /\\(?:[abfnrtv\\"'{}\[\]\$]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+  keywords = VanessaGherkinProvider.instance.singleWords.concat(["if"]);
 
-  word: /[A-zА-яЁё][0-9A-zА-яЁё]*/,
+  escapes = /\\(?:[abfnrtv\\"'{}\[\]\$]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/;
 
-  tokenizer: {
+  word = /[A-zА-яЁё][0-9A-zА-яЁё]*/;
+
+  tokenizer = {
     root: [
       { include: "@section" },
       { include: "@keyword" },

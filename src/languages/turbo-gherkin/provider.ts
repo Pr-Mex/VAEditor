@@ -1,7 +1,8 @@
 import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
-import { TokenizationRegistry } from 'monaco-editor/esm/vs/editor/common/modes';
+import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 
@@ -121,6 +122,7 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
     list.forEach((w: string) => this.keywords.push(w.split(" ")));
     this._keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
+    this.initTokenizer();
   }
 
   public setKeypairs = (arg: string): void => {
@@ -136,12 +138,14 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg);
     this.clearArray(this._metatags);
     list.forEach((w: string) => this._metatags.push(w));
+    this.initTokenizer();
   }
 
   public setHyperlinks = (arg: string): void => {
     let list = JSON.parse(arg);
     this.clearArray(this._hyperlinks);
     list.forEach((w: string) => this._hyperlinks.push(w));
+    this.initTokenizer();
   }
 
   public setVariablesArea = this.setHyperlinks;
@@ -621,14 +625,16 @@ export class VanessaGherkinProvider {
     monaco.editor.setModelMarkers(model, "syntax", problems);
   }
 
-  private tokenizer: any;
+  private tokenizer: ITokenizationSupport;
 
-  public init(languageId: string, languageDef: monaco.languages.IMonarchLanguage) {
+  public initTokenizer() {
+    let lang = new GherkinLanguage();
+    if (this.tokenizer) this.tokenizer.dispose();
     this.tokenizer = createTokenizationSupport(
       StaticServices.modeService.get(),
       StaticServices.standaloneThemeService.get(),
-      languageId,
-      compile(languageId, languageDef),
+      language.id,
+      compile(language.id, lang),
     );
   }
 
