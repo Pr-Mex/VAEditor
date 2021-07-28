@@ -52,6 +52,7 @@
 		"css-loader": "^2.1.1",
 		"expect": "^27.0.6",
 		"html-webpack-plugin": "^3.2.0",
+		"jaro-winkler": "^0.2.8",
 		"jest-environment-jsdom-fourteen": "^1.0.1",
 		"mocha": "^8.4.0",
 		"postcss-alter-property-value": "^1.1.3",
