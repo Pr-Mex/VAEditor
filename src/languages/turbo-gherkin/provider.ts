@@ -5,6 +5,7 @@ import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/m
 import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
+import * as distance from 'jaro-winkler';
 
 interface IVanessaStep {
   filterText: string;
@@ -273,15 +274,12 @@ export class VanessaGherkinProvider {
     keyword.forEach(w => regexp += w + "[\\s]+");
     let match = value.toLowerCase().match(new RegExp(regexp));
     if (match) range.startColumn = match[0].length + 1;
-    let line = this.key(this.filterWords(words)).split(" ");
+    let line = this.key(this.filterWords(words));
     for (let key in this.steps) {
-      let sum = 0; let k = {};
-      var step = key.split(" ");
-      line.forEach((w: string) => k[w] ? k[w] += 1 : k[w] = 1);
-      step.forEach((w: string) => k[w] ? k[w] -= 1 : k[w] = -1);
-      for (let i in k) sum = sum + Math.abs(k[i]);
-      if (sum < 4) list.push({ key: key, sum: sum, error: error, range: range, words: words });
+      let sum = distance(line, key);
+      if (sum > 0.7) list.push({ key: key, sum: sum, error: error, range: range, words: words });
     }
+    list.sort((a, b) => b.sum - a.sum);
   }
 
   private replaceParams(step: string[], line: string[]): string {
@@ -300,7 +298,6 @@ export class VanessaGherkinProvider {
     let list = [];
     let actions: Array<monaco.languages.CodeAction> = [];
     markers.forEach(e => this.addQuickFix(model, list, e));
-    list.sort((a, b) => a.sum - b.sum);
     list.forEach((e, i) => {
       if (i > 6) return;
       let step = this.steps[e.key];
