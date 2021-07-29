@@ -21,6 +21,7 @@ install:
 
 build_script:
   - npm -q run build
+  - 7z a VAEditorTest.zip %CD%/dist/*.js
   - 7z a VAEditor.zip %CD%/dist/index.html
   - 7z a StepList.zip %CD%/example/StepList/*.json
 
@@ -44,6 +45,7 @@ after_build:
 artifacts:
   - path: VAEditor.zip
   - path: VAEditorSample.epf
+  - path: VAEditorTest.zip
 
 deploy:
   - provider: GitHub
