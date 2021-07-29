@@ -1,4 +1,3 @@
-import '../src/main'
 import mocha from 'mocha'
 import '../node_modules/mocha/mocha.css'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
