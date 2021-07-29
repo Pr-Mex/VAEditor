@@ -21,7 +21,7 @@ install:
 
 build_script:
   - npm -q run build
-  - 7z a VAEditorTest.zip %CD%/dist/*.js
+  - 7z a AutoTest.zip %CD%/dist/*.js
   - 7z a VAEditor.zip %CD%/dist/index.html
   - 7z a StepList.zip %CD%/example/StepList/*.json
 
@@ -33,6 +33,9 @@ after_build:
   - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/StepList | Out-Null
   - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/StepList/Ext | Out-Null
   - ps: Copy-Item -Path StepList.zip -Destination example/VAEditorSample/Templates/StepList/Ext/Template.bin
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/AutoTest | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/AutoTest/Ext | Out-Null
+  - ps: Copy-Item -Path AutoTest.zip -Destination example/VAEditorSample/Templates/AutoTest/Ext/Template.bin
   - ps: Set-Content -Path app_port.txt -Value ([uri] $env:APPVEYOR_API_URL).Port
   - mkdir database
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
@@ -43,9 +46,9 @@ after_build:
   - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
 
 artifacts:
+  - path: AutoTest.zip
   - path: VAEditor.zip
   - path: VAEditorSample.epf
-  - path: VAEditorTest.zip
 
 deploy:
   - provider: GitHub

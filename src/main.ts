@@ -4,7 +4,7 @@ import { setLocaleData } from 'monaco-editor-nls';
 import { runChromeTest } from "./1c-chrome-test";
 import { patchWebKit1C } from "./1c-webkit-style-patch";
 
-let reg = new RegExp( '[?&]localeCode=([^&#]*)', 'i' );
+let reg = new RegExp('[?&]localeCode=([^&#]*)', 'i');
 let queryString = reg.exec(window.location.search);
 let localeCode = queryString ? queryString[1] : 'en';
 console.log('Current locale is: ' + localeCode);

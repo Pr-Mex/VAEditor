@@ -1,22 +1,28 @@
 ﻿&AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
-	TempFileName = GetTempFileName();
-	DeleteFiles(TempFileName);
-	CreateDirectory(TempFileName);
+	TempDirectory = GetTempFileName();
+	DeleteFiles(TempDirectory);
+	CreateDirectory(TempDirectory);
 
 	DataObject = FormAttributeToValue("Object");
-	BinaryData = DataObject.GetTemplate("VAEditor");
-	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
-	For each ZipFileEntry In ZipFileReader.Items Do
-		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
-		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID);
-	EndDo;
-	DeleteFiles(TempFileName);
+	ExtractTemplate(DataObject, TempDirectory, "VAEditor");
+	ExtractTemplate(DataObject, TempDirectory, "AutoTest");
+	VanessaEditorURL = TempDirectory + "/index.html";
 
 	DataDile = New File(DataObject.UsedFileName);
 	CurrentPath = DataDile.Path;
+
+EndProcedure
+
+&AtServer
+Procedure ExtractTemplate(DataObject, Directory, TemplateName)
+
+	BinaryData = DataObject.GetTemplate(TemplateName);
+	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
+	For each ZipFileEntry In ZipFileReader.Items Do
+		ZipFileReader.Extract(ZipFileEntry, Directory, ZIPRestoreFilePathsMode.Restore);
+	EndDo;
 
 EndProcedure
 
