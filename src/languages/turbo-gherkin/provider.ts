@@ -364,6 +364,7 @@ export class VanessaGherkinProvider {
     if (/^[\s]*@/.test(text)) return VAToken.Instruction;
     if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
     if (/^[\s]*[#|//]/.test(text)) return VAToken.Comment;
+    if (/^[\s]*"""/.test(text)) return VAToken.Multiline;
     return VAToken.Operator;
   }
 
