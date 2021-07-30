@@ -1,4 +1,3 @@
-import { } from '../../src/main';
 import { VanessaEditor } from '../../src/vanessa-editor';
 import { VanessaTabs } from '../../src/vanessa-tabs';
 let emulator = require('./key-emulator');
