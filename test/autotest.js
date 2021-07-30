@@ -1,6 +1,8 @@
 import mocha from 'mocha'
 import '../node_modules/mocha/mocha.css'
+import * as demo from './demo/editor-demo'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
+import initGherkinProvider from './provider.js'
 
 const $ = dom.$
 
@@ -25,19 +27,8 @@ const autotest = (url) => {
   )
   document.body.appendChild(domMain)
 
-  const keywords = [
-    'функционал', 'контекст', 'сценарий', 'структура сценария',
-    'и', 'и это значит что', 'к тому же', 'и вот почему',
-    'когда', 'тогда', 'затем', 'дано', 'если', 'тогда'
-  ]
-
-  const keypairs = { if: ['then'], Если: ['Тогда'] }
-
-  const provider = window.VanessaGherkinProvider
-  provider.setKeywords(JSON.stringify(keywords))
-  provider.setKeypairs(JSON.stringify(keypairs))
-
   window.createVanessaTabs()
+  initGherkinProvider();
 
   mocha.setup('bdd')
   const context = require.context('.', true, /.+\.ts$/)
@@ -60,8 +51,12 @@ const autotest = (url) => {
   delete window.VanessaAutotest
 }
 
-if (process.argv.mode === 'development') {
+if (location.search.match(/^\?grep=/)
+  || process.argv.env === 'test') {
   window.onload = () => autotest()
+} else if (process.argv.env === 'demo') {
+  window.onload = () => demo.show()
 } else {
   window.VanessaAutotest = autotest
+  window.VanessaDemo = demo.show
 }

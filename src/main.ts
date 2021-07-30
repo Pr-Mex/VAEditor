@@ -1,7 +1,6 @@
 import "./media/debug";
 import "./media/tabs";
 import { setLocaleData } from 'monaco-editor-nls';
-import { runChromeTest } from "./1c-chrome-test";
 import { patchWebKit1C } from "./1c-webkit-style-patch";
 
 let reg = new RegExp('[?&]localeCode=([^&#]*)', 'i');
@@ -45,6 +44,5 @@ window["disposeVanessaEditor"] = () => VanessaEditor.disposeStandalone();
 window["disposeVanessaDiffEditor"] = () => VanessaDiffEditor.disposeStandalone();
 window["useVanessaDebugger"] = (value: boolean) => VanessaTabs.useDebugger(value);
 window["popVanessaMessage"] = () => EventsManager.popMessage();
-window["VanessaDemo"] = () => runChromeTest();
 
 patchWebKit1C();

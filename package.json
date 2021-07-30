@@ -5,7 +5,8 @@
 	"homepage": "https://github.com/Pr-Mex/VAEditor/",
 	"private": true,
 	"scripts": {
-		"debug": "webpack-dev-server --progress --mode development",
+		"demo": "webpack-dev-server --progress --mode development --env demo",
+		"test": "webpack-dev-server --progress --mode development --env test",
 		"build": "webpack --progress --mode production",
 		"compile": "run-script-os",
 		"compile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
