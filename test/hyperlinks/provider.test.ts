@@ -1,5 +1,6 @@
 import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provider';
 import { content } from './example.file.js'
+import * as vars from './example.json';
 let expect = require('chai').expect;
 
 describe('Переменные и гиперссылки', function () {
@@ -32,5 +33,9 @@ describe('Переменные и гиперссылки', function () {
     expect(result.links[11]).to.have.property('url', 'link:Вятка.Улица');
     expect(result.links[12]).to.have.property('tooltip', 'Металлистов');
     expect(result.links[12]).to.have.property('url', 'link:Тула.Улица');
+  });
+  it('Импорт файлов', () => {
+    const provider = VanessaGherkinProvider.instance;
+    provider.setImports(JSON.stringify(vars));
   });
 })

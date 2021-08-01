@@ -16,6 +16,19 @@ interface IVanessaStep {
   section: string;
 }
 
+interface IImportedItem {
+  name: string;
+  value?: any;
+  table?: any;
+  lines?: any;
+}
+
+interface IImportedFile {
+  name: string;
+  path: string;
+  items: Array<IImportedItem>;
+}
+
 enum VAToken {
   Empty = 0,
   Section,
@@ -49,14 +62,15 @@ export class VanessaGherkinProvider {
   protected _soundHint = "Sound";
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
-  protected _imports: string[] = ["import", "using", "импорт", "подключить"];
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
   protected _hyperlinks: string[] = ["links", "hyperlinks", "variables", "ссылки", "гиперссылки", "переменные"];
+  protected _keyword_import: string[] = ["import", "using", "импорт", "подключить"];
   protected _keypairs: any = {};
   protected _steps = {};
   protected _elements = {};
   protected _variables = {};
   protected _errorLinks = [];
+  protected _imports = {};
 
   public get singleWords(): string[] {
     return this.keywords.filter(w => w.length == 1).map(w => w[0]);
@@ -699,6 +713,29 @@ export class VanessaGherkinProvider {
         console.log(lineNumber, state.stack.state, tokenizationResult.tokens);
       }
     };
+  }
+
+  public setImports = (values: string): void => {
+    this._imports = {};
+    let array = JSON.parse(values) as Array<IImportedFile>;
+    array.forEach(file => file.items.forEach(item => {
+      if (item.value) {
+        this._imports[item.name] = { filename: file.path, value: item.value.text };
+      } else if (item.lines) {
+        const value = item.lines.lines.map(w => w.text).join('\n');
+        this._imports[item.name] = { filename: file.path, value: value };
+      } else if (item.table) {
+        let value = {};
+        const name = item.name || "";
+        const columns = item.table.head.tokens.map(e => e.text);
+        item.table.body.forEach(row => {
+          let data = {};
+          for (let col = 0; col < columns.length; col++) data[columns[col]] = row.tokens[col].text;
+          value[row.tokens[0].text] = data;
+        });
+        this._imports[name] = { filename: file.path, value: value };
+      }
+    }));
   }
 
   private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
