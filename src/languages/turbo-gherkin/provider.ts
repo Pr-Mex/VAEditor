@@ -49,6 +49,7 @@ export class VanessaGherkinProvider {
   protected _soundHint = "Sound";
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
+  protected _imports: string[] = ["import", "using", "импорт", "подключить"];
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
   protected _hyperlinks: string[] = ["links", "hyperlinks", "variables", "ссылки", "гиперссылки", "переменные"];
   protected _keypairs: any = {};
@@ -602,8 +603,9 @@ export class VanessaGherkinProvider {
     let s = true;
     let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
     words = words.filter((w, i) => (i < keyword.length) ? false : (notComment(w) ? true : s = false));
-    if (words.length == 0) return false;
-    if (this.steps[this.key(words)]) return false;
+    let key = this.key(words);
+    if (key === "") return false;
+    if (this.steps[key]) return false;
     let keypair = this.keypairs[keyword.join(" ")];
     if (!keypair) return true;
     let lastnum = words.length - 1;
