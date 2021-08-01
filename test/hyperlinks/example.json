@@ -1,0 +1,321 @@
+[
+  {
+    "items": [
+      {
+        "line": 3,
+        "name": "Номенклатура",
+        "table": {
+          "body": [
+            {
+              "line": 5,
+              "text": "\t| 001 | Товар  | 100  |\r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 1,
+                  "type": "Number"
+                },
+                {
+                  "column": 16,
+                  "text": "Товар",
+                  "type": "Param"
+                },
+                {
+                  "column": 25,
+                  "text": 100,
+                  "type": "Number"
+                }
+              ]
+            },
+            {
+              "line": 6,
+              "text": "\t| 002 | Услуга |  50  |\r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 2,
+                  "type": "Number"
+                },
+                {
+                  "column": 16,
+                  "text": "Услуга",
+                  "type": "Param"
+                },
+                {
+                  "column": 26,
+                  "text": 50,
+                  "type": "Number"
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "text": "\t| 003 | Работа |  30  |  \r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 3,
+                  "type": "Number"
+                },
+                {
+                  "column": 16,
+                  "text": "Работа",
+                  "type": "Param"
+                },
+                {
+                  "column": 26,
+                  "text": 30,
+                  "type": "Number"
+                }
+              ]
+            }
+          ],
+          "head": {
+            "line": 4,
+            "text": "\t| Код | Имя    | Цена |\r",
+            "tokens": [
+              {
+                "column": 10,
+                "text": "Код",
+                "type": "Param"
+              },
+              {
+                "column": 16,
+                "text": "Имя",
+                "type": "Param"
+              },
+              {
+                "column": 25,
+                "text": "Цена",
+                "type": "Param"
+              }
+            ]
+          }
+        },
+        "text": "\t* Номенклатура\r"
+      },
+      {
+        "line": 8,
+        "name": "Стоимость",
+        "text": "\tСтоимость = 180\r",
+        "value": {
+          "column": 20,
+          "text": 180,
+          "type": "Number"
+        }
+      }
+    ],
+    "name": "номенклатура.feature",
+    "path": "C:\\1С\\Номенклатура.feature"
+  },
+  {
+    "items": [
+      {
+        "line": 4,
+        "name": "Контрагенты",
+        "table": {
+          "body": [
+            {
+              "line": 6,
+              "text": "\t| 0011 | Продавец     |\r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 11,
+                  "type": "Number"
+                },
+                {
+                  "column": 17,
+                  "text": "Продавец",
+                  "type": "Param"
+                }
+              ]
+            },
+            {
+              "line": 7,
+              "text": "\t| 0021 | Покупатель   |\r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 21,
+                  "type": "Number"
+                },
+                {
+                  "column": 17,
+                  "text": "Покупатель",
+                  "type": "Param"
+                }
+              ]
+            }
+          ],
+          "head": {
+            "line": 5,
+            "text": "\t| Ключ | Наименование |\r",
+            "tokens": [
+              {
+                "column": 10,
+                "text": "Ключ",
+                "type": "Param"
+              },
+              {
+                "column": 17,
+                "text": "Наименование",
+                "type": "Param"
+              }
+            ]
+          }
+        },
+        "text": "\t* Контрагенты\r"
+      },
+      {
+        "line": 9,
+        "name": "Количество",
+        "text": "\tКоличество = 10\r",
+        "value": {
+          "column": 21,
+          "text": 10,
+          "type": "Number"
+        }
+      },
+      {
+        "line": 11,
+        "name": "Товар",
+        "text": "\tТовар = \"Цветы\"\r",
+        "value": {
+          "column": 16,
+          "symbol": "\"",
+          "text": "Цветы",
+          "type": "Param"
+        }
+      },
+      {
+        "line": 13,
+        "name": "Услуга",
+        "text": "\tУслуга = 'Доставка'\r",
+        "value": {
+          "column": 17,
+          "symbol": "'",
+          "text": "Доставка",
+          "type": "Param"
+        }
+      },
+      {
+        "line": 15,
+        "lines": {
+          "footer": {
+            "line": 19,
+            "text": "\"\"\""
+          },
+          "header": {
+            "line": 16,
+            "text": "\"\"\""
+          },
+          "lines": [
+            {
+              "line": 17,
+              "text": "Многострочный"
+            },
+            {
+              "line": 18,
+              "text": "текст переменной"
+            }
+          ]
+        },
+        "name": "МногострочныйТекст",
+        "text": "\tМногострочныйТекст = \r"
+      },
+      {
+        "table": {
+          "body": [
+            {
+              "line": 22,
+              "text": "\t| 001 | Товар  | 100  |\r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 1,
+                  "type": "Number"
+                },
+                {
+                  "column": 16,
+                  "text": "Товар",
+                  "type": "Param"
+                },
+                {
+                  "column": 25,
+                  "text": 100,
+                  "type": "Number"
+                }
+              ]
+            },
+            {
+              "line": 23,
+              "text": "\t| 002 | Услуга |  50  |\r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 2,
+                  "type": "Number"
+                },
+                {
+                  "column": 16,
+                  "text": "Услуга",
+                  "type": "Param"
+                },
+                {
+                  "column": 26,
+                  "text": 50,
+                  "type": "Number"
+                }
+              ]
+            },
+            {
+              "line": 24,
+              "text": "\t| 003 | Работа |  30  |  \r",
+              "tokens": [
+                {
+                  "column": 10,
+                  "text": 3,
+                  "type": "Number"
+                },
+                {
+                  "column": 16,
+                  "text": "Работа",
+                  "type": "Param"
+                },
+                {
+                  "column": 26,
+                  "text": 30,
+                  "type": "Number"
+                }
+              ]
+            }
+          ],
+          "head": {
+            "line": 21,
+            "text": "\t| Код | Имя    | Цена |\r",
+            "tokens": [
+              {
+                "column": 10,
+                "text": "Код",
+                "type": "Param"
+              },
+              {
+                "column": 16,
+                "text": "Имя",
+                "type": "Param"
+              },
+              {
+                "column": 25,
+                "text": "Цена",
+                "type": "Param"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "name": "файлимпорта.feature",
+    "path": "C:\\1С\\ФайлИмпорта.feature"
+  }
+]
