@@ -1,6 +1,6 @@
-import steplist from '../example/StepList/ru.json';
+import steplist from '../example/StepList/ru.json'
 
-export default function init() {
+export default function init () {
   const keywords = [
     'функционал', 'контекст', 'сценарий', 'структура сценария',
     'и', 'и это значит что', 'к тому же', 'и вот почему',
@@ -12,6 +12,6 @@ export default function init() {
   const provider = window.VanessaGherkinProvider
   provider.setKeywords(JSON.stringify(keywords))
   provider.setKeypairs(JSON.stringify(keypairs))
-  provider.setStepList(JSON.stringify(steplist));
-  return provider;
+  provider.setStepList(JSON.stringify(steplist))
+  return provider
 }

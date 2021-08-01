@@ -28,7 +28,7 @@ const autotest = (url) => {
   document.body.appendChild(domMain)
 
   window.createVanessaTabs()
-  initGherkinProvider();
+  initGherkinProvider()
 
   mocha.setup('bdd')
   const context = require.context('.', true, /.+\.ts$/)
@@ -51,8 +51,7 @@ const autotest = (url) => {
   delete window.VanessaAutotest
 }
 
-if (location.search.match(/^\?grep=/)
-  || process.argv.env === 'test') {
+if (location.search.match(/^\?grep=/) || process.argv.env === 'test') {
   window.onload = () => autotest()
 } else if (process.argv.env === 'demo') {
   window.onload = () => demo.show()
