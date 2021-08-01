@@ -716,26 +716,28 @@ export class VanessaGherkinProvider {
   }
 
   public setImports = (values: string): void => {
-    this._imports = {};
+    let result = { "": {} };
     let array = JSON.parse(values) as Array<IImportedFile>;
     array.forEach(file => file.items.forEach(item => {
+      const key = (item.name || "").toLowerCase();
       if (item.value) {
-        this._imports[item.name] = { filename: file.path, value: item.value.text };
+        result[""][key] = { key: item.name, name: item.value.text, file: file.path };
       } else if (item.lines) {
-        const value = item.lines.lines.map(w => w.text).join('\n');
-        this._imports[item.name] = { filename: file.path, value: value };
+        const text = item.lines.lines.map(w => w.text).join('\n');
+        result[""][key] = { key: item.name, name: text, file: file.path };
       } else if (item.table) {
-        let value = {};
-        const name = item.name || "";
+        if (key) result[key] = {};
         const columns = item.table.head.tokens.map(e => e.text);
         item.table.body.forEach(row => {
-          let data = {};
-          for (let col = 0; col < columns.length; col++) data[columns[col]] = row.tokens[col].text;
-          value[row.tokens[0].text] = data;
+          const t = row.tokens;
+          const i = (t[0].text || "").toLowerCase();
+          let x = result[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: {} };
+          for (let col = 0; col < columns.length; col++)
+            x.data[columns[col]] = t[col].text;
         });
-        this._imports[name] = { filename: file.path, value: value };
       }
     }));
+    this._imports = result;
   }
 
   private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
