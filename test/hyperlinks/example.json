@@ -8,20 +8,15 @@
           "body": [
             {
               "line": 5,
-              "text": "\t| 001 | Товар  | 100  |\r",
+              "text": "\t| Товар   | 100  |\r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 1,
-                  "type": "Number"
-                },
-                {
-                  "column": 16,
                   "text": "Товар",
                   "type": "Param"
                 },
                 {
-                  "column": 25,
+                  "column": 20,
                   "text": 100,
                   "type": "Number"
                 }
@@ -29,20 +24,15 @@
             },
             {
               "line": 6,
-              "text": "\t| 002 | Услуга |  50  |\r",
+              "text": "\t| Услуга  |  50  |\r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 2,
-                  "type": "Number"
-                },
-                {
-                  "column": 16,
                   "text": "Услуга",
                   "type": "Param"
                 },
                 {
-                  "column": 26,
+                  "column": 21,
                   "text": 50,
                   "type": "Number"
                 }
@@ -50,21 +40,16 @@
             },
             {
               "line": 7,
-              "text": "\t| 003 | Работа |  30  |  \r",
+              "text": "\t| Работа  |  80  |  \r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 3,
-                  "type": "Number"
-                },
-                {
-                  "column": 16,
                   "text": "Работа",
                   "type": "Param"
                 },
                 {
-                  "column": 26,
-                  "text": 30,
+                  "column": 21,
+                  "text": 80,
                   "type": "Number"
                 }
               ]
@@ -72,20 +57,15 @@
           ],
           "head": {
             "line": 4,
-            "text": "\t| Код | Имя    | Цена |\r",
+            "text": "\t| Имя     | Цена |\r",
             "tokens": [
               {
                 "column": 10,
-                "text": "Код",
-                "type": "Param"
-              },
-              {
-                "column": 16,
                 "text": "Имя",
                 "type": "Param"
               },
               {
-                "column": 25,
+                "column": 20,
                 "text": "Цена",
                 "type": "Param"
               }
@@ -97,16 +77,16 @@
       {
         "line": 8,
         "name": "Стоимость",
-        "text": "\tСтоимость = 180\r",
+        "text": "\tСтоимость = 230\r",
         "value": {
           "column": 20,
-          "text": 180,
+          "text": 230,
           "type": "Number"
         }
       }
     ],
     "name": "номенклатура.feature",
-    "path": "C:\\1С\\Номенклатура.feature"
+    "path": "C:\\1C\\Номенклатура.feature"
   },
   {
     "items": [
@@ -117,32 +97,34 @@
           "body": [
             {
               "line": 6,
-              "text": "\t| 0011 | Продавец     |\r",
+              "text": "\t| Продавец   | \"Василёк\"  | 102\r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 11,
-                  "type": "Number"
+                  "text": "Продавец",
+                  "type": "Param"
                 },
                 {
-                  "column": 17,
-                  "text": "Продавец",
+                  "column": 23,
+                  "symbol": "\"",
+                  "text": "Василёк",
                   "type": "Param"
                 }
               ]
             },
             {
               "line": 7,
-              "text": "\t| 0021 | Покупатель   |\r",
+              "text": "\t| Покупатель | \"Ромашка\"  | 005\r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 21,
-                  "type": "Number"
+                  "text": "Покупатель",
+                  "type": "Param"
                 },
                 {
-                  "column": 17,
-                  "text": "Покупатель",
+                  "column": 23,
+                  "symbol": "\"",
+                  "text": "Ромашка",
                   "type": "Param"
                 }
               ]
@@ -150,7 +132,7 @@
           ],
           "head": {
             "line": 5,
-            "text": "\t| Ключ | Наименование |\r",
+            "text": "\t| Ключ       | Наименование | Код\r",
             "tokens": [
               {
                 "column": 10,
@@ -158,7 +140,7 @@
                 "type": "Param"
               },
               {
-                "column": 17,
+                "column": 23,
                 "text": "Наименование",
                 "type": "Param"
               }
@@ -229,20 +211,21 @@
           "body": [
             {
               "line": 22,
-              "text": "\t| 001 | Товар  | 100  |\r",
+              "text": "\t| Товар  | \"Табуретка\" | 100  |\r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 1,
-                  "type": "Number"
-                },
-                {
-                  "column": 16,
                   "text": "Товар",
                   "type": "Param"
                 },
                 {
-                  "column": 25,
+                  "column": 19,
+                  "symbol": "\"",
+                  "text": "Табуретка",
+                  "type": "Param"
+                },
+                {
+                  "column": 33,
                   "text": 100,
                   "type": "Number"
                 }
@@ -250,42 +233,44 @@
             },
             {
               "line": 23,
-              "text": "\t| 002 | Услуга |  50  |\r",
+              "text": "\t| Услуга | \"Доставка\"  |  30  |\r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 2,
-                  "type": "Number"
-                },
-                {
-                  "column": 16,
                   "text": "Услуга",
                   "type": "Param"
                 },
                 {
-                  "column": 26,
-                  "text": 50,
+                  "column": 19,
+                  "symbol": "\"",
+                  "text": "Доставка",
+                  "type": "Param"
+                },
+                {
+                  "column": 34,
+                  "text": 30,
                   "type": "Number"
                 }
               ]
             },
             {
               "line": 24,
-              "text": "\t| 003 | Работа |  30  |  \r",
+              "text": "\t| Работа | \"Монтаж\"    |  50  |  \r",
               "tokens": [
                 {
                   "column": 10,
-                  "text": 3,
-                  "type": "Number"
-                },
-                {
-                  "column": 16,
                   "text": "Работа",
                   "type": "Param"
                 },
                 {
-                  "column": 26,
-                  "text": 30,
+                  "column": 19,
+                  "symbol": "\"",
+                  "text": "Монтаж",
+                  "type": "Param"
+                },
+                {
+                  "column": 34,
+                  "text": 50,
                   "type": "Number"
                 }
               ]
@@ -293,20 +278,20 @@
           ],
           "head": {
             "line": 21,
-            "text": "\t| Код | Имя    | Цена |\r",
+            "text": "\t| Имя    | Представление | Цена |\r",
             "tokens": [
               {
                 "column": 10,
-                "text": "Код",
-                "type": "Param"
-              },
-              {
-                "column": 16,
                 "text": "Имя",
                 "type": "Param"
               },
               {
-                "column": 25,
+                "column": 19,
+                "text": "Представление",
+                "type": "Param"
+              },
+              {
+                "column": 35,
                 "text": "Цена",
                 "type": "Param"
               }
@@ -316,6 +301,6 @@
       }
     ],
     "name": "файлимпорта.feature",
-    "path": "C:\\1С\\ФайлИмпорта.feature"
+    "path": "C:\\1C\\ФайлИмпорта.feature"
   }
 ]
