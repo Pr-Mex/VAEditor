@@ -4,10 +4,11 @@ import * as vars from './example.json';
 let expect = require('chai').expect;
 
 describe('Переменные и гиперссылки', function () {
+  let model: monaco.editor.ITextModel;
   let result: monaco.languages.ILinksList;
   before(() => {
     const provider = VanessaGherkinProvider.instance;
-    const model = monaco.editor.createModel(content, "turbo-gherkin");
+    model = monaco.editor.createModel(content, "turbo-gherkin");
     result = provider.provideLinks(model, undefined) as monaco.languages.ILinksList;
   });
   it('Навигационные ссылки', () => {
@@ -37,5 +38,15 @@ describe('Переменные и гиперссылки', function () {
   it('Импорт файлов', () => {
     const provider = VanessaGherkinProvider.instance;
     provider.setImports(JSON.stringify(vars));
+    result = provider.provideLinks(model, undefined) as monaco.languages.ILinksList;
+    console.log('Импорт файлов', result);
+    expect(result.links[13]).to.have.property('tooltip', 'Василёк');
+    expect(result.links[13]).to.have.property('url', 'link:Контрагенты.Продавец');
+    expect(result.links[14]).to.have.property('tooltip', 'Василёк');
+    expect(result.links[14]).to.have.property('url', 'link:Контрагенты.Продавец.Код');
+    expect(result.links[15]).to.have.property('tooltip', 'Табуретка');
+    expect(result.links[15]).to.have.property('url', 'link:товар');
+    expect(result.links[16]).to.have.property('tooltip', 'Доставка');
+    expect(result.links[16]).to.have.property('url', 'link:услуга');
   });
 })

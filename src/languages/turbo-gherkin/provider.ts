@@ -716,42 +716,47 @@ export class VanessaGherkinProvider {
   }
 
   public setImports = (values: string): void => {
-    let result = { "": {} };
+    let result = {};
     let array = JSON.parse(values) as Array<IImportedFile>;
-    array.forEach(file => file.items.forEach(item => {
-      const key = (item.name || "").toLowerCase();
-      if (item.value) {
-        result[""][key] = { key: item.name, name: item.value.text, file: file.path };
-      } else if (item.lines) {
-        const text = item.lines.lines.map(w => w.text).join('\n');
-        result[""][key] = { key: item.name, name: text, file: file.path };
-      } else if (item.table) {
-        if (key) result[key] = {};
-        const columns = item.table.head.tokens.map(e => e.text);
-        item.table.body.forEach(row => {
-          const t = row.tokens;
-          const i = (t[0].text || "").toLowerCase();
-          let x = result[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: {} };
-          for (let col = 0; col < columns.length; col++)
-            x.data[columns[col]] = t[col].text;
-        });
-      }
-    }));
+    array.forEach(file => {
+      let data = result[file.name] = { "": {} };
+      file.items.forEach(item => {
+        const key = (item.name || "").toLowerCase();
+        if (item.value) {
+          data[""][key] = { key: item.name, name: item.value.text, file: file.path };
+        } else if (item.lines) {
+          const text = item.lines.lines.map(w => w.text).join('\n');
+          data[""][key] = { key: item.name, name: text, file: file.path };
+        } else if (item.table) {
+          if (key) data[key] = {};
+          const columns = item.table.head.tokens.map(e => e.text);
+          item.table.body.forEach(row => {
+            const t = row.tokens;
+            const i = (t[0].text || "").toLowerCase();
+            let x = data[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: {} };
+            for (let col = 0; col < columns.length; col++)
+              x.data[columns[col]] = t[col].text;
+          });
+        }
+      })
+    });
     this._imports = result;
   }
 
   private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
-    let hyperlinks = new RegExp("\\s*(" + this.hyperlinks.join("|") + ")\\s*:.*", "i");
+    let links_reg = new RegExp("\\s*(" + this.hyperlinks.join("|") + ")\\s*:.*", "i");
+    let import_reg = new RegExp("\\s*(" + this._keyword_import.join("|") + ")\\s+(.*)", "i");
     for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
       let line: string = model.getLineContent(lineNumber);
-      if (line.match(hyperlinks)) {
+      if (line.match(links_reg)) {
         let matches = undefined;
         let tableName = "";
         let columns = null;
-        let links = {};
+        let links = { "": {} };
         let multiline = false;
         let multitext = "";
         let multidata = {};
+        let imports = [];
         for (let i = lineNumber + 1; i <= position.lineCount; i++) {
           let line: string = model.getLineContent(i);
           if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
@@ -777,6 +782,16 @@ export class VanessaGherkinProvider {
             let value = matches[2].trim();
             if (links[tableName] == undefined) links[tableName] = {};
             multidata = links[tableName][key] = { key: key, name: value };
+          } else if ((matches = line.match(import_reg)) !== null) {
+            tableName = "";
+            columns = null;
+            multidata = {};
+            let filename = trimQuotes(matches[2].trim()).toLowerCase();
+            let vars = this._imports[filename];
+             if (vars) {
+              Object.keys(vars[""]).forEach(key => { links[""][key] = vars[""][key] });
+              Object.keys(vars).forEach(key => { if (key) links[key] = vars[key] });
+            }
           } else if (line.match(/^\s*(#|@|\/\/)/)) {
             continue;
           } else if ((matches = line.match(/^\s*\*/)) !== null) {
