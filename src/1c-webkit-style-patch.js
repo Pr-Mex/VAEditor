@@ -14,9 +14,16 @@ export function patchWebKit1C() {
     return false
   }
 
-  window.blockContextMenu = () => {
+  window.blockContextMenu1C = () => {
     document.addEventListener('contextmenu', dummy, false)
-    delete window.blockContextMenu
+    delete window.blockContextMenu1C
+    delete window.blockContextMenuVA
+  }
+
+  window.blockContextMenuVA = () => {
+    window.hideVanessaContextMenu = true
+    delete window.blockContextMenu1C
+    delete window.blockContextMenuVA
   }
 
   document.addEventListener('keydown', function (e) {
