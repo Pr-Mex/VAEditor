@@ -18,6 +18,7 @@ export class VanessaEditor implements IVanessaEditor {
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public undo = () => this.editor.trigger('undo…', 'undo', undefined);
   public redo = () => this.editor.trigger('undo…', 'redo', undefined);
+  public showContextMenu = () => this.editor.trigger("", "editor.action.showContextMenu", undefined);
   public getLineContent = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getLineWidgets = (lineNumber: number) => JSON.stringify(this.runtimeManager.getLineWidgets(lineNumber));
   public getWidgetLine = (codeWidget: string) => this.runtimeManager.getWidgetLine(codeWidget);
