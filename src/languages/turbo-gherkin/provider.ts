@@ -139,7 +139,7 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
     list.forEach((w: string) => this.keywords.push(w.split(" ")));
     this._keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
-    this.initTokenizer(this);
+    this.initTokenizer();
   }
 
   public setKeypairs = (arg: string): void => {
@@ -155,14 +155,14 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg);
     this.clearArray(this._metatags);
     list.forEach((w: string) => this._metatags.push(w));
-    this.initTokenizer(this);
+    this.initTokenizer();
   }
 
   public setHyperlinks = (arg: string): void => {
     let list = JSON.parse(arg);
     this.clearArray(this._hyperlinks);
     list.forEach((w: string) => this._hyperlinks.push(w));
-    this.initTokenizer(this);
+    this.initTokenizer();
   }
 
   public setVariablesArea = this.setHyperlinks;
@@ -644,7 +644,7 @@ export class VanessaGherkinProvider {
   private tokenizer: ITokenizationSupport;
 
   public initTokenizer() {
-    let lang = new GherkinLanguage();
+    let lang = new GherkinLanguage(this);
     if (this.tokenizer) this.tokenizer.dispose();
     this.tokenizer = createTokenizationSupport(
       StaticServices.modeService.get(),
