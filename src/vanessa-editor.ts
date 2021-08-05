@@ -129,8 +129,7 @@ export class VanessaEditor implements IVanessaEditor {
   constructor(model: monaco.editor.ITextModel, readOnly: boolean = false, checkSyntax = true) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.create(node, {
-      //@ts-ignore
-      contextmenu: !window.hideVanessaContextMenu,
+      contextmenu: false,
       model: model,
       readOnly: readOnly,
       scrollBeyondLastLine: false,
