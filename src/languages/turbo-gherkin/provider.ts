@@ -85,17 +85,10 @@ export class VanessaGherkinProvider {
   }
 
   protected isSection(text: string) {
-    let regexp = /^[^:#\/]+(?=:)/;
-    let line = text.match(regexp);
-    if (line == null) return false;
-    let words = line[0].trim().split(/\s+/);
-    if (words == undefined) return false;
-    return this.keywords.some((item: string[]) =>
-      item.length == words.length && item.every(
-        (w, i) => words[i] && w == words[i].toLowerCase()
-      )
-    );
-  };
+    let words = this.keywords.map(list => list.join("\\s+")).join('|');
+    let regexp = new RegExp("^\\s*(" + words + ")\\s*:", "i");
+    return regexp.test(text);
+  }
 
   protected splitWords(line: string): Array<string> {
     let regexp = /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>|[A-zА-яЁё]+|[^A-zА-яЁё\s]+/g;
