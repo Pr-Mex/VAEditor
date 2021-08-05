@@ -139,7 +139,7 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
     list.forEach((w: string) => this.keywords.push(w.split(" ")));
     this._keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
-    this.initTokenizer();
+    this.initTokenizer(this);
   }
 
   public setKeypairs = (arg: string): void => {
@@ -662,17 +662,6 @@ export class VanessaGherkinProvider {
     let words = this.splitWords(line);
     let keyword = this.findKeyword(words);
     if (keyword) {
-      if (keyword.length > 1) {
-        let regexp = "^";
-        keyword.forEach((w, i) => regexp += "[\\s]" + (i ? "+" : "*") + w);
-        let match = line.toLowerCase().match(new RegExp(regexp));
-        if (match) {
-          let text = "";
-          let length = match[0].length;
-          for (let i = 2; i < length; ++i) text += " ";
-          line = text + "if" + line.substring(length);
-        }
-      }
       if (words.length > keyword.length) {
         let keypair = this.keypairs[keyword.join(" ")] || [];
         let lastnum = words.length - 1;
