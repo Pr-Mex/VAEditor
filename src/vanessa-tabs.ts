@@ -457,6 +457,15 @@ export class VanessaTabs {
     this._renderWhitespace = value;
   }
 
+  public showContextMenu = () => {
+    if (this.current) {
+      const editor = this.current.editor.editor;
+      editor.updateOptions({ contextmenu: true });
+      editor.trigger("", "editor.action.showContextMenu", undefined);
+      editor.updateOptions({ contextmenu: false });
+    }
+  }
+
   public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }
   public get diffEditor(): VanessaDiffEditor { return this.current.editor as VanessaDiffEditor; }
   public canNavigateDiff = () => this.isDiffEditor && this.diffEditor.canNavigate();
