@@ -155,14 +155,14 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg);
     this.clearArray(this._metatags);
     list.forEach((w: string) => this._metatags.push(w));
-    this.initTokenizer();
+    this.initTokenizer(this);
   }
 
   public setHyperlinks = (arg: string): void => {
     let list = JSON.parse(arg);
     this.clearArray(this._hyperlinks);
     list.forEach((w: string) => this._hyperlinks.push(w));
-    this.initTokenizer();
+    this.initTokenizer(this);
   }
 
   public setVariablesArea = this.setHyperlinks;
