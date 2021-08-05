@@ -20,15 +20,3 @@ jobs:
         npm install
         npm run build --if-present
         npm test
-
-  codestyle:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.0
-    
-    - name: npm install and check codestyle
-      run: |
-        npm install
-        npm run codestyle
