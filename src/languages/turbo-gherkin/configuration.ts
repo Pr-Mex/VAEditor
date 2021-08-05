@@ -23,29 +23,48 @@ export const conf: monaco.languages.LanguageConfiguration = {
 
 export class GherkinLanguage {
 
-  ignoreCase  = true;
-
-  metatags = VanessaGherkinProvider.instance.metatags;
-
-  hyperlinks = VanessaGherkinProvider.instance.hyperlinks;
-
-  keywords = VanessaGherkinProvider.instance.singleWords.concat(["if"]);
+  ignoreCase = true;
 
   escapes = /\\(?:[abfnrtv\\"'{}\[\]\$]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/;
 
   word = /[A-zА-яЁё][0-9A-zА-яЁё]*/;
 
+  constructor(provider: VanessaGherkinProvider) {
+    provider.hyperlinks.forEach(word => {
+      const reg = new RegExp("^\\s*" + word.split(/\s+/).join("\\s+") + "\\s*:");
+      this.tokenizer.section.push([reg, { token: "metatag.php", next: "@operator" }])
+    });
+    provider.metatags.forEach(word => {
+      const reg = new RegExp("^\\s*" + word.split(/\s+/).join("\\s+") + "(\\s+|$)");
+      this.tokenizer.section.push([reg, { token: "metatag.php", next: "@operator" }])
+    });
+    provider.keywords.forEach(list => {
+      const reg = new RegExp("^\\s*" + list.join("\\s+") + "\\s*:");
+      this.tokenizer.section.push([reg, { token: "metatag.php", next: "@operator" }])
+    });
+    provider.keywords.forEach(list => {
+      const reg = new RegExp("^\\s*" + list.join("\\s+") + "(\\s+|$)");
+      this.tokenizer.keyword.push([reg, { token: "keyword", next: "@operator" }])
+    });
+  }
+
   tokenizer = {
     root: [
+      { include: "@hyperlink" },
       { include: "@section" },
       { include: "@keyword" },
       { include: "@common" },
       [/.*$/, "emphasis"],
     ],
 
+    hyperlink: [
+      [/^\s*(@word)\s*=/, { token: "operator", next: "@operator" }],
+    ],
+
     common: [
       [/@.*/, "annotation"],
       [/^\s*\*.*$/, "strong"],
+      [/^\s*(@word)/, "emphasis"],
       [/^\s*\|/, { token: "operator", next: "@params" }],
       [/^\s*"""(@word).*$/, { token: "string", next: "@embeded", nextEmbedded: "$1" }],
       [/^\s*""".*$/, { token: "string", next: "@multyline" }],
@@ -59,27 +78,9 @@ export class GherkinLanguage {
       [/҂+$/, { token: "keyword" }]
     ],
 
-    section: [
-      [/^\s*(@word)(?:\s*\:)/, {
-        cases: {
-          "$1@keywords": { token: "metatag.php", switchTo: "@root" },
-          "$1@hyperlinks": { token: "metatag.php", switchTo: "@root" },
-          "@default": { token: "identifier", switchTo: "@root" },
-        },
-      }],
-    ],
+    section: [],
 
-    keyword: [
-      [/^\s*(@word)\s*=/, { token: "operator", next: "@operator" }],
-      [/^\s*(@word)/, {
-        cases: {
-          "$1@metatags": { token: "metatag", next: "@operator" },
-          "$1@keywords": { token: "keyword", next: "@operator" },
-          "@default": { token: "emphasis" },
-        },
-        log: "test $1"
-      }],
-    ],
+    keyword: [],
 
     operator: [
       [/^/, { token: "white", next: "@pop" }],
