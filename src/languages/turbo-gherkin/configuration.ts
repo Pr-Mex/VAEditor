@@ -30,22 +30,13 @@ export class GherkinLanguage {
   word = /[A-zА-яЁё][0-9A-zА-яЁё]*/;
 
   constructor(provider: VanessaGherkinProvider) {
-    provider.hyperlinks.forEach(word => {
-      const reg = new RegExp("^\\s*" + word.split(/\s+/).join("\\s+") + "\\s*:");
-      this.tokenizer.section.push([reg, { token: "metatag.php", next: "@operator" }])
-    });
-    provider.metatags.forEach(word => {
-      const reg = new RegExp("^\\s*" + word.split(/\s+/).join("\\s+") + "(\\s+|$)");
-      this.tokenizer.section.push([reg, { token: "metatag.php", next: "@operator" }])
-    });
-    provider.keywords.forEach(list => {
-      const reg = new RegExp("^\\s*" + list.join("\\s+") + "\\s*:");
-      this.tokenizer.section.push([reg, { token: "metatag.php", next: "@operator" }])
-    });
-    provider.keywords.forEach(list => {
-      const reg = new RegExp("^\\s*" + list.join("\\s+") + "(\\s+|$)");
-      this.tokenizer.keyword.push([reg, { token: "keyword", next: "@operator" }])
-    });
+    const metatags = provider.metatags.join('|');
+    const hyperlnk = provider.hyperlinks.join('|');
+    const keywords = provider.keywords.map(list => list.join("\\s+")).join('|');
+    this.tokenizer.section.push([new RegExp("^\\s*(" + hyperlnk + ")\\s*:"), { token: "metatag.php", next: "@operator" }])
+    this.tokenizer.section.push([new RegExp("^\\s*(" + keywords + ")\\s*:"), { token: "metatag.php", next: "@operator" }]);
+    this.tokenizer.section.push([new RegExp("^\\s*(" + metatags + ")(\\s+|$)"), { token: "metatag.php", next: "@operator" }])
+    this.tokenizer.keyword.push([new RegExp("^\\s*(" + keywords + ")(\\s+|$)"), { token: "keyword", next: "@operator" }]);
   }
 
   tokenizer = {
