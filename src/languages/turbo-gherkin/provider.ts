@@ -341,14 +341,7 @@ export class VanessaGherkinProvider {
   ): monaco.languages.CodeActionList {
     if (context.markers.length == 0) return undefined;
     if (context.markers.every(e => e.severity != monaco.MarkerSeverity.Error)) return undefined;
-    if (context.only == "quickfix") return this.getQuickFix(model, context.markers);
-    let actions = [];
-    /*
-        VanessaEditor.get().actionManager.codeActions.forEach((e: any) => {
-          actions.push({ command: { id: e.id }, title: e.title });
-        });
-    */
-    return { actions: actions, dispose: () => { } };
+    return this.getQuickFix(model, context.markers);
   }
 
   private getIndent(text: string, tabSize: number) {
