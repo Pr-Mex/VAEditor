@@ -40,6 +40,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   constructor(model: monaco.editor.IDiffEditorModel, readOnly: boolean = false) {
     let node = document.getElementById("VanessaEditorContainer");
     this.editor = monaco.editor.createDiffEditor(node, {
+      contextmenu: false,
       originalEditable: false,
       scrollBeyondLastLine: false,
       glyphMargin: true,
