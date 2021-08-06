@@ -64,8 +64,6 @@ export class VanessaGherkinProvider {
   protected _syntaxMsg = "Syntax error";
   protected _keywords: string[][] = [];
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
-  protected _hyperlinks: string[] = ["links", "hyperlinks", "variables", "ссылки", "гиперссылки", "переменные"];
-  protected _keyword_import: string[] = ["import", "using", "импорт", "подключить"];
   protected _keypairs: any = {};
   protected _steps = {};
   protected _elements = {};
@@ -80,10 +78,6 @@ export class VanessaGherkinProvider {
 
   public get metatags(): string[] {
     return this._metatags;
-  }
-
-  public get hyperlinks(): string[] {
-    return this._hyperlinks;
   }
 
   protected isSection(text: string, name: string = "") {
@@ -163,15 +157,6 @@ export class VanessaGherkinProvider {
     list.forEach((w: string) => this._metatags.push(w));
     this.initTokenizer();
   }
-
-  public setHyperlinks = (arg: string): void => {
-    let list = JSON.parse(arg);
-    this.clearArray(this._hyperlinks);
-    list.forEach((w: string) => this._hyperlinks.push(w));
-    this.initTokenizer();
-  }
-
-  public setVariablesArea = this.setHyperlinks;
 
   public setSoundHint = (arg: string): void => {
     this._soundHint = arg;
@@ -737,8 +722,8 @@ export class VanessaGherkinProvider {
   }
 
   private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
-    let links_reg = new RegExp("\\s*(" + this.hyperlinks.join("|") + ")\\s*:.*", "i");
-    let import_reg = new RegExp("\\s*(" + this._keyword_import.join("|") + ")\\s+(.*)", "i");
+    let links_reg = new RegExp(this.matcher.reg.section.variables);
+    let import_reg = new RegExp(this.matcher.reg.import.source + "(.+)");
     for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
       let line: string = model.getLineContent(lineNumber);
       if (line.match(links_reg)) {
@@ -749,7 +734,6 @@ export class VanessaGherkinProvider {
         let multiline = false;
         let multitext = "";
         let multidata = {};
-        let imports = [];
         for (let i = lineNumber + 1; i <= position.lineCount; i++) {
           let line: string = model.getLineContent(i);
           if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
@@ -779,7 +763,7 @@ export class VanessaGherkinProvider {
             tableName = "";
             columns = null;
             multidata = {};
-            let filename = trimQuotes(matches[2].trim()).toLowerCase();
+            let filename = trimQuotes(matches[3].trim()).toLowerCase();
             let vars = this._imports[filename];
             if (vars) {
               Object.keys(vars[""]).forEach(key => { links[""][key] = vars[""][key] });
