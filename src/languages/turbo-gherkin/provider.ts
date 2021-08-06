@@ -54,7 +54,7 @@ export class VanessaGherkinProvider {
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
   public get errorLinks(): any { return this._errorLinks; }
   public get elements(): any { return this._elements; }
-  public get keywords(): any { return this._keywords; }
+  public get keywords(): any { return this._matcher.words; }
   public get keypairs(): any { return this._keypairs; }
   public get syntaxMsg(): any { return this._syntaxMsg; }
   public get variables(): any { return this._variables; }
@@ -62,7 +62,6 @@ export class VanessaGherkinProvider {
 
   protected _soundHint = "Sound";
   protected _syntaxMsg = "Syntax error";
-  protected _keywords: string[][] = [];
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
   protected _keypairs: any = {};
   protected _steps = {};
@@ -127,14 +126,6 @@ export class VanessaGherkinProvider {
 
   public setMatchers = (arg: string): void => {
     this._matcher = new KeywordMatcher(arg);
-    this.initTokenizer();
-  }
-
-  public setKeywords = (arg: string): void => {
-    this.clearArray(this.keywords);
-    let list = JSON.parse(arg).map((w: string) => w.toLowerCase());
-    list.forEach((w: string) => this.keywords.push(w.split(" ")));
-    this._keywords = this.keywords.sort((a: any, b: any) => b.length - a.length);
     this.initTokenizer();
   }
 

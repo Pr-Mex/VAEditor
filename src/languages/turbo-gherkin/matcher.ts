@@ -9,6 +9,7 @@ class Section {
 
 export class KeywordMatcher {
 
+  public words: string[][] = [];
   public section = new Section;
   public primary: RegExp;
   public import: RegExp;
@@ -41,23 +42,28 @@ export class KeywordMatcher {
     Object.keys(src).forEach(lang => {
       const data = src[lang];
       Object.keys(data).forEach(word => {
+        const list = data[word];
         switch (word) {
           case "":
           case "name":
           case "native":
             break;
           case "import":
-            data[word].forEach(w => keywords.import.push(w))
+            list.forEach(w => keywords.import.push(w))
             break;
           default:
             if (keywords.section[word]) {
-              data[word].forEach(w => keywords.section[word].push(w))
-              data[word].forEach(w => keywords.primary.push(w))
-            } else
-              data[word].forEach(w => keywords.step.push(w))
+              list.forEach(w => keywords.section[word].push(w))
+              list.forEach(w => keywords.primary.push(w))
+            } else {
+              list.forEach(w => keywords.step.push(w))
+              list.forEach(w => this.words.push(w.split(/\s+/)))
+            }
         }
       })
     });
+
+    this.words.sort((a, b) => b.length - a.length);
 
     Object.keys(keywords.section).forEach(key => {
       this.section[key] = this.regex(keywords.section[key], "\\s*:")
