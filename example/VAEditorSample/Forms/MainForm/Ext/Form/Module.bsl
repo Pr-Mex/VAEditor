@@ -5,8 +5,11 @@ Var KeyCodeMap;
 
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
-
-	VanessaEditorLoad(FormAttributeToValue("Object").GetTemplate("VAEditor"));
+	
+	DataObject = FormAttributeToValue("Object");
+	KeywordsURL = PutToTempStorage(DataObject.GetTemplate("Keywords"), UUID);
+	VanessaEditorLoad(DataObject.GetTemplate("VAEditor"));
+	
 	ErrorCode = New UUID;
 	ErrorText = "Runtime error info";
 	MessageText = "Hello, world!";
@@ -500,11 +503,11 @@ EndProcedure
 #Region Json
 
 &AtClient
-Function JsonLoad(Json)
+Function JsonLoad(Json, ReadToMap = False)
 
 	JSONReader = New JSONReader;
 	JSONReader.SetString(Json);
-	Value = ReadJSON(JSONReader);
+	Value = ReadJSON(JSONReader, ReadToMap);
 	JSONReader.Close();
 	Return Value;
 
@@ -559,7 +562,6 @@ Function GetKeyInfo(Data)
 
 EndFunction
 
-
 &AtClient
 Procedure CreateStep(Editor, lineNumber)
 
@@ -579,7 +581,6 @@ Procedure CreateStep(Editor, lineNumber)
 	GherkinProvider().setStepList(JsonDump(Array), False);
 
 EndProcedure
-
 
 &AtClient
 Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
@@ -653,7 +654,7 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 EndProcedure
 
 &AtClient
-Procedure FillEditorActions(Editor);
+Procedure FillEditorActions(Editor)
 
 	TextJSON = Editor.getActions();
 	JSONReader = New JSONReader;
@@ -669,66 +670,31 @@ EndProcedure
 &AtClient
 Function GetKeywords(Language = "")
 
-	WordsRu = "
-		|и
-		|когда
-		|тогда
-		|затем
-		|дано
-		|функция
-		|функционал
-		|функциональность
-		|свойство
-		|предыстория
-		|контекст
-		|сценарий
-		|структура сценария
-		|к тому же
-		|примеры
-		|допустим
-		|пусть
-		|если
-		|иначеесли
-		|иначе
-		|то
-		|также
-		|но
-		|а
-		|";
+	TempFileName = GetTempFileName();
+	DeleteFiles(TempFileName);
+	CreateDirectory(TempFileName);
 
-	WordsEn = "
-		|feature
-		|functionality
-		|business need
-		|ability
-		|background
-		|scenario outline
-		|scenario
-		|examples
-		|given
-		|when
-		|then
-		|and
-		|but
-		|if
-		|elseif
-		|else
-		|";
-
-	split = "
-		|";
-
-	If Language = "en" Then
-		words = WordsEn;
-	ElsIf Language = "ru" Then
-		words = WordsRu;
+	TemplateBinaryData = GetFromTempStorage(KeywordsURL);
+	ZipFileReader = New ZipFileReader(TemplateBinaryData.OpenStreamForRead());
+	For each ZipFileEntry In ZipFileReader.Items Do
+		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
+		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
+		TextReader = New TextReader(BinaryData.OpenStreamForRead(), TextEncoding.UTF8);
+		JsonText = TextReader.Read();
+	EndDo;
+	DeleteFiles(TempFileName);
+	
+	
+	JsonData = JsonLoad(JsonText, True);
+	Keyrords = New Map;
+	If IsBlankString(Language) Then
+		Keyrords.Insert("en", JsonData.Get("en"));
+		Keyrords.Insert("ru", JsonData.Get("ru"));
 	Else
-		words = WordsRu + WordsEn;
+		Keyrords.Insert(Language, JsonData.Get(Language));
 	EndIf;
 
-	WordList = StrSplit(words, split, False);
-
-	Return JsonDump(WordList);
+	Return JsonDump(Keyrords);
 
 EndFunction
 
@@ -854,7 +820,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	Provider = DefaultView().VanessaGherkinProvider;
 	Provider.setErrorLinks(GetErrorLinks());
 	Provider.setMetatags(GetMetatags());
-	Provider.setKeywords(GetKeywords());
+	Provider.setMatchers(GetKeywords());
 	Provider.setElements(GetElements());
 	Provider.setVariables(GetVariables());
 	Provider.setSyntaxMsg(syntaxErrorMsg);

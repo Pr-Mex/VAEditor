@@ -5,6 +5,7 @@ import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/m
 import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
+import { KeywordMatcher } from './matcher';
 import * as distance from 'jaro-winkler';
 
 interface IVanessaStep {
@@ -71,6 +72,7 @@ export class VanessaGherkinProvider {
   protected _variables = {};
   protected _errorLinks = [];
   protected _imports = {};
+  protected _matcher: KeywordMatcher;
 
   public get singleWords(): string[] {
     return this.keywords.filter(w => w.length == 1).map(w => w[0]);
@@ -84,10 +86,14 @@ export class VanessaGherkinProvider {
     return this._hyperlinks;
   }
 
-  protected isSection(text: string) {
-    let words = this.keywords.map(list => list.join("\\s+")).join('|');
-    let regexp = new RegExp("^\\s*(" + words + ")\\s*:", "i");
+  protected isSection(text: string, name: string = "") {
+    const regexp = new RegExp(this.matcher.reg.section[name]);
     return regexp.test(text);
+  }
+
+  protected getSection(text: string) {
+    const res = Object.keys(this.matcher.reg.section).filter(key => key && this.matcher.reg.section[key].test(text));
+    return res && res[0];
   }
 
   protected splitWords(line: string): Array<string> {
@@ -125,6 +131,13 @@ export class VanessaGherkinProvider {
     commands.forEach((e: IVanessaAction) => {
       this.errorLinks.push(e);
     });
+  }
+
+  public get matcher() { return this._matcher; }
+
+  public setMatchers = (arg: string): void => {
+    this._matcher = new KeywordMatcher(arg);
+    this.initTokenizer();
   }
 
   public setKeywords = (arg: string): void => {
@@ -594,9 +607,9 @@ export class VanessaGherkinProvider {
     return { suggestions: result };
   }
 
-  private lineSyntaxError(line: string): boolean {
-    if (/^[\s]*[#|@|//]/.test(line)) return false;
-    if (this.isSection(line)) return false;
+  private lineSyntaxError(line: string, section: string): boolean {
+    let match = line.match(this.matcher.reg.step);
+    if (!match) return false;
     let words = this.splitWords(line);
     let keyword = this.findKeyword(words);
     if (keyword == undefined) return false;
@@ -618,11 +631,16 @@ export class VanessaGherkinProvider {
     if (model.getModeId() != "turbo-gherkin") return;
     let problems: monaco.editor.IMarkerData[] = [];
     let lineCount = model.getLineCount();
-    let notMultiline = true;
+    let multiline = false;
+    let section = "";
     for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      let line: string = model.getLineContent(lineNumber);
-      if (/^\s*""".*$/.test(line)) { notMultiline = !notMultiline; continue; }
-      if (notMultiline && this.lineSyntaxError(line)) problems.push({
+      const line: string = model.getLineContent(lineNumber);
+      if (/^\s*""".*$/.test(line)) { multiline = !multiline; continue; }
+      if (multiline) continue;
+      if (/^\s*(#|@|\/\/)/.test(line)) continue;
+      if (this.isSection(line)) { section = this.getSection(line); continue; }
+      if (section == "feature") continue;
+      if (this.lineSyntaxError(line, section)) problems.push({
         severity: monaco.MarkerSeverity.Error,
         message: this.syntaxMsg,
         startLineNumber: lineNumber,
@@ -763,7 +781,7 @@ export class VanessaGherkinProvider {
             multidata = {};
             let filename = trimQuotes(matches[2].trim()).toLowerCase();
             let vars = this._imports[filename];
-             if (vars) {
+            if (vars) {
               Object.keys(vars[""]).forEach(key => { links[""][key] = vars[""][key] });
               Object.keys(vars).forEach(key => { if (key) links[key] = vars[key] });
             }

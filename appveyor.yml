@@ -23,6 +23,7 @@ build_script:
   - npm -q run build
   - 7z a AutoTest.zip %CD%/dist/*.js
   - 7z a VAEditor.zip %CD%/dist/index.html
+  - 7z a Keywords.zip %CD%/example/Keywords/*.json
   - 7z a StepList.zip %CD%/example/StepList/*.json
 
 after_build:
@@ -30,6 +31,9 @@ after_build:
   - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/VAEditor | Out-Null
   - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/VAEditor/Ext | Out-Null
   - ps: Copy-Item -Path VAEditor.zip -Destination example/VAEditorSample/Templates/VAEditor/Ext/Template.bin
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/Keywords | Out-Null
+  - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/Keywords/Ext | Out-Null
+  - ps: Copy-Item -Path Keywords.zip -Destination example/VAEditorSample/Templates/Keywords/Ext/Template.bin
   - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/StepList | Out-Null
   - ps: New-Item -ItemType Directory -Force -Path example/VAEditorSample/Templates/StepList/Ext | Out-Null
   - ps: Copy-Item -Path StepList.zip -Destination example/VAEditorSample/Templates/StepList/Ext/Template.bin

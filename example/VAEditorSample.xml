@@ -32,6 +32,7 @@
 			<Form>MainForm</Form>
 			<Form>Autotest</Form>
 			<Template>VAEditor</Template>
+			<Template>Keywords</Template>
 			<Template>StepList</Template>
 			<Template>AutoTest</Template>
 		</ChildObjects>
