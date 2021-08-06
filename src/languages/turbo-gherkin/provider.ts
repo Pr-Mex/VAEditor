@@ -77,12 +77,12 @@ export class VanessaGherkinProvider {
   }
 
   protected isSection(text: string) {
-    const regexp = new RegExp(this.matcher.reg.primary);
+    const regexp = new RegExp(this.matcher.primary);
     return regexp.test(text);
   }
 
   protected getSection(text: string) {
-    const res = Object.keys(this.matcher.reg.section).filter(key => key && this.matcher.reg.section[key].test(text));
+    const res = Object.keys(this.matcher.section).filter(key => key && this.matcher.section[key].test(text));
     return res && res[0];
   }
 
@@ -589,7 +589,7 @@ export class VanessaGherkinProvider {
   }
 
   private lineSyntaxError(line: string, section: string): boolean {
-    let match = line.match(this.matcher.reg.step);
+    let match = line.match(this.matcher.step);
     if (!match) return false;
     let words = this.splitWords(line);
     let keyword = this.findKeyword(words);
@@ -718,8 +718,8 @@ export class VanessaGherkinProvider {
   }
 
   private getLinks(model: monaco.editor.ITextModel, position: { lineNumber: number, lineCount: number }) {
-    let links_reg = new RegExp(this.matcher.reg.section.variables);
-    let import_reg = new RegExp(this.matcher.reg.import.source + "(.+)");
+    let links_reg = new RegExp(this.matcher.section.variables);
+    let import_reg = new RegExp(this.matcher.import.source + "(.+)");
     for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
       let line: string = model.getLineContent(lineNumber);
       if (line.match(links_reg)) {

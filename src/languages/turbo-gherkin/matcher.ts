@@ -1,9 +1,21 @@
+class Section {
+  feature: RegExp;
+  variables: RegExp;
+  background: RegExp;
+  scenario: RegExp;
+  scenarioOutline: RegExp;
+  examples: RegExp;
+};
+
 export class KeywordMatcher {
 
-  public reg: any;
+  public section = new Section;
+  public primary: RegExp;
+  public import: RegExp;
+  public step: RegExp;
 
-  public regex(list: Array<string>, postfix: string = "(\\s+|$)") {
-    return new RegExp("^\\s*(" + list
+  public regex(list: Array<string>, postfix: string = "(\\s+|$)"): RegExp {
+    return list.length === 0 ? /$.^/ : new RegExp("^\\s*(" + list
       .map(w => w.split(/\s+/)).sort((a, b) => b.length - a.length)
       .map(w => w.join("\\s+")).join("|") + ")" + postfix, "i");
   }
@@ -47,15 +59,11 @@ export class KeywordMatcher {
       })
     });
 
-    this.reg = {
-      section: {},
-      primary: this.regex(keywords.primary, "\\s*:"),
-      import: this.regex(keywords.import),
-      step: this.regex(keywords.step),
-    }
-
     Object.keys(keywords.section).forEach(key => {
-      this.reg.section[key] = this.regex(keywords.section[key], "\\s*:")
+      this.section[key] = this.regex(keywords.section[key], "\\s*:")
     });
+    this.primary = this.regex(keywords.primary, "\\s*:");
+    this.import = this.regex(keywords.import);
+    this.step = this.regex(keywords.step);
   }
 }
