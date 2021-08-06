@@ -2,6 +2,12 @@ export class KeywordMatcher {
 
   public reg: any;
 
+  public regex(list: Array<string>, postfix: string = "(\\s+|$)") {
+    return new RegExp("^\\s*(" + list
+      .map(w => w.split(/\s+/)).sort((a, b) => b.length - a.length)
+      .map(w => w.join("\\s+")).join("|") + ")" + postfix, "i");
+  }
+
   constructor(text: string) {
 
     const src = JSON.parse(text);
@@ -41,19 +47,15 @@ export class KeywordMatcher {
       })
     });
 
-    let regex = (list: Array<string>, postfix: string) => new RegExp("^\\s*(" + list
-      .map(w => w.split(/\s+/)).sort((a, b) => b.length - a.length)
-      .map(w => w.join("\\s+")).join("|") + ")" + postfix, "i");
-
     this.reg = {
       section: {},
-      primary: regex(keywords.primary, "\\s*:"),
-      import: regex(keywords.import, "(\\s+|$)"),
-      step: regex(keywords.step, "(\\s+|$)"),
+      primary: this.regex(keywords.primary, "\\s*:"),
+      import: this.regex(keywords.import),
+      step: this.regex(keywords.step),
     }
 
     Object.keys(keywords.section).forEach(key => {
-      this.reg.section[key] = regex(keywords.section[key], "\\s*:")
+      this.reg.section[key] = this.regex(keywords.section[key], "\\s*:")
     });
   }
 }
