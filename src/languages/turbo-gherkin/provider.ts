@@ -70,9 +70,14 @@ export class VanessaGherkinProvider {
   protected _errorLinks = [];
   protected _imports = {};
   protected _matcher: KeywordMatcher;
+  protected _locale: string;
 
   public get metatags(): string[] {
     return this._metatags;
+  }
+
+  public get locale(): string {
+    return this._locale;
   }
 
   protected isSection(text: string) {
@@ -217,7 +222,8 @@ export class VanessaGherkinProvider {
     }
   }
 
-  public constructor() {
+  public constructor(locale: string) {
+    this._locale = locale;
     this.createTheme1C();
   }
 
