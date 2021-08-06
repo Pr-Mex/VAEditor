@@ -2,13 +2,12 @@ export class KeywordMatcher {
 
   public reg: any;
 
-  constructor(text: string, languages = ["ru", "en"]) {
+  constructor(text: string) {
 
     const src = JSON.parse(text);
 
     let keywords = {
       section: {
-        "": [],
         feature: [],
         variables: [],
         background: [],
@@ -16,11 +15,12 @@ export class KeywordMatcher {
         scenarioOutline: [],
         examples: [],
       },
+      primary: [],
       import: [],
       step: [],
     }
 
-    languages.forEach(lang => {
+    Object.keys(src).forEach(lang => {
       const data = src[lang];
       Object.keys(data).forEach(word => {
         switch (word) {
@@ -34,25 +34,26 @@ export class KeywordMatcher {
           default:
             if (keywords.section[word]) {
               data[word].forEach(w => keywords.section[word].push(w))
-              data[word].forEach(w => keywords.section[""].push(w))
+              data[word].forEach(w => keywords.primary.push(w))
             } else
               data[word].forEach(w => keywords.step.push(w))
         }
       })
     });
 
-    let ex = (list: Array<string>) => "(" + list
+    let regex = (list: Array<string>, postfix: string) => new RegExp("^\\s*(" + list
       .map(w => w.split(/\s+/)).sort((a, b) => b.length - a.length)
-      .map(w => w.join("\\s+")).join("|") + ")";
+      .map(w => w.join("\\s+")).join("|") + ")" + postfix, "i");
 
     this.reg = {
       section: {},
-      import: new RegExp("^\\s*" + ex(keywords.import) + "(\\s+|$)", "i"),
-      step: new RegExp("^\\s*" + ex(keywords.step) + "(\\s+|$)", "i"),
+      primary: regex(keywords.primary, "\\s*:"),
+      import: regex(keywords.import, "(\\s+|$)"),
+      step: regex(keywords.step, "(\\s+|$)"),
     }
 
     Object.keys(keywords.section).forEach(key => {
-      this.reg.section[key] = new RegExp("^\\s*" + ex(keywords.section[key]) + "\\s*:")
+      this.reg.section[key] = regex(keywords.section[key], "\\s*:")
     });
   }
 }

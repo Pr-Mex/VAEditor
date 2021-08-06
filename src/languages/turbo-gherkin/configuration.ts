@@ -32,7 +32,7 @@ export class GherkinLanguage {
   constructor(provider: VanessaGherkinProvider) {
     const metatags = provider.metatags.join('|');
     this.tokenizer.section.push([new RegExp("^\\s*(" + metatags + ")(\\s+|$)"), { token: "metatag.php", next: "@operator" }])
-    this.tokenizer.section.push([new RegExp(provider.matcher.reg.section[""]), { token: "metatag.php", next: "@operator" }])
+    this.tokenizer.section.push([new RegExp(provider.matcher.reg.primary), { token: "metatag.php", next: "@operator" }])
     this.tokenizer.keyword.push([new RegExp(provider.matcher.reg.import), { token: "keyword", next: "@operator" }]);
     this.tokenizer.keyword.push([new RegExp(provider.matcher.reg.step), { token: "keyword", next: "@operator" }]);
   }

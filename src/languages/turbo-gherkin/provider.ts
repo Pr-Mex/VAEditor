@@ -76,8 +76,8 @@ export class VanessaGherkinProvider {
     return this._metatags;
   }
 
-  protected isSection(text: string, name: string = "") {
-    const regexp = new RegExp(this.matcher.reg.section[name]);
+  protected isSection(text: string) {
+    const regexp = new RegExp(this.matcher.reg.primary);
     return regexp.test(text);
   }
 
@@ -618,7 +618,7 @@ export class VanessaGherkinProvider {
       const line: string = model.getLineContent(lineNumber);
       if (/^\s*""".*$/.test(line)) { multiline = !multiline; continue; }
       if (multiline) continue;
-      if (/^\s*(#|@|\/\/)/.test(line)) continue;
+      if (/^\s*(#|@|\*|\/\/)/.test(line)) continue;
       if (this.isSection(line)) { section = this.getSection(line); continue; }
       if (section == "feature") continue;
       if (this.lineSyntaxError(line, section)) problems.push({
