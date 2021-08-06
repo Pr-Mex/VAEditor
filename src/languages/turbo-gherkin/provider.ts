@@ -72,10 +72,6 @@ export class VanessaGherkinProvider {
   protected _imports = {};
   protected _matcher: KeywordMatcher;
 
-  public get singleWords(): string[] {
-    return this.keywords.filter(w => w.length == 1).map(w => w[0]);
-  }
-
   public get metatags(): string[] {
     return this._metatags;
   }
