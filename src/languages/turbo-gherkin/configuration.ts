@@ -36,7 +36,7 @@ export class GherkinLanguage {
     this.tokenizer.section.push([provider.matcher.primary, { token: "metatag.php", next: "@operator" }])
     this.tokenizer.keyword.push([provider.matcher.import, { token: "keyword", next: "@operator" }]);
     this.tokenizer.keyword.push([provider.matcher.step, { token: "keyword", next: "@operator" }]);
-    this.tokenizer.feature[0] = [provider.matcher.primary, { token: "metatag.php", next: "@pop" }];
+    this.tokenizer.feature[0] = [provider.matcher.primary, { token: "metatag.php", next: "@root" }];
   }
 
   tokenizer = {
@@ -56,17 +56,9 @@ export class GherkinLanguage {
 
     feature: [
       { include: "@section" },
-      [/@.*/, "annotation"],
-      [/^\s*\*.*$/, "strong"],
       [/^\s*(@word)/, "emphasis"],
       [/\s*(@word)/, "emphasis"],
-      { include: "@whitespace" },
-      { include: "@numbers" },
-      [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
-      [/'([^'\\]|\\.)*$/, "string.invalid"], // non-teminated string
-      [/"/, "string", "@string_double"],
-      [/'/, "string", "@string_single"],
-      [/</, "string", "@string_angle"],
+      { include: "@common" },
     ] as Array<any>,
 
     hyperlink: [
