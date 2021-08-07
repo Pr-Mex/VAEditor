@@ -57,7 +57,7 @@ export class KeywordMatcher {
               list.forEach(w => keywords.primary.push(w))
             } else {
               list.forEach(w => keywords.step.push(w))
-              list.forEach(w => this.words.push(w.split(/\s+/)))
+              list.forEach(w => this.words.push(w.toLowerCase().split(/\s+/)))
             }
         }
       })

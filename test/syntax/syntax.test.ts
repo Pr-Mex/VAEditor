@@ -11,7 +11,7 @@ describe('Проверка синтаксиса', function () {
     result = monaco.editor.getModelMarkers({owner: "syntax", resource: model.uri});
     console.log(result);
   });
-  it('Расстановка маркеров', () => {
-    expect(result).to.be.an('array');
+  it('Ключевые слова в описании фичи', () => {
+    expect(result).to.be.an('array').to.have.lengthOf(1);
   });
 })
