@@ -32,7 +32,7 @@ export class GherkinLanguage {
   constructor(provider: VanessaGherkinProvider) {
     const metatags = provider.matcher.regex(provider.metatags);
     this.tokenizer.section.push([new RegExp(metatags), { token: "metatag.php", next: "@operator" }])
-    this.tokenizer.section.push([provider.matcher.section.feature, { token: "metatag.php", next: "@header" }])
+    this.tokenizer.section.push([provider.matcher.section.feature, { token: "metatag.php", next: "@heading" }])
     this.tokenizer.section.push([provider.matcher.primary, { token: "metatag.php", next: "@operator" }])
     this.tokenizer.keyword.push([provider.matcher.import, { token: "keyword", next: "@operator" }]);
     this.tokenizer.keyword.push([provider.matcher.step, { token: "keyword", next: "@operator" }]);
@@ -48,7 +48,7 @@ export class GherkinLanguage {
       [/.*$/, "emphasis"],
     ],
 
-    header: [
+    heading: [
       [/^/, { token: "white", next: "@feature" }],
       [/\s*(@word)/, "identifier"],
       { include: "@common" },
