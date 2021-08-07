@@ -68,7 +68,7 @@ describe('Vanessa Automation Editor', function () {
     editor.setPosition(2, 5);
     let pos = editor.getPosition();
     expect(pos).to.be.an("object");
-    expect(pos).to.have.property("lineNumber").to.equal(2);
-    expect(pos).to.have.property("column").to.equal(5);
+    expect(pos).to.have.property("lineNumber", 2);
+    expect(pos).to.have.property("column", 5);
   });
 })
