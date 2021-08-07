@@ -622,8 +622,8 @@ export class VanessaGherkinProvider {
         severity: monaco.MarkerSeverity.Error,
         message: this.syntaxMsg,
         startLineNumber: lineNumber,
-        startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
         endLineNumber: lineNumber,
+        startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
         endColumn: model.getLineLastNonWhitespaceColumn(lineNumber),
       });
     }
