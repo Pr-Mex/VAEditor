@@ -26,7 +26,7 @@ install:
 
 build_script:
   - npm -q run build
-  - .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
+  - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
 after_build:
   - mkdir database
