@@ -14,7 +14,7 @@ const content = line1 + '\n' + line2;
 const url = 'Браузер.feature';
 const title = 'Заголовок файла';
 
-describe('Vanessa Automation Editor', function () {
+describe('Управление редактором', function () {
   let editor: VanessaEditor;
   before(() => {
     while (popVanessaMessage()) { }
