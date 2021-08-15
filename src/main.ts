@@ -1,3 +1,12 @@
+//@ts-ignore
+self.MonacoEnvironment = {
+	globalAPI: true,
+  getWorkerUrl: function (moduleId: any, label: any): void {
+    // tslint:disable-next-line: max-line-length
+    return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker");
+  }
+};
+
 import "./media/debug";
 import "./media/tabs";
 import { setLocaleData } from 'monaco-editor-nls';
@@ -19,14 +28,6 @@ import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { EventsManager, initPage } from "./common";
 
 initPage();
-
-//@ts-ignore
-window.MonacoEnvironment = { // worker loader
-  getWorkerUrl: function (moduleId: any, label: any): void {
-    // tslint:disable-next-line: max-line-length
-    return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker");
-  }
-};
 
 Object.defineProperties(window, {
   VanessaTabs: { get: () => VanessaTabs.getStandalone() },
