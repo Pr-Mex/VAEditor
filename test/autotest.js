@@ -45,7 +45,7 @@ const autotest = (url) => {
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
     const button = $('button.vanessa-hidden', { id: 'AutotestResult' })
     document.body.appendChild(button).click()
-    dom.removeClass(domMain, 'vanessa-hidden')
+    domMain.classList.remove('vanessa-hidden')
   })
 
   delete window.VanessaAutotest
