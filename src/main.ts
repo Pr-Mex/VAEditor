@@ -10,7 +10,7 @@ self.MonacoEnvironment = {
 import "./media/debug";
 import "./media/tabs";
 import { setLocaleData } from 'monaco-editor-nls';
-import { patchWebKit1C } from "./1c-webkit-style-patch";
+import { patchWebKit1C } from "./1c-webkit-patch";
 
 let reg = new RegExp('[?&]localeCode=([^&#]*)', 'i');
 let queryString = reg.exec(window.location.search);
