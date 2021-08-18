@@ -53,7 +53,7 @@ const autotest = (url) => {
 
 if (location.search.match(/^\?grep=/) || process.argv.env === 'test') {
   window.onload = () => autotest()
-} else if (process.argv.env === 'demo') {
+} else if (location.search.match(/^\?demo=/) || (process.argv.env === 'demo')) {
   window.onload = () => demo.show()
 } else {
   window.VanessaAutotest = autotest

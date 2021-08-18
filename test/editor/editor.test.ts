@@ -71,6 +71,15 @@ describe('Управление редактором', function () {
     editor.undo();
     expect(editor.getLineContent(2)).to.equal(line2);
   });
+  it('Команды Undo и Redo', () => {
+    editor.setPosition(2, 1);
+    editor.insertText(line1);
+    expect(editor.getLineContent(2)).to.equal(line1 + line2);
+    editor.undo();
+    expect(editor.getLineContent(2)).to.equal(line2);
+    editor.redo();
+    expect(editor.getLineContent(2)).to.equal(line1 + line2);
+  });
   it('Позиция курсора', () => {
     editor.setPosition(2, 5);
     let pos = editor.getPosition();
