@@ -87,4 +87,11 @@ describe('Управление редактором', function () {
     expect(pos).to.have.property("lineNumber", 2);
     expect(pos).to.have.property("column", 5);
   });
+  it('Всплывающее сообщение', () => {
+    const selector = "div.monaco-editor-overlaymessage div.message";
+    const message = "Пример всплывающего сообщения";
+    editor.showMessage(message);
+    const node = document.querySelector(selector);
+    expect(node).to.have.property("textContent", message);
+  });
 })
