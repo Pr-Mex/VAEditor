@@ -49,6 +49,13 @@ describe('Управление редактором', function () {
     expect(editor.getLineContent(1)).to.equal(line1);
     expect(editor.getLineContent(2)).to.equal(line2);
   });
+  it('Показать контекстное меню', () => {
+    tabs.showContextMenu();
+    expect(document.querySelectorAll('.monaco-menu').length).to.equal(1);
+  });
+  it('Наличие строк DOM isConnected', () => {
+    expect(editor.domNode().getElementsByClassName('view-line').length).to.equal(2);
+  });
   it('Выделение текста', () => {
     editor.setSelection(1, 1, 3, 1);
     expect(editor.getSelectedContent()).to.equal(content);
