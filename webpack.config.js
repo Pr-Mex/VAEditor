@@ -72,6 +72,10 @@ module.exports = (env, argv) => {
         {
           test: /\.feature$/,
           use: 'raw-loader'
+        },
+        {
+          test: /\.txt$/,
+          use: 'raw-loader'
         }]
     },
     plugins: [
