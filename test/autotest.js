@@ -51,9 +51,23 @@ const autotest = (url) => {
   delete window.VanessaAutotest
 }
 
-if (location.search.match(/^\?grep=/) || process.argv.env === 'test') {
+const parseQueryString = function () {
+  let str = window.location.search;
+  let objURL = {};
+  str.replace(
+    new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+    function ($0, $1, $2, $3) {
+      objURL[$1] = $3;
+    }
+  );
+  return objURL;
+};
+
+let params = parseQueryString()
+Object.keys(params).forEach(key => params[key] = true)
+if (params.grep || process.argv.env.test) {
   window.onload = () => autotest()
-} else if (location.search.match(/^\?demo=/) || (process.argv.env === 'demo')) {
+} else if (params.demo || (process.argv.env.demo)) {
   window.onload = () => demo.show()
 } else {
   window.VanessaAutotest = autotest
