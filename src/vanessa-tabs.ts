@@ -64,8 +64,7 @@ class VanessaTabItem {
 
   private registerOnDidChangeContent() {
     setTimeout(() => {
-      const model = this.editor.getModel();
-      if (model) this.onChangeHandler = model.onDidChangeContent(() => this.onModified());
+      if (this.model) this.onChangeHandler = this.model.onDidChangeContent(() => this.onModified());
       this.onModified();
     }, 500);
   }
@@ -111,7 +110,7 @@ class VanessaTabItem {
     let show = () => {
       if (node.nextSibling)
         node.parentElement.appendChild(node);
-      this.editor.focus();
+      this.editor?.focus();
     }
     setTimeout(() => show(), 100);
     this.owner.timer = setTimeout(() => show(), 1000);
@@ -155,7 +154,7 @@ class VanessaTabItem {
     return {
       tab: this,
       editor: this.editor,
-      model: this.editor.getModel(),
+      model: this.model,
       title: this.title,
       filename: this.filename,
       encoding: this.encoding,
@@ -163,21 +162,24 @@ class VanessaTabItem {
     }
   }
 
+  public get model() {
+    return this.editor?.getModel();;
+  }
+
   public get modified(): boolean {
-    const model = this.editor.getModel();
-    return model && model.isModified();
+    return this.model?.isModified();
   }
 
   public get uri(): string {
-    return this.editor.getModel().uri;
+    return this.model?.uri;
   }
 
   public get key(): string {
-    return this.editor.getModel().uri.toString();
+    return this.model?.uri.toString();
   }
 
   public get type(): string {
-    return this.editor.editor.getEditorType();
+    return this.editor?.editor.getEditorType();
   }
 
   public get title(): string {
@@ -189,13 +191,11 @@ class VanessaTabItem {
   }
 
   public getVersionId = () => {
-    const model = this.editor.getModel();
-    return model ? 0 : model.getVersionId();
+    return this.model?.getVersionId();
   }
 
   public resetModified = () => {
-    const model = this.editor.getModel();
-    model.resetModified();
+    this.model?.resetModified();
     this.onModified();
   }
 

@@ -16,10 +16,10 @@ const title = 'Заголовок файла';
 
 describe('Управление редактором', function () {
   let editor: VanessaEditor;
-  before(() => {
+  before((done) => {
     while (popVanessaMessage()) { }
     editor = tabs.edit(content, url, url, title, 0, false, true) as VanessaEditor;
-    this.timeout(100);
+    setTimeout(done, 100);
   });
   it('Событие на открытие вкладки', () => {
     let message = popVanessaMessage();
@@ -93,5 +93,30 @@ describe('Управление редактором', function () {
     editor.showMessage(message);
     const node = document.querySelector(selector);
     expect(node).to.have.property("textContent", message);
+  });
+  it('Переключение вкладок', () => {
+    tabs.closeAll();
+    expect(tabs.count()).to.equal(0);
+    const contents = ["Первый", "Второй", "Третий"];
+    const value = () => tabs.current.editor.getModel().getValue();
+    const turnPage = (key) => emulator.keyboard("keydown", { keyCode: key, ctrlKey: true });
+    contents.forEach(cont => tabs.edit("Текст" + cont, cont, cont, cont, 0, false, true));
+    expect(tabs.count()).to.equal(3);
+    expect(value()).to.equal("Текст" + contents[2]);
+    expect(tabs.current.title).to.equal(contents[2]);
+    turnPage(33);
+    expect(value()).to.equal("Текст" + contents[1]);
+    expect(tabs.current.title).to.equal(contents[1]);
+    turnPage(33);
+    expect(value()).to.equal("Текст" + contents[0]);
+    expect(tabs.current.title).to.equal(contents[0]);
+    turnPage(34);
+    expect(value()).to.equal("Текст" + contents[1]);
+    expect(tabs.current.title).to.equal(contents[1]);
+    turnPage(34);
+    expect(value()).to.equal("Текст" + contents[2]);
+    expect(tabs.current.title).to.equal(contents[2]);
+    tabs.closeAll();
+    expect(tabs.count()).to.equal(0);
   });
 })

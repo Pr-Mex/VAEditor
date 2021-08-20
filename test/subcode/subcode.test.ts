@@ -7,13 +7,13 @@ let expect = require('chai').expect;
 const popVanessaMessage = window.popVanessaMessage;
 //@ts-ignore
 const tabs = window.VanessaTabs as VanessaTabs;
-
 const url = 'subcode/example.feature';
 const title = 'Заголовок файла';
 
 describe('Виджеты подсценариев', function () {
   let editor: VanessaEditor;
   before((done) => {
+    this.timeout(1000);
     while (popVanessaMessage()) { }
     editor = tabs.edit(content, url, url, title, 0, false, true) as VanessaEditor;
     setTimeout(() => done(), 100);
