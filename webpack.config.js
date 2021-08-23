@@ -55,6 +55,12 @@ module.exports = (env, argv) => {
           use: 'monaco-nls'
         },
         {
+          test: /[\\/]worker\.script\.js$/,
+          use: [
+            'raw-loader'
+          ]
+        },
+        {
           test: /\.ts$/,
           use: [
             'babel-loader',

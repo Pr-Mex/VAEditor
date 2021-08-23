@@ -1,22 +1,7 @@
-// Create a simple web worker
-const workerScript = `
-self.onmessage=function(e) {
-    console.log("Worker: Receiving message", e.data);
-    const textUntilPosition = e.data;
-    const data = {
-        suggestions: [
-            {
-                label: "Foobar",
-                kind: 25,
-                detail: "Details for completion",
-                insertText: "Message from webworker"
-            }
-        ]
-    };
-    postMessage({id: e.data.id, data: data, success: true});
-}
-`;
-const blob = new Blob([workerScript], { type: 'application/javascript' });
+import { script } from "./worker.file"
+
+//const blob1 = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker");
+const blob = new Blob([script], { type: 'application/javascript' });
 const worker = new Worker((window.URL || window.webkitURL).createObjectURL(blob));
 
 // Handle messages from web worker
