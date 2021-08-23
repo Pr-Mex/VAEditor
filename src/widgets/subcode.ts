@@ -1,6 +1,7 @@
 import { WidgetBase } from "./base";
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
+import * as folding from '../languages/turbo-gherkin/folding'
 
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaGherkinProvider } from "../languages/turbo-gherkin/provider";
@@ -64,7 +65,8 @@ export class SubcodeWidget extends WidgetBase {
         }
         lineNode = lineNode.nextElementSibling;
       }
-      if (model) VanessaGherkinProvider.instance.getCodeFolding(
+      const result = folding.getCodeFolding(
+        VanessaGherkinProvider.instance.matcher,
         model.getOptions().tabSize,
         this.lines.length,
         lineNumber => this.getLineContent(lineNumber)

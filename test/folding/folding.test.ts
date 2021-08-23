@@ -3,12 +3,13 @@ import { content } from './example.file.js'
 let expect = require('chai').expect;
 
 describe('Сворачивание кода', function () {
-  let result, ranges: Array<monaco.languages.FoldingRange>;
-  before(() => {
+  type FoldingRanges = Array<monaco.languages.FoldingRange>;
+  let result, ranges: FoldingRanges;
+  before((done) => {
     const provider = VanessaGherkinProvider.instance;
     const model = monaco.editor.createModel(content, "turbo-gherkin");
-    result = provider.provideFoldingRanges(model, undefined, undefined) as Array<monaco.languages.FoldingRange>;
-    ranges = result.map(e => ({ start: e.start, end: e.end }));
+    const promise = provider.provideFoldingRanges(model, undefined, undefined) as Promise<FoldingRanges>;
+    promise.then(res => { ranges = (result = res).map(e => ({ start: e.start, end: e.end })); done(); })
   });
   it('Свертка тегов и комментариев', () => {
     expect(result[0]).to.have.property('kind').to.be.an('object').to.have.property('value', 'comment');

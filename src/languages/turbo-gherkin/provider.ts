@@ -6,16 +6,8 @@ import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
+import { IVanessaStep, MessageType, VAToken } from './common';
 import * as distance from 'jaro-winkler';
-
-interface IVanessaStep {
-  filterText: string;
-  insertText: string;
-  sortText: string;
-  documentation: string;
-  kind: number;
-  section: string;
-}
 
 interface IImportedItem {
   name: string;
@@ -30,24 +22,39 @@ interface IImportedFile {
   items: Array<IImportedItem>;
 }
 
-enum VAToken {
-  Empty = 0,
-  Section,
-  Operator,
-  Comment,
-  Multiline,
-  Instruction,
-  Parameter,
-}
-
-interface VAIndent {
-  token: VAToken;
-  indent: number;
-}
-
 function trimQuotes(w: string) {
   return w.replace(/^["'](.*)["']$/, '$1');
 }
+
+const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
+const worker = new Worker(blob);
+
+let workerMesssageId = 0;
+const messageMap = new Map();
+worker.onmessage = function (e) {
+  const msg = e.data;
+  const promise = msg.id && messageMap.get(msg.id);
+  if (promise) {
+    messageMap.delete(msg.id);
+    if (msg.success) promise.resolve(msg.data);
+    else promise.reject(msg.data);
+  }
+}
+
+monaco.languages.registerCompletionItemProvider("turbo-gherkin", {
+  provideCompletionItems(model, position, context, token) {
+    const textUntilPosition = model.getValueInRange({ startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column });
+    const currentId = ++workerMesssageId;
+    const promise = new Promise<monaco.languages.CompletionList>((resolve, reject) => {
+      messageMap.set(currentId, { resolve, reject });
+    });
+    worker.postMessage({ id: currentId, type: MessageType.CompletionItems, data: textUntilPosition });
+    return promise;
+  },
+  resolveCompletionItem(model, position, item, token) {
+    return item;
+  }
+})
 
 export class VanessaGherkinProvider {
 
@@ -130,6 +137,7 @@ export class VanessaGherkinProvider {
   public get matcher() { return this._matcher; }
 
   public setMatchers = (arg: string): void => {
+    worker.postMessage({ type: MessageType.SetMatchers, data: arg });
     this._matcher = new KeywordMatcher(arg);
     this.initTokenizer();
   }
@@ -192,6 +200,7 @@ export class VanessaGherkinProvider {
     });
     this.updateStepLabels();
     VanessaEditor.checkAllSyntax();
+    worker.postMessage({ type: MessageType.SetStepList, data: this.steps });
   }
 
   public setSyntaxMsg = (message: string): void => {
@@ -343,86 +352,18 @@ export class VanessaGherkinProvider {
     model: monaco.editor.ITextModel,
     context: monaco.languages.FoldingContext,
     token: monaco.CancellationToken,
-  ): Array<monaco.languages.FoldingRange> {
-    return this.getCodeFolding(
-      model.getOptions().tabSize,
-      model.getLineCount(),
-      lineNumber => model.getLineContent(lineNumber)
-    );
-  }
-
-  private getToken(text: string) {
-    if (/^\s*$/.test(text)) return VAToken.Empty;
-    if (/^[\s]*@/.test(text)) return VAToken.Instruction;
-    if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
-    if (/^[\s]*[#|//]/.test(text)) return VAToken.Comment;
-    if (/^[\s]*"""/.test(text)) return VAToken.Multiline;
-    return VAToken.Operator;
-  }
-
-  public getCodeFolding(
-    tabSize: number,
-    lineCount: number,
-    getLineContent: (lineNumber: number) => string
-  ): Array<monaco.languages.FoldingRange> {
-    let multiline = false;
-    let lines: Array<VAIndent> = [{ token: VAToken.Empty, indent: 0 }];
-    for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      let text = getLineContent(lineNumber);
-      let token = this.getToken(text);
-      if (multiline) {
-        if (token == VAToken.Multiline) multiline = false;
-        token = VAToken.Multiline;
-      } else {
-        if (token == VAToken.Multiline) multiline = true;
-      }
-      if (token != VAToken.Operator) {
-        lines.push({ token: token, indent: 0 });
-      } else {
-        let ident = 0;
-        if (this.isSection(text)) token = VAToken.Section;
-        else ident = this.getIndent(text, tabSize);
-        lines.push({ token: token, indent: ident });
-      }
-    }
-    let result = [];
-    for (let i = 1; i <= lineCount; i++) {
-      let k = i;
-      let line = lines[i];
-      let kind = undefined;
-      switch (line.token) {
-        case VAToken.Instruction:
-          for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VAToken.Instruction) k = j; else break;
-          }
-          break;
-        case VAToken.Comment:
-          kind = monaco.languages.FoldingRangeKind.Comment;
-          for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VAToken.Comment) k = j; else break;
-          }
-          break;
-        case VAToken.Section:
-          kind = monaco.languages.FoldingRangeKind.Region;
-          for (let j = i + 1; j <= lineCount; j++) {
-            if (lines[j].token == VAToken.Section) break; else k = j;
-          }
-          break;
-        case VAToken.Operator:
-          for (let j = i + 1; j <= lineCount; j++) {
-            let next = lines[j];
-            if (next.token == VAToken.Section) break;
-            if (next.token == VAToken.Empty) continue;
-            if (next.token == VAToken.Comment) { k = j; continue; }
-            if (next.token == VAToken.Multiline) { k = j; continue; }
-            if (next.token == VAToken.Parameter) { k = j; continue; }
-            if (next.indent <= line.indent) break; else k = j;
-          } break;
-      }
-      if (k > i) result.push({ kind: kind, start: i, end: k });
-      if (line.token == VAToken.Instruction || line.token == VAToken.Comment) i = k;
-    }
-    return result;
+  ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
+    const currentId = ++workerMesssageId;
+    const promise = new Promise<monaco.languages.FoldingRange[]>((resolve, reject) => {
+      messageMap.set(currentId, { resolve, reject });
+    });
+    worker.postMessage({
+      id: currentId,
+      type: MessageType.GetCodeFolding,
+      tabSize: model.getOptions().tabSize,
+      lines: model.getLinesContent()
+    });
+    return promise;
   }
 
   private escapeMarkdown(text: string): string {
@@ -583,6 +524,10 @@ export class VanessaGherkinProvider {
       }
     }
     return { suggestions: result };
+  }
+
+  public resolveCompletionItem(model, position, item, token) {
+    return item;
   }
 
   private lineSyntaxError(line: string, section: string): boolean {

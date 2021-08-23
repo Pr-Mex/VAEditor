@@ -72,4 +72,9 @@ export class KeywordMatcher {
     this.import = this.regex(keywords.import);
     this.step = this.regex(keywords.step);
   }
+
+  public isSection(text: string) {
+    const regexp = new RegExp(this.primary);
+    return regexp.test(text);
+  }
 }
