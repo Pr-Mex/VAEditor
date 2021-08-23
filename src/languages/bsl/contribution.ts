@@ -1,3 +1,5 @@
+import './worker';
+
 interface ILangImpl {
   conf: monaco.languages.LanguageConfiguration;
   language: monaco.languages.IMonarchLanguage;
