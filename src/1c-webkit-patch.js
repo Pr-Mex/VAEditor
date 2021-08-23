@@ -5,13 +5,13 @@ export function patchWebKit1C() {
   if (!('isConnected' in Node.prototype))
     Object.defineProperty(Node.prototype, 'isConnected', {
       configurable: true,
-      get: () => true
+      get: function () { return true }
     })
 
   Object.defineProperty(Object.prototype, 'useShadowDOM', {
     configurable: true,
     get: () => false,
-    set: (value) => { }
+    set: function (value) { }
   })
 
   function dummy(e) {

@@ -49,7 +49,7 @@ module.exports = (env, argv) => {
           }
         },
         {
-          test: /\.js/,
+          test: /\.js$/,
           enforce: 'pre',
           include: /node_modules[\\/]monaco-editor[\\/]esm/,
           use: 'monaco-nls'
@@ -83,7 +83,7 @@ module.exports = (env, argv) => {
         'process.env': JSON.stringify(process.env),
         'process.argv': JSON.stringify(argv)
       }),
-      new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js/, function (resource) {
+      new webpack.NormalModuleReplacementPlugin(/\/(vscode-)?nls\.js$/, function (resource) {
         resource.request = nls
         resource.resource = nls
       }),
