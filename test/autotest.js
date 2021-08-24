@@ -52,18 +52,18 @@ const autotest = (url) => {
 }
 
 const parseQueryString = function () {
-  let str = window.location.search;
-  let objURL = {};
+  const str = window.location.search
+  const objURL = {}
   str.replace(
-    new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+    new RegExp('([^?=&]+)(=([^&]*))?', 'g'),
     function ($0, $1, $2, $3) {
-      objURL[$1] = $3;
+      objURL[$1] = $3
     }
-  );
-  return objURL;
-};
+  )
+  return objURL
+}
 
-let params = parseQueryString()
+const params = parseQueryString()
 Object.keys(params).forEach(key => params[key] = true)
 if (params.grep || process.argv.env.test) {
   window.onload = () => autotest()

@@ -43,9 +43,10 @@ worker.onmessage = function (e) {
 
 function postMessage<T>(message: any): Promise<T> {
   const id = message.id = ++workerMessageId;
-  const promise = new Promise<T>((resolve, reject) => {
+  function init(resolve, reject) {
     messageMap.set(id, { resolve, reject });
-  })
+  }
+  const promise = new Promise<T>(init);
   worker.postMessage(message);
   return promise;
 }
