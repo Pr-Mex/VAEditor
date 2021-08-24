@@ -23,8 +23,8 @@ export interface VAIndent {
 }
 
 export enum MessageType {
-  SetStepList,
   SetMatchers,
+  SetStepList,
   CompletionItems,
   GetCodeFolding,
 }
