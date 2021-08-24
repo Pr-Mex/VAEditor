@@ -41,21 +41,6 @@ worker.onmessage = function (e) {
   }
 }
 
-monaco.languages.registerCompletionItemProvider("turbo-gherkin", {
-  provideCompletionItems(model, position, context, token) {
-    const textUntilPosition = model.getValueInRange({ startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column });
-    const currentId = ++workerMesssageId;
-    const promise = new Promise<monaco.languages.CompletionList>((resolve, reject) => {
-      messageMap.set(currentId, { resolve, reject });
-    });
-    worker.postMessage({ id: currentId, type: MessageType.CompletionItems, data: textUntilPosition });
-    return promise;
-  },
-  resolveCompletionItem(model, position, item, token) {
-    return item;
-  }
-})
-
 export class VanessaGherkinProvider {
 
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
@@ -156,6 +141,7 @@ export class VanessaGherkinProvider {
     this.clearArray(this._metatags);
     list.forEach((w: string) => this._metatags.push(w));
     this.initTokenizer();
+    worker.postMessage({ type: MessageType.SetMetatags, data: this.metatags });
   }
 
   public setSoundHint = (arg: string): void => {
@@ -435,7 +421,7 @@ export class VanessaGherkinProvider {
   public provideCompletionItems(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
-  ): monaco.languages.CompletionList {
+  ): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
     let line = {
       startLineNumber: position.lineNumber,
       endLineNumber: position.lineNumber,
@@ -466,6 +452,7 @@ export class VanessaGherkinProvider {
           range: wordRange
         })
       }
+      return { suggestions: result };
     } else {
       let maxColumn = model.getLineLastNonWhitespaceColumn(position.lineNumber);
       if (maxColumn && position.column < maxColumn) return this.empty(position);
@@ -479,51 +466,18 @@ export class VanessaGherkinProvider {
         startColumn: minColumn ? minColumn : position.column,
         endColumn: maxColumn ? maxColumn : position.column,
       };
-      if (keyword) {
-        let keytext = keyword.join(' ');
-        keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
-        for (let key in this.steps) {
-          let e = this.steps[key];
-          if (e.documentation) {
-            result.push({
-              label: e.label,
-              kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
-              detail: e.section,
-              documentation: e.documentation,
-              sortText: e.sortText,
-              insertText: keytext + ' ' + e.insertText + '\n',
-              filterText: keytext + ' ' + key,
-              range: range
-            });
-          }
-        }
-      } else {
-        this.metatags.forEach(word => {
-          result.push({
-            label: word,
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: word + '\n',
-            range: range
-          });
+      const currentId = ++workerMesssageId;
+      const promise = new Promise<monaco.languages.CompletionList>((resolve, reject) => {
+          messageMap.set(currentId, { resolve, reject });
         });
-        for (let key in this.steps) {
-          let e = this.steps[key];
-          if (e.documentation) {
-            result.push({
-              label: e.label,
-              kind: e.kind ? e.kind : monaco.languages.CompletionItemKind.Function,
-              detail: e.section,
-              documentation: e.documentation,
-              sortText: e.sortText,
-              insertText: e.keyword + ' ' + e.insertText + '\n',
-              filterText: key,
-              range: range
-            });
-          }
-        }
-      }
+        worker.postMessage({
+          id: currentId,
+          type: MessageType.CompletionItems,
+          keyword: keyword,
+          range: range
+        });
+        return promise;
     }
-    return { suggestions: result };
   }
 
   public resolveCompletionItem(model, position, item, token) {

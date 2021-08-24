@@ -24,6 +24,7 @@ export interface VAIndent {
 
 export enum MessageType {
   SetMatchers,
+  SetMetatags,
   SetStepList,
   CompletionItems,
   GetCodeFolding,
