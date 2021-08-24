@@ -29,7 +29,6 @@ function trimQuotes(w: string) {
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
 
-let workerMesssageId = 0;
 const messageMap = new Map();
 worker.onmessage = function (e) {
   const msg = e.data;
@@ -38,6 +37,22 @@ worker.onmessage = function (e) {
     messageMap.delete(msg.id);
     if (msg.success) promise.resolve(msg.data);
     else promise.reject(msg.data);
+  }
+}
+
+class VanessaHandler<T> {
+  private static _workerMsgId = 0;
+  private id = ++VanessaHandler._workerMsgId;
+  private promise: Promise<T>;
+  constructor() {
+    this.promise = new Promise((resolve, reject) => {
+      messageMap.set(this.id, { resolve, reject });
+    })
+  }
+  public post(message: any): Promise<T> {
+    message.id = this.id;
+    worker.postMessage(message);
+    return this.promise;
   }
 }
 
@@ -339,17 +354,11 @@ export class VanessaGherkinProvider {
     context: monaco.languages.FoldingContext,
     token: monaco.CancellationToken,
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
-    const currentId = ++workerMesssageId;
-    const promise = new Promise<monaco.languages.FoldingRange[]>((resolve, reject) => {
-      messageMap.set(currentId, { resolve, reject });
-    });
-    worker.postMessage({
-      id: currentId,
+    return new VanessaHandler<monaco.languages.FoldingRange[]>().post({
       type: MessageType.GetCodeFolding,
       tabSize: model.getOptions().tabSize,
       lines: model.getLinesContent()
     });
-    return promise;
   }
 
   private escapeMarkdown(text: string): string {
@@ -466,17 +475,11 @@ export class VanessaGherkinProvider {
         startColumn: minColumn ? minColumn : position.column,
         endColumn: maxColumn ? maxColumn : position.column,
       };
-      const currentId = ++workerMesssageId;
-      const promise = new Promise<monaco.languages.CompletionList>((resolve, reject) => {
-          messageMap.set(currentId, { resolve, reject });
-        });
-        worker.postMessage({
-          id: currentId,
-          type: MessageType.CompletionItems,
-          keyword: keyword,
-          range: range
-        });
-        return promise;
+      return new VanessaHandler<monaco.languages.CompletionList>().post({
+        type: MessageType.CompletionItems,
+        keyword: keyword,
+        range: range
+      });
     }
   }
 
