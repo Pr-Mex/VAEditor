@@ -29,6 +29,7 @@ function trimQuotes(w: string) {
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
 
+let workerMessageId = 0;
 const messageMap = new Map();
 worker.onmessage = function (e) {
   const msg = e.data;
@@ -40,20 +41,13 @@ worker.onmessage = function (e) {
   }
 }
 
-class VanessaHandler<T> {
-  private static _workerMsgId = 0;
-  private id = ++VanessaHandler._workerMsgId;
-  private promise: Promise<T>;
-  constructor() {
-    this.promise = new Promise((resolve, reject) => {
-      messageMap.set(this.id, { resolve, reject });
-    })
-  }
-  public post(message: any): Promise<T> {
-    message.id = this.id;
-    worker.postMessage(message);
-    return this.promise;
-  }
+function postMessage<T>(message: any): Promise<T> {
+  const id = message.id = ++workerMessageId;
+  const promise = new Promise<T>((resolve, reject) => {
+    messageMap.set(id, { resolve, reject });
+  })
+  worker.postMessage(message);
+  return promise;
 }
 
 export class VanessaGherkinProvider {
@@ -354,7 +348,7 @@ export class VanessaGherkinProvider {
     context: monaco.languages.FoldingContext,
     token: monaco.CancellationToken,
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
-    return new VanessaHandler<monaco.languages.FoldingRange[]>().post({
+    return postMessage<monaco.languages.FoldingRange[]>({
       type: MessageType.GetCodeFolding,
       tabSize: model.getOptions().tabSize,
       lines: model.getLinesContent()
@@ -475,7 +469,7 @@ export class VanessaGherkinProvider {
         startColumn: minColumn ? minColumn : position.column,
         endColumn: maxColumn ? maxColumn : position.column,
       };
-      return new VanessaHandler<monaco.languages.CompletionList>().post({
+      return postMessage<monaco.languages.CompletionList>({
         type: MessageType.CompletionItems,
         keyword: keyword,
         range: range
