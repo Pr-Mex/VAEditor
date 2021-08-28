@@ -5,9 +5,11 @@ import { RuntimeManager } from "./runtime";
 import { StyleManager } from "./style";
 import { SyntaxManager } from "./syntax";
 import { VanessaTabs } from "./vanessa-tabs";
-import { Module } from "webpack";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
+
+const $ = dom.$;
 
 export class VanessaEditor implements IVanessaEditor {
 
@@ -65,7 +67,7 @@ export class VanessaEditor implements IVanessaEditor {
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public getModel = () => this.editor.getModel();
-  public domNode = () => this.editor.getDomNode();
+  public domNode = () => this._domNode;
   public setHoverDelay = (value: number) => this.editor.updateOptions({ hover: { enabled: true, sticky: true, delay: value } });
   public setTabSize = (arg: number) => this.editor.getModel().updateOptions({ tabSize: arg });
   public setInsertSpaces = (arg: boolean) => this.editor.getModel().updateOptions({ insertSpaces: arg });
@@ -105,6 +107,7 @@ export class VanessaEditor implements IVanessaEditor {
   public problemManager: ProblemManager;
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
+  private _domNode: HTMLElement;
 
   public static createStandalone(
     content: string = "",
@@ -127,8 +130,10 @@ export class VanessaEditor implements IVanessaEditor {
   }
 
   constructor(model: monaco.editor.ITextModel, readOnly: boolean = false, checkSyntax = true) {
-    let node = document.getElementById("VanessaEditorContainer");
-    this.editor = monaco.editor.create(node, {
+    let container = document.getElementById("VanessaEditorContainer");
+    this._domNode = $("div", { class: "vanessa-editor" });
+    container.appendChild(this._domNode);
+    this.editor = monaco.editor.create(this._domNode, {
       contextmenu: false,
       model: model,
       readOnly: readOnly,
