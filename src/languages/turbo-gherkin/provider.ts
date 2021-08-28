@@ -333,17 +333,6 @@ export class VanessaGherkinProvider {
     return this.getQuickFix(model, context.markers);
   }
 
-  private getIndent(text: string, tabSize: number) {
-    let indent = 0;
-    let length = text.search(/[^\s]/)
-    for (let i = 0; i < length; i++) {
-      if (text.charAt(i) == "\t") {
-        indent = indent + tabSize - (indent % tabSize);
-      } else indent++;
-    }
-    return indent + 1;
-  }
-
   public provideFoldingRanges(
     model: monaco.editor.ITextModel,
     context: monaco.languages.FoldingContext,
