@@ -35,7 +35,7 @@
 	],
 	"dependencies": {
 		"autoprefixer": "^9.8.6",
-		"monaco-editor": "^0.20.0",
+		"monaco-editor": "^0.27.0",
 		"monaco-editor-nls": "^2.0.0",
 		"postcss-base64": "^0.7.1",
 		"postcss-cli": "^8.2.0",

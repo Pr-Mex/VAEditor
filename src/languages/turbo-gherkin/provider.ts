@@ -478,7 +478,7 @@ export class VanessaGherkinProvider {
     }
   }
 
-  public resolveCompletionItem(model, position, item, token) {
+  public resolveCompletionItem(item, token) {
     return item;
   }
 
@@ -564,7 +564,7 @@ export class VanessaGherkinProvider {
       }
     }
     let tokens = [];
-    let result = this.tokenizer.tokenize(line, state, 0);
+    let result = this.tokenizer.tokenize(line, false, state, 0);
     result.tokens.forEach((t: monaco.Token) => tokens.push({ startIndex: t.offset, scopes: t.type }));
     return { tokens: tokens, endState: result.endState };
   }
