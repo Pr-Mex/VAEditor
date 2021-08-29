@@ -272,13 +272,11 @@ export class VanessaGherkinProvider {
     , context: monaco.languages.CodeActionContext
     , token: monaco.CancellationToken
   ): monaco.languages.ProviderResult<monaco.languages.CodeActionList> {
-    const markers = [];
     const errors = [];
     context.markers.forEach((e, index) => {
       if (e.severity === monaco.MarkerSeverity.Error) {
         const value = model.getLineContent(e.endLineNumber);
         errors.push({ index, value });
-        markers.push(e);
       }
     });
     if (errors.length == 0) return undefined;
@@ -291,7 +289,7 @@ export class VanessaGherkinProvider {
     return postMessage<any>(model as VanessaModel, message).then(msg => {
       const actions: Array<monaco.languages.CodeAction> = [];
       msg.forEach((e, i) => {
-        const marker = markers[e.index];
+        const marker = context.markers[e.index];
         const lineNumber = marker.endLineNumber;
         const range = new monaco.Range(lineNumber, e.startColumn, lineNumber, e.endColumn);
         actions.push({
