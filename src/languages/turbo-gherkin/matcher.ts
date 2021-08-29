@@ -9,7 +9,7 @@ class Section {
 
 export class KeywordMatcher {
 
-  public words: string[][] = [];
+  public _keywords: string[][] = [];
   public section = new Section;
   public primary: RegExp;
   public import: RegExp;
@@ -57,13 +57,13 @@ export class KeywordMatcher {
               list.forEach(w => keywords.primary.push(w))
             } else {
               list.forEach(w => keywords.step.push(w))
-              list.forEach(w => this.words.push(w.toLowerCase().split(/\s+/)))
+              list.forEach(w => this._keywords.push(w.toLowerCase().split(/\s+/)))
             }
         }
       })
     });
 
-    this.words.sort((a, b) => b.length - a.length);
+    this._keywords.sort((a, b) => b.length - a.length);
 
     Object.keys(keywords.section).forEach(key => {
       this.section[key] = this.regex(keywords.section[key], "\\s*:")
@@ -76,5 +76,34 @@ export class KeywordMatcher {
   public isSection(text: string) {
     const regexp = new RegExp(this.primary);
     return regexp.test(text);
+  }
+
+  public splitWords(line: string): Array<string> {
+    let regexp = /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>|[A-zА-яЁё]+|[^A-zА-яЁё\s]+/g;
+    return line.match(regexp) || [];
+  }
+
+  protected findKeyword(words: Array<string>): Array<string> {
+    if (words.length == 0) return undefined;
+    let result = undefined;
+    this._keywords.forEach((item: string[]) => {
+      if (!result && item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())) result = item;
+    });
+    return result;
+  }
+
+  public filterWords(words: Array<string>): Array<string> {
+    let s = true;
+    let keyword = this.findKeyword(words);
+    let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
+    return words.filter((w, i) => (keyword && i < keyword.length) ? false : (notComment(w) ? true : s = false));
+  }
+
+  public key(words: Array<string>): string {
+    let result = [];
+    words.forEach((w: string) => {
+      if (/^[A-zА-яЁё]+$/.test(w)) result.push(w.toLowerCase());
+    });
+    return result.join(" ");
   }
 }

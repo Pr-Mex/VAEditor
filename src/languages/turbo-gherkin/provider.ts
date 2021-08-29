@@ -6,7 +6,7 @@ import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
-import { IVanessaStep, MessageType, VanessaModel } from './common';
+import { VanessaStep, MessageType, VanessaModel } from './common';
 import * as distance from 'jaro-winkler';
 
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
@@ -54,7 +54,7 @@ export class VanessaGherkinProvider {
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
   public get errorLinks(): any { return this._errorLinks; }
   public get elements(): any { return this._elements; }
-  public get keywords(): any { return this._matcher.words; }
+  public get keywords(): any { return this._matcher._keywords; }
   public get keypairs(): any { return this._keypairs; }
   public get syntaxMsg(): any { return this._syntaxMsg; }
   public get variables(): any { return this._variables; }
@@ -175,11 +175,12 @@ export class VanessaGherkinProvider {
       this.variables[key.toLowerCase()] = { name: key, value: String(obj[key]) };
     }
     this.updateStepLabels();
+    worker.postMessage({ type: MessageType.SetVariables, data: this.variables });
   }
 
   public setStepList = (list: string, clear: boolean = false): void => {
     if (clear) this.clearObject(this.steps);
-    JSON.parse(list).forEach((e: IVanessaStep) => {
+    JSON.parse(list).forEach((e: VanessaStep) => {
       let body = e.insertText.split('\n');
       let text = body.shift();
       let head = this.splitWords(text);
@@ -372,53 +373,21 @@ export class VanessaGherkinProvider {
       });
   }
 
-  private escapeMarkdown(text: string): string {
-    // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
-    return text.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&');
-  }
-
   public provideHover(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
-  ): monaco.languages.Hover {
-    let contents = [];
-    let line = model.getLineContent(position.lineNumber)
-    let match = line.match(/^\s*\*/);
-    if (match) {
-      let head = this._soundHint;
-      let char = String.fromCharCode(60277);
-      let href = "#sound:" + position.lineNumber;
-      let text = line.substr(match[0].length);
-      contents.push({ value: `**${head}** [${char}](${href})` });
-      contents.push({ value: this.escapeMarkdown(text) });
-    } else {
-      let words = this.splitWords(line);
-      let key = this.key(this.filterWords(words));
-      let step = this.steps[key];
-      if (step) {
-        let i = String.fromCharCode(60020);
-        let s = String.fromCharCode(60277);
-        let t = this.escapeMarkdown(step.section);
-        let ih = "#info:" + key.replace(/ /g, "-");
-        let sh = "#sound:" + position.lineNumber;
-        contents.push({ value: `**${t}** [${i}](${ih}) [${s}](${sh})` });
-        contents.push({ value: this.escapeMarkdown(step.documentation) });
-        let values = this.variables;
-        let vars = line.match(/"[^"]+"|'[^']+'/g) || [];
-        vars.forEach(function (part: string) {
-          let d = /^.\$.+\$.$/.test(part) ? 2 : 1;
-          let v = values[part.substring(d, part.length - d).toLowerCase()];
-          if (v) contents.push({ value: "**" + v.name + "** = " + v.value });
+  ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+    return postMessage<monaco.languages.Hover>(
+      model as VanessaModel,
+      {
+        type: MessageType.GetLineHover,
+        line: model.getLineContent(position.lineNumber),
+        lineNumber: position.lineNumber,
+        minColumn: model.getLineMinColumn(position.lineNumber),
+        maxColumn: model.getLineMaxColumn(position.lineNumber),
+        versionId: model.getVersionId(),
+        uri: model.uri.toString()
         });
-      }
-    }
-    let range = {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: model.getLineMinColumn(position.lineNumber),
-      endColumn: model.getLineMaxColumn(position.lineNumber),
-    };
-    return { range: range, contents: contents }
   }
 
   private empty(position: monaco.Position
@@ -489,7 +458,7 @@ export class VanessaGherkinProvider {
       return postMessage<monaco.languages.CompletionList>(
         model as VanessaModel,
         {
-          type: MessageType.CompletionItems,
+          type: MessageType.GetCompletions,
           keyword: keyword,
           range: range
         });

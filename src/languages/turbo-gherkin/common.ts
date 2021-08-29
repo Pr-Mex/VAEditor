@@ -1,4 +1,4 @@
-export interface IVanessaStep {
+export interface VanessaStep {
   filterText: string;
   insertText: string;
   sortText: string;
@@ -35,10 +35,12 @@ export enum MessageType {
   SetMetatags,
   SetStepList,
   SetImports,
+  SetVariables,
   UpdateModelCache,
   DeleteModelCache,
-  CompletionItems,
+  GetCompletions,
   GetCodeFolding,
   GetHiperlinks,
+  GetLineHover,
   GetLinkData,
 }
