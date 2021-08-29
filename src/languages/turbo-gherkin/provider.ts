@@ -7,24 +7,53 @@ import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
 import { VanessaStep, MessageType, VanessaModel } from './common';
-import * as distance from 'jaro-winkler';
 
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
-
 let workerMessageId = 0;
-const messageMap = new Map();
+const messageMap = new Map<number, any>();
+const markersMap = new Map<number, monaco.editor.IMarkerData[]>();
+
+function resolveCodeAction(msg: any) {
+  if (!msg.quickfix) return;
+  const markers = markersMap.get(msg.id);
+  if (!markers) return;
+  markersMap.delete(msg.id);
+  const actions: Array<monaco.languages.CodeAction> = [];
+  msg.data.forEach(e => {
+    const marker = markers[e.index];
+    const lineNumber = marker.endLineNumber;
+    const range = new monaco.Range(lineNumber, e.start, lineNumber, marker.endColumn);
+    actions.push({
+      title: e.text,
+      diagnostics: [marker],
+      kind: "quickfix",
+      edit: {
+        edits: [{
+          resource: monaco.Uri.parse(msg.uri),
+          edit: { range: range, text: e.text }
+        }]
+      },
+      isPreferred: true
+    });
+  });
+  msg.data = { actions: actions, dispose: () => { } };
+}
+
 worker.onmessage = function (e) {
   const msg = e.data;
   const promise = msg.id && messageMap.get(msg.id);
   if (promise) {
     messageMap.delete(msg.id);
-    if (msg.success) promise.resolve(msg.data);
+    if (msg.success) {
+      resolveCodeAction(msg);
+      promise.resolve(msg.data);
+    }
     else promise.reject(msg.data);
   }
 }
 
-function postMessage<T>(model: VanessaModel, message: any)
+function postMessage<T>(model: VanessaModel, message: any, markers = undefined)
   : Promise<T> {
   const versionId = model.getVersionId();
   if (model.workerVersionId !== versionId) {
@@ -37,6 +66,7 @@ function postMessage<T>(model: VanessaModel, message: any)
     });
   }
   const id = message.id = ++workerMessageId;
+  if (markers) markersMap.set(id, markers);
   function init(resolve, reject) {
     messageMap.set(id, { resolve, reject });
   }
@@ -266,73 +296,29 @@ export class VanessaGherkinProvider {
     });
   }
 
-  private addQuickFix(model: monaco.editor.ITextModel, list: any, error: monaco.editor.IMarkerData) {
-    let range = {
-      startLineNumber: error.startLineNumber,
-      endLineNumber: error.endLineNumber,
-      startColumn: 1,
-      endColumn: error.endColumn,
-    };
-    let value = model.getValueInRange(range);
-    let words = this.splitWords(value);
-    let keyword = this.findKeyword(words);
-    if (keyword == undefined) return;
-    let regexp = "^[\\s]*";
-    keyword.forEach(w => regexp += w + "[\\s]+");
-    let match = value.toLowerCase().match(new RegExp(regexp));
-    if (match) range.startColumn = match[0].length + 1;
-    let line = this.key(this.filterWords(words));
-    for (let key in this.steps) {
-      let sum = distance(line, key);
-      if (sum > 0.7) list.push({ key: key, sum: sum, error: error, range: range, words: words });
-    }
-    list.sort((a, b) => b.sum - a.sum);
-  }
-
-  private replaceParams(step: string[], line: string[]): string {
-    let index = 0;
-    step = this.filterWords(step);
-    let regexp = /^"[^"]*"$|^'[^']*'$|^<[^<]*>$/g;
-    let test = (w: string) => (new RegExp(regexp.source)).test(w);
-    let params = line.filter(w => test(w));
-    return step.map(w => (test(w) && index < params.length) ? params[index++] : w).join(' ');
-  }
-
-  private getQuickFix(
-    model: monaco.editor.ITextModel,
-    markers: monaco.editor.IMarkerData[]
-  ): monaco.languages.CodeActionList {
-    let list = [];
-    let actions: Array<monaco.languages.CodeAction> = [];
-    markers.forEach(e => this.addQuickFix(model, list, e));
-    list.forEach((e, i) => {
-      if (i > 6) return;
-      let step = this.steps[e.key];
-      let text = this.replaceParams(step.head, e.words);
-      actions.push({
-        title: text,
-        diagnostics: [e.error],
-        kind: "quickfix",
-        edit: {
-          edits: [{
-            resource: model.uri,
-            edit: { range: e.range, text: text }
-          }]
-        },
-        isPreferred: true
-      });
-    });
-    return { actions: actions, dispose: () => { } };
-  }
-
   public provideCodeActions(model: monaco.editor.ITextModel
     , range: monaco.Range
     , context: monaco.languages.CodeActionContext
     , token: monaco.CancellationToken
-  ): monaco.languages.CodeActionList {
-    if (context.markers.length == 0) return undefined;
-    if (context.markers.every(e => e.severity != monaco.MarkerSeverity.Error)) return undefined;
-    return this.getQuickFix(model, context.markers);
+  ): monaco.languages.ProviderResult<monaco.languages.CodeActionList> {
+    const markers = [];
+    const errors = [];
+    context.markers.forEach((e, index) => {
+      if (e.severity === monaco.MarkerSeverity.Error) {
+        const value = model.getLineContent(e.endLineNumber);
+        errors.push({ index, value });
+        markers.push(e);
+      }
+    });
+    if (errors.length == 0) return undefined;
+    return postMessage<monaco.languages.CodeActionList>(
+      model as VanessaModel,
+      {
+        type: MessageType.GetCodeActions,
+        versionId: model.getVersionId(),
+        uri: model.uri.toString(),
+        data: errors
+      }, markers);
   }
 
   public provideFoldingRanges(
@@ -387,7 +373,7 @@ export class VanessaGherkinProvider {
         maxColumn: model.getLineMaxColumn(position.lineNumber),
         versionId: model.getVersionId(),
         uri: model.uri.toString()
-        });
+      });
   }
 
   private empty(position: monaco.Position

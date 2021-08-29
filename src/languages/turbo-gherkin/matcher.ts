@@ -83,7 +83,7 @@ export class KeywordMatcher {
     return line.match(regexp) || [];
   }
 
-  protected findKeyword(words: Array<string>): Array<string> {
+  public findKeyword(words: Array<string>): Array<string> {
     if (words.length == 0) return undefined;
     let result = undefined;
     this._keywords.forEach((item: string[]) => {

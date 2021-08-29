@@ -2,6 +2,7 @@ import { MessageType } from './common'
 import { KeywordMatcher } from './matcher';
 import * as hiperlinks from './hiperlinks'
 import * as folding from './folding'
+import * as quickfix from './quickfix'
 
 let matcher: KeywordMatcher;
 let metatags: string[] = ["try", "except", "попытка", "исключение"];
@@ -57,6 +58,11 @@ function getLinkData(msg: any) {
   const getLineContent = (lineNumber: number) => content[lineNumber - 1];
   const result = hiperlinks.getLinkData(msg, matcher, lineCount, getLineContent);
   return { id: msg.id, data: result, success: true };
+}
+
+function getCodeActions(msg: any) {
+  const result = quickfix.getCodeActions(msg.data, matcher, steplist);
+  return { id: msg.id, data: result, success: true, uri: msg.uri, quickfix: true };
 }
 
 function escapeMarkdown(text: string): string {
@@ -177,10 +183,12 @@ export function process(e: any) {
     case MessageType.DeleteModelCache:
       contentMap.delete(msg.uri);
       break;
-    case MessageType.GetCompletions:
-      return getCompletionItems(msg);
+    case MessageType.GetCodeActions:
+      return getCodeActions(msg);
     case MessageType.GetCodeFolding:
       return getCodeFolding(msg);
+    case MessageType.GetCompletions:
+      return getCompletionItems(msg);
     case MessageType.GetHiperlinks:
       return getHiperlinks(msg);
     case MessageType.GetLineHover:
