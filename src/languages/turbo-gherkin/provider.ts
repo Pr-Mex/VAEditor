@@ -14,7 +14,7 @@ let workerMessageId = 0;
 const messageMap = new Map<number, any>();
 const markersMap = new Map<number, monaco.editor.IMarkerData[]>();
 
-function resolveCodeAction(msg: any) {
+function resolveCodeActions(msg: any) {
   if (!msg.quickfix) return;
   const markers = markersMap.get(msg.id);
   if (!markers) return;
@@ -46,7 +46,7 @@ worker.onmessage = function (e) {
   if (promise) {
     messageMap.delete(msg.id);
     if (msg.success) {
-      resolveCodeAction(msg);
+      resolveCodeActions(msg);
       promise.resolve(msg.data);
     }
     else promise.reject(msg.data);

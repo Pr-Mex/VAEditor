@@ -13,7 +13,7 @@ function addQuickFix(matcher: KeywordMatcher, steplist: any, list: any, value: s
   let line = matcher.key(matcher.filterWords(words));
   for (let key in steplist) {
     let sum = distance(line, key);
-    if (sum > 0.7) list.push({ key, sum, words, start, value, index });
+    if (sum > 0.7) list.push({ key, sum, words, start, index });
   }
 }
 
