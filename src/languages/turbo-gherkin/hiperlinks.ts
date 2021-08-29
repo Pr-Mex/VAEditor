@@ -95,7 +95,6 @@ function getLinks(
           multidata = { };
           let filename = trimQuotes(matches[3].trim()).toLowerCase();
           let vars = imports[filename];
-          console.log("imports", imports)
           if (vars) {
             Object.keys(vars[""]).forEach(key => { links[""][key] = vars[""][key] });
             Object.keys(vars).forEach(key => { if (key) links[key] = vars[key] });

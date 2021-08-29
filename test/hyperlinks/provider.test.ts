@@ -43,7 +43,6 @@ describe('Переменные и гиперссылки', function () {
     setTimeout(() => {
       const promise = provider.provideLinks(model, undefined) as Promise<ILinksList>;
       promise.then(result => {
-        console.log('Импорт файлов', result);
         expect(result.links[13]).to.have.property('tooltip', 'Василёк');
         expect(result.links[13]).to.have.property('url', 'link:Контрагенты.Продавец');
         expect(result.links[14]).to.have.property('tooltip', 'Василёк');
