@@ -1,5 +1,6 @@
 import { MessageType } from './common'
 import { KeywordMatcher } from './matcher';
+import * as hiperlinks from './hiperlinks'
 import * as folding from './folding'
 
 let matcher: KeywordMatcher;
@@ -32,6 +33,24 @@ function getCodeFolding(msg: any) {
   const lineCount: number = content.length;
   const getLineContent = (lineNumber: number) => content[lineNumber - 1];
   const result = folding.getCodeFolding(matcher, tabSize, lineCount, getLineContent);
+  return { id: msg.id, data: result, success: true };
+}
+
+function getHiperlinks(msg: any) {
+  const content = getModelContent(msg);
+  if (!content) return undefined;
+  const lineCount: number = content.length;
+  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
+  const result = hiperlinks.getHiperlinks(matcher, lineCount, getLineContent);
+  return { id: msg.id, data: result, success: true };
+}
+
+function getLinkData(msg: any) {
+  const content = getModelContent(msg);
+  if (!content) return undefined;
+  const lineCount: number = content.length;
+  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
+  const result = hiperlinks.getLinkData(msg, matcher, lineCount, getLineContent);
   return { id: msg.id, data: result, success: true };
 }
 
@@ -98,6 +117,9 @@ export function process(e: any) {
     case MessageType.UpdateModelCache:
       setModelContent(msg);
       break;
+    case MessageType.SetImports:
+      hiperlinks.setImports(msg.data);
+      break;
     case MessageType.DeleteModelCache:
       contentMap.delete(msg.uri);
       break;
@@ -105,6 +127,10 @@ export function process(e: any) {
       return getCompletionItems(msg);
     case MessageType.GetCodeFolding:
       return getCodeFolding(msg);
+    case MessageType.GetHiperlinks:
+      return getHiperlinks(msg);
+    case MessageType.GetLinkData:
+      return getLinkData(msg);
     default:
       return { success: false };
   }

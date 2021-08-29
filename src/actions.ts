@@ -43,8 +43,8 @@ export class ActionManager {
           return { catch: () => { } };
         }
         if (/^\s*link:/.test(target)) {
-          let data = VanessaGherkinProvider.instance.getLinkData(this.editor, target.substr(5));
-          this.owner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data));
+          const promise = VanessaGherkinProvider.instance.getLinkData(this.editor.getModel(), target.substr(5));
+          promise.then((data) => this.owner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data)));
           return { catch: () => { } };
         }
       }

@@ -4,12 +4,14 @@ import * as vars from './example.json';
 let expect = require('chai').expect;
 
 describe('Переменные и гиперссылки', function () {
+  type ILinksList = monaco.languages.ILinksList;
   let model: monaco.editor.ITextModel;
-  let result: monaco.languages.ILinksList;
-  before(() => {
+  let result: ILinksList;
+  before((done) => {
     const provider = VanessaGherkinProvider.instance;
     model = monaco.editor.createModel(content, "turbo-gherkin");
-    result = provider.provideLinks(model, undefined) as monaco.languages.ILinksList;
+    const promise = provider.provideLinks(model, undefined) as Promise<ILinksList>;
+    promise.then(res => { result = res; done(); })
   });
   it('Навигационные ссылки', () => {
     expect(result).to.be.an('object').to.have.property('links').to.be.an('array').to.have.lengthOf(13);
@@ -35,18 +37,23 @@ describe('Переменные и гиперссылки', function () {
     expect(result.links[12]).to.have.property('tooltip', 'Металлистов');
     expect(result.links[12]).to.have.property('url', 'link:Тула.Улица');
   });
-  it('Импорт файлов', () => {
+  it('Импорт файлов', (done) => {
     const provider = VanessaGherkinProvider.instance;
     provider.setImports(JSON.stringify(vars));
-    result = provider.provideLinks(model, undefined) as monaco.languages.ILinksList;
-    console.log('Импорт файлов', result);
-    expect(result.links[13]).to.have.property('tooltip', 'Василёк');
-    expect(result.links[13]).to.have.property('url', 'link:Контрагенты.Продавец');
-    expect(result.links[14]).to.have.property('tooltip', 'Василёк');
-    expect(result.links[14]).to.have.property('url', 'link:Контрагенты.Продавец.Код');
-    expect(result.links[15]).to.have.property('tooltip', 'Табуретка');
-    expect(result.links[15]).to.have.property('url', 'link:товар');
-    expect(result.links[16]).to.have.property('tooltip', 'Доставка');
-    expect(result.links[16]).to.have.property('url', 'link:услуга');
+    setTimeout(() => {
+      const promise = provider.provideLinks(model, undefined) as Promise<ILinksList>;
+      promise.then(result => {
+        console.log('Импорт файлов', result);
+        expect(result.links[13]).to.have.property('tooltip', 'Василёк');
+        expect(result.links[13]).to.have.property('url', 'link:Контрагенты.Продавец');
+        expect(result.links[14]).to.have.property('tooltip', 'Василёк');
+        expect(result.links[14]).to.have.property('url', 'link:Контрагенты.Продавец.Код');
+        expect(result.links[15]).to.have.property('tooltip', 'Табуретка');
+        expect(result.links[15]).to.have.property('url', 'link:товар');
+        expect(result.links[16]).to.have.property('tooltip', 'Доставка');
+        expect(result.links[16]).to.have.property('url', 'link:услуга');
+        done();
+      })
+    }, 100);
   });
 })

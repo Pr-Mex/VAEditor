@@ -34,8 +34,11 @@ export enum MessageType {
   SetMatchers,
   SetMetatags,
   SetStepList,
+  SetImports,
   UpdateModelCache,
   DeleteModelCache,
   CompletionItems,
   GetCodeFolding,
+  GetHiperlinks,
+  GetLinkData,
 }
