@@ -12,33 +12,6 @@ const blob = require("blob-url-loader?type=application/javascript!compile-loader
 const worker = new Worker(blob);
 let workerMessageId = 0;
 const messageMap = new Map<number, any>();
-const markersMap = new Map<number, monaco.editor.IMarkerData[]>();
-
-function resolveCodeActions(msg: any) {
-  if (!msg.quickfix) return;
-  const markers = markersMap.get(msg.id);
-  if (!markers) return;
-  markersMap.delete(msg.id);
-  const actions: Array<monaco.languages.CodeAction> = [];
-  msg.data.forEach(e => {
-    const marker = markers[e.index];
-    const lineNumber = marker.endLineNumber;
-    const range = new monaco.Range(lineNumber, e.startColumn, lineNumber, e.endColumn);
-    actions.push({
-      title: e.text,
-      diagnostics: [marker],
-      kind: "quickfix",
-      edit: {
-        edits: [{
-          resource: monaco.Uri.parse(msg.uri),
-          edit: { range: range, text: e.text }
-        }]
-      },
-      isPreferred: true
-    });
-  });
-  msg.data = { actions: actions, dispose: () => { } };
-}
 
 worker.onmessage = function (e) {
   const msg = e.data;
@@ -46,14 +19,13 @@ worker.onmessage = function (e) {
   if (promise) {
     messageMap.delete(msg.id);
     if (msg.success) {
-      resolveCodeActions(msg);
       promise.resolve(msg.data);
     }
     else promise.reject(msg.data);
   }
 }
 
-function postMessage<T>(model: VanessaModel, message: any, markers = undefined)
+function postMessage<T>(model: VanessaModel, message: any)
   : Promise<T> {
   const versionId = model.getVersionId();
   if (model.workerVersionId !== versionId) {
@@ -66,7 +38,6 @@ function postMessage<T>(model: VanessaModel, message: any, markers = undefined)
     });
   }
   const id = message.id = ++workerMessageId;
-  if (markers) markersMap.set(id, markers);
   function init(resolve, reject) {
     messageMap.set(id, { resolve, reject });
   }
@@ -311,14 +282,33 @@ export class VanessaGherkinProvider {
       }
     });
     if (errors.length == 0) return undefined;
-    return postMessage<monaco.languages.CodeActionList>(
-      model as VanessaModel,
-      {
-        type: MessageType.GetCodeActions,
-        versionId: model.getVersionId(),
-        uri: model.uri.toString(),
-        data: errors
-      }, markers);
+    const message = {
+      type: MessageType.GetCodeActions,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
+      data: errors
+    };
+    return postMessage<any>(model as VanessaModel, message).then(msg => {
+      const actions: Array<monaco.languages.CodeAction> = [];
+      msg.forEach((e, i) => {
+        const marker = markers[e.index];
+        const lineNumber = marker.endLineNumber;
+        const range = new monaco.Range(lineNumber, e.startColumn, lineNumber, e.endColumn);
+        actions.push({
+          title: e.text,
+          diagnostics: [marker],
+          kind: "quickfix",
+          edit: {
+            edits: [{
+              resource: model.uri,
+              edit: { range, text: e.text }
+            }]
+          },
+          isPreferred: i === 0
+        });
+      });
+      return { actions, dispose: () => { } };
+    });
   }
 
   public provideFoldingRanges(
