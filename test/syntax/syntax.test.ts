@@ -8,8 +8,11 @@ class SyntaxChecker {
 
   constructor(content: string) {
     this.model = monaco.editor.createModel(content, "turbo-gherkin");
+  }
+
+  public async check(): Promise<void> {
     const provider = VanessaGherkinProvider.instance;
-    provider.checkSyntax(this.model);
+    await provider.checkSyntax(this.model);
     this.markers = monaco.editor.getModelMarkers({ owner: "syntax", resource: this.model.uri });
   }
 
@@ -28,28 +31,35 @@ class SyntaxChecker {
 
 describe('Проверка синтаксиса', function () {
   const provider = VanessaGherkinProvider.instance;
-  it('Ключевые слова в описании фичи', () => {
+  it('Ключевые слова в описании фичи', (done) => {
     const checker = new SyntaxChecker(content.f01);
-    expect(checker.markers).to.be.an('array').to.have.lengthOf(1);
-    expect(checker.value(0)).to.equal("Когда есть шаг с ошибкой ситнаксиса");
+    checker.check().then(() => {
+      expect(checker.markers).to.be.an('array').to.have.lengthOf(1);
+      expect(checker.value(0)).to.equal("Когда есть шаг с ошибкой ситнаксиса");
+      done();
+    });
   });
   it('Быстрые исправления ошибок 1', (done) => {
     const checker = new SyntaxChecker(content.f02);
-    expect(checker.markers).to.be.an('array').to.have.lengthOf(4);
-    checker.action(0).then((act: monaco.languages.CodeActionList) => {
-      expect(act).to.be.an('object').to.have.property('actions');
-      expect(act.actions).to.be.an('array').to.have.lengthOf(1);
-      expect(act.actions[0]).to.have.property("title", "имя текущей формы \"ФормаСписка\" Тогда");
-      done();
+    checker.check().then(() => {
+      expect(checker.markers).to.be.an('array').to.have.lengthOf(4);
+      checker.action(0).then((act: monaco.languages.CodeActionList) => {
+        expect(act).to.be.an('object').to.have.property('actions');
+        expect(act.actions).to.be.an('array').to.have.lengthOf(1);
+        expect(act.actions[0]).to.have.property("title", "имя текущей формы \"ФормаСписка\" Тогда");
+        done();
+      });
     });
   });
   it('Быстрые исправления ошибок 2', (done) => {
     const checker = new SyntaxChecker(content.f02);
-    checker.action(1).then((act: monaco.languages.CodeActionList) => {
-      expect(act).to.be.an('object').to.have.property('actions');
-      expect(act.actions[0]).to.have.property("title", "поле с именем <Фамилия> не существует");
-      //    expect(checker.action(2).actions[0]).to.have.property("title", "в течение 30 секунд я выполняю");
-      done();
+    checker.check().then(() => {
+      checker.action(1).then((act: monaco.languages.CodeActionList) => {
+        expect(act).to.be.an('object').to.have.property('actions');
+        expect(act.actions[0]).to.have.property("title", "поле с именем <Фамилия> не существует");
+        //    expect(checker.action(2).actions[0]).to.have.property("title", "в течение 30 секунд я выполняю");
+        done();
+      });
     });
   });
 })
