@@ -78,6 +78,11 @@ export class KeywordMatcher {
     return regexp.test(text);
   }
 
+  public getSection(text: string) {
+    const res = Object.keys(this.section).filter(key => key && this.section[key].test(text));
+    return res && res[0];
+  }
+
   public splitWords(line: string): Array<string> {
     let regexp = /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>|[A-zА-яЁё]+|[^A-zА-яЁё\s]+/g;
     return line.match(regexp) || [];

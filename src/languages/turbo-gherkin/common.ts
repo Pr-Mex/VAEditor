@@ -44,4 +44,5 @@ export enum MessageType {
   GetHiperlinks,
   GetLineHover,
   GetLinkData,
+  CheckSyntax,
 }

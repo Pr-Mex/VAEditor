@@ -2,18 +2,19 @@ import * as distance from 'jaro-winkler';
 import { KeywordMatcher } from './matcher';
 
 function addQuickFix(matcher: KeywordMatcher, steplist: any, list: any, value: string, index: number) {
-  let start = 1;
   let words = matcher.splitWords(value);
   let keyword = matcher.findKeyword(words);
   if (keyword == undefined) return;
   let regexp = "^[\\s]*";
   keyword.forEach(w => regexp += w + "[\\s]+");
+  let startColumn = 1;
+  let endColumn = value.length + 1;
   let match = value.toLowerCase().match(new RegExp(regexp));
-  if (match) start = match[0].length + 1;
+  if (match) startColumn = match[0].length + 1;
   let line = matcher.key(matcher.filterWords(words));
   for (let key in steplist) {
     let sum = distance(line, key);
-    if (sum > 0.7) list.push({ key, sum, words, start, index });
+    if (sum > 0.7) list.push({ key, sum, words, index, startColumn, endColumn });
   }
 }
 
@@ -34,7 +35,7 @@ export function getCodeActions(errors: any, matcher: KeywordMatcher, steplist: a
     if (i > 6) return;
     const step = steplist[e.key];
     const text = replaceParams(matcher, step.head, e.words);
-    result.push({ text, index: e.index, start: e.start });
+    result.push({ text, index: e.index, startColumn: e.startColumn, endColumn: e.endColumn });
   });
   return result;
 }

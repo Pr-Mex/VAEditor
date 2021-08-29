@@ -23,7 +23,7 @@ function resolveCodeActions(msg: any) {
   msg.data.forEach(e => {
     const marker = markers[e.index];
     const lineNumber = marker.endLineNumber;
-    const range = new monaco.Range(lineNumber, e.start, lineNumber, marker.endColumn);
+    const range = new monaco.Range(lineNumber, e.startColumn, lineNumber, e.endColumn);
     actions.push({
       title: e.text,
       diagnostics: [marker],
@@ -455,49 +455,16 @@ export class VanessaGherkinProvider {
     return item;
   }
 
-  private lineSyntaxError(line: string, section: string): boolean {
-    let match = line.match(this.matcher.step);
-    if (!match) return false;
-    let words = this.splitWords(line);
-    let keyword = this.findKeyword(words);
-    if (keyword == undefined) return false;
-    let s = true;
-    let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
-    words = words.filter((w, i) => (i < keyword.length) ? false : (notComment(w) ? true : s = false));
-    let key = this.key(words);
-    if (key === "") return false;
-    if (this.steps[key]) return false;
-    let keypair = this.keypairs[keyword.join(" ")];
-    if (!keypair) return true;
-    let lastnum = words.length - 1;
-    let lastword = words[lastnum].toLowerCase();
-    let step = words.filter((w, i) => i < lastnum);
-    return !(this.steps[this.key(step)] && keypair.some((w: string) => w == lastword));
-  }
-
   public checkSyntax(model: monaco.editor.ITextModel) {
     if (model.getModeId() != "turbo-gherkin") return;
-    let problems: monaco.editor.IMarkerData[] = [];
-    let lineCount = model.getLineCount();
-    let multiline = false;
-    let section = "";
-    for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-      const line: string = model.getLineContent(lineNumber);
-      if (/^\s*""".*$/.test(line)) { multiline = !multiline; continue; }
-      if (multiline) continue;
-      if (/^\s*(#|@|\*|\/\/)/.test(line)) continue;
-      if (this.isSection(line)) { section = this.getSection(line); continue; }
-      if (section == "feature") continue;
-      if (this.lineSyntaxError(line, section)) problems.push({
-        severity: monaco.MarkerSeverity.Error,
-        message: this.syntaxMsg,
-        startLineNumber: lineNumber,
-        endLineNumber: lineNumber,
-        startColumn: model.getLineFirstNonWhitespaceColumn(lineNumber),
-        endColumn: model.getLineLastNonWhitespaceColumn(lineNumber),
-      });
-    }
-    monaco.editor.setModelMarkers(model, "syntax", problems);
+    return postMessage<monaco.editor.IMarkerData[]>(
+      model as VanessaModel,
+      {
+        type: MessageType.CheckSyntax,
+        versionId: model.getVersionId(),
+        uri: model.uri.toString()
+      }
+    ).then(problems => monaco.editor.setModelMarkers(model, "syntax", problems));
   }
 
   private tokenizer: ITokenizationSupport;

@@ -3,14 +3,17 @@ import { KeywordMatcher } from './matcher';
 import * as hiperlinks from './hiperlinks'
 import * as folding from './folding'
 import * as quickfix from './quickfix'
+import * as syntax from './syntax';
 
 let matcher: KeywordMatcher;
 let metatags: string[] = ["try", "except", "попытка", "исключение"];
 let steplist = { };
+let keypairs = { };
 let variables = { };
 
 const messages = {
-  soundHint: "Sound"
+  syntaxMsg: "Syntax error",
+  soundHint: "Sound",
 }
 
 class ModelData {
@@ -63,6 +66,15 @@ function getLinkData(msg: any) {
 function getCodeActions(msg: any) {
   const result = quickfix.getCodeActions(msg.data, matcher, steplist);
   return { id: msg.id, data: result, success: true, uri: msg.uri, quickfix: true };
+}
+
+function checkSyntax(msg: any) {
+  const content = getModelContent(msg);
+  if (!content) return undefined;
+  const lineCount: number = content.length;
+  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
+  const result = syntax.checkSyntax(matcher, steplist, keypairs, messages.syntaxMsg, lineCount, getLineContent);
+  return { id: msg.id, data: result, success: true };
 }
 
 function escapeMarkdown(text: string): string {
@@ -195,6 +207,8 @@ export function process(e: any) {
       return getLineHover(msg);
     case MessageType.GetLinkData:
       return getLinkData(msg);
+    case MessageType.CheckSyntax:
+      return checkSyntax(msg);
     default:
       return { success: false };
   }
