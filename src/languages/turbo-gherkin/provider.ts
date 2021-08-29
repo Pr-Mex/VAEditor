@@ -6,7 +6,7 @@ import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
-import { IVanessaStep, MessageType, VAToken } from './common';
+import { IVanessaStep, MessageType, VanessaModel } from './common';
 import * as distance from 'jaro-winkler';
 
 interface IImportedItem {
@@ -41,7 +41,18 @@ worker.onmessage = function (e) {
   }
 }
 
-function postMessage<T>(message: any): Promise<T> {
+function postMessage<T>(model: VanessaModel, message: any)
+  : Promise<T> {
+  const versionId = model.getVersionId();
+  if (model["workerVersionId"] !== versionId) {
+    model["workerVersionId"] = versionId;
+    worker.postMessage({
+      type: MessageType.UpdateModelCache,
+      content: model.getLinesContent(),
+      uri: model.uri.toString(),
+      versionId: versionId,
+    });
+  }
   const id = message.id = ++workerMessageId;
   function init(resolve, reject) {
     messageMap.set(id, { resolve, reject });
@@ -49,6 +60,10 @@ function postMessage<T>(message: any): Promise<T> {
   const promise = new Promise<T>(init);
   worker.postMessage(message);
   return promise;
+}
+
+export function clearWorkerCache(uri: monaco.Uri) {
+  worker.postMessage({ type: MessageType.DeleteModelCache, uri: uri.toString() });
 }
 
 export class VanessaGherkinProvider {
@@ -65,12 +80,12 @@ export class VanessaGherkinProvider {
   protected _soundHint = "Sound";
   protected _syntaxMsg = "Syntax error";
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
-  protected _keypairs: any = {};
-  protected _steps = {};
-  protected _elements = {};
-  protected _variables = {};
+  protected _keypairs: any = { };
+  protected _steps = { };
+  protected _elements = { };
+  protected _variables = { };
   protected _errorLinks = [];
-  protected _imports = {};
+  protected _imports = { };
   protected _matcher: KeywordMatcher;
   protected _locale: string;
 
@@ -338,11 +353,14 @@ export class VanessaGherkinProvider {
     context: monaco.languages.FoldingContext,
     token: monaco.CancellationToken,
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
-    return postMessage<monaco.languages.FoldingRange[]>({
-      type: MessageType.GetCodeFolding,
-      tabSize: model.getOptions().tabSize,
-      lines: model.getLinesContent()
-    });
+    return postMessage<monaco.languages.FoldingRange[]>(
+      model as VanessaModel,
+      {
+        type: MessageType.GetCodeFolding,
+        tabSize: model.getOptions().tabSize,
+        versionId: model.getVersionId(),
+        uri: model.uri.toString()
+      });
   }
 
   private escapeMarkdown(text: string): string {
@@ -459,11 +477,13 @@ export class VanessaGherkinProvider {
         startColumn: minColumn ? minColumn : position.column,
         endColumn: maxColumn ? maxColumn : position.column,
       };
-      return postMessage<monaco.languages.CompletionList>({
-        type: MessageType.CompletionItems,
-        keyword: keyword,
-        range: range
-      });
+      return postMessage<monaco.languages.CompletionList>(
+        model as VanessaModel,
+        {
+          type: MessageType.CompletionItems,
+          keyword: keyword,
+          range: range
+        });
     }
   }
 
@@ -573,10 +593,10 @@ export class VanessaGherkinProvider {
   }
 
   public setImports = (values: string): void => {
-    let result = {};
+    let result = { };
     let array = JSON.parse(values) as Array<IImportedFile>;
     array.forEach(file => {
-      let data = result[file.name] = { "": {} };
+      let data = result[file.name] = { "": { } };
       file.items.forEach(item => {
         const key = (item.name || "").toLowerCase();
         if (item.value) {
@@ -585,12 +605,12 @@ export class VanessaGherkinProvider {
           const text = item.lines.lines.map(w => w.text).join('\n');
           data[""][key] = { key: item.name, name: text, file: file.path };
         } else if (item.table) {
-          if (key) data[key] = {};
+          if (key) data[key] = { };
           const columns = item.table.head.tokens.map(e => e.text);
           item.table.body.forEach(row => {
             const t = row.tokens;
             const i = (t[0].text || "").toLowerCase();
-            let x = data[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: {} };
+            let x = data[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: { } };
             for (let col = 0; col < columns.length; col++)
               x.data[columns[col]] = t[col].text;
           });
@@ -609,10 +629,10 @@ export class VanessaGherkinProvider {
         let matches = undefined;
         let tableName = "";
         let columns = null;
-        let links = { "": {} };
+        let links = { "": { } };
         let multiline = false;
         let multitext = "";
-        let multidata = {};
+        let multidata = { };
         for (let i = lineNumber + 1; i <= position.lineCount; i++) {
           let line: string = model.getLineContent(i);
           if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
@@ -625,23 +645,23 @@ export class VanessaGherkinProvider {
             } else {
               match = match.map(trimQuotes);
               while (match.length < columns.length) match.push("");
-              let row = { key: match[0], name: match[1], data: {} };
+              let row = { key: match[0], name: match[1], data: { } };
               for (let col = 0; col < columns.length; col++) row.data[columns[col]] = match[col];
-              if (links[tableName] == undefined) links[tableName] = {};
+              if (links[tableName] == undefined) links[tableName] = { };
               links[tableName][match[0].toLowerCase()] = row;
             }
           } else if ((matches = line.match(/^\s*([A-zА-яЁё][0-9A-zА-яЁё]*)\s*=\s*(.*)\s*$/)) != null) {
             tableName = "";
             columns = null;
-            multidata = {};
+            multidata = { };
             let key = matches[1].toLowerCase();
             let value = matches[2].trim();
-            if (links[tableName] == undefined) links[tableName] = {};
+            if (links[tableName] == undefined) links[tableName] = { };
             multidata = links[tableName][key] = { key: key, name: value };
           } else if ((matches = line.match(import_reg)) !== null) {
             tableName = "";
             columns = null;
-            multidata = {};
+            multidata = { };
             let filename = trimQuotes(matches[3].trim()).toLowerCase();
             let vars = this._imports[filename];
             if (vars) {
@@ -658,13 +678,13 @@ export class VanessaGherkinProvider {
           } else {
             if (columns) tableName = "";
             columns = null;
-            multidata = {};
+            multidata = { };
           }
         }
       }
     }
     position.lineNumber = position.lineCount;
-    return {};
+    return { };
   }
 
   public getLinkData(editor: monaco.editor.IStandaloneCodeEditor, key: string) {

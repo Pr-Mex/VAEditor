@@ -4,12 +4,33 @@ import * as folding from './folding'
 
 let matcher: KeywordMatcher;
 let metatags: string[] = ["try", "except", "попытка", "исключение"];
-let steplist = {};
+let steplist = { };
+
+class ModelData {
+  content: string[];
+  versionId: number;
+}
+
+const contentMap = new Map<string, ModelData>();
+
+function setModelContent(msg: any) {
+  contentMap.set(msg.uri, {
+    content: msg.content,
+    versionId: msg.versionId
+  });
+}
+
+function getModelContent(msg: any) {
+  const data = contentMap.get(msg.uri);
+  return data && data.content;
+}
 
 function getCodeFolding(msg: any) {
+  const content = getModelContent(msg);
+  if (!content) return undefined;
   const tabSize: number = msg.tabSize;
-  const lineCount: number = msg.lines.length;
-  const getLineContent = (lineNumber) => msg.lines[lineNumber - 1];
+  const lineCount: number = content.length;
+  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
   const result = folding.getCodeFolding(matcher, tabSize, lineCount, getLineContent);
   return { id: msg.id, data: result, success: true };
 }
@@ -67,13 +88,19 @@ export function process(e: any) {
   switch (msg.type) {
     case MessageType.SetMatchers:
       matcher = new KeywordMatcher(msg.data);
-      return { success: true };
+      break;
     case MessageType.SetMetatags:
       metatags = msg.data;
-      return { success: true };
+      break;
     case MessageType.SetStepList:
       steplist = msg.data;
-      return { success: true };
+      break;
+    case MessageType.UpdateModelCache:
+      setModelContent(msg);
+      break;
+    case MessageType.DeleteModelCache:
+      contentMap.delete(msg.uri);
+      break;
     case MessageType.CompletionItems:
       return getCompletionItems(msg);
     case MessageType.GetCodeFolding:

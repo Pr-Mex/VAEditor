@@ -1,10 +1,12 @@
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from './vanessa-editor';
 import { VanessaDiffEditor } from './vanessa-diff-editor';
+import { VanessaModel } from './languages/turbo-gherkin/common';
+import { clearWorkerCache } from './languages/turbo-gherkin/provider';
 
 const $ = dom.$;
 
-export interface IVanessaEditor  {
+export interface IVanessaEditor {
   domNode(): HTMLElement;
   dispose(): void;
   focus(): void;
@@ -58,18 +60,15 @@ function getLanguage(filename: string): string {
 }
 
 export function createModel(value: string, filename: string, uri?: monaco.Uri): monaco.editor.ITextModel {
-  const model = monaco.editor.createModel(value, getLanguage(filename), uri);
-  Object.defineProperties(model, {
-    savedVersionId: { value: model.getAlternativeVersionId(), writable: true },
-  });
-  //@ts-ignore
-  model["isModified"] = () => model.getAlternativeVersionId() != model.savedVersionId;
-  //@ts-ignore
-  model["resetModified"] = () => model.savedVersionId = model.getAlternativeVersionId();
+  const model = monaco.editor.createModel(value, getLanguage(filename), uri) as VanessaModel;
+  Object.defineProperties(model, { savedVersionId: { value: model.getAlternativeVersionId(), writable: true } });
+  model.isModified = () => model.getAlternativeVersionId() != model.savedVersionId;
+  model.resetModified = () => model.savedVersionId = model.getAlternativeVersionId();
+  model.onWillDispose(() => clearWorkerCache(model.uri));
   return model;
 }
 
-export function disposeModel(model : monaco.editor.ITextModel): void {
+export function disposeModel(model: monaco.editor.ITextModel): void {
   if (!model) return;
   if (VanessaEditor.findModel(model)) return;
   if (VanessaDiffEditor.findModel(model)) return;

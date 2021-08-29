@@ -1,4 +1,5 @@
 const w = require('./worker')
 self.onmessage = function (e) {
-  postMessage(w.process(e))
+  const res = w.process(e);
+  if (res) postMessage(res)
 }

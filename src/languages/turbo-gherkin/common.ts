@@ -7,6 +7,14 @@ export interface IVanessaStep {
   section: string;
 }
 
+export interface VanessaModel
+  extends monaco.editor.ITextModel {
+    workerVersionId: number,
+    savedVersionId: number,
+    resetModified: Function,
+    isModified: Function,
+}
+
 export enum VAToken {
   Empty = 0,
   Section,
@@ -26,6 +34,8 @@ export enum MessageType {
   SetMatchers,
   SetMetatags,
   SetStepList,
+  UpdateModelCache,
+  DeleteModelCache,
   CompletionItems,
   GetCodeFolding,
 }
