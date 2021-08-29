@@ -1,4 +1,4 @@
-import { VAIndent, VAToken } from "./common";
+import { IVanessaModel, VAIndent, VAToken } from "./common";
 import { KeywordMatcher } from "./matcher";
 
 function getIndent(text: string, tabSize: number) {
@@ -24,13 +24,13 @@ function getToken(text: string) {
 export function getCodeFolding(
   matcher: KeywordMatcher,
   tabSize: number,
-  lineCount: number,
-  getLineContent: (lineNumber: number) => string
+  model: IVanessaModel
 ): Array<monaco.languages.FoldingRange> {
   let multiline = false;
+  const lineCount = model.getLineCount();
   let lines: Array<VAIndent> = [{ token: VAToken.Empty, indent: 0 }];
   for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-    let text = getLineContent(lineNumber);
+    let text = model.getLineContent(lineNumber);
     let token = getToken(text);
     if (multiline) {
       if (token == VAToken.Multiline) multiline = false;

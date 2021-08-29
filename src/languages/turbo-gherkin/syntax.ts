@@ -1,4 +1,5 @@
 import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
+import { IVanessaModel } from './common';
 import { KeywordMatcher } from './matcher';
 
 function lineSyntaxError(matcher: KeywordMatcher, steplist: any, keypairs: any, line: string): boolean {
@@ -26,14 +27,14 @@ export function checkSyntax(
   steplist: any,
   keypairs: any,
   syntaxMsg: string,
-  lineCount: number,
-  getLineContent: (lineNumber: number) => string,
+  model: IVanessaModel
 ) {
-  let problems: monaco.editor.IMarkerData[] = [];
+  const problems: monaco.editor.IMarkerData[] = [];
+  const lineCount = model.getLineCount();
   let multiline = false;
   let section = "";
   for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-    const line: string = getLineContent(lineNumber);
+    const line: string = model.getLineContent(lineNumber);
     if (/^\s*""".*$/.test(line)) { multiline = !multiline; continue; }
     if (multiline) continue;
     if (/^\s*(#|@|\*|\/\/)/.test(line)) continue;

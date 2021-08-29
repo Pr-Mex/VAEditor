@@ -1,3 +1,4 @@
+import { IVanessaModel } from "./common";
 import { KeywordMatcher } from "./matcher";
 
 let imports = { };
@@ -49,13 +50,13 @@ function trimQuotes(w: string) {
 
 function getLinks(
   matcher: KeywordMatcher,
-  getLineContent: (lineNumber: number) => string,
+  model: IVanessaModel,
   position: { lineNumber: number, lineCount: number }
 ) {
   let links_reg = new RegExp(matcher.section.variables);
   let import_reg = new RegExp(matcher.import.source + "(.+)");
   for (let lineNumber = 1; lineNumber <= position.lineCount - 1; lineNumber++) {
-    let line: string = getLineContent(lineNumber);
+    let line: string = model.getLineContent(lineNumber);
     if (line.match(links_reg)) {
       let matches = undefined;
       let tableName = "";
@@ -65,7 +66,7 @@ function getLinks(
       let multitext = "";
       let multidata = { };
       for (let i = lineNumber + 1; i <= position.lineCount; i++) {
-        let line: string = getLineContent(i);
+        let line: string = model.getLineContent(i);
         if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
         if (multiline) { multitext += (multitext == "" ? "" : "\n") + line; multidata["name"] = multitext; continue; }
         if (line.match(/^\s*\|/)) {
@@ -121,12 +122,12 @@ function getLinks(
 export function getLinkData(
   key: string,
   matcher: KeywordMatcher,
-  lineCount: number,
-  getLineContent: (lineNumber: number) => string
+  model: IVanessaModel
 ) {
+  const lineCount = model.getLineCount();
   let position = { lineNumber: 1, lineCount: lineCount };
   let words = key.split(".").map((w: string) => w.toLowerCase());
-  let links = getLinks(matcher, getLineContent, position);
+  let links = getLinks(matcher, model, position);
   let data = (table: string, row: string, col: string = undefined): any => {
     if (links[table] && links[table][row]) {
       let obj = links[table][row];
@@ -145,17 +146,17 @@ export function getLinkData(
 
 export function getHiperlinks(
   matcher: KeywordMatcher,
-  lineCount: number,
-  getLineContent: (lineNumber: number) => string
+  model: IVanessaModel
 ) {
+  const lineCount = model.getLineCount();
   let result = [];
   let pos = { lineNumber: 1, lineCount: lineCount };
-  let links = getLinks(matcher, getLineContent, pos);
+  let links = getLinks(matcher, model, pos);
   let pattern = /(["'])((?:\\\1|(?:(?!\1)).)*)(\1)/;
   for (var lineNumber = 1; lineNumber <= pos.lineCount; lineNumber++) {
     let matches = undefined;
     let regexp = new RegExp(pattern.source, "g");
-    let line: string = getLineContent(lineNumber);
+    let line: string = model.getLineContent(lineNumber);
     while ((matches = regexp.exec(line)) !== null) {
       let range = {
         startLineNumber: lineNumber,

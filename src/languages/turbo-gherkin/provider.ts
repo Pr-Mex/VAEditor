@@ -18,10 +18,10 @@ worker.onmessage = function (e) {
   const promise = msg.id && messageMap.get(msg.id);
   if (promise) {
     messageMap.delete(msg.id);
-    if (msg.success) {
+    if (msg.success)
       promise.resolve(msg.data);
-    }
-    else promise.reject(msg.data);
+    else
+      promise.reject(msg.data);
   }
 }
 

@@ -65,11 +65,10 @@ export class SubcodeWidget extends WidgetBase {
         }
         lineNode = lineNode.nextElementSibling;
       }
-      const result = folding.getCodeFolding(
+      folding.getCodeFolding(
         VanessaGherkinProvider.instance.matcher,
         model.getOptions().tabSize,
-        this.lines.length,
-        lineNumber => this.getLineContent(lineNumber)
+        this
       ).forEach(e => this.lines[e.start - 1].initFolding(e.end));
     });
     this.useDebugger = runtime.useDebugger;
@@ -120,6 +119,10 @@ export class SubcodeWidget extends WidgetBase {
 
   public getContent(): string {
     return this.content.join("\r\n");
+  }
+
+  public getLineCount(): number {
+    return this.content.length;
   }
 
   public getLineContent(lineNumber: number): string {

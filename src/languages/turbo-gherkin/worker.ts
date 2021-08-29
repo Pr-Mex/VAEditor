@@ -1,4 +1,4 @@
-import { MessageType } from './common'
+import { IVanessaModel, MessageType } from './common'
 import { KeywordMatcher } from './matcher';
 import * as hiperlinks from './hiperlinks'
 import * as folding from './folding'
@@ -16,50 +16,49 @@ const messages = {
   soundHint: "Sound",
 }
 
-class ModelData {
-  content: string[];
+class WorkerModel implements IVanessaModel {
+  constructor(msg: any) {
+    this.versionId = msg.versionId;
+    this.content = msg.content;
+  }
+  getLineContent(lineNumber: number): string {
+    return this.content[lineNumber - 1];
+  }
+  getLineCount(): number {
+    return this.content.length;
+  }
+  private content: string[];
   versionId: number;
 }
 
-const contentMap = new Map<string, ModelData>();
+const contentMap = new Map<string, WorkerModel>();
 
 function setModelContent(msg: any) {
-  contentMap.set(msg.uri, {
-    content: msg.content,
-    versionId: msg.versionId
-  });
+  contentMap.set(msg.uri, new WorkerModel(msg));
 }
 
-function getModelContent(msg: any) {
-  const data = contentMap.get(msg.uri);
-  return data && data.content;
+function getWorkerModel(msg: any) {
+  return contentMap.get(msg.uri);
 }
 
 function getCodeFolding(msg: any) {
-  const content = getModelContent(msg);
-  if (!content) return undefined;
-  const tabSize: number = msg.tabSize;
-  const lineCount: number = content.length;
-  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
-  const result = folding.getCodeFolding(matcher, tabSize, lineCount, getLineContent);
+  const model = getWorkerModel(msg);
+  if (!model) return undefined;
+  const result = folding.getCodeFolding(matcher, msg.tabSize, model);
   return { id: msg.id, data: result, success: true };
 }
 
 function getHiperlinks(msg: any) {
-  const content = getModelContent(msg);
-  if (!content) return undefined;
-  const lineCount: number = content.length;
-  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
-  const result = hiperlinks.getHiperlinks(matcher, lineCount, getLineContent);
+  const model = getWorkerModel(msg);
+  if (!model) return undefined;
+  const result = hiperlinks.getHiperlinks(matcher, model);
   return { id: msg.id, data: result, success: true };
 }
 
 function getLinkData(msg: any) {
-  const content = getModelContent(msg);
-  if (!content) return undefined;
-  const lineCount: number = content.length;
-  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
-  const result = hiperlinks.getLinkData(msg, matcher, lineCount, getLineContent);
+  const model = getWorkerModel(msg);
+  if (!model) return undefined;
+  const result = hiperlinks.getLinkData(msg, matcher, model);
   return { id: msg.id, data: result, success: true };
 }
 
@@ -69,11 +68,9 @@ function getCodeActions(msg: any) {
 }
 
 function checkSyntax(msg: any) {
-  const content = getModelContent(msg);
-  if (!content) return undefined;
-  const lineCount: number = content.length;
-  const getLineContent = (lineNumber: number) => content[lineNumber - 1];
-  const result = syntax.checkSyntax(matcher, steplist, keypairs, messages.syntaxMsg, lineCount, getLineContent);
+  const model = getWorkerModel(msg);
+  if (!model) return undefined;
+  const result = syntax.checkSyntax(matcher, steplist, keypairs, messages.syntaxMsg, model);
   return { id: msg.id, data: result, success: true };
 }
 

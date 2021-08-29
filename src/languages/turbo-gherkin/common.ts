@@ -46,3 +46,8 @@ export enum MessageType {
   GetLinkData,
   CheckSyntax,
 }
+
+export interface IVanessaModel {
+  getLineContent(lineNumber: number): string;
+  getLineCount(): number;
+}
