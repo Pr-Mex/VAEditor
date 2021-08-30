@@ -1,4 +1,5 @@
 import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
+import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
 import { RuntimeManager } from "./runtime";
@@ -111,7 +112,7 @@ export class VanessaEditor implements IVanessaEditor {
 
   public static createStandalone(
     content: string = "",
-    language: string = "turbo-gherkin",
+    language: string = gherkin.id,
   ) {
     if (this.standaloneInstance) return this.standaloneInstance;
     VanessaDiffEditor.disposeStandalone();

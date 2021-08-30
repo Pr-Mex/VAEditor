@@ -2,7 +2,7 @@ import { WidgetBase } from "./base";
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
 import * as folding from '../languages/turbo-gherkin/folding'
-
+import { language as gherkin } from '../languages/turbo-gherkin/configuration'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaGherkinProvider } from "../languages/turbo-gherkin/provider";
 
@@ -43,7 +43,7 @@ export class SubcodeWidget extends WidgetBase {
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
     this.heightInLines = this.content.length;
-    this.domNode = $(".vanessa-code-widget", {},
+    this.domNode = $(".vanessa-code-widget", { },
       this.textNode = $(".vanessa-code-lines"),
       this.leftNode = $('.vanessa-code-border'),
     );
@@ -55,7 +55,7 @@ export class SubcodeWidget extends WidgetBase {
       getPosition: () => null
     };
     this.runtime.editor.addOverlayWidget(this.overlayWidget);
-    monaco.editor.colorize(content, "turbo-gherkin", {}).then((html: string) => {
+    monaco.editor.colorize(content, gherkin.id, { }).then((html: string) => {
       this.textNode.innerHTML = html;
       const model = this.runtime.editor ? this.runtime.editor.getModel() : null;
       let lineNode = this.textNode.firstElementChild;
@@ -66,9 +66,9 @@ export class SubcodeWidget extends WidgetBase {
         lineNode = lineNode.nextElementSibling;
       }
       folding.getCodeFolding(
-        VanessaGherkinProvider.instance.matcher,
+        { matcher: VanessaGherkinProvider.instance.matcher },
         this,
-        model.getOptions().tabSize
+        { tabSize: model.getOptions().tabSize }
       ).forEach(e => this.lines[e.start - 1].initFolding(e.end));
     });
     this.useDebugger = runtime.useDebugger;

@@ -1,5 +1,5 @@
 import * as distance from 'jaro-winkler';
-import { IWorkerContext } from './common';
+import { IWorkerContext, IWorkerModel } from './common';
 import { KeywordMatcher } from './matcher';
 
 function addQuickFix(ctx: IWorkerContext, list: any, value: string, index: number) {
@@ -12,9 +12,9 @@ function addQuickFix(ctx: IWorkerContext, list: any, value: string, index: numbe
   let endColumn = value.length + 1;
   let match = value.toLowerCase().match(new RegExp(regexp));
   if (match) startColumn = match[0].length + 1;
-  let line = ctx.matcher.key(ctx.matcher.filterWords(words));
+  let lineKey = ctx.matcher.key(ctx.matcher.filterWords(words));
   for (let key in ctx.steplist) {
-    let sum = distance(line, key);
+    let sum = distance(lineKey, key);
     if (sum > 0.7) list.push({ key, sum, words, index, startColumn, endColumn });
   }
 }
@@ -28,7 +28,7 @@ function replaceParams(matcher: KeywordMatcher, step: string[], line: string[]):
   return step.map(w => (test(w) && index < params.length) ? params[index++] : w).join(' ');
 }
 
-export function getCodeActions(ctx: IWorkerContext, msg: { errors: any }): any {
+export function getCodeActions(ctx: IWorkerContext, model: IWorkerModel, msg: { errors: any }): any {
   const list = [];
   const result = [];
   msg.errors.forEach(e => addQuickFix(ctx, list, e.value, e.index));

@@ -144,7 +144,7 @@ export function getLinkData(
   }
 }
 
-export function getHiperlinks(ctx: IWorkerContext, model: IWorkerModel) {
+export function getHiperlinks(ctx: IWorkerContext, model: IWorkerModel, msg: {}) {
   const lineCount = model.getLineCount();
   let result = [];
   let pos = { lineNumber: 1, lineCount: lineCount };

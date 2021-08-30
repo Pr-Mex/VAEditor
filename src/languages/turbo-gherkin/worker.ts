@@ -48,18 +48,18 @@ function provide(msg: any) {
   const model = getWorkerModel(msg);
   if (!model) return undefined;
   switch (msg.type) {
-    case MessageType.GetCodeFolding:
-      return getCodeFolding(context.matcher, model, msg);
     case MessageType.GetCodeActions:
-      return getCodeActions(context, msg);
+      return getCodeActions(context, model, msg);
+    case MessageType.GetCodeFolding:
+      return getCodeFolding(context, model, msg);
     case MessageType.GetHiperlinks:
-      return getHiperlinks(context, model);
+      return getHiperlinks(context, model, msg);
     case MessageType.GetLineHover:
-      return getLineHover(context, msg);
+      return getLineHover(context, model, msg);
     case MessageType.GetLinkData:
       return getLinkData(context, model, msg);
     case MessageType.CheckSyntax:
-      return checkSyntax(context, model);
+      return checkSyntax(context, model, msg);
   }
 }
 

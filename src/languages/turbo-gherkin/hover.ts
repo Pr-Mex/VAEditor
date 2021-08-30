@@ -1,11 +1,11 @@
-import { IWorkerContext } from "./common";
+import { IWorkerContext, IWorkerModel } from "./common";
 
 function escapeMarkdown(text: string): string {
   // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
   return text.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&');
 }
 
-export function getLineHover(ctx: IWorkerContext, msg: any) {
+export function getLineHover(ctx: IWorkerContext, model: IWorkerModel, msg: any) {
   let contents = [];
   let match = msg.line.match(/^\s*\*/);
   if (match) {

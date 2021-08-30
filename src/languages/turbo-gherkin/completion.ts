@@ -53,7 +53,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
 
   let maxColumn = getLineMaxColumn(msg.line);
   if (maxColumn && msg.column < maxColumn)
-    return this.empty(msg.lineNumber, msg.column);
+    return empty(msg.lineNumber, msg.column);
 
   let minColumn = getLineMinColumn(msg.line);
   let words = msg.line.match(/[^\s]+/g) || [];

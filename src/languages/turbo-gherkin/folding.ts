@@ -22,7 +22,7 @@ function getToken(text: string) {
 }
 
 export function getCodeFolding(
-  matcher: KeywordMatcher,
+  ctx: { matcher: KeywordMatcher },
   model: IWorkerModel,
   msg: { tabSize: number }
 ): Array<monaco.languages.FoldingRange> {
@@ -42,7 +42,7 @@ export function getCodeFolding(
       lines.push({ token: token, indent: 0 });
     } else {
       let ident = 0;
-      if (matcher.isSection(text)) token = VAToken.Section;
+      if (ctx.matcher.isSection(text)) token = VAToken.Section;
       else ident = getIndent(text, msg.tabSize);
       lines.push({ token: token, indent: ident });
     }

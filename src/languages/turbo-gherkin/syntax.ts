@@ -20,7 +20,7 @@ function lineSyntaxError(context: IWorkerContext, line: string): boolean {
   return !(context.steplist[context.matcher.key(step)] && keypair.some((w: string) => w == lastword));
 }
 
-export function checkSyntax(context: IWorkerContext, model: IWorkerModel) {
+export function checkSyntax(context: IWorkerContext, model: IWorkerModel, msg: {}) {
   const problems: monaco.editor.IMarkerData[] = [];
   const lineCount = model.getLineCount();
   let multiline = false;

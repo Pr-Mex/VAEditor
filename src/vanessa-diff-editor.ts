@@ -1,6 +1,7 @@
 import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
+import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaTabs } from "./vanessa-tabs";
@@ -16,7 +17,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public static createStandalone(
     original: string = "",
     modified: string = "",
-    language: string = "turbo-gherkin",
+    language: string = gherkin.id,
   ) {
     if (this.standaloneInstance) return this.standaloneInstance;
     VanessaEditor.disposeStandalone();
