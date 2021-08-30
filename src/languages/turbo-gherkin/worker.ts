@@ -1,6 +1,7 @@
 import { IWorkerModel, MessageType } from './common'
 import { KeywordMatcher } from './matcher';
 import { getHiperlinks, getLinkData, setImports } from './hiperlinks';
+import { getCompletions } from './completion';
 import { getCodeActions } from './quickfix';
 import { getCodeFolding } from './folding';
 import { getLineHover } from './hover';
@@ -43,54 +44,6 @@ function getWorkerModel(msg: any) {
   return contentMap.get(msg.uri);
 }
 
-function getCompletionItems(msg: any) {
-  let result: Array<monaco.languages.CompletionItem> = [];
-  if (msg.keyword) {
-    let keytext = msg.keyword.join(' ');
-    keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
-    for (let key in context.steplist) {
-      let e = context.steplist[key];
-      if (e.documentation) {
-        result.push({
-          label: e.label,
-          kind: e.kind ? e.kind : 1,
-          detail: e.section,
-          documentation: e.documentation,
-          sortText: e.sortText,
-          insertText: keytext + ' ' + e.insertText + '\n',
-          filterText: keytext + ' ' + key,
-          range: msg.range
-        });
-      }
-    }
-  } else {
-    context.metatags.forEach(word => {
-      result.push({
-        label: word,
-        kind: 17,
-        insertText: word + '\n',
-        range: msg.range
-      });
-    });
-    for (let key in context.steplist) {
-      let e = context.steplist[key];
-      if (e.documentation) {
-        result.push({
-          label: e.label,
-          kind: e.kind ? e.kind : 1,
-          detail: e.section,
-          documentation: e.documentation,
-          sortText: e.sortText,
-          insertText: e.keyword + ' ' + e.insertText + '\n',
-          filterText: key,
-          range: msg.range
-        });
-      }
-    }
-  }
-  return { id: msg.id, data: { suggestions: result }, success: true };
-}
-
 function provide(msg: any) {
   const model = getWorkerModel(msg);
   if (!model) return undefined;
@@ -113,7 +66,7 @@ function provide(msg: any) {
 export function process(msg: any) {
   switch (msg.type) {
     case MessageType.GetCompletions:
-      return getCompletionItems(msg);
+      return getCompletions(context, msg);
     case MessageType.SetMatchers:
       context.matcher = new KeywordMatcher(msg.data);
       break;
