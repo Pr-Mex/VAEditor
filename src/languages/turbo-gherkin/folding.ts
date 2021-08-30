@@ -24,7 +24,7 @@ function getToken(text: string) {
 export function getCodeFolding(
   matcher: KeywordMatcher,
   model: IWorkerModel,
-  tabSize: number
+  msg: { tabSize: number }
 ): Array<monaco.languages.FoldingRange> {
   let multiline = false;
   const lineCount = model.getLineCount();
@@ -43,7 +43,7 @@ export function getCodeFolding(
     } else {
       let ident = 0;
       if (matcher.isSection(text)) token = VAToken.Section;
-      else ident = getIndent(text, tabSize);
+      else ident = getIndent(text, msg.tabSize);
       lines.push({ token: token, indent: ident });
     }
   }
@@ -59,13 +59,13 @@ export function getCodeFolding(
         }
         break;
       case VAToken.Comment:
-        kind = {value: "comment"};
+        kind = { value: "comment" };
         for (let j = i + 1; j <= lineCount; j++) {
           if (lines[j].token == VAToken.Comment) k = j; else break;
         }
         break;
       case VAToken.Section:
-        kind = {value: "region"};
+        kind = { value: "region" };
         for (let j = i + 1; j <= lineCount; j++) {
           if (lines[j].token == VAToken.Section) break; else k = j;
         }

@@ -48,16 +48,16 @@ function provide(msg: any) {
   const model = getWorkerModel(msg);
   if (!model) return undefined;
   switch (msg.type) {
-    case MessageType.GetCodeActions:
-      return getCodeActions(context, msg.errors);
     case MessageType.GetCodeFolding:
-      return getCodeFolding(context.matcher, model, msg.tabSize);
+      return getCodeFolding(context.matcher, model, msg);
+    case MessageType.GetCodeActions:
+      return getCodeActions(context, msg);
     case MessageType.GetHiperlinks:
-      return getHiperlinks(context.matcher, model);
+      return getHiperlinks(context, model);
     case MessageType.GetLineHover:
       return getLineHover(context, msg);
     case MessageType.GetLinkData:
-      return getLinkData(context.matcher, model, msg.key);
+      return getLinkData(context, model, msg);
     case MessageType.CheckSyntax:
       return checkSyntax(context, model);
   }
@@ -66,7 +66,7 @@ function provide(msg: any) {
 export function process(msg: any) {
   switch (msg.type) {
     case MessageType.GetCompletions:
-      const suggestions = getCompletions(context, msg.line, msg.lineNumber, msg.column);
+      const suggestions = getCompletions(context, msg);
       return { id: msg.id, data: { suggestions }, success: true };
     case MessageType.SetMatchers:
       context.matcher = new KeywordMatcher(msg.data);

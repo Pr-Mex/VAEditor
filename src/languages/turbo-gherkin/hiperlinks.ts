@@ -1,4 +1,4 @@
-import { IWorkerModel } from "./common";
+import { IWorkerContext, IWorkerModel } from "./common";
 import { KeywordMatcher } from "./matcher";
 
 let imports = { };
@@ -120,20 +120,20 @@ function getLinks(
 }
 
 export function getLinkData(
-  matcher: KeywordMatcher,
+  ctx: IWorkerContext,
   model: IWorkerModel,
-  key: string
+  msg: { key: string }
 ) {
   const lineCount = model.getLineCount();
   let position = { lineNumber: 1, lineCount: lineCount };
-  let words = key.split(".").map((w: string) => w.toLowerCase());
-  let links = getLinks(matcher, model, position);
+  let words = msg.key.split(".").map((w: string) => w.toLowerCase());
+  let links = getLinks(ctx.matcher, model, position);
   let data = (table: string, row: string, col: string = undefined): any => {
     if (links[table] && links[table][row]) {
       let obj = links[table][row];
       if (col) obj["column"] = col;
       obj["table"] = table;
-      obj["param"] = key;
+      obj["param"] = msg.key;
       return obj;
     } else if (col == undefined) return data("", table, row);
   }
@@ -144,14 +144,11 @@ export function getLinkData(
   }
 }
 
-export function getHiperlinks(
-  matcher: KeywordMatcher,
-  model: IWorkerModel
-) {
+export function getHiperlinks(ctx: IWorkerContext, model: IWorkerModel) {
   const lineCount = model.getLineCount();
   let result = [];
   let pos = { lineNumber: 1, lineCount: lineCount };
-  let links = getLinks(matcher, model, pos);
+  let links = getLinks(ctx.matcher, model, pos);
   let pattern = /(["'])((?:\\\1|(?:(?!\1)).)*)(\1)/;
   for (var lineNumber = 1; lineNumber <= pos.lineCount; lineNumber++) {
     let matches = undefined;

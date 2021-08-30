@@ -1,33 +1,33 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext } from './common';
 
 function empty(lineNumber: number, column: number) {
-    return {
-      suggestions: [{
-        label: '',
-        insertText: '',
-        kind: monaco.languages.CompletionItemKind.Function,
-        range: {
-          startLineNumber: lineNumber,
-          endLineNumber: lineNumber,
-          startColumn: column - 1,
-          endColumn: column,
-        },
-      }]
-    };
-  }
+  return {
+    suggestions: [{
+      label: '',
+      insertText: '',
+      kind: monaco.languages.CompletionItemKind.Function,
+      range: {
+        startLineNumber: lineNumber,
+        endLineNumber: lineNumber,
+        startColumn: column - 1,
+        endColumn: column,
+      },
+    }]
+  };
+}
 
-export function getCompletions(ctx: IWorkerContext, line: string, lineNumber: number, column: number) {
+export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNumber: number, column: number }) {
   const regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/gi;
   let match, wordRange;
   let variable: string;
-  while ((match = regexp.exec(line)) !== null) {
+  while ((match = regexp.exec(msg.line)) !== null) {
     const startColumn = match.index + 1;
     const endColumn = startColumn + match[0].length;
-    if (startColumn <= column && column <= endColumn) {
+    if (startColumn <= msg.column && msg.column <= endColumn) {
       variable = match[0];
       wordRange = {
-        startLineNumber: lineNumber,
-        endLineNumber: lineNumber,
+        startLineNumber: msg.lineNumber,
+        endLineNumber: msg.lineNumber,
         startColumn: startColumn,
         endColumn: endColumn,
       };
@@ -51,18 +51,18 @@ export function getCompletions(ctx: IWorkerContext, line: string, lineNumber: nu
     return result;
   }
 
-  let maxColumn = getLineMaxColumn(line);
-  if (maxColumn && column < maxColumn)
-    return this.empty(lineNumber, column);
+  let maxColumn = getLineMaxColumn(msg.line);
+  if (maxColumn && msg.column < maxColumn)
+    return this.empty(msg.lineNumber, msg.column);
 
-  let minColumn = getLineMinColumn(line);
-  let words = line.match(/[^\s]+/g) || [];
+  let minColumn = getLineMinColumn(msg.line);
+  let words = msg.line.match(/[^\s]+/g) || [];
   let keyword = ctx.matcher.findKeyword(words);
   let lineRange = {
-    startLineNumber: lineNumber,
-    endLineNumber: lineNumber,
-    startColumn: minColumn ? minColumn : column,
-    endColumn: maxColumn ? maxColumn : column,
+    startLineNumber: msg.lineNumber,
+    endLineNumber: msg.lineNumber,
+    startColumn: minColumn ? minColumn : msg.column,
+    endColumn: maxColumn ? maxColumn : msg.column,
   };
 
   if (keyword) {
