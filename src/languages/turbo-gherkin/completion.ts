@@ -16,7 +16,7 @@ function empty(lineNumber: number, column: number) {
     };
   }
 
-export function getCompletions(context: IWorkerContext, line: string, lineNumber: number, column: number) {
+export function getCompletions(ctx: IWorkerContext, line: string, lineNumber: number, column: number) {
   const regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/gi;
   let match, wordRange;
   let variable: string;
@@ -38,8 +38,8 @@ export function getCompletions(context: IWorkerContext, line: string, lineNumber
     let Q1 = variable.charAt(0);
     let Q2 = variable.charAt(variable.length - 1);
     let S = /^.\$.+\$.$/.test(variable) ? "$" : "";
-    for (let name in context.variables) {
-      let item = context.variables[name];
+    for (let name in ctx.variables) {
+      let item = ctx.variables[name];
       result.push({
         label: `"${S}${item.name}${S}" = ${item.value}`,
         filterText: variable + `${S}${item.name}${S}`,
@@ -57,7 +57,7 @@ export function getCompletions(context: IWorkerContext, line: string, lineNumber
 
   let minColumn = getLineMinColumn(line);
   let words = line.match(/[^\s]+/g) || [];
-  let keyword = context.matcher.findKeyword(words);
+  let keyword = ctx.matcher.findKeyword(words);
   let lineRange = {
     startLineNumber: lineNumber,
     endLineNumber: lineNumber,
@@ -68,8 +68,8 @@ export function getCompletions(context: IWorkerContext, line: string, lineNumber
   if (keyword) {
     let keytext = keyword.join(' ');
     keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
-    for (let key in context.steplist) {
-      let e = context.steplist[key];
+    for (let key in ctx.steplist) {
+      let e = ctx.steplist[key];
       if (e.documentation) {
         result.push({
           label: e.label,
@@ -84,7 +84,7 @@ export function getCompletions(context: IWorkerContext, line: string, lineNumber
       }
     }
   } else {
-    context.metatags.forEach(word => {
+    ctx.metatags.forEach(word => {
       result.push({
         label: word,
         kind: 17, // monaco.languages.CompletionItemKind.Keyword = 17
@@ -92,8 +92,8 @@ export function getCompletions(context: IWorkerContext, line: string, lineNumber
         range: lineRange
       });
     });
-    for (let key in context.steplist) {
-      let e = context.steplist[key];
+    for (let key in ctx.steplist) {
+      let e = ctx.steplist[key];
       if (e.documentation) {
         result.push({
           label: e.label,
