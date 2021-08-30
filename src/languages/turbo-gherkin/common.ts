@@ -57,6 +57,7 @@ export enum MessageType {
   SetSteplist,
   SetImports,
   SetElements,
+  SetMessages,
   SetVariables,
   UpdateModel,
   DeleteModel,

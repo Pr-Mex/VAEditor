@@ -1,4 +1,4 @@
-import { IWorkerModel, MessageType } from './common'
+import { IWorkerContext, IWorkerModel, MessageType } from './common'
 import { KeywordMatcher } from './matcher';
 import { getHiperlinks, getLinkData, setImports } from './hiperlinks';
 import { getCompletions } from './completion';
@@ -8,7 +8,7 @@ import { getLineHover } from './hover';
 import { checkSyntax } from './syntax';
 import { setStepList, updateStepLabels } from './steplist';
 
-const context = {
+const context: IWorkerContext = {
   matcher: undefined,
   metatags: ["try", "except", "попытка", "исключение"],
   steplist: { },
@@ -46,6 +46,14 @@ function getWorkerModel(msg: any) {
   return contentMap.get(msg.uri);
 }
 
+function setMessages(context: IWorkerContext, msg: { data: string }) {
+  const messages = JSON.parse(msg.data);
+  Object.keys(context.messages).forEach(key => {
+    if (messages[key])
+      context.messages[key] = messages[key];
+  });
+}
+
 function provide(msg: any) {
   const model = getWorkerModel(msg);
   if (!model) return undefined;
@@ -76,6 +84,9 @@ export function process(msg: any) {
       break;
     case MessageType.SetMetatags:
       context.metatags = msg.data;
+      break;
+    case MessageType.SetMessages:
+      setMessages(context, msg);
       break;
     case MessageType.SetSteplist:
       setStepList(context, msg);

@@ -107,6 +107,10 @@ export class VanessaGherkinProvider {
     worker.postMessage({ type: MessageType.SetMetatags, data: this.metatags });
   }
 
+  public setMessages = (arg: string): void => {
+    worker.postMessage({ type: MessageType.SetMessages, data: arg });
+  }
+
   public setImports = (arg: string): void => {
     worker.postMessage({ type: MessageType.SetImports, data: arg });
   }

@@ -21,9 +21,14 @@ export function show() {
     ИмяРеквизита: 'Количество'
   }
 
+  const messages = {
+    syntaxMsg: "Ошибка синтаксиса",
+    soundHint: "Озвучить"
+  }
+
   provider.setElements(JSON.stringify(elements))
   provider.setVariables(JSON.stringify(variables))
-  provider.setSyntaxMsg('Step not found')
+  provider.setMessages(JSON.stringify(messages))
 
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
