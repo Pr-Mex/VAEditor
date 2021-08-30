@@ -3,10 +3,10 @@ import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/s
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { language, GherkinLanguage } from './configuration';
+import { MessageType, IVanessaModel } from './common';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
-import { VanessaStep, MessageType, IVanessaModel } from './common';
 
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
@@ -55,13 +55,9 @@ export class VanessaGherkinProvider {
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
   public get errorLinks(): any { return this._errorLinks; }
   public get elements(): any { return this._elements; }
-  public get keywords(): any { return this._matcher._keywords; }
   public get keypairs(): any { return this._keypairs; }
-  public get syntaxMsg(): any { return this._syntaxMsg; }
   public get variables(): any { return this._variables; }
 
-  protected _soundHint = "Sound";
-  protected _syntaxMsg = "Syntax error";
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
   protected _keypairs: any = { };
   protected _elements = { };
@@ -76,45 +72,6 @@ export class VanessaGherkinProvider {
 
   public get locale(): string {
     return this._locale;
-  }
-
-  protected isSection(text: string) {
-    const regexp = new RegExp(this.matcher.primary);
-    return regexp.test(text);
-  }
-
-  protected getSection(text: string) {
-    const res = Object.keys(this.matcher.section).filter(key => key && this.matcher.section[key].test(text));
-    return res && res[0];
-  }
-
-  protected splitWords(line: string): Array<string> {
-    let regexp = /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>|[A-zА-яЁё]+|[^A-zА-яЁё\s]+/g;
-    return line.match(regexp) || [];
-  }
-
-  protected findKeyword(words: Array<string>): Array<string> {
-    if (words.length == 0) return undefined;
-    let result = undefined;
-    this.keywords.forEach((item: string[]) => {
-      if (!result && item.every((w: string, i: number) => words[i] && w == words[i].toLowerCase())) result = item;
-    });
-    return result;
-  }
-
-  protected filterWords(words: Array<string>): Array<string> {
-    let s = true;
-    let keyword = this.findKeyword(words);
-    let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
-    return words.filter((w, i) => (keyword && i < keyword.length) ? false : (notComment(w) ? true : s = false));
-  }
-
-  protected key(words: Array<string>): string {
-    let result = [];
-    words.forEach((w: string) => {
-      if (/^[A-zА-яЁё]+$/.test(w)) result.push(w.toLowerCase());
-    });
-    return result.join(" ");
   }
 
   public setErrorLinks = (arg: string): void => {
@@ -154,10 +111,6 @@ export class VanessaGherkinProvider {
     worker.postMessage({ type: MessageType.SetImports, data: arg });
   }
 
-  public setSoundHint = (arg: string): void => {
-    this._soundHint = arg;
-  }
-
   public setElements = (values: string, clear: boolean = false): void => {
     if (clear) this.clearObject(this.elements);
     let obj = JSON.parse(values);
@@ -179,14 +132,6 @@ export class VanessaGherkinProvider {
   public setStepList = (list: string, clear: boolean = false): void => {
     worker.postMessage({ type: MessageType.SetSteplist, list, clear });
     VanessaEditor.checkAllSyntax();
-  }
-
-  public setSyntaxMsg = (message: string): void => {
-    this._syntaxMsg = message;
-  }
-
-  public getSyntaxMsg = (): string => {
-    return this._syntaxMsg;
   }
 
   public constructor(locale: string) {
@@ -370,8 +315,8 @@ export class VanessaGherkinProvider {
   }
 
   public tokenize(line: string, state: monaco.languages.IState): monaco.languages.ILineTokens {
-    let words = this.splitWords(line);
-    let keyword = this.findKeyword(words);
+    let words = this.matcher.splitWords(line);
+    let keyword = this.matcher.findKeyword(words);
     if (keyword) {
       if (words.length > keyword.length) {
         let keypair = this.keypairs[keyword.join(" ")] || [];

@@ -72,6 +72,7 @@ export function process(msg: any) {
       return { id: msg.id, data: { suggestions }, success: true };
     case MessageType.SetMatchers:
       context.matcher = new KeywordMatcher(msg.data);
+      updateStepLabels(context);
       break;
     case MessageType.SetMetatags:
       context.metatags = msg.data;
