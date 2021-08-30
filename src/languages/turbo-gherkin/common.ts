@@ -1,3 +1,13 @@
+import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
+
+export function getLineMinColumn(line: string): number {
+  return firstNonWhitespaceIndex(line) + 1;
+}
+
+export function getLineMaxColumn(line: string): number {
+  return lastNonWhitespaceIndex(line) + 2;
+}
+
 export interface VanessaStep {
   filterText: string;
   insertText: string;

@@ -1,5 +1,4 @@
-import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
-import { IWorkerModel } from './common';
+import { getLineMaxColumn, getLineMinColumn, IWorkerModel } from './common';
 import { KeywordMatcher } from './matcher';
 
 function lineSyntaxError(matcher: KeywordMatcher, steplist: any, keypairs: any, line: string): boolean {
@@ -45,8 +44,8 @@ export function checkSyntax(
       message: syntaxMsg,
       startLineNumber: lineNumber,
       endLineNumber: lineNumber,
-      startColumn: firstNonWhitespaceIndex(line) + 1,
-      endColumn: lastNonWhitespaceIndex(line) + 2,
+      startColumn: getLineMinColumn(line),
+      endColumn: getLineMaxColumn(line),
     });
   }
   return problems;
