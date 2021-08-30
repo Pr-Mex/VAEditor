@@ -191,6 +191,14 @@ body {
     height: 100%;
 }
 
+div.vanessa-editor {
+    position: relative !important;
+}
+
+div.vanessa-editor>div {
+    position: absolute !important;
+}
+
 div.vanessa-viewer {
     position: relative !important;
 }
