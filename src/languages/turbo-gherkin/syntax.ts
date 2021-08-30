@@ -1,5 +1,4 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext, IWorkerModel } from './common';
-import { KeywordMatcher } from './matcher';
 
 function lineSyntaxError(context: IWorkerContext, line: string): boolean {
   let match = line.match(context.matcher.step);

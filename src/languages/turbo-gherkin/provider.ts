@@ -275,8 +275,7 @@ export class VanessaGherkinProvider {
     const errors = [];
     context.markers.forEach((e, index) => {
       if (e.severity === monaco.MarkerSeverity.Error) {
-        const value = model.getLineContent(e.endLineNumber);
-        errors.push({ index, value });
+        errors.push({ index, value: model.getLineContent(e.endLineNumber) });
       }
     });
     if (errors.length == 0) return undefined;
@@ -364,79 +363,18 @@ export class VanessaGherkinProvider {
       });
   }
 
-  private empty(position: monaco.Position
-  ): monaco.languages.CompletionList {
-    return {
-      suggestions: [{
-        label: '',
-        insertText: '',
-        kind: monaco.languages.CompletionItemKind.Function,
-        range: {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: position.column - 1,
-          endColumn: position.column,
-        },
-      }]
-    };
-  }
-
   public provideCompletionItems(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
   ): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
-    let line = {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: model.getLineMinColumn(position.lineNumber),
-      endColumn: model.getLineMaxColumn(position.lineNumber),
-    };
-    let wordRange = undefined;
-    let regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/g;
-    let words = model.findMatches(regexp.source, line, true, false, null, false) || [];
-    words.forEach(e => {
-      if (e.range.startColumn <= position.column && position.column <= e.range.endColumn) {
-        wordRange = e.range;
-      }
-    });
-    let result: Array<monaco.languages.CompletionItem> = [];
-    if (wordRange) {
-      let variable = model.getValueInRange(wordRange);
-      let Q1 = variable.charAt(0);
-      let Q2 = variable.charAt(variable.length - 1);
-      let S = /^.\$.+\$.$/.test(variable) ? "$" : "";
-      for (let name in this.variables) {
-        let item = this.variables[name];
-        result.push({
-          label: `"${S}${item.name}${S}" = ${item.value}`,
-          filterText: variable + `${S}${item.name}${S}`,
-          insertText: `${Q1}${S}${item.name}${S}${Q2}`,
-          kind: monaco.languages.CompletionItemKind.Variable,
-          range: wordRange
-        })
-      }
-      return { suggestions: result };
-    } else {
-      let maxColumn = model.getLineLastNonWhitespaceColumn(position.lineNumber);
-      if (maxColumn && position.column < maxColumn) return this.empty(position);
-      let minColumn = model.getLineFirstNonWhitespaceColumn(position.lineNumber);
-      let line = model.getLineContent(position.lineNumber);
-      let words = line.match(/[^\s]+/g) || [];
-      let keyword = this.findKeyword(words);
-      let range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: minColumn ? minColumn : position.column,
-        endColumn: maxColumn ? maxColumn : position.column,
-      };
-      return postMessage<monaco.languages.CompletionList>(
-        model as IVanessaModel,
-        {
-          type: MessageType.GetCompletions,
-          keyword: keyword,
-          range: range
-        });
-    }
+    return postMessage<monaco.languages.CompletionList>(
+      model as IVanessaModel,
+      {
+        type: MessageType.GetCompletions,
+        line: model.getLineContent(position.lineNumber),
+        lineNumber: position.lineNumber,
+        column: position.column
+      });
   }
 
   public resolveCompletionItem(item, token) {
@@ -444,7 +382,7 @@ export class VanessaGherkinProvider {
   }
 
   public checkSyntax(model: monaco.editor.ITextModel) {
-    if (model.getModeId() != "turbo-gherkin") return;
+    if (model.getModeId() != language.id) return;
     return postMessage<monaco.editor.IMarkerData[]>(
       model as IVanessaModel,
       {
@@ -498,13 +436,13 @@ export class VanessaGherkinProvider {
   }
 
   public logTokens(model: monaco.editor.ITextModel) {
-    let tokenizationSupport = TokenizationRegistry.get("turbo-gherkin");
+    const tokenizationSupport = TokenizationRegistry.get(language.id);
     if (tokenizationSupport) {
-      var state = tokenizationSupport.getInitialState();
-      let lineCount = model.getLineCount();
+      const lineCount = model.getLineCount();
+      let state = tokenizationSupport.getInitialState();
       for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-        let line: string = model.getLineContent(lineNumber);
-        var tokenizationResult = tokenizationSupport.tokenize(line, state, 0);
+        const line = model.getLineContent(lineNumber);
+        const tokenizationResult = tokenizationSupport.tokenize(line, state, 0);
         state = tokenizationResult.endState;
         console.log(lineNumber, state.stack.state, tokenizationResult.tokens);
       }

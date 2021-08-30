@@ -66,7 +66,8 @@ function provide(msg: any) {
 export function process(msg: any) {
   switch (msg.type) {
     case MessageType.GetCompletions:
-      return getCompletions(context, msg);
+      const suggestions = getCompletions(context, msg.line, msg.lineNumber, msg.column);
+      return { id: msg.id, data: { suggestions }, success: true };
     case MessageType.SetMatchers:
       context.matcher = new KeywordMatcher(msg.data);
       break;
