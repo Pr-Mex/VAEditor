@@ -1,4 +1,4 @@
-import { IVanessaModel, MessageType } from './common'
+import { IWorkerModel, MessageType } from './common'
 import { KeywordMatcher } from './matcher';
 import * as hiperlinks from './hiperlinks'
 import * as folding from './folding'
@@ -16,7 +16,7 @@ const messages = {
   soundHint: "Sound",
 }
 
-class WorkerModel implements IVanessaModel {
+class WorkerModel implements IWorkerModel {
   constructor(msg: any) {
     this.versionId = msg.versionId;
     this.content = msg.content;
@@ -39,39 +39,6 @@ function setModelContent(msg: any) {
 
 function getWorkerModel(msg: any) {
   return contentMap.get(msg.uri);
-}
-
-function getCodeFolding(msg: any) {
-  const model = getWorkerModel(msg);
-  if (!model) return undefined;
-  const result = folding.getCodeFolding(matcher, msg.tabSize, model);
-  return { id: msg.id, data: result, success: true };
-}
-
-function getHiperlinks(msg: any) {
-  const model = getWorkerModel(msg);
-  if (!model) return undefined;
-  const result = hiperlinks.getHiperlinks(matcher, model);
-  return { id: msg.id, data: result, success: true };
-}
-
-function getLinkData(msg: any) {
-  const model = getWorkerModel(msg);
-  if (!model) return undefined;
-  const result = hiperlinks.getLinkData(msg, matcher, model);
-  return { id: msg.id, data: result, success: true };
-}
-
-function getCodeActions(msg: any) {
-  const result = quickfix.getCodeActions(msg.data, matcher, steplist);
-  return { id: msg.id, data: result, success: true, uri: msg.uri, quickfix: true };
-}
-
-function checkSyntax(msg: any) {
-  const model = getWorkerModel(msg);
-  if (!model) return undefined;
-  const result = syntax.checkSyntax(matcher, steplist, keypairs, messages.syntaxMsg, model);
-  return { id: msg.id, data: result, success: true };
 }
 
 function escapeMarkdown(text: string): string {
@@ -168,8 +135,28 @@ function getCompletionItems(msg: any) {
   return { id: msg.id, data: { suggestions: result }, success: true };
 }
 
-export function process(e: any) {
-  const msg = e.data;
+function provide(msg: any) {
+  const model = getWorkerModel(msg);
+  if (!model) return undefined;
+  switch (msg.type) {
+    case MessageType.GetCodeActions:
+      return quickfix.getCodeActions(msg.data, matcher, steplist);
+    case MessageType.GetCodeFolding:
+      return folding.getCodeFolding(matcher, msg.tabSize, model);
+    case MessageType.GetCompletions:
+      return getCompletionItems(msg);
+    case MessageType.GetHiperlinks:
+      return hiperlinks.getHiperlinks(matcher, model);
+    case MessageType.GetLineHover:
+      return getLineHover(msg);
+    case MessageType.GetLinkData:
+      return hiperlinks.getLinkData(msg, matcher, model);
+    case MessageType.CheckSyntax:
+      return syntax.checkSyntax(matcher, steplist, keypairs, messages.syntaxMsg, model);
+  }
+}
+
+export function process(msg: any) {
   switch (msg.type) {
     case MessageType.SetMatchers:
       matcher = new KeywordMatcher(msg.data);
@@ -177,7 +164,7 @@ export function process(e: any) {
     case MessageType.SetMetatags:
       metatags = msg.data;
       break;
-    case MessageType.SetStepList:
+    case MessageType.SetSteplist:
       steplist = msg.data;
       break;
     case MessageType.SetVariables:
@@ -186,27 +173,14 @@ export function process(e: any) {
     case MessageType.SetImports:
       hiperlinks.setImports(msg.data);
       break;
-    case MessageType.UpdateModelCache:
+    case MessageType.UpdateModel:
       setModelContent(msg);
       break;
-    case MessageType.DeleteModelCache:
+    case MessageType.DeleteModel:
       contentMap.delete(msg.uri);
       break;
-    case MessageType.GetCodeActions:
-      return getCodeActions(msg);
-    case MessageType.GetCodeFolding:
-      return getCodeFolding(msg);
-    case MessageType.GetCompletions:
-      return getCompletionItems(msg);
-    case MessageType.GetHiperlinks:
-      return getHiperlinks(msg);
-    case MessageType.GetLineHover:
-      return getLineHover(msg);
-    case MessageType.GetLinkData:
-      return getLinkData(msg);
-    case MessageType.CheckSyntax:
-      return checkSyntax(msg);
     default:
-      return { success: false };
+      const result = provide(msg);
+      return { success: result !== undefined, id: msg.id, data: result };
   }
 }

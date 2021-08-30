@@ -1,7 +1,7 @@
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaEditor } from './vanessa-editor';
 import { VanessaDiffEditor } from './vanessa-diff-editor';
-import { VanessaModel } from './languages/turbo-gherkin/common';
+import { IVanessaModel } from './languages/turbo-gherkin/common';
 import { clearWorkerCache } from './languages/turbo-gherkin/provider';
 
 const $ = dom.$;
@@ -60,7 +60,7 @@ function getLanguage(filename: string): string {
 }
 
 export function createModel(value: string, filename: string, uri?: monaco.Uri): monaco.editor.ITextModel {
-  const model = monaco.editor.createModel(value, getLanguage(filename), uri) as VanessaModel;
+  const model = monaco.editor.createModel(value, getLanguage(filename), uri) as IVanessaModel;
   Object.defineProperties(model, { savedVersionId: { value: model.getAlternativeVersionId(), writable: true } });
   model.isModified = () => model.getAlternativeVersionId() != model.savedVersionId;
   model.resetModified = () => model.savedVersionId = model.getAlternativeVersionId();

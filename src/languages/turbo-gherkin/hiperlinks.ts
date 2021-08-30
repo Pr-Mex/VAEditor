@@ -1,4 +1,4 @@
-import { IVanessaModel } from "./common";
+import { IWorkerModel } from "./common";
 import { KeywordMatcher } from "./matcher";
 
 let imports = { };
@@ -50,7 +50,7 @@ function trimQuotes(w: string) {
 
 function getLinks(
   matcher: KeywordMatcher,
-  model: IVanessaModel,
+  model: IWorkerModel,
   position: { lineNumber: number, lineCount: number }
 ) {
   let links_reg = new RegExp(matcher.section.variables);
@@ -122,7 +122,7 @@ function getLinks(
 export function getLinkData(
   key: string,
   matcher: KeywordMatcher,
-  model: IVanessaModel
+  model: IWorkerModel
 ) {
   const lineCount = model.getLineCount();
   let position = { lineNumber: 1, lineCount: lineCount };
@@ -146,7 +146,7 @@ export function getLinkData(
 
 export function getHiperlinks(
   matcher: KeywordMatcher,
-  model: IVanessaModel
+  model: IWorkerModel
 ) {
   const lineCount = model.getLineCount();
   let result = [];

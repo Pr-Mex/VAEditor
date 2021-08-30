@@ -6,7 +6,7 @@ import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
-import { VanessaStep, MessageType, VanessaModel } from './common';
+import { VanessaStep, MessageType, IVanessaModel } from './common';
 
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
@@ -25,13 +25,13 @@ worker.onmessage = function (e) {
   }
 }
 
-function postMessage<T>(model: VanessaModel, message: any)
+function postMessage<T>(model: IVanessaModel, message: any)
   : Promise<T> {
   const versionId = model.getVersionId();
   if (model.workerVersionId !== versionId) {
     model.workerVersionId = versionId;
     worker.postMessage({
-      type: MessageType.UpdateModelCache,
+      type: MessageType.UpdateModel,
       content: model.getLinesContent(),
       uri: model.uri.toString(),
       versionId: versionId,
@@ -47,7 +47,7 @@ function postMessage<T>(model: VanessaModel, message: any)
 }
 
 export function clearWorkerCache(uri: monaco.Uri) {
-  worker.postMessage({ type: MessageType.DeleteModelCache, uri: uri.toString() });
+  worker.postMessage({ type: MessageType.DeleteModel, uri: uri.toString() });
 }
 
 export class VanessaGherkinProvider {
@@ -199,7 +199,7 @@ export class VanessaGherkinProvider {
     });
     this.updateStepLabels();
     VanessaEditor.checkAllSyntax();
-    worker.postMessage({ type: MessageType.SetStepList, data: this.steps });
+    worker.postMessage({ type: MessageType.SetSteplist, data: this.steps });
   }
 
   public setSyntaxMsg = (message: string): void => {
@@ -288,7 +288,7 @@ export class VanessaGherkinProvider {
       uri: model.uri.toString(),
       data: errors
     };
-    return postMessage<any>(model as VanessaModel, message).then(msg => {
+    return postMessage<any>(model as IVanessaModel, message).then(msg => {
       const actions: Array<monaco.languages.CodeAction> = [];
       msg.forEach((e, i) => {
         const marker = markers[e.index];
@@ -317,7 +317,7 @@ export class VanessaGherkinProvider {
     token: monaco.CancellationToken,
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
     return postMessage<monaco.languages.FoldingRange[]>(
-      model as VanessaModel,
+      model as IVanessaModel,
       {
         type: MessageType.GetCodeFolding,
         tabSize: model.getOptions().tabSize,
@@ -329,7 +329,7 @@ export class VanessaGherkinProvider {
   public provideLinks(model: monaco.editor.ITextModel, token: monaco.CancellationToken)
     : monaco.languages.ProviderResult<monaco.languages.ILinksList> {
     return postMessage<monaco.languages.ILinksList>(
-      model as VanessaModel,
+      model as IVanessaModel,
       {
         type: MessageType.GetHiperlinks,
         versionId: model.getVersionId(),
@@ -340,7 +340,7 @@ export class VanessaGherkinProvider {
   public getLinkData(model: monaco.editor.ITextModel, key: string)
     : Promise<any> {
     return postMessage<monaco.languages.ILinksList>(
-      model as VanessaModel,
+      model as IVanessaModel,
       {
         key: key,
         type: MessageType.GetLinkData,
@@ -354,7 +354,7 @@ export class VanessaGherkinProvider {
     position: monaco.Position,
   ): monaco.languages.ProviderResult<monaco.languages.Hover> {
     return postMessage<monaco.languages.Hover>(
-      model as VanessaModel,
+      model as IVanessaModel,
       {
         type: MessageType.GetLineHover,
         line: model.getLineContent(position.lineNumber),
@@ -432,7 +432,7 @@ export class VanessaGherkinProvider {
         endColumn: maxColumn ? maxColumn : position.column,
       };
       return postMessage<monaco.languages.CompletionList>(
-        model as VanessaModel,
+        model as IVanessaModel,
         {
           type: MessageType.GetCompletions,
           keyword: keyword,
@@ -448,7 +448,7 @@ export class VanessaGherkinProvider {
   public checkSyntax(model: monaco.editor.ITextModel) {
     if (model.getModeId() != "turbo-gherkin") return;
     return postMessage<monaco.editor.IMarkerData[]>(
-      model as VanessaModel,
+      model as IVanessaModel,
       {
         type: MessageType.CheckSyntax,
         versionId: model.getVersionId(),

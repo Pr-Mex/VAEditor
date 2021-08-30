@@ -1,5 +1,5 @@
 import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
-import { IVanessaModel } from './common';
+import { IWorkerModel } from './common';
 import { KeywordMatcher } from './matcher';
 
 function lineSyntaxError(matcher: KeywordMatcher, steplist: any, keypairs: any, line: string): boolean {
@@ -27,7 +27,7 @@ export function checkSyntax(
   steplist: any,
   keypairs: any,
   syntaxMsg: string,
-  model: IVanessaModel
+  model: IWorkerModel
 ) {
   const problems: monaco.editor.IMarkerData[] = [];
   const lineCount = model.getLineCount();

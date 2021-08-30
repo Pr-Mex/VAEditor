@@ -7,7 +7,7 @@ export interface VanessaStep {
   section: string;
 }
 
-export interface VanessaModel
+export interface IVanessaModel
   extends monaco.editor.ITextModel {
     workerVersionId: number,
     savedVersionId: number,
@@ -33,11 +33,11 @@ export interface VAIndent {
 export enum MessageType {
   SetMatchers,
   SetMetatags,
-  SetStepList,
+  SetSteplist,
   SetImports,
   SetVariables,
-  UpdateModelCache,
-  DeleteModelCache,
+  UpdateModel,
+  DeleteModel,
   GetCodeActions,
   GetCodeFolding,
   GetCompletions,
@@ -47,7 +47,7 @@ export enum MessageType {
   CheckSyntax,
 }
 
-export interface IVanessaModel {
+export interface IWorkerModel {
   getLineContent(lineNumber: number): string;
   getLineCount(): number;
 }
