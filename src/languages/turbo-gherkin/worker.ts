@@ -68,11 +68,10 @@ function getLineHover(msg: any) {
       let sh = "#sound:" + msg.lineNumber;
       contents.push({ value: `**${t}** [${i}](${ih}) [${s}](${sh})` });
       contents.push({ value: escapeMarkdown(step.documentation) });
-      let values = variables;
       let vars = msg.line.match(/"[^"]+"|'[^']+'/g) || [];
       vars.forEach(function (part: string) {
         let d = /^.\$.+\$.$/.test(part) ? 2 : 1;
-        let v = values[part.substring(d, part.length - d).toLowerCase()];
+        let v = variables[part.substring(d, part.length - d).toLowerCase()];
         if (v) contents.push({ value: "**" + v.name + "** = " + v.value });
       });
     }
@@ -142,7 +141,7 @@ function provide(msg: any) {
     case MessageType.GetCodeActions:
       return quickfix.getCodeActions(msg.data, matcher, steplist);
     case MessageType.GetCodeFolding:
-      return folding.getCodeFolding(matcher, msg.tabSize, model);
+      return folding.getCodeFolding(matcher, model, msg.tabSize);
     case MessageType.GetCompletions:
       return getCompletionItems(msg);
     case MessageType.GetHiperlinks:
@@ -150,7 +149,7 @@ function provide(msg: any) {
     case MessageType.GetLineHover:
       return getLineHover(msg);
     case MessageType.GetLinkData:
-      return hiperlinks.getLinkData(msg, matcher, model);
+      return hiperlinks.getLinkData(matcher, model, msg.key);
     case MessageType.CheckSyntax:
       return syntax.checkSyntax(matcher, steplist, keypairs, messages.syntaxMsg, model);
   }

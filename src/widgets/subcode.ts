@@ -67,8 +67,8 @@ export class SubcodeWidget extends WidgetBase {
       }
       folding.getCodeFolding(
         VanessaGherkinProvider.instance.matcher,
-        model.getOptions().tabSize,
-        this
+        this,
+        model.getOptions().tabSize
       ).forEach(e => this.lines[e.start - 1].initFolding(e.end));
     });
     this.useDebugger = runtime.useDebugger;

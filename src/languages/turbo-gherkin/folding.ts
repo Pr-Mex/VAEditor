@@ -23,8 +23,8 @@ function getToken(text: string) {
 
 export function getCodeFolding(
   matcher: KeywordMatcher,
-  tabSize: number,
-  model: IWorkerModel
+  model: IWorkerModel,
+  tabSize: number
 ): Array<monaco.languages.FoldingRange> {
   let multiline = false;
   const lineCount = model.getLineCount();

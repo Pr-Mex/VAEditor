@@ -120,9 +120,9 @@ function getLinks(
 }
 
 export function getLinkData(
-  key: string,
   matcher: KeywordMatcher,
-  model: IWorkerModel
+  model: IWorkerModel,
+  key: string
 ) {
   const lineCount = model.getLineCount();
   let position = { lineNumber: 1, lineCount: lineCount };
