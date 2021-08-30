@@ -6,12 +6,14 @@ import { getCodeActions } from './quickfix';
 import { getCodeFolding } from './folding';
 import { getLineHover } from './hover';
 import { checkSyntax } from './syntax';
+import { setStepList, updateStepLabels } from './steplist';
 
 const context = {
   matcher: undefined,
   metatags: ["try", "except", "попытка", "исключение"],
   steplist: { },
   keypairs: { },
+  elements: { },
   variables: { },
   messages: {
     syntaxMsg: "Syntax error",
@@ -75,10 +77,15 @@ export function process(msg: any) {
       context.metatags = msg.data;
       break;
     case MessageType.SetSteplist:
-      context.steplist = msg.data;
+      setStepList(context, msg);
+      break;
+    case MessageType.SetElements:
+      context.elements = msg.data;
+      updateStepLabels(context);
       break;
     case MessageType.SetVariables:
       context.variables = msg.data;
+      updateStepLabels(context);
       break;
     case MessageType.SetImports:
       setImports(msg.data);

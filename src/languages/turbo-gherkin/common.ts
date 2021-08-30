@@ -14,6 +14,7 @@ export interface IWorkerContext {
   metatags: string[];
   steplist: any;
   keypairs: any;
+  elements: any;
   variables: any;
   messages: any;
 }
@@ -55,6 +56,7 @@ export enum MessageType {
   SetMetatags,
   SetSteplist,
   SetImports,
+  SetElements,
   SetVariables,
   UpdateModel,
   DeleteModel,

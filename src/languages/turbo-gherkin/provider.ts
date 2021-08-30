@@ -59,13 +59,11 @@ export class VanessaGherkinProvider {
   public get keypairs(): any { return this._keypairs; }
   public get syntaxMsg(): any { return this._syntaxMsg; }
   public get variables(): any { return this._variables; }
-  public get steps(): any { return this._steps; }
 
   protected _soundHint = "Sound";
   protected _syntaxMsg = "Syntax error";
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
   protected _keypairs: any = { };
-  protected _steps = { };
   protected _elements = { };
   protected _variables = { };
   protected _errorLinks = [];
@@ -166,7 +164,7 @@ export class VanessaGherkinProvider {
     for (let key in obj) {
       this.elements[key.toLowerCase()] = obj[key];
     }
-    this.updateStepLabels();
+    worker.postMessage({ type: MessageType.SetElements, data: this.elements });
   }
 
   public setVariables = (values: string, clear: boolean = false): void => {
@@ -175,31 +173,12 @@ export class VanessaGherkinProvider {
     for (let key in obj) {
       this.variables[key.toLowerCase()] = { name: key, value: String(obj[key]) };
     }
-    this.updateStepLabels();
     worker.postMessage({ type: MessageType.SetVariables, data: this.variables });
   }
 
   public setStepList = (list: string, clear: boolean = false): void => {
-    if (clear) this.clearObject(this.steps);
-    JSON.parse(list).forEach((e: VanessaStep) => {
-      let body = e.insertText.split('\n');
-      let text = body.shift();
-      let head = this.splitWords(text);
-      let words = this.filterWords(head);
-      let key = this.key(words);
-      this.steps[key] = {
-        head: head,
-        body: body,
-        documentation: e.documentation,
-        insertText: e.insertText,
-        sortText: e.sortText,
-        section: e.section,
-        kind: e.kind,
-      };
-    });
-    this.updateStepLabels();
+    worker.postMessage({ type: MessageType.SetSteplist, list, clear });
     VanessaEditor.checkAllSyntax();
-    worker.postMessage({ type: MessageType.SetSteplist, data: this.steps });
   }
 
   public setSyntaxMsg = (message: string): void => {
@@ -208,26 +187,6 @@ export class VanessaGherkinProvider {
 
   public getSyntaxMsg = (): string => {
     return this._syntaxMsg;
-  }
-
-  private updateStepLabels() {
-    for (let key in this.steps) {
-      let e = this.steps[key];
-      let words = e.head.map((word: string) => {
-        let regexp = /^"[^"]*"$|^'[^']*'$|^<[^<]*>$/g;
-        if (!regexp.test(word)) return word;
-        let name = word.substring(1, word.length - 1).toLowerCase();
-        let elem = this.elements[name];
-        if (!elem) return word;
-        let Q1 = word.charAt(0);
-        let Q2 = word.charAt(word.length - 1);
-        return `${Q1}${elem}${Q2}`;
-      });
-      let keyword = this.findKeyword(words);
-      e.label = words.filter((w, i) => !(keyword && i < keyword.length)).join(' ');
-      e.keyword = words.filter((w, i) => (keyword && i < keyword.length)).join(' ');
-      e.insertText = e.label + (e.body.length ? '\n' + e.body.join('\n') : '');
-    }
   }
 
   public constructor(locale: string) {
