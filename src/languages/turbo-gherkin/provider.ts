@@ -284,7 +284,7 @@ export class VanessaGherkinProvider {
       type: MessageType.GetCodeActions,
       versionId: model.getVersionId(),
       uri: model.uri.toString(),
-      data: errors
+      errors: errors,
     };
     return postMessage<any>(model as IVanessaModel, message).then(msg => {
       const actions: Array<monaco.languages.CodeAction> = [];

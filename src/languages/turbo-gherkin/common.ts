@@ -1,4 +1,5 @@
 import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
+import { KeywordMatcher } from './matcher';
 
 export function getLineMinColumn(line: string): number {
   return firstNonWhitespaceIndex(line) + 1;
@@ -6,6 +7,15 @@ export function getLineMinColumn(line: string): number {
 
 export function getLineMaxColumn(line: string): number {
   return lastNonWhitespaceIndex(line) + 2;
+}
+
+export interface IWorkerContext {
+  matcher: KeywordMatcher;
+  metatags: string[];
+  steplist: any;
+  keypairs: any;
+  variables: any;
+  messages: any;
 }
 
 export interface VanessaStep {

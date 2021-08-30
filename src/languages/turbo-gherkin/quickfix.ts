@@ -1,4 +1,5 @@
 import * as distance from 'jaro-winkler';
+import { IWorkerContext } from './common';
 import { KeywordMatcher } from './matcher';
 
 function addQuickFix(matcher: KeywordMatcher, steplist: any, list: any, value: string, index: number) {
@@ -27,14 +28,14 @@ function replaceParams(matcher: KeywordMatcher, step: string[], line: string[]):
   return step.map(w => (test(w) && index < params.length) ? params[index++] : w).join(' ');
 }
 
-export function getCodeActions(errors: any, matcher: KeywordMatcher, steplist: any): any {
+export function getCodeActions(ctx: IWorkerContext, errors: any): any {
   const list = [];
   const result = [];
-  errors.forEach(e => addQuickFix(matcher, steplist, list, e.value, e.index));
+  errors.forEach(e => addQuickFix(ctx.matcher, ctx.steplist, list, e.value, e.index));
   list.sort((a, b) => b.sum - a.sum).forEach((e, i) => {
     if (i > 6) return;
-    const step = steplist[e.key];
-    const text = replaceParams(matcher, step.head, e.words);
+    const step = ctx.steplist[e.key];
+    const text = replaceParams(ctx.matcher, step.head, e.words);
     result.push({ text, index: e.index, startColumn: e.startColumn, endColumn: e.endColumn });
   });
   return result;
