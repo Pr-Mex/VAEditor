@@ -9,12 +9,6 @@ export function patchWebKit1C () {
     })
   }
 
-  Object.defineProperty(Object.prototype, 'useShadowDOM', {
-    configurable: true,
-    get: function () { return false; },
-    set: function (value) { }
-  })
-
   function dummy (e) {
     e = e || window.event
     if (e.preventDefault) e.preventDefault()

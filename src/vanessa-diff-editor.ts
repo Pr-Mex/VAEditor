@@ -47,6 +47,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
       glyphMargin: true,
       automaticLayout: true,
       readOnly: readOnly,
+      useShadowDOM: false,
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);

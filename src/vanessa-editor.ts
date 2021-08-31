@@ -144,6 +144,7 @@ export class VanessaEditor implements IVanessaEditor {
       automaticLayout: true,
       detectIndentation: false,
       insertSpaces: false,
+      useShadowDOM: false,
       lightbulb: { enabled: true }
     });
     this.editor.getModel().updateOptions({ insertSpaces: false });
