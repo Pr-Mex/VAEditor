@@ -9,6 +9,29 @@ type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 
 const $ = dom.$;
 
+class TabEventData {
+  tab: VanessaTabItem;
+  filename: string;
+  encoding: number;
+  accept: Function;
+  get title() { return this.tab.title; }
+  get editor() { return this.tab.editor; }
+  get model() { return this.tab.model; }
+  get modified() { return this.tab.model?.isModified() }
+  get value() { return this.tab.model?.getValue() }
+  constructor(
+    tab: VanessaTabItem,
+    filename: string,
+    encoding: number,
+    accept: Function
+  ) {
+    this.tab = tab;
+    this.filename = filename;
+    this.encoding = encoding;
+    this.accept = accept;
+  }
+}
+
 class VanessaTabItem {
   public editor: IVanessaEditor;
   private filename: string;
@@ -30,7 +53,7 @@ class VanessaTabItem {
     this.editor = editor;
     this.encoding = encoding;
     this.filename = filename;
-    this.domNode = $(".vanessa-tab-box", {},
+    this.domNode = $(".vanessa-tab-box", { },
       this.domItem = $(".vanessa-tab-item", { title: title },
         this.domTitle = $(".vanessa-tab-title"),
         this.domClose = $(".vanessa-tab-close.codicon-close", { title: "Close" }),
@@ -92,16 +115,11 @@ class VanessaTabItem {
   }
 
   public onClose() {
-    const data = this.getEventData();
-    data["accept"] = () => this.close();
-    EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_CLOSING, data);
+    this.fireEvent(VanessaEditorEvent.ON_TAB_CLOSING, () => this.close());
   }
 
   public onFileSave() {
-    const data = this.getEventData();
-    const model = this.editor.getModel();
-    data["accept"] = () => model.resetModified();
-    EventsManager.fireEvent(this.editor, VanessaEditorEvent.PRESS_CTRL_S, data);
+    this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, () => this.model.resetModified());
   }
 
   private showEditor() {
@@ -129,7 +147,7 @@ class VanessaTabItem {
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
     this.showEditor();
-    EventsManager.fireEvent(this.editor, VanessaEditorEvent.ON_TAB_SELECT, this.getEventData());
+    this.fireEvent(VanessaEditorEvent.ON_TAB_SELECT);
     return this.editor;
   }
 
@@ -150,16 +168,9 @@ class VanessaTabItem {
     this.owner = null;
   }
 
-  private getEventData() {
-    return {
-      tab: this,
-      editor: this.editor,
-      model: this.model,
-      title: this.title,
-      filename: this.filename,
-      encoding: this.encoding,
-      modified: this.modified,
-    }
+  private fireEvent(event: VanessaEditorEvent, accept: Function = undefined) {
+    const data = new TabEventData(this, this.filename, this.encoding, accept);
+    EventsManager.fireEvent(this.editor, event, data);
   }
 
   public get model() {
@@ -396,7 +407,7 @@ export class VanessaTabs {
     if (!diff.modified) diff.modified = createModel(newContent, newFileName, uriModified);
     this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
-    editor.editor.updateOptions({renderWhitespace: this.renderWhitespace});
+    editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
     return this.open(editor, title, newFilePath, encoding, newTab);
   }
 
