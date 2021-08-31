@@ -112,4 +112,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public previous = () => this.navigator.previous();
   public next = () => this.navigator.next();
   public focus() { this.editor.focus(); }
+  public undo = () => (this.editor.getModifiedEditor()?.getModel() as any)?.undo();
+  public redo = () => (this.editor.getModifiedEditor()?.getModel() as any)?.redo();
+  public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
 }

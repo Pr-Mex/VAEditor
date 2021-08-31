@@ -442,7 +442,7 @@ export class VanessaTabs {
   }
 
   public close = () => {
-    if (this.current) this.current.onClose();
+    this.current?.onClose();
   }
 
   public get enableSyntaxCheck(): boolean { return this.checkSyntax; }
@@ -466,12 +466,14 @@ export class VanessaTabs {
     }
   }
 
+  public trigger = (source: string, handlerId: string, payload: any = undefined) => this.current?.editor.trigger(source, handlerId, payload);
   public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }
   public get diffEditor(): VanessaDiffEditor { return this.current.editor as VanessaDiffEditor; }
   public canNavigateDiff = () => this.isDiffEditor && this.diffEditor.canNavigate();
   public previousDiff = () => { if (this.isDiffEditor) this.diffEditor.previous(); }
   public nextDiff = () => { if (this.isDiffEditor) this.diffEditor.next(); }
-
+  public undo = () => this.current?.editor.undo();
+  public redo = () => this.current?.editor.redo();
   public count = () => this.tabStack.length;
   public tab = (index: number) => this.tabStack[index];
   public select = (index: number) => this.tabStack[index].select();

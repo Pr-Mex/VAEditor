@@ -10,6 +10,9 @@ export interface IVanessaEditor {
   domNode(): HTMLElement;
   dispose(): void;
   focus(): void;
+  undo: Function;
+  redo: Function;
+  trigger: Function;
   resetModel: Function;
   getModel: Function;
   editor: any;
