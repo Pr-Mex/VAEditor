@@ -39,9 +39,12 @@ class VanessaViewEditor  {
 export class VanessaViwer implements IVanessaEditor {
   domNode(): HTMLElement { return this._domNode; }
   dispose(): void { }
-  focus(): void { }
-  getModel = () => this.editor.getModel();
+  focus = () => { };
+  undo = () => { };
+  redo = () => { };
+  trigger = () => { };
   resetModel = () => { };
+  getModel = () => this.editor.getModel();
   editor: VanessaViewEditor;
 
   private _domNode: HTMLElement;
