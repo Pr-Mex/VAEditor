@@ -78,7 +78,7 @@ export function process(msg: any) {
     case MessageType.GetCompletions:
       const suggestions = getCompletions(context, msg);
       return { id: msg.id, data: { suggestions }, success: true };
-    case MessageType.SetMatchers:
+    case MessageType.SetKeywords:
       context.matcher = new KeywordMatcher(msg.data);
       updateStepLabels(context);
       break;

@@ -52,7 +52,7 @@ export interface VAIndent {
 }
 
 export enum MessageType {
-  SetMatchers,
+  SetKeywords,
   SetMetatags,
   SetSteplist,
   SetImports,

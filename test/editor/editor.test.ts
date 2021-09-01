@@ -68,16 +68,16 @@ describe('Управление редактором', function () {
     editor.setPosition(2, 1);
     editor.insertText(line1);
     expect(editor.getLineContent(2)).to.equal(line1 + line2);
-    editor.undo();
+    editor.trigger("", "undo");
     expect(editor.getLineContent(2)).to.equal(line2);
   });
   it('Команды Undo и Redo', () => {
     editor.setPosition(2, 1);
     editor.insertText(line1);
     expect(editor.getLineContent(2)).to.equal(line1 + line2);
-    editor.undo();
+    editor.trigger("", "undo");
     expect(editor.getLineContent(2)).to.equal(line2);
-    editor.redo();
+    editor.trigger("", "redo");
     expect(editor.getLineContent(2)).to.equal(line1 + line2);
   });
   it('Позиция курсора', () => {

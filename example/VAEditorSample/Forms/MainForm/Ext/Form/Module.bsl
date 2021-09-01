@@ -5,11 +5,11 @@ Var KeyCodeMap;
 
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
-	
+
 	DataObject = FormAttributeToValue("Object");
 	KeywordsURL = PutToTempStorage(DataObject.GetTemplate("Keywords"), UUID);
 	VanessaEditorLoad(DataObject.GetTemplate("VAEditor"));
-	
+
 	ErrorCode = New UUID;
 	ErrorText = "Runtime error info";
 	MessageText = "Hello, world!";
@@ -683,8 +683,8 @@ Function GetKeywords(Language = "")
 		JsonText = TextReader.Read();
 	EndDo;
 	DeleteFiles(TempFileName);
-	
-	
+
+
 	JsonData = JsonLoad(JsonText, True);
 	Keyrords = New Map;
 	If IsBlankString(Language) Then
@@ -820,7 +820,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	Provider = DefaultView().VanessaGherkinProvider;
 	Provider.setErrorLinks(GetErrorLinks());
 	Provider.setMetatags(GetMetatags());
-	Provider.setMatchers(GetKeywords());
+	Provider.setKeywords(GetKeywords());
 	Provider.setElements(GetElements());
 	Provider.setVariables(GetVariables());
 	Provider.setSyntaxMsg(syntaxErrorMsg);
@@ -1052,10 +1052,10 @@ EndProcedure
 
 &AtClient
 Procedure Autotest(Command)
-	
+
 	Position = StrFind(FormName, ".", SearchDirection.FromEnd);
 	OpenForm(Left(FormName, Position) + "Autotest");
-	
+
 EndProcedure
 
 #EndRegion

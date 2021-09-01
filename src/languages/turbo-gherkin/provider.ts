@@ -84,8 +84,8 @@ export class VanessaGherkinProvider {
 
   public get matcher() { return this._matcher; }
 
-  public setMatchers = (arg: string): void => {
-    worker.postMessage({ type: MessageType.SetMatchers, data: arg });
+  public setKeywords = (arg: string): void => {
+    worker.postMessage({ type: MessageType.SetKeywords, data: arg });
     this._matcher = new KeywordMatcher(arg);
     this.initTokenizer();
   }
