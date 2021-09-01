@@ -19,8 +19,6 @@ export class VanessaEditor implements IVanessaEditor {
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
-  public undo = () => (this.editor.getModel() as any).undo();
-  public redo = () => (this.editor.getModel() as any).redo();
   public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
   public getLineContent = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getLineWidgets = (lineNumber: number) => JSON.stringify(this.runtimeManager.getLineWidgets(lineNumber));
