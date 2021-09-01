@@ -4,6 +4,7 @@ import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { VanessaViwer } from './vanessa-viewer';
+import { version } from '../package.json'
 
 type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 
@@ -490,4 +491,5 @@ export class VanessaTabs {
   public count = () => this.tabStack.length;
   public tab = (index: number) => this.tabStack[index];
   public select = (index: number) => this.tabStack[index].select();
+  public get version(): string { return version }
 }

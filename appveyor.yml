@@ -21,11 +21,14 @@ install:
   - cd ..
 
   - ps: $env:PACKAGE_VERSION = (Get-Content -Raw -Path package.json | ConvertFrom-Json).version
-  - ps: Update-AppveyorBuild -Version "$env:PACKAGE_VERSION.$env:APPVEYOR_BUILD_NUMBER$env:LINTEST_FLAG"
+  - ps: Update-AppveyorBuild -Version "$env:PACKAGE_VERSION$env:LINTEST_FLAG.$env:APPVEYOR_BUILD_NUMBER"
+  - ps: $package = (Get-Content -Raw -Path package.json | ConvertFrom-Json)
+  - ps: $package.version = "$env:APPVEYOR_BUILD_VERSION"
+  - ps: $package | ConvertTo-Json | Out-File -Encoding UTF8 package.json
   - npm -q --no-progress install .
 
 build_script:
-  - npm -q run build
+  - npx webpack --mode production
   - 7z a VAEditor.zip %CD%/dist/index.html
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
