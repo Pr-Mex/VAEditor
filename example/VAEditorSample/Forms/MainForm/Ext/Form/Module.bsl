@@ -815,7 +815,10 @@ Procedure VanessaEditorDocumentComplete(Item)
 
 	Var Provider, Editor;
 
-	syntaxErrorMsg = "Syntax error: step not found";
+	MsgStructure = New Structure;
+	MsgStructure.Insert("syntaxMsg", "Syntax error: step not found");
+	MsgStructure.Insert("soundHint", "Sound text");
+	MessagesJSON = JsonDump(MsgStructure);
 
 	Provider = DefaultView().VanessaGherkinProvider;
 	Provider.setErrorLinks(GetErrorLinks());
@@ -823,7 +826,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	Provider.setKeywords(GetKeywords());
 	Provider.setElements(GetElements());
 	Provider.setVariables(GetVariables());
-	Provider.setSyntaxMsg(syntaxErrorMsg);
+	Provider.setMessages(MessagesJSON);
 	LoadStepsAll(Undefined);
 
 	Editor = DefaultView().createVanessaEditor("", "turbo-gherkin");
