@@ -4,7 +4,7 @@ import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { VanessaViwer } from './vanessa-viewer';
-import { version } from '../package.json'
+import { version } from '../version.json'
 
 type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 
