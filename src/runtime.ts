@@ -271,12 +271,12 @@ export class RuntimeManager {
     return this.showBreakpoints;
   }
 
-  public setStatus(status: string, arg: any, codeWidget: string = "", inline = null): void {
+  public setStatus(status: string, arg: any, codeWidget: string = "", inline: string = null): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
     if (codeWidget) {
       let widget: SubcodeWidget = this.codeWidgets[codeWidget];
-      if (widget) widget.setStatus(status, lines);
+      if (widget) widget.setStatus(status, lines, inline);
     } else {
       const model: monaco.editor.ITextModel = this.editor.getModel();
       const oldDecorations = [];

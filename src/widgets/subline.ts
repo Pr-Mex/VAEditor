@@ -1,4 +1,6 @@
 import { SubcodeWidget } from "./subcode";
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
+const $ = dom.$;
 
 export enum RuntileGlyphs {
   Breakpoint = "debug-breakpoint-glyph",
@@ -150,9 +152,14 @@ export class SubcodeLine {
     return this.breakpoint;
   }
 
-  public setStatus(status: string = undefined) {
+  public setStatus(status: string = undefined, inline: string = undefined) {
     this.clearStatus();
     if (status) this.lineNode.classList.add(`debug-${status}-step`);
+    if (inline) {
+      const node = $("span", { class: "debug-inline-view" });
+      node.textContent = inline;
+      this.lineNode.appendChild(node);
+    }
   }
 
   public setStyle(bold: boolean, italic: boolean, underline: boolean) {
@@ -170,6 +177,8 @@ export class SubcodeLine {
       "debug-disabled-step",
       "debug-current-step",
     );
+    const inlineNode = this.lineNode.querySelector('span.debug-inline-view');
+    if (inlineNode) inlineNode.remove();
   }
 
   public clearStyle() {

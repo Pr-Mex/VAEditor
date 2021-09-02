@@ -169,8 +169,8 @@ export class SubcodeWidget extends WidgetBase {
     return this.current;
   }
 
-  public setStatus(status: string, lines: Array<number>) {
-    this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setStatus(status); });
+  public setStatus(status: string, lines: Array<number>, inline: string = undefined) {
+    this.lines.forEach((line: SubcodeLine) => { if (lines.some(n => n == line.lineNumber)) line.setStatus(status, inline); });
   }
 
   public setStyle(lines: Array<number>, bold: boolean, italic: boolean, underline: boolean) {

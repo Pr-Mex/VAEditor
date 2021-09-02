@@ -32,6 +32,13 @@ export function show() {
 
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
+  // eslint-disable-next-line
+  const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
+  И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9'
+
+  editor.showRuntimeCode(20, subcode)
+  editor.showRuntimeCode(28, subcode)
+
   return
 
   let text = content.replace(/(\r\n|\n|\r)/gm, '\n\n')
@@ -52,10 +59,6 @@ export function show() {
     { id: 'CODE_LENS_COPY', title: 'Copy error' }
   ]
   provider.setErrorLinks(JSON.stringify(errorLinks))
-
-  // eslint-disable-next-line
-  const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
-  И шаг подсценария 5\n\t\t\tИ шаг подсценария 6\n\t\tИ шаг подсценария 7\n\t\t\tИ шаг подсценария 8\n\tИ шаг подсценария 9'
 
   editor.showRuntimeCode(20, subcode)
   editor.showRuntimeCode(28, subcode)
