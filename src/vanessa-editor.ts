@@ -33,7 +33,7 @@ export class VanessaEditor implements IVanessaEditor {
   public setTheme = (arg: string) => this.styleManager.theme = arg;
   public revealLine = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.revealLine(lineNumber, codeWidget);
   public revealLineInCenter = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.revealLineInCenter(lineNumber, codeWidget);
-  public setRuntimeProgress = (status: string, lines: any, widget: string = "") => this.runtimeManager.setStatus(status, lines, widget);
+  public setRuntimeProgress = (status: string, lines: any, widget: string = "", inline = null) => this.runtimeManager.setStatus(status, lines, widget, inline);
   public getRuntimeProgress = (status: string) => this.runtimeManager.getStatus(status);
   public getCurrentProgress = () => this.runtimeManager.getCurrent();
   public setCurrentProgress = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.setCurrent(lineNumber, codeWidget);

@@ -106,7 +106,7 @@ export class RuntimeManager {
   }
 
   set breakpoints(breakpoints: IBreakpoint[]) {
-    const widgetsBreakpoints = {};
+    const widgetsBreakpoints = { };
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     breakpoints.forEach(breakpoint => {
       if (breakpoint.codeWidget) {
@@ -258,7 +258,7 @@ export class RuntimeManager {
   private currentDecorationIds: string[] = [];
   private stackDecorationIds: string[] = [];
   private errorViewZoneIds: Array<string> = [];
-  private codeWidgets = {};
+  private codeWidgets = { };
   private currentCodeWidget: string = "";
   private showBreakpoints: boolean = false;
 
@@ -271,7 +271,7 @@ export class RuntimeManager {
     return this.showBreakpoints;
   }
 
-  public setStatus(status: string, arg: any, codeWidget: string = ""): void {
+  public setStatus(status: string, arg: any, codeWidget: string = "", inline = null): void {
     let lines = typeof (arg) == "string" ? JSON.parse(arg) : arg;
     if (typeof (lines) == "number") lines = [lines];
     if (codeWidget) {
@@ -290,10 +290,11 @@ export class RuntimeManager {
           }
         });
         if (status) decorations.push({
-          range: new monaco.Range(line, 1, line, 1),
+          range: new monaco.Range(line, 1, line, this.editor.getModel().getLineMaxColumn(line)),
           options: {
             stickiness: monaco.editor.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges,
             className: `debug-${status}-step`,
+            after: inline ? { content: inline, inlineClassName: "debug-inline-view" } : null,
             isWholeLine: true,
           }
         });
@@ -512,7 +513,7 @@ export class RuntimeManager {
     this.editor.changeViewZones(changeAccessor =>
       zoneIds.forEach(id => changeAccessor.removeZone(id))
     );
-    this.codeWidgets = {};
+    this.codeWidgets = { };
     this.updateBreakpoints();
   }
 

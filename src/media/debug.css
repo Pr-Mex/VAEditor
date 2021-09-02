@@ -40,6 +40,9 @@
 .debug-disabled-step {
   background-color: rgba(192, 192, 192, 0.8);
 }
+.debug-inline-view {
+  background-color: rgb(255, 232, 147);
+}
 body[data-theme="vs-dark"] .debug-current-step {
   background-color: rgba(255, 214, 92, 0.3);
 }

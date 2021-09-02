@@ -489,7 +489,7 @@ Procedure SetProgress(Command)
 		Steps.Add(Row.LineNumber);
 	EndDo;
 	For each KeyValue In Map Do
-		VanessaEditor().setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key);
+		VanessaEditor().setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key, InlineView);
 	EndDo;
 EndProcedure
 

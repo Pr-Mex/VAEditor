@@ -920,6 +920,11 @@
 									<ContextMenu name="RuntimeStatusContextMenu" id="336"/>
 									<ExtendedTooltip name="RuntimeStatusExtendedTooltip" id="337"/>
 								</InputField>
+								<InputField name="InlineView" id="414">
+									<DataPath>InlineView</DataPath>
+									<ContextMenu name="InlineViewContextMenu" id="415"/>
+									<ExtendedTooltip name="InlineViewExtendedTooltip" id="416"/>
+								</InputField>
 								<Table name="CompleteSteps" id="96">
 									<Representation>List</Representation>
 									<TitleLocation>Auto</TitleLocation>
@@ -2413,6 +2418,30 @@
 				<v8:item>
 					<v8:lang>ru</v8:lang>
 					<v8:content>Keywords URL</v8:content>
+				</v8:item>
+			</Title>
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="Attribute1" id="29">
+			<Type>
+				<v8:Type>xs:string</v8:Type>
+				<v8:StringQualifiers>
+					<v8:Length>0</v8:Length>
+					<v8:AllowedLength>Variable</v8:AllowedLength>
+				</v8:StringQualifiers>
+			</Type>
+		</Attribute>
+		<Attribute name="InlineView" id="30">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Inline</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
