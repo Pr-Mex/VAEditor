@@ -54,14 +54,10 @@ export class VanessaGherkinProvider {
 
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
   public get errorLinks(): any { return this._errorLinks; }
-  public get elements(): any { return this._elements; }
   public get keypairs(): any { return this._keypairs; }
-  public get variables(): any { return this._variables; }
 
   protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
   protected _keypairs: any = { };
-  protected _elements = { };
-  protected _variables = { };
   protected _errorLinks = [];
   protected _matcher: KeywordMatcher;
   protected _locale: string;
@@ -116,21 +112,11 @@ export class VanessaGherkinProvider {
   }
 
   public setElements = (values: string, clear: boolean = false): void => {
-    if (clear) this.clearObject(this.elements);
-    let obj = JSON.parse(values);
-    for (let key in obj) {
-      this.elements[key.toLowerCase()] = obj[key];
-    }
-    worker.postMessage({ type: MessageType.SetElements, data: this.elements });
+    worker.postMessage({ type: MessageType.SetElements, values, clear });
   }
 
   public setVariables = (values: string, clear: boolean = false): void => {
-    if (clear) this.clearObject(this.variables);
-    let obj = JSON.parse(values);
-    for (let key in obj) {
-      this.variables[key.toLowerCase()] = { name: key, value: String(obj[key]) };
-    }
-    worker.postMessage({ type: MessageType.SetVariables, data: this.variables });
+    worker.postMessage({ type: MessageType.SetVariables, values, clear });
   }
 
   public setStepList = (list: string, clear: boolean = false): void => {

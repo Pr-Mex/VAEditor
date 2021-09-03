@@ -54,6 +54,22 @@ function setMessages(context: IWorkerContext, msg: { data: string }) {
   });
 }
 
+function setElements(context: IWorkerContext, msg: {values: string, clear: boolean}) {
+  if (msg.clear) context.elements = {};
+  let obj = JSON.parse(msg.values);
+  for (let key in obj) {
+    context.elements[key.toLowerCase()] = obj[key];
+  }
+}
+
+function setVariables(context: IWorkerContext, msg: {values: string, clear: boolean}) {
+  if (msg.clear) context.variables = {};
+  let obj = JSON.parse(msg.values);
+  for (let key in obj) {
+    context.variables[key.toLowerCase()] = obj[key];
+  }
+}
+
 function provide(msg: any) {
   const model = getWorkerModel(msg);
   if (!model) return undefined;
@@ -92,11 +108,11 @@ export function process(msg: any) {
       setStepList(context, msg);
       break;
     case MessageType.SetElements:
-      context.elements = msg.data;
+      setElements(context, msg);
       updateStepLabels(context);
       break;
     case MessageType.SetVariables:
-      context.variables = msg.data;
+      setVariables(context, msg);
       updateStepLabels(context);
       break;
     case MessageType.SetImports:
