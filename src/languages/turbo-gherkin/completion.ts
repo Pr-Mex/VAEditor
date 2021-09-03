@@ -56,8 +56,6 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
     return empty(msg.lineNumber, msg.column);
 
   let minColumn = getLineMinColumn(msg.line);
-  let words = msg.line.match(/\S+/g) || [];
-  let keyword = ctx.matcher.findKeyword(words);
   let lineRange = {
     startLineNumber: msg.lineNumber,
     endLineNumber: msg.lineNumber,
@@ -65,8 +63,8 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
     endColumn: maxColumn ? maxColumn : msg.column,
   };
 
-  if (keyword) {
-    let keytext = keyword.join(' ');
+  if (match = msg.line.match(ctx.matcher.step)) {
+    let keytext = msg.line.substring(minColumn - 1, match[0].length);
     keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
     for (let key in ctx.steplist) {
       let e = ctx.steplist[key];
