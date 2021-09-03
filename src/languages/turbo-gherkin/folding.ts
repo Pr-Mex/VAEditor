@@ -3,7 +3,7 @@ import { KeywordMatcher } from "./matcher";
 
 function getIndent(text: string, tabSize: number) {
   let indent = 0;
-  let length = text.search(/[^\s]/)
+  let length = text.search(/\S/)
   for (let i = 0; i < length; i++) {
     if (text.charAt(i) == "\t") {
       indent = indent + tabSize - (indent % tabSize);

@@ -56,7 +56,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
     return empty(msg.lineNumber, msg.column);
 
   let minColumn = getLineMinColumn(msg.line);
-  let words = msg.line.match(/[^\s]+/g) || [];
+  let words = msg.line.match(/\S+/g) || [];
   let keyword = ctx.matcher.findKeyword(words);
   let lineRange = {
     startLineNumber: msg.lineNumber,

@@ -162,7 +162,7 @@ export function getHiperlinks(ctx: IWorkerContext, model: IWorkerModel, msg: {})
         endColumn: regexp.lastIndex
       };
       let param = matches[0].substring(1, matches[0].length - 1);
-      let e1cib = /^e1cib\/[^\s]+$/;
+      let e1cib = /^e1cib\/\S+$/;
       if (e1cib.test(param)) {
         result.push({ range: range, url: trimQuotes(matches[0]) });
       } else if (lineNumber > pos.lineNumber) {
