@@ -1,7 +1,7 @@
 import * as monaco from "monaco-editor"
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { renderMarkdown } from 'monaco-editor/esm/vs/base/browser/markdownRenderer.js';
-import { EventsManager, IVanessaEditor, VanessaEditorEvent } from "./common";
+import { EventsManager, IVanessaEditor, VAEditorType, VanessaEditorEvent } from "./common";
 const $ = dom.$;
 
 const markdownToHTML = (value: string) => {
@@ -66,4 +66,6 @@ export class VanessaViwer implements IVanessaEditor {
       EventsManager.fireEvent(this, VanessaEditorEvent.ON_MARK_CLICK, data);
     }
   }
+
+  public get type() { return VAEditorType.MarkdownViwer; }
 }

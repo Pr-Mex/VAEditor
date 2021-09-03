@@ -6,6 +6,12 @@ import { clearWorkerCache } from './languages/turbo-gherkin/provider';
 
 const $ = dom.$;
 
+export enum VAEditorType {
+  CodeEditor,
+  DiffEditor,
+  MarkdownViwer,
+}
+
 export type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 export interface IVanessaEditor {
   domNode(): HTMLElement;
@@ -15,6 +21,7 @@ export interface IVanessaEditor {
   resetModel: Function;
   getModel: Function;
   editor: any;
+  type: VAEditorType;
 }
 
 export interface VAEditorOptions {

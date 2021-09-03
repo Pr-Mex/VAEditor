@@ -1,4 +1,4 @@
-import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorOptions } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorOptions, VAEditorType } from "./common";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
@@ -190,6 +190,7 @@ export class VanessaEditor implements IVanessaEditor {
     disposeModel(oldModel);
   };
 
+  public get type() { return VAEditorType.CodeEditor; }
   public focus() { this.editor.focus(); }
   static editors: Array<VanessaEditor> = [];
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());

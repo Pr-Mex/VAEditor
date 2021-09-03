@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
-import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorType } from "./common";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaTabs } from "./vanessa-tabs";
 
@@ -114,4 +114,5 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public next = () => this.navigator.next();
   public focus() { this.editor.focus(); }
   public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
+  public get type() { return VAEditorType.DiffEditor; }
 }

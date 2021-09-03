@@ -934,7 +934,7 @@ EndProcedure
 &AtClient
 Procedure ShowMinimapOnChange(Item)
 
-	VanessaEditor().showMinimap(ShowMinimap);
+	Элементы.VanessaEditor.Документ.defaultView.VanessaTabs.showMinimap(ShowMinimap);
 
 EndProcedure
 

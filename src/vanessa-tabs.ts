@@ -2,7 +2,7 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { ActionManager } from './actions';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
-import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel, WhitespaceType, VAEditorOptions } from "./common";
+import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel, WhitespaceType, VAEditorOptions, VAEditorType } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { VanessaViwer } from './vanessa-viewer';
 import { version } from '../version.json'
@@ -189,8 +189,8 @@ class VanessaTabItem {
     return this.model?.uri.toString();
   }
 
-  public get type(): string {
-    return this.editor?.editor.getEditorType();
+  public get type(): VAEditorType {
+    return this.editor.type;
   }
 
   public get title(): string {
@@ -227,7 +227,7 @@ class VanessaTabItem {
     this.resetModified();
     if (oldKey === newKey) return;
     const tab = this.owner.findTab((tab: VanessaTabItem) =>
-      tab !== this && tab.type === "vs.editor.ICodeEditor"
+      tab !== this && tab.type === VAEditorType.CodeEditor
       && tab.editor.editor.getModel().uri.toString() === newKey
     );
     if (tab) {
@@ -367,7 +367,7 @@ export class VanessaTabs {
     const uri = monaco.Uri.parse(filepath);
     const key = uri.toString();
     const tab = this.findTab((tab: VanessaTabItem) =>
-      tab.key === key && tab.type === "vs.editor.ICodeEditor"
+      tab.key === key && tab.type === VAEditorType.CodeEditor
     );
     if (tab) return tab.select();
     let model = monaco.editor.getModel(uri);
@@ -397,7 +397,7 @@ export class VanessaTabs {
     const originalKey = monaco.Uri.parse(oldFilePath).toString();
     const modifiedKey = monaco.Uri.parse(newFilePath).toString();
     const tab = this.findTab((tab: VanessaTabItem) =>
-      tab.type === "vs.editor.IDiffEditor"
+      tab.type === VAEditorType.DiffEditor
       && tab.editor.editor.getModel().original.uri.toString() === originalKey
       && tab.editor.editor.getModel().modified.uri.toString() === modifiedKey
     );
@@ -470,13 +470,19 @@ export class VanessaTabs {
   public get renderWhitespace(): WhitespaceType { return this._renderWhitespace; }
   public set renderWhitespace(value: WhitespaceType) {
     this._renderWhitespace = value;
-    this.tabStack.forEach(tab => tab.editor.editor.updateOptions({ renderWhitespace: value }));
+    this.tabStack.forEach(tab => {
+      if (tab.type == VAEditorType.CodeEditor)
+        tab.editor.editor.updateOptions({ renderWhitespace: value })
+    });
   }
 
   public get showMinimap(): boolean { return this._showMinimap; }
   public set showMinimap(value: boolean) {
     this._showMinimap = value;
-    this.tabStack.forEach(tab => tab.editor.editor.updateOptions({ minimap: { enabled: value } }));
+    this.tabStack.forEach(tab => {
+      if (tab.type == VAEditorType.CodeEditor)
+        tab.editor.editor.updateOptions({ minimap: { enabled: value } })
+    });
   }
 
   public showContextMenu = () => {
@@ -494,7 +500,9 @@ export class VanessaTabs {
   }
 
   public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
-  public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }
+  public get isDiffEditor(): boolean { return this.current && this.current.type === VAEditorType.DiffEditor; }
+  public get isCodeEditor(): boolean { return this.current && this.current.type === VAEditorType.CodeEditor; }
+  public get isMarkdownViwer(): boolean { return this.current && this.current.type === VAEditorType.MarkdownViwer; }
   public get diffEditor(): VanessaDiffEditor { return this.current.editor as VanessaDiffEditor; }
   public canNavigateDiff = () => this.isDiffEditor && this.diffEditor.canNavigate();
   public previousDiff = () => { if (this.isDiffEditor) this.diffEditor.previous(); }
