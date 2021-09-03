@@ -6,6 +6,7 @@ import { clearWorkerCache } from './languages/turbo-gherkin/provider';
 
 const $ = dom.$;
 
+export type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 export interface IVanessaEditor {
   domNode(): HTMLElement;
   dispose(): void;
@@ -14,6 +15,11 @@ export interface IVanessaEditor {
   resetModel: Function;
   getModel: Function;
   editor: any;
+}
+
+export interface VAEditorOptions {
+  renderWhitespace: WhitespaceType,
+  showMinimap: boolean,
 }
 
 export interface IVanessaAction {

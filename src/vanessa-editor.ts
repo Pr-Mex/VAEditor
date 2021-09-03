@@ -1,4 +1,4 @@
-import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorOptions } from "./common";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
@@ -129,7 +129,15 @@ export class VanessaEditor implements IVanessaEditor {
     }
   }
 
-  constructor(model: monaco.editor.ITextModel, readOnly: boolean = false, checkSyntax = true) {
+  constructor(
+    model: monaco.editor.ITextModel,
+    readOnly: boolean = false,
+    checkSyntax = true,
+    options: VAEditorOptions = {
+      renderWhitespace: "none",
+      showMinimap: true,
+    }
+  ) {
     let container = document.getElementById("VanessaEditorContainer");
     this._domNode = $("div", { class: "vanessa-editor" });
     container.appendChild(this._domNode);
@@ -143,6 +151,8 @@ export class VanessaEditor implements IVanessaEditor {
       detectIndentation: false,
       insertSpaces: false,
       useShadowDOM: false,
+      renderWhitespace: options.renderWhitespace,
+      minimap: { enabled: options.showMinimap},
       lightbulb: { enabled: true }
     });
     this.editor.getModel().updateOptions({ insertSpaces: false });

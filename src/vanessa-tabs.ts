@@ -2,12 +2,10 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { ActionManager } from './actions';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
-import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
+import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel, WhitespaceType, VAEditorOptions } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { VanessaViwer } from './vanessa-viewer';
 import { version } from '../version.json'
-
-type WhitespaceType = 'none' | 'boundary' | 'selection' | 'all';
 
 const $ = dom.$;
 
@@ -55,7 +53,7 @@ class VanessaTabItem {
     this.editor = editor;
     this.encoding = encoding;
     this.filename = filename;
-    this.domNode = $(".vanessa-tab-box", { },
+    this.domNode = $(".vanessa-tab-box", {},
       this.domItem = $(".vanessa-tab-item", { title: title },
         this.domTitle = $(".vanessa-tab-title"),
         this.domClose = $(".vanessa-tab-close.codicon-close", { title: "Close" }),
@@ -268,6 +266,7 @@ export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
+  private _showMinimap: boolean = true;
   private _renderWhitespace: WhitespaceType = "none";
   private hiddenEditors: Array<IVanessaEditor> = [];
   private checkSyntax: boolean = true;
@@ -374,7 +373,11 @@ export class VanessaTabs {
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
-    const editor = new VanessaEditor(model, readOnly, this.checkSyntax);
+    const options: VAEditorOptions = {
+      renderWhitespace: this.renderWhitespace,
+      showMinimap: this.showMinimap,
+    }
+    const editor = new VanessaEditor(model, readOnly, this.checkSyntax, options);
     editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
     return this.open(editor, title, filepath, encoding, newTab);
   }
@@ -466,8 +469,14 @@ export class VanessaTabs {
 
   public get renderWhitespace(): WhitespaceType { return this._renderWhitespace; }
   public set renderWhitespace(value: WhitespaceType) {
-    this.tabStack.forEach(tab => tab.editor.editor.updateOptions({ renderWhitespace: value }));
     this._renderWhitespace = value;
+    this.tabStack.forEach(tab => tab.editor.editor.updateOptions({ renderWhitespace: value }));
+  }
+
+  public get showMinimap(): boolean { return this._showMinimap; }
+  public set showMinimap(value: boolean) {
+    this._showMinimap = value;
+    this.tabStack.forEach(tab => tab.editor.editor.updateOptions({ minimap: { enabled: value } }));
   }
 
   public showContextMenu = () => {
