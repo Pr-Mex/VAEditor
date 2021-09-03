@@ -173,33 +173,18 @@ class VanessaTabItem {
     EventsManager.fireEvent(this.editor, event, data);
   }
 
-  public get model() {
-    return this.editor?.getModel();;
-  }
+  public get model() { return this.editor?.getModel(); }
+  public get modified(): boolean { return this.model?.isModified(); }
+  public get uri(): string { return this.model?.uri; }
+  public get key(): string { return this.model?.uri.toString(); }
 
-  public get modified(): boolean {
-    return this.model?.isModified();
-  }
+  public get type(): VAEditorType { return this.editor.type; }
+  public get isDiffEditor(): boolean { return this.type === VAEditorType.DiffEditor; }
+  public get isCodeEditor(): boolean { return this.type === VAEditorType.CodeEditor; }
+  public get isMarkdownViwer(): boolean { return this.type === VAEditorType.MarkdownViwer; }
 
-  public get uri(): string {
-    return this.model?.uri;
-  }
-
-  public get key(): string {
-    return this.model?.uri.toString();
-  }
-
-  public get type(): VAEditorType {
-    return this.editor.type;
-  }
-
-  public get title(): string {
-    return this.domTitle.innerText;
-  }
-
-  public set title(value: string) {
-    this.domTitle.innerText = value;
-  }
+  public get title(): string { return this.domTitle.innerText; }
+  public set title(value: string) { this.domTitle.innerText = value; }
 
   public getVersionId = () => {
     return this.model?.getVersionId();
