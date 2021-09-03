@@ -1,4 +1,5 @@
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
+import { ActionManager } from './actions';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel } from "./common";
@@ -483,6 +484,7 @@ export class VanessaTabs {
     this.current?.editor.trigger(source, handlerId, payload);
   }
 
+  public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
   public get isDiffEditor(): boolean { return this.current && this.current.type === "vs.editor.IDiffEditor"; }
   public get diffEditor(): VanessaDiffEditor { return this.current.editor as VanessaDiffEditor; }
   public canNavigateDiff = () => this.isDiffEditor && this.diffEditor.canNavigate();

@@ -121,7 +121,7 @@ export class ActionManager {
     this.codiconDecorations = this.editor.deltaDecorations(this.codiconDecorations, []);
   }
 
-  public setSuggestWidgetWidth(arg: any) {
+  public static setSuggestWidgetWidth(arg: any) {
     const id = 'vanessa-suggest-widget-style';
     let style = document.getElementById(id);
     if (style == null) {

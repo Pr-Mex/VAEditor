@@ -62,7 +62,7 @@ export class VanessaEditor implements IVanessaEditor {
   public clearCodicons = () => this.actionManager.clearCodicons();
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
-  public setSuggestWidgetWidth = (arg: any) => this.actionManager.setSuggestWidgetWidth(arg);
+  public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
   public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;

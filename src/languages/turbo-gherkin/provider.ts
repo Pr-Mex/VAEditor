@@ -7,6 +7,7 @@ import { MessageType, IVanessaModel } from './common';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
+import { ActionManager } from '../../actions';
 
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
@@ -136,6 +137,8 @@ export class VanessaGherkinProvider {
   private clearArray(target: Array<any>) {
     target.splice(0, target.length);
   }
+
+  public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
 
   private createTheme1C() {
     monaco.editor.defineTheme('1c', {
