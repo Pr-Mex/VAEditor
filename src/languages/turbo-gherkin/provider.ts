@@ -350,7 +350,7 @@ export class VanessaGherkinProvider {
       let state = tokenizationSupport.getInitialState();
       for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
         const line = model.getLineContent(lineNumber);
-        const tokenizationResult = tokenizationSupport.tokenize(line, state, 0);
+        const tokenizationResult = tokenizationSupport.tokenize(line, true, state, 0);
         state = tokenizationResult.endState;
         console.log(lineNumber, state.stack.state, tokenizationResult.tokens);
       }

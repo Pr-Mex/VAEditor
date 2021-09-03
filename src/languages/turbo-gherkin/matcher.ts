@@ -49,15 +49,15 @@ export class KeywordMatcher {
           case "native":
             break;
           case "import":
-            list.forEach(w => keywords.import.push(w))
+            list.forEach(w => { if (w) keywords.import.push(w) })
             break;
           default:
             if (keywords.section[word]) {
-              list.forEach(w => keywords.section[word].push(w))
-              list.forEach(w => keywords.primary.push(w))
+              list.forEach(w => { if (w) keywords.section[word].push(w) })
+              list.forEach(w => { if (w) keywords.primary.push(w) })
             } else {
-              list.forEach(w => keywords.step.push(w))
-              list.forEach(w => this._keywords.push(w.toLowerCase().split(/\s+/)))
+              list.forEach(w => { if (w) keywords.step.push(w) })
+              list.forEach(w => { if (w) this._keywords.push(w.toLowerCase().split(/\s+/)) })
             }
         }
       })
