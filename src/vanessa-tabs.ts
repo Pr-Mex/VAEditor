@@ -6,6 +6,7 @@ import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, dispose
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { VanessaViwer } from './vanessa-viewer';
 import { version } from '../version.json'
+import { StyleManager } from './style';
 
 const $ = dom.$;
 
@@ -485,15 +486,17 @@ export class VanessaTabs {
   }
 
   public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
-  public get isDiffEditor(): boolean { return this.current && this.current.type === VAEditorType.DiffEditor; }
-  public get isCodeEditor(): boolean { return this.current && this.current.type === VAEditorType.CodeEditor; }
-  public get isMarkdownViwer(): boolean { return this.current && this.current.type === VAEditorType.MarkdownViwer; }
-  public get diffEditor(): VanessaDiffEditor { return this.current.editor as VanessaDiffEditor; }
-  public canNavigateDiff = () => this.isDiffEditor && this.diffEditor.canNavigate();
-  public previousDiff = () => { if (this.isDiffEditor) this.diffEditor.previous(); }
-  public nextDiff = () => { if (this.isDiffEditor) this.diffEditor.next(); }
+  public get isDiffEditor(): boolean { return this.current ? this.current.type === VAEditorType.DiffEditor : false; }
+  public get isCodeEditor(): boolean { return this.current ? this.current.type === VAEditorType.CodeEditor : false; }
+  public get isMarkdownViwer(): boolean { return this.current ? this.current.type === VAEditorType.MarkdownViwer : false; }
+  public get diffEditor(): VanessaDiffEditor { return this.current?.editor as VanessaDiffEditor; }
+  public get editor(): IVanessaEditor { return this.current?.editor; }
+  public canNavigateDiff = () => this.isDiffEditor ? this.diffEditor.canNavigate() : false;
+  public previousDiff = () => this.diffEditor?.previous();
+  public nextDiff = () => this.diffEditor?.next();
   public count = () => this.tabStack.length;
   public tab = (index: number) => this.tabStack[index];
   public select = (index: number) => this.tabStack[index].select();
+  public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
 }

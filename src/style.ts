@@ -12,7 +12,7 @@ export class StyleManager {
     this.editor = null;
   }
 
-  set theme(theme: string) {
+  static set theme(theme: string) {
     document.body.dataset.theme = theme;
     monaco.editor.setTheme(theme);
   }

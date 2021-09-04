@@ -16,6 +16,7 @@ export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
   public popMessage = () => EventsManager.popMessage();
+  public setTheme = (arg: string) => StyleManager.theme = arg;
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
@@ -30,7 +31,6 @@ export class VanessaEditor implements IVanessaEditor {
   public setSelection = (startLineNumber: number, startColumn: number, endLineNumber: number, endColumn: number) => this.editor.setSelection(new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn));
   public selectSubcodeLine = (codeWidget: string, lineNumber: number) => this.runtimeManager.selectSubcodeLine(codeWidget, lineNumber);
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
-  public setTheme = (arg: string) => this.styleManager.theme = arg;
   public revealLine = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.revealLine(lineNumber, codeWidget);
   public revealLineInCenter = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.revealLineInCenter(lineNumber, codeWidget);
   public setRuntimeProgress = (status: string, lines: any, widget: string = "", inline = null) => this.runtimeManager.setStatus(status, lines, widget, inline);

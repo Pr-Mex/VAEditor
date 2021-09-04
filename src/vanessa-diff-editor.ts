@@ -109,7 +109,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public getModel = () => this.editor.getModifiedEditor().getModel();
-  public canNavigate = () => this.navigator.canNavigate();
+  public canNavigate = () => this.navigator.canNavigate() ? true : false;
   public previous = () => this.navigator.previous();
   public next = () => this.navigator.next();
   public focus() { this.editor.focus(); }
