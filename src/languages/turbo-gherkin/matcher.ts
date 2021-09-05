@@ -27,6 +27,17 @@ export class KeywordMatcher {
     number: /-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/,
   };
 
+  public getTextKey(text: string): string {
+    const source = [this.tokens.word, this.tokens.param].map((reg: RegExp) => "(" + reg.source + ")").join("|");
+    const regexp = new RegExp(source, "giu");
+    const result = [];
+    let match = undefined;
+    while ((match = regexp.exec(text)) != undefined) {
+      if (match[1]) result.push(match[1].toLowerCase())
+    }
+    return result.join(" ");
+  }
+
   constructor(text: string) {
 
     const src = JSON.parse(text);

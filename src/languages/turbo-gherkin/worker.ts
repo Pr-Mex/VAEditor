@@ -98,6 +98,9 @@ export function process(msg: any) {
       context.matcher = new KeywordMatcher(msg.data);
       updateStepLabels(context);
       break;
+    case MessageType.SetKeypairs:
+      context.keypairs = msg.data;
+      break;
     case MessageType.SetMetatags:
       context.metatags = msg.data;
       break;

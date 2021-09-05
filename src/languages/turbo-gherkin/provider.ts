@@ -94,6 +94,7 @@ export class VanessaGherkinProvider {
       let list = pairs[key].map((w: string) => w.toLowerCase());;
       this.keypairs[key.toLowerCase()] = list;
     });
+    worker.postMessage({ type: MessageType.SetKeypairs, data: this.keypairs });
   }
 
   public setMetatags = (arg: string): void => {

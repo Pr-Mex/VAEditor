@@ -26,9 +26,12 @@ export function show() {
     soundHint: "Озвучить"
   }
 
+  const keypairs = { if: ['then'], Если: ['Тогда'] }
+
   provider.setElements(JSON.stringify(elements))
-  provider.setVariables(JSON.stringify(variables))
+  provider.setKeypairs(JSON.stringify(keypairs))
   provider.setMessages(JSON.stringify(messages))
+  provider.setVariables(JSON.stringify(variables))
 
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 

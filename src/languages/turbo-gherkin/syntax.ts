@@ -3,21 +3,17 @@ import { getLineMaxColumn, getLineMinColumn, IWorkerContext, IWorkerModel } from
 function lineSyntaxError(context: IWorkerContext, line: string): boolean {
   let match = line.match(context.matcher.step);
   if (!match) return false;
-  let words = context.matcher.splitWords(line);
-  let keyword = context.matcher.findKeyword(words);
-  if (keyword == undefined) return false;
-  let s = true;
-  let notComment = (w: string) => s && !(/^[\s]*[#|//]/.test(w));
-  words = words.filter((w, i) => (i < keyword.length) ? false : (notComment(w) ? true : s = false));
-  let key = context.matcher.key(words);
-  if (key === "") return false;
-  if (context.steplist[key]) return false;
-  let keypair = context.keypairs[keyword.join(" ")];
+  let steptext = line.substring(match[0].length);
+  let key = context.matcher.getTextKey(steptext);
+  if (!key || context.steplist[key]) return false;
+  let keyword = match[0].trim().replace(/\s+/, " ").toLowerCase();
+  let keypair = context.keypairs[keyword];
   if (!keypair) return true;
-  let lastnum = words.length - 1;
-  let lastword = words[lastnum].toLowerCase();
-  let step = words.filter((w, i) => i < lastnum);
-  return !(context.steplist[context.matcher.key(step)] && keypair.some((w: string) => w == lastword));
+  let index = steptext.search(new RegExp(keypair + "\s*$", "i"));
+  if (index < 0) return true;
+  steptext = steptext.substring(0, index);
+  key = context.matcher.getTextKey(steptext);
+  return context.steplist[key] == undefined;
 }
 
 export function checkSyntax(context: IWorkerContext, model: IWorkerModel, msg: {}) {
