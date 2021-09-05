@@ -84,18 +84,22 @@ export class GherkinLanguage {
       [/҂+$/, { token: "keyword" }]
     ],
 
+    eol: [
+      [/^/, { token: "white", next: "@pop" }],
+    ],
+
     section: [],
 
     keyword: [],
 
     operator: [
-      [/^/, { token: "white", next: "@pop" }],
+      { include: "@eol" },
       [/\s*(@word)/, "identifier"],
       { include: "@common" },
     ],
 
     params: [
-      [/^/, { token: "white", next: "@pop" }],
+      { include: "@eol" },
       { include: "@common" },
     ],
 
@@ -134,48 +138,56 @@ export class GherkinLanguage {
     ],
 
     string_double: [
+      { include: "@eol" },
       [/[^"\\\{\[\$]+/, "string"],
       { include: "@string" },
       [/"/, "string", "@pop"],
     ],
 
     string_single: [
+      { include: "@eol" },
       [/[^'\\\{\[\$]+/, "string"],
       { include: "@string" },
       [/'/, "string", "@pop"]
     ],
 
     string_angle: [
+      { include: "@eol" },
       [/[^>\\\{\[\$]+/, "string"],
       { include: "@string" },
       [/>/, "string", "@pop"]
     ],
 
     index: [
+      { include: "@eol" },
       [/[^\\\]]+/, "constant"],
       { include: "@escapes" },
       [/\]/, { bracket: "@close", next: "@pop", token: "constant" }],
     ],
 
     predefined: [
+      { include: "@eol" },
       [/[^\\\$]+/, "variable.predefined"],
       { include: "@escapes" },
       [/\$\$/, { bracket: "@close", next: "@pop", token: "variable.predefined" }],
     ],
 
     variable: [
+      { include: "@eol" },
       [/[^\\\$]+/, "variable"],
       { include: "@escapes" },
       [/\$/, { bracket: "@close", next: "@pop", token: "variable" }],
     ],
 
     server: [
+      { include: "@eol" },
       [/[^\\\}]+/, "keyword.flow"],
       { include: "@escapes" },
       [/\}/, { bracket: "@close", next: "@pop", token: "keyword.flow" }],
     ],
 
     client: [
+      { include: "@eol" },
       [/[^\\\}]+/, "predefined.sql"],
       { include: "@escapes" },
       [/\}/, { bracket: "@close", next: "@pop", token: "predefined.sql" }],
