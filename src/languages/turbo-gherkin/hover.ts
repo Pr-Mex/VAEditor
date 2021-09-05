@@ -1,4 +1,4 @@
-import { IWorkerContext, IWorkerModel } from "./common";
+import { getLineMaxColumn, getLineMinColumn, IWorkerContext, IWorkerModel } from "./common";
 
 function escapeMarkdown(text: string): string {
   // escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
@@ -44,8 +44,8 @@ export function getLineHover(ctx: IWorkerContext, model: IWorkerModel, msg: any)
   let range = {
     startLineNumber: msg.lineNumber,
     endLineNumber: msg.lineNumber,
-    startColumn: msg.MinColumn,
-    endColumn: msg.MaxColumn,
+    startColumn: getLineMinColumn(msg.line),
+    endColumn: getLineMaxColumn(msg.line),
   };
   return { range: range, contents: contents };
 }
