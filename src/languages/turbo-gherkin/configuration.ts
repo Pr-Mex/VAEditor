@@ -23,11 +23,13 @@ export const conf: monaco.languages.LanguageConfiguration = {
 
 export class GherkinLanguage {
 
+  unicode = true;
+
   ignoreCase = true;
 
   escapes = /\\(?:[abfnrtv\\"'{}\[\]\$]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/;
 
-  word = /[A-zА-яЁё][0-9A-zА-яЁё]*/;
+  word = /\p{L}[\p{L}\p{N}]*/;
 
   constructor(provider: VanessaGherkinProvider) {
     const metatags = provider.matcher.regex(provider.metatags);
@@ -126,8 +128,8 @@ export class GherkinLanguage {
       [/\$\$/, { bracket: "@open", token: "variable.predefined", next: "predefined" }],
       [/\$/, { bracket: "@open", token: "variable", next: "variable" }],
       [/\[/, { bracket: "@open", token: "constant", next: "index" }],
-      [/{!/, { bracket: "@open", token: "keyword.flow", next: "server" }],
-      [/{/, { bracket: "@open", token: "predefined.sql", next: "client" }],
+      [/\{!/, { bracket: "@open", token: "keyword.flow", next: "server" }],
+      [/\{/, { bracket: "@open", token: "predefined.sql", next: "client" }],
       { include: "@escapes" },
     ],
 
@@ -168,15 +170,15 @@ export class GherkinLanguage {
     ],
 
     server: [
-      [/[^\\}]+/, "keyword.flow"],
+      [/[^\\\}]+/, "keyword.flow"],
       { include: "@escapes" },
-      [/}/, { bracket: "@close", next: "@pop", token: "keyword.flow" }],
+      [/\}/, { bracket: "@close", next: "@pop", token: "keyword.flow" }],
     ],
 
     client: [
-      [/[^\\}]+/, "predefined.sql"],
+      [/[^\\\}]+/, "predefined.sql"],
       { include: "@escapes" },
-      [/}/, { bracket: "@close", next: "@pop", token: "predefined.sql" }],
+      [/\}/, { bracket: "@close", next: "@pop", token: "predefined.sql" }],
     ],
   }
 };

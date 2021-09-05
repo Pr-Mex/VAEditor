@@ -1,21 +1,5 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext } from './common';
 
-function empty(lineNumber: number, column: number) {
-  return {
-    suggestions: [{
-      label: '',
-      insertText: '',
-      kind: monaco.languages.CompletionItemKind.Function,
-      range: {
-        startLineNumber: lineNumber,
-        endLineNumber: lineNumber,
-        startColumn: column - 1,
-        endColumn: column,
-      },
-    }]
-  };
-}
-
 export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNumber: number, column: number }) {
   const regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/gi;
   let match, wordRange;
@@ -52,8 +36,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
   }
 
   let maxColumn = getLineMaxColumn(msg.line);
-  if (maxColumn && msg.column < maxColumn)
-    return empty(msg.lineNumber, msg.column);
+  if (maxColumn && msg.column < maxColumn) return [];
 
   let minColumn = getLineMinColumn(msg.line);
   let lineRange = {
