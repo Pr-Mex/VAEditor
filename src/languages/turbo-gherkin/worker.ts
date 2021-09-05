@@ -11,10 +11,10 @@ import { setStepList, updateStepLabels } from './steplist';
 const context: IWorkerContext = {
   matcher: undefined,
   metatags: ["try", "except", "попытка", "исключение"],
-  steplist: { },
-  keypairs: { },
-  elements: { },
-  variables: { },
+  steplist: {},
+  keypairs: {},
+  elements: {},
+  variables: {},
   messages: {
     syntaxMsg: "Syntax error",
     soundHint: "Sound",
@@ -54,7 +54,7 @@ function setMessages(context: IWorkerContext, msg: { data: string }) {
   });
 }
 
-function setElements(context: IWorkerContext, msg: {values: string, clear: boolean}) {
+function setElements(context: IWorkerContext, msg: { values: string, clear: boolean }) {
   if (msg.clear) context.elements = {};
   let obj = JSON.parse(msg.values);
   for (let key in obj) {
@@ -62,11 +62,11 @@ function setElements(context: IWorkerContext, msg: {values: string, clear: boole
   }
 }
 
-function setVariables(context: IWorkerContext, msg: {values: string, clear: boolean}) {
-  if (msg.clear) context.variables = {};
+function setVariables(ctx: IWorkerContext, msg: { values: string, clear: boolean }) {
+  if (msg.clear) ctx.variables = {};
   let obj = JSON.parse(msg.values);
   for (let key in obj) {
-    context.variables[key.toLowerCase()] = obj[key];
+    ctx.variables[key.toLowerCase()] = { name: key, value: obj[key] };
   }
 }
 

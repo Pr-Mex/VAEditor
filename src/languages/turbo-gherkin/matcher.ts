@@ -21,6 +21,12 @@ export class KeywordMatcher {
       .map(w => w.join("\\s+")).join("|") + ")" + postfix, "i");
   }
 
+  public tokens = {
+    word: /\p{L}[\p{L}\p{N}]*/,
+    param: /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>\\]*(?:\\.[^>\\]*)*>/,
+    number: /-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/,
+  };
+
   constructor(text: string) {
 
     const src = JSON.parse(text);
@@ -84,7 +90,7 @@ export class KeywordMatcher {
   }
 
   public splitWords(line: string): Array<string> {
-    let regexp = /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>]*>|[A-zА-яЁё]+|[^A-zА-яЁё\s]+/g;
+    let regexp = /(\p{L}[\p{L}\p{N}]*)|("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>\\]*(?:\\.[^>\\]*)*>)/gu;
     return line.match(regexp) || [];
   }
 

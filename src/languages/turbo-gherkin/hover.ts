@@ -27,11 +27,17 @@ export function getLineHover(ctx: IWorkerContext, model: IWorkerModel, msg: any)
       let sh = "#sound:" + msg.lineNumber;
       contents.push({ value: `**${t}** [${i}](${ih}) [${s}](${sh})` });
       contents.push({ value: escapeMarkdown(step.documentation) });
-      let vars = msg.line.match(/"[^"]+"|'[^']+'/g) || [];
-      vars.forEach(function (part: string) {
+      let regexp = new RegExp(ctx.matcher.tokens.param, "gu");
+      let vars = msg.line.match(regexp) || [];
+      let used = {};
+      vars.forEach((part: string) => {
         let d = /^.\$.+\$.$/.test(part) ? 2 : 1;
-        let v = ctx.variables[part.substring(d, part.length - d).toLowerCase()];
-        if (v) contents.push({ value: "**" + v.name + "** = " + v.value });
+        let key = part.substring(d, part.length - d).toLowerCase();
+        let data = ctx.variables[key];
+        if (data && used[key] === undefined) {
+          contents.push({ value: "**" + data.name + "** = " + data.value });
+          used[key] = true;
+        }
       });
     }
   }
