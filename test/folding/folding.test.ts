@@ -1,4 +1,5 @@
 import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provider';
+import { language } from '../../src/languages/turbo-gherkin/configuration';
 import { content } from './example.file.js'
 let expect = require('chai').expect;
 
@@ -7,7 +8,7 @@ describe('Сворачивание кода', function () {
   let result, ranges: FoldingRanges;
   before((done) => {
     const provider = VanessaGherkinProvider.instance;
-    const model = monaco.editor.createModel(content, "turbo-gherkin");
+    const model = monaco.editor.createModel(content, language.id);
     const promise = provider.provideFoldingRanges(model, undefined, undefined) as Promise<FoldingRanges>;
     promise.then(res => { ranges = (result = res).map(e => ({ start: e.start, end: e.end })); done(); })
   });

@@ -1,4 +1,5 @@
 import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provider';
+import { language } from '../../src/languages/turbo-gherkin/configuration';
 import { content } from './example.file.js'
 import * as vars from './example.json';
 let expect = require('chai').expect;
@@ -9,7 +10,7 @@ describe('Переменные и гиперссылки', function () {
   let result: ILinksList;
   before((done) => {
     const provider = VanessaGherkinProvider.instance;
-    model = monaco.editor.createModel(content, "turbo-gherkin");
+    model = monaco.editor.createModel(content, language.id);
     const promise = provider.provideLinks(model, undefined) as Promise<ILinksList>;
     promise.then(res => { result = res; done(); })
   });

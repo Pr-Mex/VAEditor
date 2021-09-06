@@ -25,6 +25,7 @@ import { VanessaTabs } from "./vanessa-tabs";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
+import { language as gherkin } from './languages/turbo-gherkin/configuration';
 import { EventsManager, initPage } from "./common";
 
 initPage();
@@ -37,8 +38,8 @@ Object.defineProperties(window, {
 
 window["VanessaGherkinProvider"] = new VanessaGherkinProvider(localeCode);
 window["createVanessaTabs"] = () => VanessaTabs.createStandalone();
-window["createVanessaEditor"] = (content?: string, language: string = "turbo-gherkin") => VanessaEditor.createStandalone(content, language);
-window["createVanessaDiffEditor"] = (original?: string, modified?: string, language: string = "turbo-gherkin") => VanessaDiffEditor.createStandalone(original, modified, language);
+window["createVanessaEditor"] = (content?: string, language: string = gherkin.id) => VanessaEditor.createStandalone(content, language);
+window["createVanessaDiffEditor"] = (original?: string, modified?: string, language: string = gherkin.id) => VanessaDiffEditor.createStandalone(original, modified, language);
 window["disposeVanessaAll"] = () => { VanessaTabs.disposeStandalone(); VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone() };
 window["disposeVanessaTabs"] = () => VanessaTabs.disposeStandalone();
 window["disposeVanessaEditor"] = () => VanessaEditor.disposeStandalone();

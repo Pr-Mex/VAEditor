@@ -1,4 +1,5 @@
 import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provider';
+import { language } from '../../src/languages/turbo-gherkin/configuration';
 import * as content from './example.file.js'
 let expect = require('chai').expect;
 
@@ -7,7 +8,7 @@ class SyntaxChecker {
   public markers: monaco.editor.IMarker[];
 
   constructor(content: string) {
-    this.model = monaco.editor.createModel(content, "turbo-gherkin");
+    this.model = monaco.editor.createModel(content, language.id);
   }
 
   public async check(): Promise<void> {
