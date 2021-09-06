@@ -8,6 +8,7 @@ import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
 import { ActionManager } from '../../actions';
+import { VACodeError, VAQuickAction } from './quickfix';
 
 const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
 const worker = new Worker(blob);
@@ -170,7 +171,7 @@ export class VanessaGherkinProvider {
     , context: monaco.languages.CodeActionContext
     , token: monaco.CancellationToken
   ): monaco.languages.ProviderResult<monaco.languages.CodeActionList> {
-    const errors = [];
+    const errors: VACodeError[] = [];
     context.markers.forEach((e, index) => {
       if (e.severity === monaco.MarkerSeverity.Error) {
         errors.push({ index, value: model.getLineContent(e.endLineNumber) });
@@ -183,14 +184,14 @@ export class VanessaGherkinProvider {
       uri: model.uri.toString(),
       errors: errors,
     };
-    return postMessage<any>(model as IVanessaModel, message).then(msg => {
+    return postMessage<VAQuickAction[]>(model as IVanessaModel, message).then(msg => {
       const actions: Array<monaco.languages.CodeAction> = [];
       msg.forEach((e, i) => {
         const marker = context.markers[e.index];
         const lineNumber = marker.endLineNumber;
         const range = new monaco.Range(lineNumber, e.startColumn, lineNumber, e.endColumn);
         actions.push({
-          title: e.text,
+          title: e.label,
           diagnostics: [marker],
           kind: "quickfix",
           edit: {

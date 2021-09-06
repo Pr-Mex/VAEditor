@@ -58,8 +58,8 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
           detail: e.section,
           documentation: e.documentation,
           sortText: e.sortText,
-          insertText: keytext + ' ' + e.insertText + '\n',
-          filterText: keytext + ' ' + key,
+          insertText: keytext + e.insertText + '\n',
+          filterText: keytext + key,
           range: lineRange
         });
       }
@@ -82,7 +82,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
           detail: e.section,
           documentation: e.documentation,
           sortText: e.sortText,
-          insertText: e.keyword + ' ' + e.insertText + '\n',
+          insertText: e.keyword + e.insertText + '\n',
           filterText: key,
           range: lineRange
         });
