@@ -49,6 +49,16 @@ module.exports = (env, argv) => {
           }
         },
         {
+          test: /node_modules[\\/]monaco-editor[\\/]esm[\\/].+\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            multiple: [{
+              search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KEY_I */],',
+              replace: 'secondary: null,'
+            }]
+          }
+        },
+        {
           test: /\.js$/,
           enforce: 'pre',
           include: /node_modules[\\/]monaco-editor[\\/]esm/,
