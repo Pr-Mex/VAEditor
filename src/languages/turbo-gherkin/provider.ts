@@ -58,11 +58,12 @@ export class VanessaGherkinProvider {
   public get errorLinks(): any { return this._errorLinks; }
   public get keypairs(): any { return this._keypairs; }
 
-  protected _metatags: string[] = ["try", "except", "попытка", "исключение"];
-  protected _keypairs: any = { };
-  protected _errorLinks = [];
-  protected _matcher: KeywordMatcher;
-  protected _locale: string;
+  private _metatags: string[] = ["try", "except", "попытка", "исключение"];
+  private _keypairs: any = {};
+  private _errorLinks = [];
+  private _matcher: KeywordMatcher;
+  private _regexp = { keypairs: /$^/ }
+  private _locale: string;
 
   public get metatags(): string[] {
     return this._metatags;
@@ -95,6 +96,8 @@ export class VanessaGherkinProvider {
       let list = pairs[key].map((w: string) => w.toLowerCase());;
       this.keypairs[key.toLowerCase()] = list;
     });
+    const source = Object.keys(this.keypairs).map(key => key.replace(/\s+/, "\\s+")).join("|");
+    this._regexp.keypairs = new RegExp("^\\s*(" + source + ")\\s+", "i");
     worker.postMessage({ type: MessageType.SetKeypairs, data: this.keypairs });
   }
 
@@ -310,21 +313,18 @@ export class VanessaGherkinProvider {
   }
 
   public tokenize(line: string, state: monaco.languages.IState): monaco.languages.ILineTokens {
-    let words = this.matcher.splitWords(line);
-    let keyword = this.matcher.findKeyword(words);
-    if (keyword) {
-      if (words.length > keyword.length) {
-        let keypair = this.keypairs[keyword.join(" ")] || [];
-        let lastnum = words.length - 1;
-        let lastword = words[lastnum].toLowerCase();
-        if (keypair.some((w: string) => w == lastword)) {
-          let regexp = new RegExp(lastword + "\\s*$");
-          let match = line.toLowerCase().match(regexp);
-          if (match) {
-            let length = match[0].length;
-            line = line.substring(0, match.index);
-            for (let i = 0; i < length; ++i) line += "҂";
-          }
+    let match = line.match(this._regexp.keypairs);
+    if (match) {
+      const keyword = match[0].trim().replace(/\s+/, " ").toLowerCase();
+      const keypair = this.keypairs[keyword] || [];
+      const m = line.match(/\p{L}[\p{L}\p{N}]*\s*$/ui);
+      const lastword = m ? m[0].toLowerCase() : undefined;
+      if (lastword && keypair.some((w: string) => w == lastword)) {
+        const regexp = new RegExp(lastword + "\\s*$", "ui");
+        if (match = line.toLowerCase().match(regexp)) {
+          let length = match[0].length;
+          line = line.substring(0, match.index);
+          for (let i = 0; i < length; ++i) line += "҂";
         }
       }
     }

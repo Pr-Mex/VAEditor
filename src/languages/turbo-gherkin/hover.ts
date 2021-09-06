@@ -15,9 +15,9 @@ export function getLineHover(ctx: IWorkerContext, model: IWorkerModel, msg: any)
     let text = msg.line.substr(match[0].length);
     contents.push({ value: `**${head}** [${char}](${href})` });
     contents.push({ value: escapeMarkdown(text) });
-  } else {
-    let words = ctx.matcher.splitWords(msg.line);
-    let key = ctx.matcher.key(ctx.matcher.filterWords(words));
+  } else if (match = msg.line.match(ctx.matcher.step)) {
+    const steptext = msg.line.substring(match[0].length);
+    const key = ctx.matcher.getStepKey(steptext);
     let step = ctx.steplist[key];
     if (step) {
       let i = String.fromCharCode(60020);
