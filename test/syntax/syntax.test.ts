@@ -40,25 +40,34 @@ describe('Проверка синтаксиса', function () {
       done();
     });
   });
-  it('Быстрые исправления ошибок 1', (done) => {
+  it('Быстрые исправления: параметры в кавычках', (done) => {
     const checker = new SyntaxChecker(content.f02);
     checker.check().then(() => {
       expect(checker.markers).to.be.an('array').to.have.lengthOf(4);
       checker.action(0).then((act: monaco.languages.CodeActionList) => {
         expect(act).to.be.an('object').to.have.property('actions');
-        expect(act.actions).to.be.an('array').to.have.lengthOf(1);
-        expect(act.actions[0]).to.have.property("title", "имя текущей формы \"ФормаСписка\" Тогда");
+        expect(act.actions).to.be.an('array').to.have.lengthOf(7);
+        expect(act.actions[0]).to.have.property("title", "в таблице 'ИмяКнопки' есть колонка с именем \"ИмяКоманды\" Тогда");
         done();
       });
     });
   });
-  it('Быстрые исправления ошибок 2', (done) => {
+  it('Быстрые исправления: параметры в угловых скобках', (done) => {
     const checker = new SyntaxChecker(content.f02);
     checker.check().then(() => {
       checker.action(1).then((act: monaco.languages.CodeActionList) => {
         expect(act).to.be.an('object').to.have.property('actions');
         expect(act.actions[0]).to.have.property("title", "поле с именем <Фамилия> не существует");
-        //    expect(checker.action(2).actions[0]).to.have.property("title", "в течение 30 секунд я выполняю");
+        done();
+      });
+    });
+  });
+  it('Быстрые исправления: числовые параметры', (done) => {
+    const checker = new SyntaxChecker(content.f02);
+    checker.check().then(() => {
+      checker.action(2).then((act: monaco.languages.CodeActionList) => {
+        expect(act).to.be.an('object').to.have.property('actions');
+        expect(act.actions[0]).to.have.property("title", "в течение 30 секунд я выполняю");
         done();
       });
     });
