@@ -1,7 +1,6 @@
 import * as distance from 'jaro-winkler';
 import { IWorkerContext, IWorkerModel } from './common';
-import { KeywordMatcher } from './matcher';
-import { splitStepWords, VAStepData, VAStepWord, VAWordType } from './steplist';
+import { VAStepLine } from './stepline';
 
 export interface VACodeError {
   index: number;
@@ -17,43 +16,24 @@ export interface VAQuickAction {
 }
 
 interface VAQuickItem {
-  index: number;
-  key: string;
+  step: VAStepLine;
   sum: number;
-  keyword: string;
-  params: string[];
+  index: number;
+  snippet: string;
   startColumn: number;
   endColumn: number;
 }
 
-function addQuickFix(ctx: IWorkerContext, list: VAQuickItem[], value: string, index: number) {
-  const match = value.match(ctx.matcher.step);
-  if (match) {
-    const keyword = match[0];
-    const steptext = value.substring(keyword.length);
-    const lineKey = ctx.matcher.getStepKey(steptext);
-    const params = splitStepWords(ctx.matcher, steptext).filter(
-      w => w.type === VAWordType.Numerical || w.type === VAWordType.Parameter
-    ).map(w => w.text);
-    let regexp = "^[\\s]*";
-    let startColumn = 1;
-    let endColumn = value.length + 1;
-    for (let key in ctx.steplist) {
-      let sum = distance(lineKey, key);
-      if (sum > 0.7) list.push({ key, sum, keyword, params, index, startColumn, endColumn });
-    }
+function addQuickFix(ctx: IWorkerContext, list: VAQuickItem[], line: string, index: number) {
+  const step = new VAStepLine(ctx.matcher, line);
+  if (step.invalid) return;
+  let startColumn = 1;
+  let endColumn = line.length + 1;
+  const stepSnippet = step.snippet;
+  for (let snippet in ctx.steplist) {
+    let sum = distance(stepSnippet, snippet);
+    if (sum > 0.7) list.push({ step, sum, snippet, index, startColumn, endColumn });
   }
-}
-
-function replaceParams(words: VAStepWord[], params: string[]): string {
-  let index = 0;
-  return words.map(w => {
-    if (w.type === VAWordType.Numerical || w.type === VAWordType.Parameter) {
-      const p = params[index++];
-      if (p != undefined) return p;
-    }
-    return w.text
-  }).join("");
 }
 
 export function getCodeActions(ctx: IWorkerContext, model: IWorkerModel, msg: { errors: VACodeError[] }): VAQuickAction[] {
@@ -62,10 +42,8 @@ export function getCodeActions(ctx: IWorkerContext, model: IWorkerModel, msg: { 
   msg.errors.forEach(e => addQuickFix(ctx, list, e.value, e.index));
   list.sort((a, b) => b.sum - a.sum).forEach((e, i) => {
     if (i > 6) return;
-    const step = ctx.steplist[e.key] as VAStepData;
-    const label = replaceParams(step.head, e.params);
-    const text = e.keyword + label;
-    result.push({ label, text, index: e.index, startColumn: e.startColumn, endColumn: e.endColumn });
+    const label = ctx.steplist[e.snippet].head.inplaceParams(e.step);
+    result.push({ label, text: e.step.keyword + label, index: e.index, startColumn: e.startColumn, endColumn: e.endColumn });
   });
   return result;
 }

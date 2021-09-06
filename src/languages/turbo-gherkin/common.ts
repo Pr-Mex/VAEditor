@@ -19,15 +19,6 @@ export interface IWorkerContext {
   messages: any;
 }
 
-export interface VanessaStep {
-  filterText: string;
-  insertText: string;
-  sortText: string;
-  documentation: string;
-  kind: number;
-  section: string;
-}
-
 export interface IVanessaModel
   extends monaco.editor.ITextModel {
     workerVersionId: number,

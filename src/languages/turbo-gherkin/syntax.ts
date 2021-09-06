@@ -1,20 +1,5 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext, IWorkerModel } from './common';
-
-function lineSyntaxError(context: IWorkerContext, line: string): boolean {
-  let match = line.match(context.matcher.step);
-  if (!match) return false;
-  let steptext = line.substring(match[0].length);
-  let key = context.matcher.getStepKey(steptext);
-  if (!key || context.steplist[key]) return false;
-  let keyword = match[0].trim().replace(/\s+/, " ").toLowerCase();
-  let keypair = context.keypairs[keyword];
-  if (!keypair) return true;
-  let index = steptext.search(new RegExp(keypair + "\s*$", "i"));
-  if (index < 0) return true;
-  steptext = steptext.substring(0, index);
-  key = context.matcher.getStepKey(steptext);
-  return context.steplist[key] == undefined;
-}
+import { VAStepLine } from './stepline';
 
 export function checkSyntax(context: IWorkerContext, model: IWorkerModel, msg: {}) {
   const problems: monaco.editor.IMarkerData[] = [];
@@ -28,7 +13,8 @@ export function checkSyntax(context: IWorkerContext, model: IWorkerModel, msg: {
     if (/^\s*(#|@|\*|\/\/)/.test(line)) continue;
     if (context.matcher.isSection(line)) { section = context.matcher.getSection(line); continue; }
     if (section == "feature") continue;
-    if (lineSyntaxError(context, line)) problems.push({
+    const step = new VAStepLine(context.matcher, line);
+    if (step.isSyntaxError(context)) problems.push({
       severity: 8, // monaco.MarkerSeverity.Error = 8
       message: context.messages.syntaxMsg,
       startLineNumber: lineNumber,
