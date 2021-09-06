@@ -4,7 +4,7 @@ function lineSyntaxError(context: IWorkerContext, line: string): boolean {
   let match = line.match(context.matcher.step);
   if (!match) return false;
   let steptext = line.substring(match[0].length);
-  let key = context.matcher.getTextKey(steptext);
+  let key = context.matcher.getStepKey(steptext);
   if (!key || context.steplist[key]) return false;
   let keyword = match[0].trim().replace(/\s+/, " ").toLowerCase();
   let keypair = context.keypairs[keyword];
@@ -12,7 +12,7 @@ function lineSyntaxError(context: IWorkerContext, line: string): boolean {
   let index = steptext.search(new RegExp(keypair + "\s*$", "i"));
   if (index < 0) return true;
   steptext = steptext.substring(0, index);
-  key = context.matcher.getTextKey(steptext);
+  key = context.matcher.getStepKey(steptext);
   return context.steplist[key] == undefined;
 }
 

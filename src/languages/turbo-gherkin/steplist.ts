@@ -21,22 +21,28 @@ export function updateStepLabels(ctx: IWorkerContext) {
 }
 
 export function setStepList(ctx: IWorkerContext, msg: { list: string, clear: boolean }) {
-  if (msg.clear) ctx.steplist = { };
+  if (msg.clear) ctx.steplist = {};
   JSON.parse(msg.list).forEach((e: VanessaStep) => {
     const body = e.insertText.split('\n');
     const text = body.shift();
-    const head = ctx.matcher.splitWords(text);
-    const words = ctx.matcher.filterWords(head);
-    const key = ctx.matcher.key(words);
-    ctx.steplist[key] = {
-      head: head,
-      body: body,
-      documentation: e.documentation,
-      insertText: e.insertText,
-      sortText: e.sortText,
-      section: e.section,
-      kind: e.kind,
-    };
+    const match = text.match(ctx.matcher.step);
+    if (match) {
+      const keyword = match[0];
+      const steptext = text.substring(keyword.length);
+      const key = ctx.matcher.getStepKey(steptext);
+      const head = ctx.matcher.splitWords(text);
+      ctx.steplist[key] = {
+        head: head,
+        body: body,
+        keyword: keyword,
+        steptext: steptext,
+        documentation: e.documentation,
+        insertText: e.insertText,
+        sortText: e.sortText,
+        section: e.section,
+        kind: e.kind,
+      };
+    }
   });
   updateStepLabels(ctx);
 }

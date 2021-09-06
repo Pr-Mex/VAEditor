@@ -27,9 +27,9 @@ export class KeywordMatcher {
     number: /-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/,
   };
 
-  public getTextKey(text: string): string {
+  public getStepKey(text: string): string {
     const source = [this.tokens.word, this.tokens.param].map((reg: RegExp) => "(" + reg.source + ")").join("|");
-    const regexp = new RegExp(source, "giu");
+    const regexp = new RegExp(source, "gui");
     const result = [];
     let match = undefined;
     while ((match = regexp.exec(text)) != undefined) {
