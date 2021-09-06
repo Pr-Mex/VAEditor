@@ -49,8 +49,8 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
   if (match = msg.line.match(ctx.matcher.step)) {
     let keytext = msg.line.substring(minColumn - 1, match[0].length);
     keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
-    for (let key in ctx.steplist) {
-      let e = ctx.steplist[key];
+    for (let snippet in ctx.steplist) {
+      let e = ctx.steplist[snippet];
       if (e.documentation) {
         result.push({
           label: e.label,
@@ -59,7 +59,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
           documentation: e.documentation,
           sortText: e.sortText,
           insertText: keytext + e.insertText + '\n',
-          filterText: keytext + key,
+          filterText: keytext + snippet,
           range: lineRange
         });
       }
@@ -73,8 +73,8 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
         range: lineRange
       });
     });
-    for (let key in ctx.steplist) {
-      let e = ctx.steplist[key];
+    for (let snippet in ctx.steplist) {
+      let e = ctx.steplist[snippet];
       if (e.documentation) {
         result.push({
           label: e.label,
@@ -83,7 +83,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
           documentation: e.documentation,
           sortText: e.sortText,
           insertText: e.keyword + e.insertText + '\n',
-          filterText: key,
+          filterText: snippet,
           range: lineRange
         });
       }

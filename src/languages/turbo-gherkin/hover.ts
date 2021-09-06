@@ -17,13 +17,13 @@ export function getLineHover(ctx: IWorkerContext, model: IWorkerModel, msg: any)
     contents.push({ value: escapeMarkdown(text) });
   } else if (match = msg.line.match(ctx.matcher.step)) {
     const steptext = msg.line.substring(match[0].length);
-    const key = ctx.matcher.getStepKey(steptext);
-    let step = ctx.steplist[key];
+    const snippet = ctx.matcher.getSnippet(steptext);
+    let step = ctx.steplist[snippet];
     if (step) {
       let i = String.fromCharCode(60020);
       let s = String.fromCharCode(60277);
       let t = escapeMarkdown(step.section);
-      let ih = "#info:" + key.replace(/ /g, "-");
+      let ih = "#info:" + snippet.replace(/ /g, "-");
       let sh = "#sound:" + msg.lineNumber;
       contents.push({ value: `**${t}** [${i}](${ih}) [${s}](${sh})` });
       contents.push({ value: escapeMarkdown(step.documentation) });

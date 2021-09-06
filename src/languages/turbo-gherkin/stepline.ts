@@ -94,7 +94,7 @@ export class VAStepLine {
     let index = steptext.search(new RegExp(keypair + "\s*$", "i"));
     if (index < 0) return true;
     let shortstep = steptext.substring(0, index);
-    snippet = ctx.matcher.getStepKey(shortstep);
+    snippet = ctx.matcher.getSnippet(shortstep);
     return snippet && ctx.steplist[snippet] == undefined;
   }
 }
