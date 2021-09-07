@@ -106,7 +106,7 @@ export class RuntimeManager {
   }
 
   set breakpoints(breakpoints: IBreakpoint[]) {
-    const widgetsBreakpoints = { };
+    const widgetsBreakpoints = {};
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     breakpoints.forEach(breakpoint => {
       if (breakpoint.codeWidget) {
@@ -258,7 +258,7 @@ export class RuntimeManager {
   private currentDecorationIds: string[] = [];
   private stackDecorationIds: string[] = [];
   private errorViewZoneIds: Array<string> = [];
-  private codeWidgets = { };
+  private codeWidgets = {};
   private currentCodeWidget: string = "";
   private showBreakpoints: boolean = false;
 
@@ -513,7 +513,7 @@ export class RuntimeManager {
     this.editor.changeViewZones(changeAccessor =>
       zoneIds.forEach(id => changeAccessor.removeZone(id))
     );
-    this.codeWidgets = { };
+    this.codeWidgets = {};
     this.updateBreakpoints();
   }
 
@@ -631,6 +631,15 @@ export class RuntimeManager {
       line.select();
       return line.value;
     }
+  }
+
+  public getWidgets() {
+    let result = [];
+    this.forEachSubcode(w => result.push({
+      lineNumber: this.editor.getModel().getDecorationRange(w.decoration).endLineNumber,
+      codeWidget: w.id
+    }));
+    return result;
   }
 
   public clear(): void {

@@ -23,6 +23,7 @@ export class VanessaEditor implements IVanessaEditor {
   public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
   public getLineContent = (lineNumber: number, codeWidget: string = "") => this.runtimeManager.getLineContent(lineNumber, codeWidget);
   public getLineWidgets = (lineNumber: number) => JSON.stringify(this.runtimeManager.getLineWidgets(lineNumber));
+  public getWidgets = () => JSON.stringify(this.runtimeManager.getWidgets());
   public getWidgetLine = (codeWidget: string) => this.runtimeManager.getWidgetLine(codeWidget);
   public getSelectedContent = () => this.editor.getModel().getValueInRange(this.editor.getSelection());
   public getPosition = () => this.runtimeManager.position;
