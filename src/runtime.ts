@@ -639,6 +639,7 @@ export class RuntimeManager {
       lineNumber: this.editor.getModel().getDecorationRange(w.decoration).endLineNumber,
       codeWidget: w.id
     }));
+    result.sort((a, b) => a.lineNumber - b.lineNumber);
     return result;
   }
 
