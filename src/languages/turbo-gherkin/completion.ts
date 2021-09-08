@@ -1,4 +1,5 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext } from './common';
+import { VAStepData, VAStepInfo } from './steplist';
 
 export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNumber: number, column: number }) {
   const regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/gi;
@@ -50,7 +51,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
     let keytext = msg.line.substring(minColumn - 1, match[0].length);
     keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
     for (let snippet in ctx.steplist) {
-      let e = ctx.steplist[snippet];
+      let e = ctx.steplist[snippet] as VAStepData;
       if (e.documentation) {
         result.push({
           label: e.label,
@@ -74,7 +75,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
       });
     });
     for (let snippet in ctx.steplist) {
-      let e = ctx.steplist[snippet];
+      let e = ctx.steplist[snippet] as VAStepData;
       if (e.documentation) {
         result.push({
           label: e.label,
@@ -82,7 +83,7 @@ export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNum
           detail: e.section,
           documentation: e.documentation,
           sortText: e.sortText,
-          insertText: e.keyword + e.insertText + '\n',
+          insertText: e.head.keyword + e.insertText + '\n',
           filterText: snippet,
           range: lineRange
         });

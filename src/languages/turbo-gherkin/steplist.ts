@@ -11,6 +11,7 @@ export interface VAStepInfo {
 }
 
 export interface VAStepData {
+  label: string;
   head: VAStepLine,
   body: string[],
   documentation: string,
@@ -37,6 +38,7 @@ export function setStepList(ctx: IWorkerContext, msg: { list: string, clear: boo
     const data: VAStepData = {
       head: step,
       body: body,
+      label: undefined,
       documentation: e.documentation,
       insertText: e.insertText,
       sortText: e.sortText,
