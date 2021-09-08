@@ -33,8 +33,12 @@ export function setStepList(ctx: IWorkerContext, msg: { list: string, clear: boo
   if (msg.clear) ctx.steplist = {};
   JSON.parse(msg.list).forEach((e: VAStepInfo) => {
     const body = e.insertText.split('\n');
-    const step = new VAStepLine(ctx.matcher, body.shift());
-    if (step.invalid) return;
+    const line = body.shift();
+    let step = new VAStepLine(ctx.matcher, line);
+    if (step.invalid) {
+      step = new VAStepLine(ctx.matcher, "И " + line);
+      if (step.invalid) return;
+    }
     const data: VAStepData = {
       head: step,
       body: body,

@@ -1,5 +1,5 @@
 import { content } from './example.file.js'
-import initGherkinProvider from '../provider.js'
+import { initGherkinProvider } from '../provider'
 
 export function show() {
 

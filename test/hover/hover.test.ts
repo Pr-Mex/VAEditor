@@ -1,6 +1,7 @@
 import { getLineMaxColumn, getLineMinColumn } from '../../src/languages/turbo-gherkin/common';
 import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provider';
 import { language } from '../../src/languages/turbo-gherkin/configuration';
+import { initGherkinProvider } from '../provider'
 import { content } from './example.file.js'
 let expect = require('chai').expect;
 
@@ -24,7 +25,7 @@ describe('Всплывающие подсказки', function () {
   }
 
   before(() => {
-    provider = VanessaGherkinProvider.instance;
+    provider = initGherkinProvider();
     provider.setVariables(JSON.stringify(variables))
     model = monaco.editor.createModel(content, language.id);
   });

@@ -1,7 +1,9 @@
 import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provider';
 import { language } from '../../src/languages/turbo-gherkin/configuration';
+import { initGherkinProvider } from '../provider';
 import * as content from './example.file.js'
 let expect = require('chai').expect;
+let provider;
 
 class SyntaxChecker {
   public model: monaco.editor.ITextModel;
@@ -12,7 +14,6 @@ class SyntaxChecker {
   }
 
   public async check(): Promise<void> {
-    const provider = VanessaGherkinProvider.instance;
     await provider.checkSyntax(this.model);
     this.markers = monaco.editor.getModelMarkers({ owner: "syntax", resource: this.model.uri });
   }
@@ -23,7 +24,6 @@ class SyntaxChecker {
 
   action(n: number): any {
     const m = this.markers[n];
-    const provider = VanessaGherkinProvider.instance;
     const context = { markers: [this.markers[n]], readonly: false };
     const range = new monaco.Range(m.startLineNumber, m.startColumn, m.endLineNumber, m.endColumn);
     return provider.provideCodeActions(this.model, range, context, undefined);
@@ -31,7 +31,9 @@ class SyntaxChecker {
 }
 
 describe('Проверка синтаксиса', function () {
-  const provider = VanessaGherkinProvider.instance;
+  before(() => {
+    provider = initGherkinProvider();
+  });
   it('Ключевые слова в описании фичи', (done) => {
     const checker = new SyntaxChecker(content.f01);
     checker.check().then(() => {

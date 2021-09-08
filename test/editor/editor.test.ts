@@ -1,5 +1,6 @@
 import { VanessaEditor } from '../../src/vanessa-editor';
 import { VanessaTabs } from '../../src/vanessa-tabs';
+import { initGherkinProvider } from '../provider'
 let emulator = require('./key-emulator');
 let expect = require('chai').expect;
 
@@ -17,6 +18,7 @@ const title = 'Заголовок файла';
 describe('Управление редактором', function () {
   let editor: VanessaEditor;
   before((done) => {
+    initGherkinProvider();
     while (popVanessaMessage()) { }
     editor = tabs.edit(content, url, url, title, 0, false, true) as VanessaEditor;
     setTimeout(done, 100);

@@ -2,7 +2,7 @@ import mocha from 'mocha'
 import '../node_modules/mocha/mocha.css'
 import * as demo from './demo/editor-demo'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom'
-import initGherkinProvider from './provider.js'
+import { initGherkinProvider } from './provider'
 
 const $ = dom.$
 
@@ -31,7 +31,7 @@ const autotest = (url) => {
   initGherkinProvider()
 
   mocha.setup('bdd')
-  const context = require.context('.', true, /.+\.ts$/)
+  const context = require.context('.', true, /.+\.test\.ts$/)
   context.keys().forEach(context)
   var runner = mocha.run()
 
