@@ -23,7 +23,7 @@ export interface VAStepData {
 
 export function updateStepLabels(ctx: IWorkerContext) {
   for (let snippet in ctx.steplist) {
-    let e = ctx.steplist[snippet];
+    let e = ctx.steplist[snippet] as VAStepData;
     e.label = e.head.inplaceElements(ctx);
     e.insertText = e.label + (e.body.length ? '\n' + e.body.join('\n') : '');
   }

@@ -5,7 +5,7 @@ import { initGherkinProvider } from '../provider';
 import * as steplist from './steplist.json'
 let expect = require('chai').expect;
 
-const variables = {
+const elements = {
   ИмяКоманды: 'ЗаписатьИЗакрыть',
   ИмяКнопки: 'ФормаЗаписать',
   ИмяТаблицы: 'Номенклатура',
@@ -21,7 +21,7 @@ describe('Автоподстановка шагов при вводе', function
   before(() => {
     provider = initGherkinProvider();
     provider.setStepList(JSON.stringify(steplist), true);
-    provider.setVariables(JSON.stringify(variables));
+    provider.setElements(JSON.stringify(elements));
   });
   it('Подсказка для пустой строки', (done) => {
     const content = " \t\t"
@@ -29,7 +29,13 @@ describe('Автоподстановка шагов при вводе', function
     competitions().then(result => {
       expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(10);
       result.suggestions.sort((a, b) => a.kind - b.kind);
-      console.log(result);
+      let step = result.suggestions[0];
+      expect(step).to.have.property('detail', 'UI.Таблицы.Выбор таблицы');
+      expect(step).to.have.property('documentation', 'Выбирает таблицу для работы');
+      expect(step).to.have.property('filterText', 'я буду работать с таблицей');
+      expect(step).to.have.property('insertText', 'Затем я буду работать с таблицей "ТаблицаФормы"\n');
+      expect(step).to.have.property('label', 'я буду работать с таблицей "ТаблицаФормы"');
+      expect(step).to.have.property('kind', 1);
       done();
     });
   });
@@ -39,17 +45,40 @@ describe('Автоподстановка шагов при вводе', function
     competitions().then(result => {
       expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
       result.suggestions.sort((a, b) => a.kind - b.kind);
-      console.log(result);
+      let step = result.suggestions[0];
+      expect(step).to.have.property('detail', 'UI.Таблицы.Выбор таблицы');
+      expect(step).to.have.property('documentation', 'Выбирает таблицу для работы');
+      expect(step).to.have.property('filterText', 'И это значит что я буду работать с таблицей');
+      expect(step).to.have.property('insertText', 'И это значит что я буду работать с таблицей "ТаблицаФормы"\n');
+      expect(step).to.have.property('label', 'я буду работать с таблицей "ТаблицаФормы"');
+      expect(step).to.have.property('kind', 1);
       done();
     });
   });
-  /*
-
-        expect(result).to.be.an('object').to.have.property('range').to.deep.equal(range(7));
-        expect(result).to.have.property('contents').to.be.an('array').to.have.lengthOf(2);
-        expect(result.contents[1].value).to.equal('Условие\\. Проверяет, что появилось окно предупреждения\\.');
-        expect(result.contents[0].value).to.include('**UI\\.Всплывающие окна**');
-        expect(result.contents[0].value).to.include('(#info:появилось-предупреждение-тогда)');
-        expect(result.contents[0].value).to.include('(#sound:7)');
-  */
+  it('Подсказка с заменой элементов формы', (done) => {
+    const content = " \t\tИ список"
+    model = monaco.editor.createModel(content, language.id);
+    competitions().then(result => {
+      expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
+      result.suggestions.sort((a, b) => a.kind - b.kind);
+      let step = result.suggestions[1];
+      expect(step).to.have.property('filterText', 'И в открытой форме в таблице я нажимаю кнопку выбора у реквизита');
+      expect(step).to.have.property('insertText', 'И В открытой форме в таблице \"Номенклатура\" я нажимаю кнопку выбора у реквизита \"Наименование\"\n');
+      expect(step).to.have.property('label', 'В открытой форме в таблице \"Номенклатура\" я нажимаю кнопку выбора у реквизита \"Наименование\"');
+      done();
+    });
+  });
+  it('Подстановка шага с таблицей', (done) => {
+    const content = " \t\tИ список"
+    model = monaco.editor.createModel(content, language.id);
+    competitions().then(result => {
+      expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
+      result.suggestions.sort((a, b) => a.kind - b.kind);
+      let step = result.suggestions[5];
+      expect(step).to.have.property('filterText', 'И таблица содержит строки');
+      expect(step).to.have.property('insertText', 'И таблица \"Номенклатура\" содержит строки:\n\t| ИмяКолонки1 | ИмяКолонки2 |\n\t| Значение1 | Значение2 |\n');
+      expect(step).to.have.property('label', 'таблица \"Номенклатура\" содержит строки:');
+      done();
+    });
+  });
 })
