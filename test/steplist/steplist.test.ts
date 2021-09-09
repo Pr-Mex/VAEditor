@@ -13,6 +13,12 @@ const elements = {
   ИмяРеквизита: 'Количество'
 }
 
+const variables = {
+  Отправитель: 'Иванов Николай',
+  Получатель: 'Петров Василий',
+  Номенклатура: 'Столешница',
+}
+
 describe('Автоподстановка шагов при вводе', function () {
   let model: monaco.editor.ITextModel;
   let provider: VanessaGherkinProvider;
@@ -21,10 +27,11 @@ describe('Автоподстановка шагов при вводе', function
   before(() => {
     provider = initGherkinProvider();
     provider.setStepList(JSON.stringify(steplist), true);
-    provider.setElements(JSON.stringify(elements));
+    provider.setElements(JSON.stringify(elements), true);
+    provider.setVariables(JSON.stringify(variables), true);
   });
   it('Подсказка для пустой строки', (done) => {
-    const content = " \t\t"
+    const content = "\t\t";
     model = monaco.editor.createModel(content, language.id);
     competitions().then(result => {
       expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(10);
@@ -40,7 +47,7 @@ describe('Автоподстановка шагов при вводе', function
     });
   });
   it('Подсказка для строки с ключевым словом', (done) => {
-    const content = " \t\tИ это значит что список"
+    const content = "\t\tИ это значит что список";
     model = monaco.editor.createModel(content, language.id);
     competitions().then(result => {
       expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
@@ -56,7 +63,7 @@ describe('Автоподстановка шагов при вводе', function
     });
   });
   it('Подсказка с заменой элементов формы', (done) => {
-    const content = " \t\tИ список"
+    const content = "\t\tИ список";
     model = monaco.editor.createModel(content, language.id);
     competitions().then(result => {
       expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
@@ -69,7 +76,7 @@ describe('Автоподстановка шагов при вводе', function
     });
   });
   it('Подстановка шага с таблицей', (done) => {
-    const content = " \t\tИ список"
+    const content = "\t\tИ список";
     model = monaco.editor.createModel(content, language.id);
     competitions().then(result => {
       expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
@@ -78,6 +85,23 @@ describe('Автоподстановка шагов при вводе', function
       expect(step).to.have.property('filterText', 'И таблица содержит строки');
       expect(step).to.have.property('insertText', 'И таблица \"Номенклатура\" содержит строки:\n\t| ИмяКолонки1 | ИмяКолонки2 |\n\t| Значение1 | Значение2 |\n');
       expect(step).to.have.property('label', 'таблица \"Номенклатура\" содержит строки:');
+      done();
+    });
+  });
+  it('Подстановка переменных', (done) => {
+    const content = "\t\tИ поле <Контрагент>";
+    model = monaco.editor.createModel(content, language.id);
+    const position = new monaco.Position(1, model.getLineMaxColumn(1) - 3);
+    (provider.provideCompletionItems(model, position) as Promise<monaco.languages.CompletionList>).then(result => {
+      expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(3);
+      result.suggestions.sort((a, b) => a.label < b.label ? -1 : (a.label > b.label ? 1 : 0));
+      let range = { startLineNumber: 1, startColumn: 10, endLineNumber: 1, endColumn: 22 }
+      let step = result.suggestions[0];
+      expect(step).to.be.an('object').to.have.property('range').to.deep.equal(range);
+      expect(step).to.have.property('label', '"Номенклатура" = Столешница');
+      expect(step).to.have.property('filterText', '<Контрагент>Номенклатура');
+      expect(step).to.have.property('insertText', '<Номенклатура>');
+      expect(step).to.have.property('kind', 4);
       done();
     });
   });
