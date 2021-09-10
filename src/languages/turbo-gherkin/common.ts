@@ -21,10 +21,16 @@ export interface IWorkerContext {
 
 export interface IVanessaModel
   extends monaco.editor.ITextModel {
+    stepDecorations?: string[],
     workerVersionId: number,
     savedVersionId: number,
     resetModified: Function,
     isModified: Function,
+}
+
+export interface ISyntaxDecorations {
+  decorations: monaco.editor.IModelDeltaDecoration[],
+  problems: monaco.editor.IMarkerData[],
 }
 
 export enum VAToken {

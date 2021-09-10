@@ -2,8 +2,8 @@ import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalon
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
+import { MessageType, IVanessaModel, ISyntaxDecorations } from './common';
 import { language, GherkinLanguage } from './configuration';
-import { MessageType, IVanessaModel } from './common';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
@@ -283,16 +283,21 @@ export class VanessaGherkinProvider {
     return item;
   }
 
-  public checkSyntax(model: monaco.editor.ITextModel) {
+  public checkSyntax(m: monaco.editor.ITextModel) {
+    const model = m as IVanessaModel;
     if (model.getModeId() != language.id) return;
-    return postMessage<monaco.editor.IMarkerData[]>(
+    return postMessage<ISyntaxDecorations>(
       model as IVanessaModel,
       {
         type: MessageType.CheckSyntax,
         versionId: model.getVersionId(),
         uri: model.uri.toString()
       }
-    ).then(problems => monaco.editor.setModelMarkers(model, "syntax", problems));
+    ).then(result => {
+      const oldDecorations = model.stepDecorations || [];
+      model.stepDecorations = model.deltaDecorations(oldDecorations, result.decorations);
+      monaco.editor.setModelMarkers(model, "syntax", result.problems);
+    });
   }
 
   private tokenizer: ITokenizationSupport;
