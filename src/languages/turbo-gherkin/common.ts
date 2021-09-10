@@ -71,4 +71,5 @@ export enum MessageType {
 export interface IWorkerModel {
   getLineContent(lineNumber: number): string;
   getLineCount(): number;
+  groups?: number[];
 }

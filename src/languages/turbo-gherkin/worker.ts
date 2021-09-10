@@ -34,6 +34,7 @@ class WorkerModel implements IWorkerModel {
   }
   private content: string[];
   private versionId: number;
+  public groups: number[];
 }
 
 const contentMap = new Map<string, WorkerModel>();

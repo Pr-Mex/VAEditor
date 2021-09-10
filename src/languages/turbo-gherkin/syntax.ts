@@ -1,12 +1,13 @@
 import { getLineMaxColumn, getLineMinColumn, ISyntaxDecorations, IWorkerContext, IWorkerModel } from './common';
 import { VAStepLine } from './stepline';
 
-function groupDecoration(lineNumber: number): monaco.editor.IModelDeltaDecoration {
+function groupDecoration(lineNumber: number, style: string = undefined): monaco.editor.IModelDeltaDecoration {
   return {
     range: { startLineNumber: lineNumber, startColumn: 1, endLineNumber: lineNumber, endColumn: 1 },
     options: {
       stickiness: 1, // monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges = 1
       glyphMarginClassName: "codicon-triangle-right",
+      inlineClassName: style,
     }
   };
 }
@@ -49,6 +50,11 @@ export function checkSyntax(
         }
       }
       decorations.push(syntax.decoration);
+    }
+    else if (step.invalid) {
+      if ((model.groups || []).indexOf(lineNumber) >= 0)
+        decorations.push(groupDecoration(lineNumber, "vanessa-style-bold"));
+        console.log("vanessa-style-bold", lineNumber)
     }
   }
   return { decorations, problems };

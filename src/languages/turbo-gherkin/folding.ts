@@ -84,5 +84,6 @@ export function getCodeFolding(
     if (k > i) result.push({ kind: kind, start: i, end: k });
     if (line.token == VAToken.Instruction || line.token == VAToken.Comment) i = k;
   }
+  model.groups = result.map(e => e.start);
   return result;
 }
