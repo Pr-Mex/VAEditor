@@ -1,5 +1,6 @@
 import { IWorkerContext } from "./common";
 import { KeywordMatcher } from "./matcher";
+import { VAStepData } from "./steplist";
 
 export enum VAWordType {
   Identifier = 1,
@@ -11,6 +12,39 @@ export enum VAWordType {
 export interface VAStepWord {
   type: VAWordType,
   text: string,
+}
+
+function stepDecoration(
+  step: VAStepData,
+  lineNumber: number,
+): monaco.editor.IModelDeltaDecoration {
+  let glyph = undefined;
+  let style = undefined;
+  switch (step.kind) {
+    case 5: glyph = "codicon-symbol-class"; break; // if..else
+    case 8: glyph = "codicon-git-compare"; break;  // do..while
+    case 17: style = "vanessa-style-underline"; break; // scenario
+  }
+  if (glyph || style) return {
+    range: { startLineNumber: lineNumber, startColumn: 1, endLineNumber: lineNumber, endColumn: 1 },
+    options: {
+      stickiness: 1, // monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges = 1
+      glyphMarginClassName: glyph,
+      inlineClassName: style,
+    }
+  };
+}
+
+function conditionDecoration(
+  lineNumber: number,
+): monaco.editor.IModelDeltaDecoration {
+  return {
+    range: { startLineNumber: lineNumber, startColumn: 1, endLineNumber: lineNumber, endColumn: 1 },
+    options: {
+      stickiness: 1, // monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges = 1
+      glyphMarginClassName: "codicon-symbol-class",
+    }
+  }
 }
 
 export class VAStepLine {
@@ -84,17 +118,27 @@ export class VAStepLine {
     return ctx.keypairs[keyword];
   }
 
-  public isSyntaxError(ctx: IWorkerContext): boolean {
-    if (this.invalid) return false;
+  public checkSyntax(
+    ctx: IWorkerContext,
+    lineNumber: number,
+  ): {
+    decoration?: monaco.editor.IModelDeltaDecoration,
+    error: boolean,
+  } {
+    if (this.invalid) return { error: false };
     let snippet = this.snippet;
-    if (!snippet || ctx.steplist[snippet]) return false;
+    if (!snippet) return { error: false };
+    let step = ctx.steplist[snippet];
+    if (step) return { error: false, decoration: stepDecoration(step, lineNumber) };
     let keypair = this.keypair(ctx);
-    if (!keypair) return true;
+    if (!keypair) return { error: true };
     let steptext = this._words.join("");
     let index = steptext.search(new RegExp(keypair + "\s*$", "i"));
-    if (index < 0) return true;
+    if (index < 0) return { error: true };
     let shortstep = steptext.substring(0, index);
     snippet = ctx.matcher.getSnippet(shortstep);
-    return snippet && ctx.steplist[snippet] == undefined;
+    if (!snippet) return { error: true };
+    if (!ctx.steplist[snippet]) return { error: true };
+    return { error: false, decoration: conditionDecoration(lineNumber) };
   }
 }

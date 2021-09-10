@@ -30,15 +30,26 @@ export function checkSyntax(
     if (context.matcher.isSection(line)) { section = context.matcher.getSection(line); continue; }
     if (section == "feature") continue;
     const step = new VAStepLine(context.matcher, line);
-    if (step.invalid) continue;
-    if (step.isSyntaxError(context)) problems.push({
+    const syntax = step.checkSyntax(context, lineNumber);
+    if (syntax.error) problems.push({
       severity: 8, // monaco.MarkerSeverity.Error = 8
       message: context.messages.syntaxMsg,
       startLineNumber: lineNumber,
       endLineNumber: lineNumber,
       startColumn: getLineMinColumn(line),
       endColumn: getLineMaxColumn(line),
-    });
+    })
+    else if (syntax.decoration) {
+      if (syntax.decoration.options.inlineClassName) {
+        syntax.decoration.range = {
+          startLineNumber: lineNumber,
+          startColumn: getLineMinColumn(line),
+          endLineNumber: lineNumber,
+          endColumn: getLineMaxColumn(line),
+        }
+      }
+      decorations.push(syntax.decoration);
+    }
   }
   return { decorations, problems };
 }
