@@ -33,7 +33,7 @@ export function checkSyntax(
     if (section == "feature" || section == "variables") continue;
     if (context.matcher.metatags.test(line)) { continue; }
     const step = new VAStepLine(context.matcher, line);
-    const syntax = step.checkSyntax(context, lineNumber);
+    const syntax = step.checkSyntax(context, lineNumber, line);
     if (syntax.error) problems.push({
       severity: 8, // monaco.MarkerSeverity.Error = 8
       message: context.messages.syntaxMsg,

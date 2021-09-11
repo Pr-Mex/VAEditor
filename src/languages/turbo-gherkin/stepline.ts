@@ -47,6 +47,18 @@ function conditionDecoration(
   }
 }
 
+function getSnuppet(matcher: KeywordMatcher, steptext: string) {
+  let words = [];
+  let match = undefined;
+  const tokens = [matcher.tokens.word, matcher.tokens.param, matcher.tokens.number, /./];
+  const source = tokens.map((reg: RegExp) => "(" + reg.source + ")").join("|");
+  const regexp = new RegExp(source, "gui");
+  while ((match = regexp.exec(steptext)) != undefined) {
+    if (match[1]) words.push(match[1].toLowerCase());
+  }
+  return words.join(" ");
+}
+
 export class VAStepLine {
   private _keyword: string;
   private _words: VAStepWord[] = [];
@@ -121,24 +133,31 @@ export class VAStepLine {
   public checkSyntax(
     ctx: IWorkerContext,
     lineNumber: number,
+    line: string,
   ): {
     decoration?: monaco.editor.IModelDeltaDecoration,
     error: boolean,
   } {
     if (this.invalid) return { error: false };
-    let snippet = this.snippet;
+    const snippet = this.snippet;
     if (!snippet) return { error: false };
-    let step = ctx.steplist[snippet];
+    const step = ctx.steplist[snippet];
     if (step) return { error: false, decoration: stepDecoration(step, lineNumber) };
-    let keypair = this.keypair(ctx);
-    if (!keypair) return { error: true };
-    let steptext = this._words.join("");
-    let index = steptext.search(new RegExp(keypair + "\s*$", "i"));
-    if (index < 0) return { error: true };
-    let shortstep = steptext.substring(0, index);
-    snippet = ctx.matcher.getSnippet(shortstep);
-    if (!snippet) return { error: true };
-    if (!ctx.steplist[snippet]) return { error: true };
-    return { error: false, decoration: conditionDecoration(lineNumber) };
+
+    const BreakException = {};
+    let result = { error: true, decoration: undefined };
+    try {
+      ctx.matcher.keypairs.forEach(regexp => {
+        const match = line.match(regexp);
+        if (match === null) return;
+        const snippet = getSnuppet(ctx.matcher, match[2]);
+        const step = ctx.steplist[snippet];
+        if (step) result = { error: false, decoration: conditionDecoration(lineNumber) };
+        throw BreakException;
+      })
+    } catch (e) {
+      if (e !== BreakException) throw e;
+    }
+    return result;
   }
 }

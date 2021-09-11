@@ -10,6 +10,7 @@ class Section {
 export class KeywordMatcher {
 
   public section = new Section;
+  public keypairs: RegExp[];
   public metatags: RegExp;
   public primary: RegExp;
   public import: RegExp;
@@ -87,7 +88,19 @@ export class KeywordMatcher {
 
   public setMetatags(metatags: string[]) {
     this.metatags = this.regex(metatags);
-}
+  }
+
+  public setKeypairs(keypairs: any) {
+    this.keypairs = [];
+    Object.keys(keypairs).forEach((key: string) => {
+      this.keypairs.push(
+        new RegExp("^(\\s*"
+          + key.replace(/\s+/, "\\s+")
+          + "\\s+(.*)\\s+)("
+          + keypairs[key].map(w => w.replace(/\s+/, "\\s*")).join("|")
+          + ")\\s*$", "ui"));
+    });
+  }
 
   public isSection(text: string) {
     const regexp = new RegExp(this.primary);

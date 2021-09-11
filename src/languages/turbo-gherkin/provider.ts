@@ -62,7 +62,6 @@ export class VanessaGherkinProvider {
   private _keypairs: any = {};
   private _errorLinks = [];
   private _matcher: KeywordMatcher;
-  private _regexp = { keypairs: [] };
   private _locale: string;
 
   public get metatags(): string[] {
@@ -86,30 +85,26 @@ export class VanessaGherkinProvider {
   public setKeywords = (arg: string): void => {
     worker.postMessage({ type: MessageType.SetKeywords, data: arg });
     this._matcher = new KeywordMatcher(arg);
+    this.matcher.setKeypairs(this.keypairs);
+    this.matcher.setMetatags(this.metatags);
     this.initTokenizer();
   }
 
   public setKeypairs = (arg: string): void => {
-    this._regexp.keypairs = [];
+    this._keypairs = {};
     let data = JSON.parse(arg);
-    this.clearObject(this.keypairs);
-    Object.keys(data).forEach((key: string) => {
-      let list = data[key].map((w: string) => w.toLowerCase());;
-      this.keypairs[key.toLowerCase()] = list;
-      this._regexp.keypairs.push(
-        new RegExp("^(\\s*"
-          + key.replace(/\s+/, "\\s+")
-          + "\\s+.*\\s+)("
-          + list.map(w => w.replace(/\s+/, "\\s*")).join("|")
-          + ")\\s*$", "ui"));
-    });
+    Object.keys(data).forEach((key: string) =>
+      this.keypairs[key.toLowerCase()] = data[key].map((w: string) => w.toLowerCase())
+    );
+    this.matcher?.setKeypairs(this.keypairs);
     worker.postMessage({ type: MessageType.SetKeypairs, data: this.keypairs });
   }
 
   public setMetatags = (arg: string): void => {
+    this._metatags = [];
     let list = JSON.parse(arg);
-    this.clearArray(this._metatags);
     list.forEach((w: string) => this._metatags.push(w));
+    this.matcher?.setMetatags(this.metatags);
     this.initTokenizer();
     worker.postMessage({ type: MessageType.SetMetatags, data: this.metatags });
   }
@@ -325,8 +320,8 @@ export class VanessaGherkinProvider {
   public tokenize(line: string, state: monaco.languages.IState): monaco.languages.ILineTokens {
     var BreakException = {};
     try {
-      this._regexp.keypairs.forEach(regex => {
-        const match = line.match(regex);
+      this.matcher.keypairs.forEach(regexp => {
+        const match = line.match(regexp);
         if (match === null) return;
         const length = line.length;
         line = line.substring(0, match[1].length);
