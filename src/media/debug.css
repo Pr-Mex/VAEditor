@@ -1,102 +1,133 @@
 .debug-breakpoint-glyph {
   background: url('src/media/debug-breakpoint.svg') center center no-repeat;
 }
+
 .debug-breakpoint-disabled-glyph {
   background: url('src/media/debug-breakpoint-disabled.svg') center center no-repeat;
 }
+
 .debug-breakpoint-hint-glyph {
   background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
 }
+
 .debug-breakpoint-unverified-glyph {
   background: url('src/media/debug-breakpoint-unverified.svg') center center no-repeat;
 }
+
 .debug-current-step-glyph {
   background: url('src/media/debug-current-arrow.svg') center center no-repeat;
 }
+
 .debug-stackframe-glyph {
   background: url('src/media/debug-stackframe-arrow.svg') center center no-repeat;
 }
+
 .debug-breakpoint-glyph.debug-stackframe-glyph {
   background: url('src/media/debug-stackframe-and-breakpoint.svg') center center no-repeat;
 }
+
 .debug-breakpoint-unverified-glyph.debug-stackframe-glyph {
   background: url('src/media/debug-stackframe-and-breakpoint.svg') center center no-repeat;
 }
+
 .debug-breakpoint-glyph.debug-current-step-glyph {
   background: url('src/media/debug-current-and-breakpoint.svg') center center no-repeat;
 }
+
 .debug-current-step {
   background-color: rgba(255, 214, 92, 0.8);
 }
+
 .debug-complete-step {
   background-color: rgba(129, 238, 147, 0.8);
 }
+
 .debug-error-step {
   background-color: rgba(247, 96, 96, 0.8);
 }
+
 .debug-pending-step {
   background-color: rgba(173, 216, 230, 0.8);
 }
+
 .debug-disabled-step {
   background-color: rgba(192, 192, 192, 0.8);
 }
+
 .debug-inline-view {
   background-color: rgb(255, 232, 147);
 }
+
 body[data-theme="vs-dark"] .debug-current-step {
   background-color: rgba(255, 214, 92, 0.3);
 }
+
 body[data-theme="vs-dark"] .debug-complete-step {
   background-color: rgba(129, 238, 147, 0.25);
 }
+
 body[data-theme="vs-dark"] .debug-error-step {
   background-color: rgba(247, 96, 96, 0.3);
 }
+
 body[data-theme="vs-dark"] .debug-pending-step {
   background-color: rgba(147, 228, 255, 0.3);
 }
+
 body[data-theme="vs-dark"] .debug-disabled-step {
   background-color: rgba(127, 127, 127, 0.3);
 }
+
 body[data-theme="vs-dark"] .vanessa-code-widget {
   background-color: rgba(200, 220, 220, 0.2);
 }
+
 body[data-theme="vs-dark"] .vanessa-code-border {
   background-color: rgba(190, 210, 210, 0.2);
 }
+
 .vanessa-style-bold {
   font-weight: bold;
 }
+
 .vanessa-style-italic {
   font-style: italic;
 }
+
 .vanessa-style-underline {
   text-decoration: underline black;
   -webkit-text-decoration: underline black;
 }
+
 .vanessa-subcode-bold {
   font-weight: bold;
 }
+
 .vanessa-subcode-italic {
   font-style: italic;
 }
-.vanessa-subcode-underline > span {
+
+.vanessa-subcode-underline>span {
   text-decoration: underline black;
   -webkit-text-decoration: underline black;
 }
-.vanessa-subcode-underline > span.space {
+
+.vanessa-subcode-underline>span.space {
   text-decoration: none;
   -webkit-text-decoration: none;
 }
+
 .vanessa-code-widget {
   background: #DDEEEE;
   overflow: hidden;
   white-space: nowrap;
   z-index: 9999;
 }
+
 .vanessa-code-margin {
   background: none;
 }
+
 .vanessa-code-border {
   background: #BBCCCC;
   position: absolute;
@@ -106,26 +137,32 @@ body[data-theme="vs-dark"] .vanessa-code-border {
   user-select: none;
   -webkit-user-select: none;
 }
-.vanessa-code-border > span {
+
+.vanessa-code-border>span {
   display: block;
 }
+
 .vanessa-code-border.vanessa-use-breakpoints div.cgmr:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
   background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
 }
+
 .vanessa-code-widget .vanessa-code-lines {
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
 }
-.vanessa-code-widget .vanessa-code-lines > span {
+
+.vanessa-code-widget .vanessa-code-lines>span {
   display: block;
   user-select: all;
   -webkit-user-select: all;
 }
+
 .vanessa-code-widget .vanessa-code-lines br {
   display: none;
 }
+
 .vanessa-error-widget {
   background: #FFCCCC;
   color: #333333;
@@ -136,45 +173,60 @@ body[data-theme="vs-dark"] .vanessa-code-border {
   white-space: nowrap;
   z-index: 9999;
 }
+
 .vanessa-error-widget .vanessa-error-links {
   vertical-align: sub;
   font-size: 85%;
 }
+
 .vanessa-error-widget .vanessa-error-links a {
   text-decoration: none;
   color: #333333;
 }
+
 .vanessa-error-widget .vanessa-error-links a:hover {
   color: #ff0000 !important;
 }
+
 .overlayWidgets .vanessa-code-overlays.margin-view-overlays div.codicon {
   right: 0;
   opacity: 0;
   width: 26px;
   font-size: 122.5%;
 }
+
 .overlayWidgets .vanessa-code-overlays.margin-view-overlays:hover div {
   opacity: 1;
 }
+
+.margin-view-overlays .codicon.codicon-symbol-class {
+  color: black;
+}
+
+body[data-theme="vs-dark"] .margin-view-overlays .codicon.codicon-symbol-class {
+  color: #d4d4d4;
+}
+
 div.monaco-editor div.editor-widget.find-widget {
   transform: translateY(-9999px);
 }
-div.monaco-editor div.editor-widget.find-widget.visible  {
+
+div.monaco-editor div.editor-widget.find-widget.visible {
   transform: translateY(0);
 }
-div.hover-contents strong ~ a ~ a[href="#"],
-div.hover-contents strong ~ a[href="#"] {
+
+div.hover-contents strong~a~a[href="#"], div.hover-contents strong~a[href="#"] {
   font-family: "codicon";
   text-decoration: none;
-	font: normal normal normal 100% codicon;
-	display: inline-block;
-	text-decoration: none;
-	text-rendering: auto;
-	text-align: center;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	user-select: none;
-	-webkit-user-select: none;
+  font: normal normal normal 100% codicon;
+  display: inline-block;
+  text-decoration: none;
+  text-rendering: auto;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
   -ms-user-select: none;
   vertical-align: -24%;
 }
