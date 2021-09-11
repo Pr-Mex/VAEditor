@@ -74,4 +74,13 @@ describe('Проверка синтаксиса', function () {
       });
     });
   });
+  it('Шаги с условными операторами', (done) => {
+    const checker = new SyntaxChecker(content.f03);
+    checker.check().then(() => {
+      expect(checker.markers).to.be.an('array').to.have.lengthOf(2);
+      expect(checker.value(0)).to.equal('Если есть картинка "ИмяКартинки"');
+      expect(checker.value(1)).to.equal('И я нажимаю ENTER Тогда');
+      done();
+    });
+  });
 })
