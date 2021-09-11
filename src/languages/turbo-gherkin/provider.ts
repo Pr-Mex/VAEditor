@@ -62,7 +62,7 @@ export class VanessaGherkinProvider {
   private _keypairs: any = {};
   private _errorLinks = [];
   private _matcher: KeywordMatcher;
-  private _regexp = { keypairs: /$^/ }
+  private _regexp = { keypairs: [] };
   private _locale: string;
 
   public get metatags(): string[] {
@@ -90,14 +90,19 @@ export class VanessaGherkinProvider {
   }
 
   public setKeypairs = (arg: string): void => {
-    let pairs = JSON.parse(arg);
+    this._regexp.keypairs = [];
+    let data = JSON.parse(arg);
     this.clearObject(this.keypairs);
-    Object.keys(pairs).forEach((key: string) => {
-      let list = pairs[key].map((w: string) => w.toLowerCase());;
+    Object.keys(data).forEach((key: string) => {
+      let list = data[key].map((w: string) => w.toLowerCase());;
       this.keypairs[key.toLowerCase()] = list;
+      this._regexp.keypairs.push(
+        new RegExp("^(\\s*"
+          + key.replace(/\s+/, "\\s+")
+          + "\\s+.*\\s+)("
+          + list.map(w => w.replace(/\s+/, "\\s*")).join("|")
+          + ")\\s*$", "ui"));
     });
-    const source = Object.keys(this.keypairs).map(key => key.replace(/\s+/, "\\s+")).join("|");
-    this._regexp.keypairs = new RegExp("^\\s*(" + source + ")\\s+", "i");
     worker.postMessage({ type: MessageType.SetKeypairs, data: this.keypairs });
   }
 
@@ -318,20 +323,18 @@ export class VanessaGherkinProvider {
   }
 
   public tokenize(line: string, state: monaco.languages.IState): monaco.languages.ILineTokens {
-    let match = line.match(this._regexp.keypairs);
-    if (match) {
-      const keyword = match[0].trim().replace(/\s+/, " ").toLowerCase();
-      const keypair = this.keypairs[keyword] || [];
-      const m = line.match(/\p{L}[\p{L}\p{N}]*\s*$/ui);
-      const lastword = m ? m[0].toLowerCase() : undefined;
-      if (lastword && keypair.some((w: string) => w == lastword)) {
-        const regexp = new RegExp(lastword + "\\s*$", "ui");
-        if (match = line.toLowerCase().match(regexp)) {
-          let length = match[0].length;
-          line = line.substring(0, match.index);
-          for (let i = 0; i < length; ++i) line += "҂";
-        }
-      }
+    var BreakException = {};
+    try {
+      this._regexp.keypairs.forEach(regex => {
+        const match = line.match(regex);
+        if (match === null) return;
+        const length = line.length;
+        line = line.substring(0, match[1].length);
+        for (let i = line.length; i < length; ++i) line += "҂";
+        throw BreakException;
+      })
+    } catch (e) {
+      if (e !== BreakException) throw e;
     }
     let tokens = [];
     let result = this.tokenizer.tokenize(line, true, state, 0);
