@@ -8,6 +8,7 @@ function groupDecoration(lineNumber: number, style: string = undefined): monaco.
       stickiness: 1, // monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges = 1
       glyphMarginClassName: "codicon-triangle-right",
       inlineClassName: style,
+      isWholeLine: style != undefined,
     }
   };
 }
@@ -29,7 +30,8 @@ export function checkSyntax(
     if (/^\s*(#|@|\/\/)/.test(line)) continue;
     if (/^\s*\*/.test(line)) { decorations.push(groupDecoration(lineNumber)); continue; }
     if (context.matcher.isSection(line)) { section = context.matcher.getSection(line); continue; }
-    if (section == "feature") continue;
+    if (section == "feature" || section == "variables") continue;
+    if (context.matcher.metatags.test(line)) { continue; }
     const step = new VAStepLine(context.matcher, line);
     const syntax = step.checkSyntax(context, lineNumber);
     if (syntax.error) problems.push({
@@ -54,7 +56,6 @@ export function checkSyntax(
     else if (step.invalid) {
       if ((model.groups || []).indexOf(lineNumber) >= 0)
         decorations.push(groupDecoration(lineNumber, "vanessa-style-bold"));
-        console.log("vanessa-style-bold", lineNumber)
     }
   }
   return { decorations, problems };

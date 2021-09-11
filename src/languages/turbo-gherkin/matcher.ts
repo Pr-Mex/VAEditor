@@ -10,6 +10,7 @@ class Section {
 export class KeywordMatcher {
 
   public section = new Section;
+  public metatags: RegExp;
   public primary: RegExp;
   public import: RegExp;
   public step: RegExp;
@@ -39,8 +40,6 @@ export class KeywordMatcher {
 
   constructor(text: string) {
 
-    const src = JSON.parse(text);
-
     let keywords = {
       section: {
         feature: [],
@@ -55,6 +54,7 @@ export class KeywordMatcher {
       step: [],
     }
 
+    const src = JSON.parse(text);
     Object.keys(src).forEach(lang => {
       const data = src[lang];
       Object.keys(data).forEach(word => {
@@ -84,6 +84,10 @@ export class KeywordMatcher {
     this.import = this.regex(keywords.import);
     this.step = this.regex(keywords.step);
   }
+
+  public setMetatags(metatags: string[]) {
+    this.metatags = this.regex(metatags);
+}
 
   public isSection(text: string) {
     const regexp = new RegExp(this.primary);

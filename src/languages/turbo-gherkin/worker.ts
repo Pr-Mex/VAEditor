@@ -97,6 +97,7 @@ export function process(msg: any) {
       return { id: msg.id, data: { suggestions }, success: true };
     case MessageType.SetKeywords:
       context.matcher = new KeywordMatcher(msg.data);
+      context.matcher.setMetatags(context.metatags)
       updateStepLabels(context);
       break;
     case MessageType.SetKeypairs:
@@ -104,6 +105,7 @@ export function process(msg: any) {
       break;
     case MessageType.SetMetatags:
       context.metatags = msg.data;
+      context.matcher.setMetatags(context.metatags)
       break;
     case MessageType.SetMessages:
       setMessages(context, msg);
