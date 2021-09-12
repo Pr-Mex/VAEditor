@@ -27,17 +27,22 @@ worker.onmessage = function (e) {
   }
 }
 
-function postMessage<T>(model: IVanessaModel, message: any)
+function postMessage<T>(mod: monaco.editor.ITextModel, message: any)
   : Promise<T> {
-  const versionId = model.getVersionId();
-  if (model.workerVersionId !== versionId) {
-    model.workerVersionId = versionId;
-    worker.postMessage({
-      type: MessageType.UpdateModel,
-      content: model.getLinesContent(),
-      uri: model.uri.toString(),
-      versionId: versionId,
-    });
+  if (mod) {
+    const model = mod as IVanessaModel;
+    const versionId = model.getVersionId();
+    message.versionId = versionId;
+    message.uri = model.uri.toString();
+    if (model.workerVersionId !== versionId) {
+      model.workerVersionId = versionId;
+      worker.postMessage({
+        type: MessageType.UpdateModel,
+        content: model.getLinesContent(),
+        uri: model.uri.toString(),
+        versionId: versionId,
+      });
+    }
   }
   const id = message.id = ++workerMessageId;
   function init(resolve, reject) {
@@ -187,7 +192,7 @@ export class VanessaGherkinProvider {
       uri: model.uri.toString(),
       errors: errors,
     };
-    return postMessage<VAQuickAction[]>(model as IVanessaModel, message).then(msg => {
+    return postMessage<VAQuickAction[]>(model, message).then(msg => {
       const actions: Array<monaco.languages.CodeAction> = [];
       msg.forEach((e, i) => {
         const marker = context.markers[e.index];
@@ -215,54 +220,38 @@ export class VanessaGherkinProvider {
     context: monaco.languages.FoldingContext,
     token: monaco.CancellationToken,
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
-    return postMessage<monaco.languages.FoldingRange[]>(
-      model as IVanessaModel,
-      {
-        type: MessageType.GetCodeFolding,
-        tabSize: model.getOptions().tabSize,
-        versionId: model.getVersionId(),
-        uri: model.uri.toString()
-      });
+    return postMessage<monaco.languages.FoldingRange[]>(model, {
+      type: MessageType.GetCodeFolding,
+      tabSize: model.getOptions().tabSize,
+    });
   }
 
   public provideLinks(model: monaco.editor.ITextModel, token: monaco.CancellationToken)
     : monaco.languages.ProviderResult<monaco.languages.ILinksList> {
-    return postMessage<monaco.languages.ILinksList>(
-      model as IVanessaModel,
-      {
-        type: MessageType.GetHiperlinks,
-        versionId: model.getVersionId(),
-        uri: model.uri.toString()
-      });
+    return postMessage<monaco.languages.ILinksList>(model, {
+      type: MessageType.GetHiperlinks,
+    });
   }
 
   public getLinkData(model: monaco.editor.ITextModel, key: string)
     : Promise<any> {
-    return postMessage<monaco.languages.ILinksList>(
-      model as IVanessaModel,
-      {
-        key: key,
-        type: MessageType.GetLinkData,
-        versionId: model.getVersionId(),
-        uri: model.uri.toString()
-      });
+    return postMessage<monaco.languages.ILinksList>(model, {
+      type: MessageType.GetLinkData,
+      key: key,
+    });
   }
 
   public provideHover(
     model: monaco.editor.ITextModel,
     position: monaco.Position,
   ): monaco.languages.ProviderResult<monaco.languages.Hover> {
-    return postMessage<monaco.languages.Hover>(
-      model as IVanessaModel,
-      {
-        type: MessageType.GetLineHover,
-        line: model.getLineContent(position.lineNumber),
-        lineNumber: position.lineNumber,
-        minColumn: model.getLineMinColumn(position.lineNumber),
-        maxColumn: model.getLineMaxColumn(position.lineNumber),
-        versionId: model.getVersionId(),
-        uri: model.uri.toString()
-      });
+    return postMessage<monaco.languages.Hover>(model, {
+      type: MessageType.GetLineHover,
+      line: model.getLineContent(position.lineNumber),
+      lineNumber: position.lineNumber,
+      minColumn: model.getLineMinColumn(position.lineNumber),
+      maxColumn: model.getLineMaxColumn(position.lineNumber),
+    });
   }
 
   public provideCompletionItems(
@@ -270,7 +259,7 @@ export class VanessaGherkinProvider {
     position: monaco.Position,
   ): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
     return postMessage<monaco.languages.CompletionList>(
-      model as IVanessaModel,
+      undefined,
       {
         type: MessageType.GetCompletions,
         line: model.getLineContent(position.lineNumber),
@@ -286,14 +275,9 @@ export class VanessaGherkinProvider {
   public checkSyntax(m: monaco.editor.ITextModel) {
     const model = m as IVanessaModel;
     if (model.getModeId() != language.id) return;
-    return postMessage<ISyntaxDecorations>(
-      model as IVanessaModel,
-      {
-        type: MessageType.CheckSyntax,
-        versionId: model.getVersionId(),
-        uri: model.uri.toString()
-      }
-    ).then(result => {
+    return postMessage<ISyntaxDecorations>(model, {
+      type: MessageType.CheckSyntax,
+    }).then(result => {
       const oldDecorations = model.stepDecorations || [];
       model.stepDecorations = model.deltaDecorations(oldDecorations, result.decorations);
       monaco.editor.setModelMarkers(model, "syntax", result.problems);
