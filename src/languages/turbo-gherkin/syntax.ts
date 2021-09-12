@@ -1,4 +1,4 @@
-import { getLineMaxColumn, getLineMinColumn, ISyntaxDecorations, IWorkerContext, IWorkerModel } from './common';
+import { getLineMaxColumn, getLineMinColumn, ISyntaxDecorations, IWorkerContext, IWorkerModel, VAToken } from './common';
 import { VAStepLine } from './stepline';
 
 function groupDecoration(lineNumber: number, style: string = undefined): monaco.editor.IModelDeltaDecoration {
@@ -21,14 +21,21 @@ export function checkSyntax(
   const decorations: monaco.editor.IModelDeltaDecoration[] = [];
   const problems: monaco.editor.IMarkerData[] = [];
   const lineCount = model.getLineCount();
-  let multiline = false;
   let section = "";
   for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
     const line: string = model.getLineContent(lineNumber);
-    if (/^\s*""".*$/.test(line)) { multiline = !multiline; continue; }
-    if (multiline) continue;
-    if (/^\s*(#|@|\/\/)/.test(line)) continue;
-    if (/^\s*\*/.test(line)) { decorations.push(groupDecoration(lineNumber)); continue; }
+    const token = model.getLineToken(lineNumber);
+    switch (token.token) {
+      case VAToken.Empty:
+      case VAToken.Comment:
+      case VAToken.Multiline:
+      case VAToken.Parameter:
+      case VAToken.Instruction:
+        continue;
+      case VAToken.Asterisk:
+        decorations.push(groupDecoration(lineNumber));
+        continue;
+    }
     if (context.matcher.isSection(line)) { section = context.matcher.getSection(line); continue; }
     if (section == "feature" || section == "variables") continue;
     if (context.matcher.metatags.test(line)) { continue; }
