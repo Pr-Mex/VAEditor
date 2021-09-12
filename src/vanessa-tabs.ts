@@ -132,7 +132,7 @@ class VanessaTabItem {
       this.editor?.focus();
     }
     setTimeout(() => show(), 100);
-    this.owner.timer = setTimeout(() => show(), 1000);
+    this.owner.timer = setTimeout(() => show(), 300);
   };
 
   public select = () => {
