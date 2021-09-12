@@ -1,7 +1,7 @@
 import { IWorkerContext, IWorkerModel } from "./common";
 import { KeywordMatcher } from "./matcher";
 
-let imports = { };
+let imports = {};
 
 interface IImportedItem {
   name: string;
@@ -17,10 +17,10 @@ interface IImportedFile {
 }
 
 export function setImports(values: string) {
-  let result = { };
+  let result = {};
   let array = JSON.parse(values) as Array<IImportedFile>;
   array.forEach(file => {
-    let data = result[file.name] = { "": { } };
+    let data = result[file.name] = { "": {} };
     file.items.forEach(item => {
       const key = (item.name || "").toLowerCase();
       if (item.value) {
@@ -29,12 +29,12 @@ export function setImports(values: string) {
         const text = item.lines.lines.map(w => w.text).join('\n');
         data[""][key] = { key: item.name, name: text, file: file.path };
       } else if (item.table) {
-        if (key) data[key] = { };
+        if (key) data[key] = {};
         const columns = item.table.head.tokens.map(e => e.text);
         item.table.body.forEach(row => {
           const t = row.tokens;
           const i = (t[0].text || "").toLowerCase();
-          let x = data[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: { } };
+          let x = data[key][i] = { key: t[0].text, name: t[1].text, file: file.path, data: {} };
           for (let col = 0; col < columns.length; col++)
             x.data[columns[col]] = t[col].text;
         });
@@ -61,10 +61,10 @@ function getLinks(
       let matches = undefined;
       let tableName = "";
       let columns = null;
-      let links = { "": { } };
+      let links = { "": {} };
       let multiline = false;
       let multitext = "";
-      let multidata = { };
+      let multidata = {};
       for (let i = lineNumber + 1; i <= position.lineCount; i++) {
         let line: string = model.getLineContent(i);
         if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
@@ -77,23 +77,23 @@ function getLinks(
           } else {
             match = match.map(trimQuotes);
             while (match.length < columns.length) match.push("");
-            let row = { key: match[0], name: match[1], data: { } };
+            let row = { key: match[0], name: match[1], data: {} };
             for (let col = 0; col < columns.length; col++) row.data[columns[col]] = match[col];
-            if (links[tableName] == undefined) links[tableName] = { };
+            if (links[tableName] == undefined) links[tableName] = {};
             links[tableName][match[0].toLowerCase()] = row;
           }
-        } else if ((matches = line.match(/^\s*([A-zА-яЁё][0-9A-zА-яЁё]*)\s*=\s*(.*)\s*$/)) != null) {
+        } else if ((matches = line.match(/^\s*(\p{L}[\p{L}\p{N}]*)\s*=\s*(.*)\s*$/u)) != null) {
           tableName = "";
           columns = null;
-          multidata = { };
+          multidata = {};
           let key = matches[1].toLowerCase();
           let value = matches[2].trim();
-          if (links[tableName] == undefined) links[tableName] = { };
+          if (links[tableName] == undefined) links[tableName] = {};
           multidata = links[tableName][key] = { key: key, name: value };
         } else if ((matches = line.match(import_reg)) !== null) {
           tableName = "";
           columns = null;
-          multidata = { };
+          multidata = {};
           let filename = trimQuotes(matches[3].trim()).toLowerCase();
           let vars = imports[filename];
           if (vars) {
@@ -110,13 +110,13 @@ function getLinks(
         } else {
           if (columns) tableName = "";
           columns = null;
-          multidata = { };
+          multidata = {};
         }
       }
     }
   }
   position.lineNumber = position.lineCount;
-  return { };
+  return {};
 }
 
 export function getLinkData(
@@ -144,7 +144,11 @@ export function getLinkData(
   }
 }
 
-export function getHiperlinks(ctx: IWorkerContext, model: IWorkerModel, msg: {}) {
+export function getHiperlinks(
+  ctx: IWorkerContext,
+  model: IWorkerModel,
+  msg: {},
+): monaco.languages.ILinksList {
   const lineCount = model.getLineCount();
   let result = [];
   let pos = { lineNumber: 1, lineCount: lineCount };
@@ -166,7 +170,7 @@ export function getHiperlinks(ctx: IWorkerContext, model: IWorkerModel, msg: {})
       if (e1cib.test(param)) {
         result.push({ range: range, url: trimQuotes(matches[0]) });
       } else if (lineNumber > pos.lineNumber) {
-        let pattern = /^([A-zА-яЁё][0-9A-zА-яЁё]*)(\.[A-zА-яЁё][0-9A-zА-яЁё]*)*$/;
+        let pattern = /^(\p{L}[\p{L}\p{N}]*)(\.\p{L}[\p{L}\p{N}]*)*$/u;
         let add = (table: string, row: string, col: string = undefined): any => {
           if (links[table] && links[table][row]) {
             let obj = links[table][row];

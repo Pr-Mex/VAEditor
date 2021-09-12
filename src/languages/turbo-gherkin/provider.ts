@@ -2,7 +2,7 @@ import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalon
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
-import { MessageType, IVanessaModel, ISyntaxDecorations } from './common';
+import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage } from './common';
 import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
@@ -27,13 +27,11 @@ worker.onmessage = function (e) {
   }
 }
 
-function postMessage<T>(mod: monaco.editor.ITextModel, message: any)
+function postMessage<T>(mod: monaco.editor.ITextModel, message: WorkerMessage)
   : Promise<T> {
   if (mod) {
     const model = mod as IVanessaModel;
     const versionId = model.getVersionId();
-    message.versionId = versionId;
-    message.uri = model.uri.toString();
     if (model.workerVersionId !== versionId) {
       model.workerVersionId = versionId;
       worker.postMessage({
@@ -187,7 +185,7 @@ export class VanessaGherkinProvider {
       }
     });
     if (errors.length == 0) return undefined;
-    const message = {
+    const message: WorkerMessage = {
       type: MessageType.GetCodeActions,
       versionId: model.getVersionId(),
       uri: model.uri.toString(),
@@ -223,6 +221,8 @@ export class VanessaGherkinProvider {
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
     return postMessage<monaco.languages.FoldingRange[]>(model, {
       type: MessageType.GetCodeFolding,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
     });
   }
 
@@ -230,6 +230,8 @@ export class VanessaGherkinProvider {
     : monaco.languages.ProviderResult<monaco.languages.ILinksList> {
     return postMessage<monaco.languages.ILinksList>(model, {
       type: MessageType.GetHiperlinks,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
     });
   }
 
@@ -237,6 +239,8 @@ export class VanessaGherkinProvider {
     : Promise<any> {
     return postMessage<monaco.languages.ILinksList>(model, {
       type: MessageType.GetLinkData,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
       key: key,
     });
   }
@@ -247,7 +251,8 @@ export class VanessaGherkinProvider {
   ): monaco.languages.ProviderResult<monaco.languages.Hover> {
     return postMessage<monaco.languages.Hover>(model, {
       type: MessageType.GetLineHover,
-      line: model.getLineContent(position.lineNumber),
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
       lineNumber: position.lineNumber,
       minColumn: model.getLineMinColumn(position.lineNumber),
       maxColumn: model.getLineMaxColumn(position.lineNumber),
@@ -277,6 +282,8 @@ export class VanessaGherkinProvider {
     if (model.getModeId() != language.id) return;
     return postMessage<ISyntaxDecorations>(model, {
       type: MessageType.CheckSyntax,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
     }).then(result => {
       const oldDecorations = model.stepDecorations || [];
       model.stepDecorations = model.deltaDecorations(oldDecorations, result.decorations);

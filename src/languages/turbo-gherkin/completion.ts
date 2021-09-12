@@ -1,7 +1,10 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext } from './common';
 import { VAStepData, VAStepInfo } from './steplist';
 
-export function getCompletions(ctx: IWorkerContext, msg: { line: string, lineNumber: number, column: number }) {
+export function getCompletions(
+  ctx: IWorkerContext,
+  msg: { line: string, lineNumber: number, column: number }
+): monaco.languages.CompletionItem[] {
   const regexp = /"[^"]*"|'[^']*'|<[^\s"']*>/gi;
   let match, wordRange;
   let variable: string;

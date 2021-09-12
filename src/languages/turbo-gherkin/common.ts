@@ -1,5 +1,6 @@
 import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
 import { KeywordMatcher } from './matcher';
+import { VACodeError } from './quickfix';
 
 export function getLineMinColumn(line: string): number {
   return firstNonWhitespaceIndex(line) + 1;
@@ -90,6 +91,26 @@ export function type2str(type: MessageType) {
     case MessageType.CheckSyntax: return "CheckSyntax";
   }
 }
+
+export type WorkerMessage =
+  | { id?: number, type: MessageType.SetKeywords, data: any }
+  | { id?: number, type: MessageType.SetKeypairs, data: any }
+  | { id?: number, type: MessageType.SetMetatags, data: any }
+  | { id?: number, type: MessageType.SetSteplist, list: string, clear: boolean }
+  | { id?: number, type: MessageType.SetMessages, data: any }
+  | { id?: number, type: MessageType.SetElements, values: string, clear: boolean }
+  | { id?: number, type: MessageType.SetVariables, values: string, clear: boolean }
+  | { id?: number, type: MessageType.SetImports, data: any }
+  | { id?: number, type: MessageType.UpdateModel, versionId: number, uri: string }
+  | { id?: number, type: MessageType.DeleteModel, uri: string }
+  | { id?: number, type: MessageType.GetCodeActions, versionId: number, uri: string, errors: VACodeError[] }
+  | { id?: number, type: MessageType.GetCodeFolding, versionId: number, uri: string }
+  | { id?: number, type: MessageType.GetCompletions, line: string, lineNumber: number, column: number }
+  | { id?: number, type: MessageType.GetHiperlinks, versionId: number, uri: string }
+  | { id?: number, type: MessageType.GetLineHover, versionId: number, uri: string, lineNumber: number, minColumn: number, maxColumn: number }
+  | { id?: number, type: MessageType.GetLinkData, versionId: number, uri: string, key: string }
+  | { id?: number, type: MessageType.CheckSyntax, versionId: number, uri: string }
+  ;
 
 export interface IWorkerModel {
   getLineContent(lineNumber: number): string;
