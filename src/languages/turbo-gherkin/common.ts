@@ -21,11 +21,11 @@ export interface IWorkerContext {
 
 export interface IVanessaModel
   extends monaco.editor.ITextModel {
-    stepDecorations?: string[],
-    workerVersionId: number,
-    savedVersionId: number,
-    resetModified: Function,
-    isModified: Function,
+  stepDecorations?: string[],
+  workerVersionId: number,
+  savedVersionId: number,
+  resetModified: Function,
+  isModified: Function,
 }
 
 export interface ISyntaxDecorations {
@@ -67,6 +67,28 @@ export enum MessageType {
   GetLineHover,
   GetLinkData,
   CheckSyntax,
+}
+
+export function type2str(type: MessageType) {
+  switch (type) {
+    case MessageType.SetKeywords: return "SetKeywords";
+    case MessageType.SetMetatags: return "SetMetatags";
+    case MessageType.SetSteplist: return "SetSteplist";
+    case MessageType.SetImports: return "SetImports";
+    case MessageType.SetElements: return "SetElements";
+    case MessageType.SetKeypairs: return "SetKeypairs";
+    case MessageType.SetMessages: return "SetMessages";
+    case MessageType.SetVariables: return "SetVariables";
+    case MessageType.UpdateModel: return "UpdateModel";
+    case MessageType.DeleteModel: return "DeleteModel";
+    case MessageType.GetCodeActions: return "GetCodeActions";
+    case MessageType.GetCodeFolding: return "GetCodeFolding";
+    case MessageType.GetCompletions: return "GetCompletions";
+    case MessageType.GetHiperlinks: return "GetHiperlinks";
+    case MessageType.GetLineHover: return "GetLineHover";
+    case MessageType.GetLinkData: return "GetLinkData";
+    case MessageType.CheckSyntax: return "CheckSyntax";
+  }
 }
 
 export interface IWorkerModel {

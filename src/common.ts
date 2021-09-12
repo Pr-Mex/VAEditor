@@ -112,7 +112,7 @@ export class EventsManager {
 
   public fireEvent(event: any, arg: any = undefined) {
     // tslint:disable-next-line: no-console
-    console.debug("fireEvent: ", event, " : ", arg);
+    console.debug("fireEvent:", event, arg);
     EventsManager.messages.push({ editor: this.owner, type: event, data: arg });
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.click();
@@ -120,7 +120,7 @@ export class EventsManager {
 
   public static fireEvent(editor: IVanessaEditor, event: any, arg: any = undefined) {
     // tslint:disable-next-line: no-console
-    console.debug("fireEvent: ", event, " : ", arg);
+    console.debug("fireEvent:", event, arg);
     EventsManager.messages.push({ editor: editor, type: event, data: arg });
     let fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById("VanessaEditorEventForwarder") as HTMLButtonElement;
     fakeButtonFireClickEvent.click();

@@ -1,4 +1,4 @@
-import { IWorkerContext, IWorkerModel, MessageType } from './common'
+import { IWorkerContext, MessageType, type2str } from './common'
 import { KeywordMatcher } from './matcher';
 import { getHiperlinks, getLinkData, setImports } from './hiperlinks';
 import { getCompletions } from './completion';
@@ -76,6 +76,7 @@ function provide(msg: any) {
 }
 
 export function process(msg: any) {
+  console.debug("worker:", type2str(msg.type), msg.versionId, msg.uri);
   switch (msg.type) {
     case MessageType.GetCompletions:
       const suggestions = getCompletions(context, msg);
