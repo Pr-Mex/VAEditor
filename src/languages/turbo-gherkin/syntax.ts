@@ -54,8 +54,8 @@ export function checkSyntax(
       decorations.push(syntax.decoration);
     }
     else if (step.invalid) {
-      if ((model.groups || []).indexOf(lineNumber) >= 0)
-        decorations.push(groupDecoration(lineNumber, "vanessa-style-bold"));
+//      if ((model.groups || []).indexOf(lineNumber) >= 0)
+//        decorations.push(groupDecoration(lineNumber, "vanessa-style-bold"));
     }
   }
   return { decorations, problems };

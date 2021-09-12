@@ -41,6 +41,7 @@ export enum VAToken {
   Multiline,
   Instruction,
   Parameter,
+  Asterisk,
 }
 
 export interface VAIndent {
@@ -70,6 +71,6 @@ export enum MessageType {
 
 export interface IWorkerModel {
   getLineContent(lineNumber: number): string;
+  getLineToken(lineNumber: number): VAIndent;
   getLineCount(): number;
-  groups?: number[];
 }

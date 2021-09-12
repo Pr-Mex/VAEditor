@@ -39,6 +39,7 @@ function postMessage<T>(mod: monaco.editor.ITextModel, message: any)
       worker.postMessage({
         type: MessageType.UpdateModel,
         content: model.getLinesContent(),
+        tabSize: model.getOptions().tabSize,
         uri: model.uri.toString(),
         versionId: versionId,
       });
@@ -222,7 +223,6 @@ export class VanessaGherkinProvider {
   ): monaco.languages.ProviderResult<monaco.languages.FoldingRange[]> {
     return postMessage<monaco.languages.FoldingRange[]>(model, {
       type: MessageType.GetCodeFolding,
-      tabSize: model.getOptions().tabSize,
     });
   }
 

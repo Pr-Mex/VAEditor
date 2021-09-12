@@ -4,6 +4,7 @@ import { getHiperlinks, getLinkData, setImports } from './hiperlinks';
 import { getCompletions } from './completion';
 import { getCodeActions } from './quickfix';
 import { getCodeFolding } from './folding';
+import { WorkerModel } from './model';
 import { getLineHover } from './hover';
 import { checkSyntax } from './syntax';
 import { setStepList, updateStepLabels } from './steplist';
@@ -21,26 +22,10 @@ const context: IWorkerContext = {
   }
 }
 
-class WorkerModel implements IWorkerModel {
-  constructor(msg: any) {
-    this.versionId = msg.versionId;
-    this.content = msg.content;
-  }
-  getLineContent(lineNumber: number): string {
-    return this.content[lineNumber - 1];
-  }
-  getLineCount(): number {
-    return this.content.length;
-  }
-  private content: string[];
-  private versionId: number;
-  public groups: number[];
-}
-
 const contentMap = new Map<string, WorkerModel>();
 
-function setModelContent(msg: any) {
-  contentMap.set(msg.uri, new WorkerModel(msg));
+function setModelContent(context: IWorkerContext, msg: any) {
+  contentMap.set(msg.uri, new WorkerModel(context.matcher, msg));
 }
 
 function getWorkerModel(msg: any) {
@@ -75,10 +60,10 @@ function provide(msg: any) {
   const model = getWorkerModel(msg);
   if (!model) return undefined;
   switch (msg.type) {
+    case MessageType.GetCodeFolding:
+      return getCodeFolding(model);
     case MessageType.GetCodeActions:
       return getCodeActions(context, model, msg);
-    case MessageType.GetCodeFolding:
-      return getCodeFolding(context, model, msg);
     case MessageType.GetHiperlinks:
       return getHiperlinks(context, model, msg);
     case MessageType.GetLineHover:
@@ -127,7 +112,7 @@ export function process(msg: any) {
       setImports(msg.data);
       break;
     case MessageType.UpdateModel:
-      setModelContent(msg);
+      setModelContent(context, msg);
       break;
     case MessageType.DeleteModel:
       contentMap.delete(msg.uri);

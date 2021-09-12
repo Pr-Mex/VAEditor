@@ -1,10 +1,12 @@
 import { WidgetBase } from "./base";
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
 import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
-import * as folding from '../languages/turbo-gherkin/folding'
+import { getCodeFolding } from '../languages/turbo-gherkin/folding'
 import { language as gherkin } from '../languages/turbo-gherkin/configuration'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaGherkinProvider } from "../languages/turbo-gherkin/provider";
+import { VAIndent, VAToken } from "../languages/turbo-gherkin/common";
+import { getModelTokens } from "../languages/turbo-gherkin/model";
 
 const $ = dom.$;
 
@@ -37,13 +39,14 @@ export class SubcodeWidget extends WidgetBase {
 
   private overlayWidget: monaco.editor.IOverlayWidget;
   private showBreakpoints: boolean = false;
+  private tokens: Array<VAIndent>;
 
   constructor(runtime: RuntimeManager, content: string) {
     super(runtime.owner);
     this.runtime = runtime;
     this.content = content.split(/\r\n|\r|\n/);
     this.heightInLines = this.content.length;
-    this.domNode = $(".vanessa-code-widget", { },
+    this.domNode = $(".vanessa-code-widget", {},
       this.textNode = $(".vanessa-code-lines"),
       this.leftNode = $('.vanessa-code-border'),
     );
@@ -55,9 +58,9 @@ export class SubcodeWidget extends WidgetBase {
       getPosition: () => null
     };
     this.runtime.editor.addOverlayWidget(this.overlayWidget);
-    monaco.editor.colorize(content, gherkin.id, { }).then((html: string) => {
+    this.tokens = getModelTokens(VanessaGherkinProvider.instance.matcher, this, this.tabSize);
+    monaco.editor.colorize(content, gherkin.id, {}).then((html: string) => {
       this.textNode.innerHTML = html;
-      const model = this.runtime.editor ? this.runtime.editor.getModel() : null;
       let lineNode = this.textNode.firstElementChild;
       while (lineNode) {
         if (lineNode.nodeName.toUpperCase() == "SPAN") {
@@ -65,11 +68,7 @@ export class SubcodeWidget extends WidgetBase {
         }
         lineNode = lineNode.nextElementSibling;
       }
-      folding.getCodeFolding(
-        { matcher: VanessaGherkinProvider.instance.matcher },
-        this,
-        { tabSize: model.getOptions().tabSize }
-      ).forEach(e => this.lines[e.start - 1].initFolding(e.end));
+      getCodeFolding(this).forEach(e => this.lines[e.start - 1].initFolding(e.end));
     });
     this.useDebugger = runtime.useDebugger;
   }
@@ -129,12 +128,24 @@ export class SubcodeWidget extends WidgetBase {
     return this.content[lineNumber - 1];
   }
 
+  public getLineToken(lineNumber: number): VAIndent {
+    return this.tokens[lineNumber - 1];
+  }
+
+  public get tabSize() {
+    return this.model.getOptions().tabSize;
+  }
+
   public getCurrent(): number {
     return this.current;
   }
 
   public next(): number {
     return this.setCurrent(this.getCurrent() + 1);
+  }
+
+  get model() {
+    return this.runtime.editor?.getModel();
   }
 
   get breakpoints(): Array<IBreakpoint> {
@@ -203,7 +214,7 @@ export class SubcodeWidget extends WidgetBase {
   public layoutViewZone() {
     this.heightInLines = 0;
     this.lines.forEach((line: SubcodeLine) => this.heightInLines += line.heightInLines);
-    this.afterLineNumber = this.runtime.editor.getModel().getDecorationRange(this.decoration).endLineNumber;
+    this.afterLineNumber = this.model.getDecorationRange(this.decoration).endLineNumber;
     this.runtime.editor.changeViewZones(changeAccessor => changeAccessor.layoutZone(this.id));
   }
 
