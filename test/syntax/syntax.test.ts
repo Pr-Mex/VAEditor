@@ -14,8 +14,9 @@ class SyntaxChecker {
   }
 
   public async check(): Promise<void> {
-    await provider.checkSyntax(this.model);
-    this.markers = monaco.editor.getModelMarkers({ owner: "syntax", resource: this.model.uri });
+    return provider.checkSyntax(this.model).then(() => {
+      this.markers = monaco.editor.getModelMarkers({ owner: "syntax", resource: this.model.uri });
+    });
   }
 
   public value(n: number) {
@@ -28,6 +29,10 @@ class SyntaxChecker {
     const range = new monaco.Range(m.startLineNumber, m.startColumn, m.endLineNumber, m.endColumn);
     return provider.provideCodeActions(this.model, range, context, undefined);
   }
+}
+
+function range(lineNumber: number) {
+  return new monaco.Range(lineNumber, 1, lineNumber, 1);
 }
 
 describe('Проверка синтаксиса', function () {
@@ -81,6 +86,59 @@ describe('Проверка синтаксиса', function () {
       expect(checker.value(0)).to.equal('Если есть картинка "ИмяКартинки"');
       expect(checker.value(1)).to.equal('И я нажимаю ENTER Тогда');
       done();
+    });
+  });
+  it('Декорация групп пиктограммами', (done) => {
+    let model = monaco.editor.createModel(content.f04, language.id);
+    provider.provideFoldingRanges(model, undefined, undefined).then(() => {
+      provider.checkSyntax(model).then(() => {
+        let decorations = model.getLinesDecorations(1, model.getLineCount());
+        expect(decorations).to.be.an('array').to.have.lengthOf(8);
+        expect(decorations[0]).to.have.property('range').to.deep.equal(range(16));
+        expect(decorations[0]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-triangle-right');
+        expect(decorations[0]).to.have.property('options').to.have.property('inlineClassName', null);
+        expect(decorations[1]).to.have.property('range').to.deep.equal(range(20));
+        expect(decorations[1]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-triangle-right');
+        expect(decorations[1]).to.have.property('options').to.have.property('inlineClassName', 'vanessa-style-bold');
+        expect(decorations[3]).to.have.property('range').to.deep.equal(range(26));
+        expect(decorations[3]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-triangle-right');
+        expect(decorations[3]).to.have.property('options').to.have.property('inlineClassName', 'vanessa-style-bold');
+        expect(decorations[7]).to.have.property('range').to.deep.equal(range(40));
+        expect(decorations[7]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-triangle-right');
+        expect(decorations[7]).to.have.property('options').to.have.property('inlineClassName', 'vanessa-style-bold');
+        done();
+      });
+    });
+  });
+  it('Декорация импортируемых подсценариев', (done) => {
+    let model = monaco.editor.createModel(content.f04, language.id);
+    provider.provideFoldingRanges(model, undefined, undefined).then(() => {
+      provider.checkSyntax(model).then(() => {
+        let decorations = model.getLinesDecorations(1, model.getLineCount());
+        expect(decorations[2]).to.have.property('range').to.deep.equal({ startLineNumber: 23, startColumn: 2, endLineNumber: 23, endColumn: 74 });
+        expect(decorations[2]).to.have.property('options').to.have.property('glyphMarginClassName', null);
+        expect(decorations[2]).to.have.property('options').to.have.property('inlineClassName', 'vanessa-style-underline');
+        done();
+      });
+    });
+  });
+  it('Декорация условных операторов и циклов', (done) => {
+    let model = monaco.editor.createModel(content.f04, language.id);
+    provider.provideFoldingRanges(model, undefined, undefined).then(() => {
+      provider.checkSyntax(model).then(() => {
+        let decorations = model.getLinesDecorations(1, model.getLineCount());
+        console.log(decorations);
+        expect(decorations[4]).to.have.property('range').to.deep.equal(range(28));
+        expect(decorations[4]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-symbol-class');
+        expect(decorations[4]).to.have.property('options').to.have.property('inlineClassName', null);
+        expect(decorations[5]).to.have.property('range').to.deep.equal(range(32));
+        expect(decorations[5]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-git-compare');
+        expect(decorations[5]).to.have.property('options').to.have.property('inlineClassName', null);
+        expect(decorations[6]).to.have.property('range').to.deep.equal(range(33));
+        expect(decorations[6]).to.have.property('options').to.have.property('glyphMarginClassName', 'codicon-symbol-class');
+        expect(decorations[6]).to.have.property('options').to.have.property('inlineClassName', null);
+        done();
+      });
     });
   });
 })
