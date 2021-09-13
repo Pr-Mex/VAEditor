@@ -69,7 +69,7 @@ export function checkSyntax(
     }
   }
   groups.forEach(e => {
-    for (let i = e.lineNumber; i <= e.folding; ++i) if (steps[i]) {
+    for (let i = e.lineNumber + 1; i <= e.folding; ++i) if (steps[i]) {
       decorations.push(groupDecoration(e.lineNumber, "vanessa-style-bold"));
       break;
     }
