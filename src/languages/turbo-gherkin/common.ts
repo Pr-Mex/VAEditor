@@ -48,6 +48,7 @@ export enum VAToken {
 export interface VAIndent {
   token: VAToken;
   indent: number;
+  folding?: number;
 }
 
 export enum MessageType {

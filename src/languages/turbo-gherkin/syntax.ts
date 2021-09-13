@@ -18,6 +18,8 @@ export function checkSyntax(
   model: IWorkerModel,
   msg: {}
 ): ISyntaxDecorations {
+  const steps = {};
+  const groups: Array<{ lineNumber: number, folding: number }> = [];
   const decorations: monaco.editor.IModelDeltaDecoration[] = [];
   const problems: monaco.editor.IMarkerData[] = [];
   const lineCount = model.getLineCount();
@@ -32,14 +34,19 @@ export function checkSyntax(
       case VAToken.Parameter:
       case VAToken.Instruction:
         continue;
+      case VAToken.Section:
+        section = context.matcher.getSection(line);
+        continue;
       case VAToken.Asterisk:
         decorations.push(groupDecoration(lineNumber));
         continue;
     }
-    if (context.matcher.isSection(line)) { section = context.matcher.getSection(line); continue; }
     if (section == "feature" || section == "variables") continue;
     if (context.matcher.metatags.test(line)) { continue; }
+    if (token.folding) groups.push({ lineNumber, folding: token.folding });
     const step = new VAStepLine(context.matcher, line);
+    if (step.invalid) continue;
+    steps[lineNumber] = true;
     const syntax = step.checkSyntax(context, lineNumber, line);
     if (syntax.error) problems.push({
       severity: 8, // monaco.MarkerSeverity.Error = 8
@@ -60,10 +67,12 @@ export function checkSyntax(
       }
       decorations.push(syntax.decoration);
     }
-    else if (step.invalid) {
-//      if ((model.groups || []).indexOf(lineNumber) >= 0)
-//        decorations.push(groupDecoration(lineNumber, "vanessa-style-bold"));
-    }
   }
+  groups.forEach(e => {
+    for (let i = e.lineNumber; i <= e.folding; ++i) if (steps[i]) {
+      decorations.push(groupDecoration(e.lineNumber, "vanessa-style-bold"));
+      break;
+    }
+  });
   return { decorations, problems };
 }
