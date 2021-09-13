@@ -43,10 +43,8 @@ export function checkSyntax(
     }
     if (section == "feature" || section == "variables") continue;
     if (context.matcher.metatags.test(line)) { continue; }
-    if (token.folding) groups.push({ lineNumber, folding: token.folding });
     const step = new VAStepLine(context.matcher, line);
-    if (step.invalid) continue;
-    steps[lineNumber] = true;
+    if (step.keyword) steps[lineNumber] = true;
     const syntax = step.checkSyntax(context, lineNumber, line);
     if (syntax.error) problems.push({
       severity: 8, // monaco.MarkerSeverity.Error = 8
@@ -66,6 +64,9 @@ export function checkSyntax(
         }
       }
       decorations.push(syntax.decoration);
+    }
+    else if (token.folding) {
+      groups.push({ lineNumber, folding: token.folding });
     }
   }
   groups.forEach(e => {
