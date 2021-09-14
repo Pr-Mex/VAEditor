@@ -35,6 +35,8 @@ export function show() {
 
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
+  tabs.welcome("Добро пожаловать")
+
   return
 
   // eslint-disable-next-line

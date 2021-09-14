@@ -9,6 +9,7 @@ self.MonacoEnvironment = {
 
 import "./media/debug";
 import "./media/tabs";
+import "./media/welcome";
 import { setLocaleData } from 'monaco-editor-nls';
 import { patchWebKit1C } from "./1c-webkit-patch";
 

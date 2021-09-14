@@ -1,0 +1,65 @@
+div.welcome {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 2em;
+  user-select: none;
+}
+
+.welcome .codicon {
+  color: rgb(0, 106, 177) !important;
+  margin-right: 0.5em;
+}
+
+.welcome h1 {
+  color: #666666;
+  font-size: 2em;
+  font-weight: normal;
+  margin: 0.2em 0 0.2em 0;
+}
+
+.welcome h2 {
+  color: #666666;
+  font-size: 1.5em;
+  font-weight: normal;
+  margin: 0.2em 0 0.2em 0;
+}
+
+.welcome h3 {
+  font-family: Calibri, Arial, sans-serif;
+  margin: 1em 0 0.2em 0;
+  font-size: 1.5em;
+  font-weight: lighter;
+  color: #666666;
+}
+
+.welcome .welcome-item {
+  margin-top: 1em;
+  font-size: 1em;
+}
+
+.welcome ul {
+  padding: 0.5em 0 0.5em 0;
+  margin: 0;
+}
+
+.welcome li {
+  list-style-type: none;
+  line-height: 1.6em;
+}
+
+.welcome li a {
+  color: rgb(0, 106, 177);
+  text-decoration-color: rgb(0, 106, 177);
+  font-family: Calibri, Arial, sans-serif;
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.welcome li a:visited {
+  text-decoration: none;
+}
+
+.welcome .codicon {
+  vertical-align: sub;
+  font-size: 1.1rem;
+}

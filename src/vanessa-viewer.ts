@@ -50,20 +50,33 @@ export class VanessaViwer implements IVanessaEditor {
   private _domNode: HTMLElement;
   private _domInner: HTMLElement;
 
-  constructor(src: string) {
+  constructor(src: string, markdown: boolean = true) {
     this.editor = new VanessaViewEditor(src);
     let node = document.getElementById("VanessaEditorContainer");
     this._domNode = $("div", { class: "vanessa-viewer" },
       this._domInner = $("div", { class: "vanessa-inner" }));
-    this._domInner.appendChild(markdownToHTML(src));
-    this._domInner.addEventListener("click", this.onClick.bind(this), true);
+    if (markdown) {
+      this._domInner.appendChild(markdownToHTML(src));
+      this._domInner.addEventListener("click", this.onMarkdownClick.bind(this), true);
+    }
+    else {
+      this._domInner.innerHTML = src;
+      this._domInner.addEventListener("click", this.onWelcomeClick.bind(this), true);
+    }
     node.appendChild(this._domNode);
   }
 
-  private onClick(event: any) {
+  private onMarkdownClick(event: any) {
     if (event.target instanceof HTMLAnchorElement) {
       const data = (event.target as HTMLAnchorElement).dataset.href;
       EventsManager.fireEvent(this, VanessaEditorEvent.ON_MARK_CLICK, data);
+    }
+  }
+
+  private onWelcomeClick(event: any) {
+    if (event.target instanceof HTMLAnchorElement) {
+      const data = (event.target as HTMLAnchorElement).dataset.href;
+      EventsManager.fireEvent(this, VanessaEditorEvent.WELCOME_CLICK, data);
     }
   }
 
