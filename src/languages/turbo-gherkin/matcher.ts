@@ -9,6 +9,7 @@ class Section {
 
 export class KeywordMatcher {
 
+  public stepkey: any = {};
   public section = new Section;
   public keypairs: RegExp[];
   public metatags: RegExp;
@@ -42,6 +43,7 @@ export class KeywordMatcher {
   constructor(text: string) {
 
     let keywords = {
+      stepkey: {},
       section: {
         feature: [],
         variables: [],
@@ -66,20 +68,26 @@ export class KeywordMatcher {
           case "native":
             break;
           case "import":
-            list.forEach(w => { if (w) keywords.import.push(w) })
+            list.forEach(w => { if (w) keywords.import.push(w) });
             break;
           default:
             if (keywords.section[word]) {
-              list.forEach(w => { if (w) keywords.section[word].push(w) })
-              list.forEach(w => { if (w) keywords.primary.push(w) })
+              list.forEach(w => { if (w) keywords.section[word].push(w) });
+              list.forEach(w => { if (w) keywords.primary.push(w) });
             } else {
-              list.forEach(w => { if (w) keywords.step.push(w) })
+              const key = word.toLowerCase();
+              list.forEach(w => { if (w) keywords.step.push(w) });
+              if (!keywords.stepkey[key]) keywords.stepkey[key] = [];
+              list.forEach(w => { if (w) keywords.stepkey[key].push(w) });
             }
         }
       })
     });
     Object.keys(keywords.section).forEach(key => {
-      this.section[key] = this.regex(keywords.section[key], "\\s*:")
+      this.section[key] = this.regex(keywords.section[key], "\\s*:");
+    });
+    Object.keys(keywords.stepkey).forEach(key => {
+      this.stepkey[key] = this.regex(keywords.stepkey[key]);
     });
     this.primary = this.regex(keywords.primary, "\\s*:");
     this.import = this.regex(keywords.import);

@@ -14,7 +14,7 @@ function groupDecoration(lineNumber: number, style: string = undefined): monaco.
 }
 
 export function checkSyntax(
-  context: IWorkerContext,
+  ctx: IWorkerContext,
   model: IWorkerModel,
   msg: {}
 ): ISyntaxDecorations {
@@ -35,20 +35,20 @@ export function checkSyntax(
       case VAToken.Instruction:
         continue;
       case VAToken.Section:
-        section = context.matcher.getSection(line);
+        section = ctx.matcher.getSection(line);
         continue;
       case VAToken.Asterisk:
         decorations.push(groupDecoration(lineNumber));
         continue;
     }
     if (section == "feature" || section == "variables") continue;
-    if (context.matcher.metatags.test(line)) { continue; }
-    const step = new VAStepLine(context.matcher, line);
+    if (ctx.matcher.metatags.test(line)) { continue; }
+    const step = new VAStepLine(ctx.matcher, line);
     if (step.keyword) steps[lineNumber] = true;
-    const syntax = step.checkSyntax(context, lineNumber, line);
+    const syntax = step.checkSyntax(ctx, lineNumber, line);
     if (syntax.error) problems.push({
       severity: 8, // monaco.MarkerSeverity.Error = 8
-      message: context.messages.syntaxMsg,
+      message: ctx.messages.syntaxMsg,
       startLineNumber: lineNumber,
       endLineNumber: lineNumber,
       startColumn: getLineMinColumn(line),
@@ -66,6 +66,8 @@ export function checkSyntax(
       decorations.push(syntax.decoration);
     }
     else if (token.folding) {
+      if (ctx.matcher.stepkey.else.test(line)) continue;
+      if (ctx.matcher.stepkey.elseif.test(line)) continue;
       groups.push({ lineNumber, folding: token.folding });
     }
   }
