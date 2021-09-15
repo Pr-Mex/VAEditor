@@ -17,22 +17,59 @@ const markdownToHTML = (value: string) => {
   return result
 }
 
-class VanessaViewModel  {
+class VanessaViewModel {
   private _uri: monaco.Uri;
   get uri() { return this._uri; };
   isModified() { return false; }
-  onDidChangeContent() {}
-  constructor(src: string) {
-    this._uri = monaco.Uri.parse(src);
+  onDidChangeContent() { }
+  constructor(uri: string) {
+    this._uri = monaco.Uri.parse(uri);
   }
 }
 
-class VanessaViewEditor  {
+export class WelcomeParams {
+  title: string;
+  subtitle: string;
+  sections: Array<{
+    name: string;
+    items: Array<{
+      href: string;
+      name: string;
+      path?: string;
+      event: string;
+      gliph?: string;
+    }>;
+  }>;
+}
+
+function getWelcomePage(arg: string) {
+  console.log(arg);
+  const welcome: WelcomeParams = JSON.parse(arg);
+  const result = $("div", { class: "welcome" },
+    $("h1", {}, welcome.title),
+    $("h2", {}, welcome.subtitle),
+  );
+  welcome.sections.forEach(section => {
+    result.appendChild($("h3", {}, section.name));
+    const list = $("ul", {});
+    section.items.forEach(item => {
+      list.appendChild($("li", {},
+        $("a", { href: "#", "data-href": item.href, "data-event": item.event },
+          item.gliph ? $("span", { class: "codicon codicon-" + item.gliph }) : "", item.name),
+        item.path ? $("span", { class: "path" }, item.path) : "",
+      ));
+    });
+    result.appendChild(list);
+  });
+  return result;
+}
+
+class VanessaViewEditor {
   model: VanessaViewModel;
   getModel() { return this.model; }
   getEditorType() { return "vanessa.IMarkdownViewer"; }
-  constructor(src: string) {
-    this.model = new VanessaViewModel(src);
+  constructor(uri: string) {
+    this.model = new VanessaViewModel(uri);
   }
 }
 
@@ -50,8 +87,8 @@ export class VanessaViwer implements IVanessaEditor {
   private _domNode: HTMLElement;
   private _domInner: HTMLElement;
 
-  constructor(src: string, markdown: boolean = true) {
-    this.editor = new VanessaViewEditor(src);
+  constructor(uri: string, src: string, markdown: boolean = true) {
+    this.editor = new VanessaViewEditor(uri);
     let node = document.getElementById("VanessaEditorContainer");
     this._domNode = $("div", { class: "vanessa-viewer" },
       this._domInner = $("div", { class: "vanessa-inner" }));
@@ -60,7 +97,7 @@ export class VanessaViwer implements IVanessaEditor {
       this._domInner.addEventListener("click", this.onMarkdownClick.bind(this), true);
     }
     else {
-      this._domInner.innerHTML = src;
+      this._domInner.appendChild(getWelcomePage(src));
       this._domInner.addEventListener("click", this.onWelcomeClick.bind(this), true);
     }
     node.appendChild(this._domNode);
@@ -75,8 +112,9 @@ export class VanessaViwer implements IVanessaEditor {
 
   private onWelcomeClick(event: any) {
     if (event.target instanceof HTMLAnchorElement) {
+      const id = (event.target as HTMLAnchorElement).dataset.event;
       const data = (event.target as HTMLAnchorElement).dataset.href;
-      EventsManager.fireEvent(this, VanessaEditorEvent.WELCOME_CLICK, data);
+      EventsManager.fireEvent(this, id, data);
     }
   }
 

@@ -7,7 +7,6 @@ import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/s
 import { VanessaViwer } from './vanessa-viewer';
 import { version } from '../version.json'
 import { StyleManager } from './style';
-import { getWelcome } from './welcome';
 
 const $ = dom.$;
 
@@ -409,16 +408,18 @@ export class VanessaTabs {
     src: string,
     newTab: boolean = true,
   ): IVanessaEditor => {
-    const editor = new VanessaViwer(src);
+    const editor = new VanessaViwer(url, src);
     return this.open(editor, title, url, 0, newTab);
   }
 
   public welcome = (
     title: string,
+    src: string,
     newTab: boolean = true,
   ): IVanessaEditor => {
-    const editor = new VanessaViwer(getWelcome(), false);
-    return this.open(editor, title, "memory:welcome", 0, newTab);
+    const url = "memory:welcome";
+    const editor = new VanessaViwer(url, src, false);
+    return this.open(editor, title, url, 0, newTab);
   }
 
   public onPageNext = (forward: boolean) => {

@@ -13,7 +13,7 @@ div.welcome {
   color: #666666;
   font-size: 2em;
   font-weight: normal;
-  margin: 0.2em 0 0.2em 0;
+  margin: 0 0 0.2em 0;
 }
 
 .welcome h2 {
@@ -25,7 +25,7 @@ div.welcome {
 
 .welcome h3 {
   font-family: Calibri, Arial, sans-serif;
-  margin: 1em 0 0.2em 0;
+  margin: 1em 0 0 0;
   font-size: 1.5em;
   font-weight: lighter;
   color: #666666;
@@ -37,7 +37,7 @@ div.welcome {
 }
 
 .welcome ul {
-  padding: 0.5em 0 0.5em 0;
+  padding: 0.2em 0 0.2em 0;
   margin: 0;
 }
 
@@ -63,3 +63,13 @@ div.welcome {
   vertical-align: sub;
   font-size: 1.1rem;
 }
+
+.welcome li span.path {
+  color:#666666;
+  font-family: Calibri, Arial, sans-serif;
+  vertical-align: middle;
+  padding-left: 1rem;
+  text-decoration: none;
+  font-size: 1rem;
+}
+

@@ -1,5 +1,6 @@
 import { content } from './example.file.js'
 import { initGherkinProvider } from '../provider'
+import { WelcomeParams } from '../../src/vanessa-viewer.js';
 
 export function show() {
 
@@ -35,7 +36,32 @@ export function show() {
 
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
 
-  tabs.welcome("Добро пожаловать")
+  const welcome: WelcomeParams = {
+    title: "Vanessa Automation",
+    subtitle: "Сценарное тестирование",
+    sections: [
+      {
+        name: "Запуск", items: [
+          { event: "WELCOME_LAUNCH", href: "new-file", gliph: "new-file", name: "Создать файл…" },
+          { event: "WELCOME_LAUNCH", href: "open-file", gliph: "go-to-file", name: "Открыть файл…" },
+          { event: "WELCOME_LAUNCH", href: "open-folder", gliph: "folder-opened", name: "Открыть папку…" },
+          { event: "WELCOME_LAUNCH", href: "execute-command", gliph: "symbol-color", name: "Выполнить команду…" },
+        ]
+      },
+      {
+        name: "Последние", items: [
+          { event: "WELCOME_RECENT", href: "C:\\vanessa\\file.feature", name: "Добро пожаловать", path: "C:\\vanessa" },
+        ]
+      },
+      {
+        name: "Обучение", items: [
+          { event: "WELCOME_LAUNCH", href: "guide", gliph: "mortar-board", name: "Интерактивная справка" },
+        ]
+      },
+    ]
+  }
+
+  tabs.welcome("Добро пожаловать!", JSON.stringify(welcome))
 
   return
 
