@@ -43,7 +43,6 @@ export class WelcomeParams {
 }
 
 function getWelcomePage(arg: string) {
-  console.log(arg);
   const welcome: WelcomeParams = JSON.parse(arg);
   const result = $("div", { class: "welcome" },
     $("h1", {}, welcome.title),

@@ -408,6 +408,7 @@ export class VanessaTabs {
     src: string,
     newTab: boolean = true,
   ): IVanessaEditor => {
+    this.findTab(tab => tab.key === url && tab.type === VAEditorType.MarkdownViwer)?.close();
     const editor = new VanessaViwer(url, src);
     return this.open(editor, title, url, 0, newTab);
   }
@@ -418,6 +419,7 @@ export class VanessaTabs {
     newTab: boolean = true,
   ): IVanessaEditor => {
     const url = "memory:welcome";
+    this.findTab(tab => tab.key === url && tab.type === VAEditorType.MarkdownViwer)?.close();
     const editor = new VanessaViwer(url, src, false);
     return this.open(editor, title, url, 0, newTab);
   }
