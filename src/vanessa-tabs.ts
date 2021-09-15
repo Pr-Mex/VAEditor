@@ -529,4 +529,5 @@ export class VanessaTabs {
   public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
   public get options(): string { return JSON.stringify(monaco.editor.EditorOptions); }
+  public set options(value: string) { this.tabStack.forEach(tab => tab.options = value); }
 }
