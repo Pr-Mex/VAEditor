@@ -244,6 +244,23 @@ class VanessaTabItem {
   public get dom(): HTMLElement {
     return this.domNode;
   }
+
+  public get options(): string {
+    if (this.editor.type === VAEditorType.CodeEditor) {
+      const result = {};
+      Object.keys(monaco.editor.EditorOption).forEach(id => {
+        const name = monaco.editor.EditorOption[id];
+        result[name] = this.editor.editor.getOption(id);
+      });
+      return JSON.stringify(result);
+    }
+  }
+
+  public set options(value: string) {
+    if (this.editor.type === VAEditorType.CodeEditor) {
+      this.editor.editor.updateOptions(JSON.parse(value));
+    }
+  }
 }
 
 export class VanessaTabs {
@@ -511,4 +528,5 @@ export class VanessaTabs {
   public select = (index: number) => this.tabStack[index].select();
   public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
+  public get options(): string { return JSON.stringify(monaco.editor.EditorOptions); }
 }
