@@ -528,6 +528,6 @@ export class VanessaTabs {
   public select = (index: number) => this.tabStack[index].select();
   public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
-  public get options(): string { return JSON.stringify(Object.keys(monaco.editor.EditorOptions).map(key => monaco.editor.EditorOptions[key])); }
+  public get options(): string { let o = monaco.editor.EditorOptions; return JSON.stringify(Object.keys(o).map(k => [k, o[k]])); }
   public set options(value: string) { this.tabStack.forEach(tab => tab.options = value); }
 }
