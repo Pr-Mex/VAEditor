@@ -61,9 +61,9 @@ export function show() {
     ]
   }
 
-  tabs.welcome("Добро пожаловать!", JSON.stringify(welcome))
-
   return
+
+  tabs.welcome("Добро пожаловать!", JSON.stringify(welcome))
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\

@@ -3,15 +3,10 @@
 	<CommandBarLocation>Top</CommandBarLocation>
 	<AutoCommandBar name="FormCommandBar" id="-1">
 		<ChildItems>
-			<Button name="Demo" id="4">
-				<Type>CommandBarButton</Type>
-				<DefaultButton>true</DefaultButton>
-				<CommandName>Form.Command.Demo</CommandName>
-				<ExtendedTooltip name="DemoExtendedTooltip" id="5"/>
-			</Button>
 			<Button name="ФормаНастройка" id="6">
 				<Type>CommandBarButton</Type>
-				<CommandName>Form.Command.Настройка</CommandName>
+				<DefaultButton>true</DefaultButton>
+				<CommandName>Form.Command.НастройкаРедактора</CommandName>
 				<ExtendedTooltip name="ФормаНастройкаРасширеннаяПодсказка" id="7"/>
 			</Button>
 		</ChildItems>
@@ -69,17 +64,17 @@
 			</ToolTip>
 			<Action>Demo</Action>
 		</Command>
-		<Command name="Настройка" id="2">
+		<Command name="НастройкаРедактора" id="2">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Настройка</v8:content>
+					<v8:content>Настройка редактора</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Настройка</v8:content>
+					<v8:content>Настройка редактора</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Action>НастройкаОпций</Action>
