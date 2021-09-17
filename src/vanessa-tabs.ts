@@ -245,6 +245,11 @@ class VanessaTabItem {
     return this.domNode;
   }
 
+  public getOption(key: string): string {
+    const id = monaco.editor.EditorOption[key];
+    return JSON.stringify(this.editor.editor.getOption(id));
+  }
+
   public get options(): string {
     if (this.editor.type === VAEditorType.CodeEditor) {
       const result = {};

@@ -78,6 +78,18 @@
 					<EditMode>EnterOnInput</EditMode>
 					<ChoiceButton>false</ChoiceButton>
 					<ClearButton>true</ClearButton>
+					<Format>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>ЧН=0</v8:content>
+						</v8:item>
+					</Format>
+					<EditFormat>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>ЧН=0</v8:content>
+						</v8:item>
+					</EditFormat>
 					<ContextMenu name="ОпцииЗначениеКонтекстноеМеню" id="21"/>
 					<ExtendedTooltip name="ОпцииЗначениеРасширеннаяПодсказка" id="22"/>
 					<Events>
@@ -101,12 +113,14 @@
 		</Table>
 		<InputField name="ОпцииСхема" id="32">
 			<DataPath>Items.Опции.CurrentData.Схема</DataPath>
+			<ReadOnly>true</ReadOnly>
 			<AutoMaxWidth>false</AutoMaxWidth>
 			<ContextMenu name="ОпцииСхемаКонтекстноеМеню" id="33"/>
 			<ExtendedTooltip name="ОпцииСхемаРасширеннаяПодсказка" id="34"/>
 		</InputField>
 		<InputField name="ОпцииОписание" id="23">
 			<DataPath>Items.Опции.CurrentData.Описание</DataPath>
+			<ReadOnly>true</ReadOnly>
 			<AutoMaxWidth>false</AutoMaxWidth>
 			<ContextMenu name="ОпцииОписаниеКонтекстноеМеню" id="24"/>
 			<ExtendedTooltip name="ОпцииОписаниеРасширеннаяПодсказка" id="25"/>
@@ -223,7 +237,40 @@
 						</v8:StringQualifiers>
 					</Type>
 				</Column>
+				<Column name="Отличается" id="8">
+					<Title>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Отличается</v8:content>
+						</v8:item>
+					</Title>
+					<Type>
+						<v8:Type>xs:boolean</v8:Type>
+					</Type>
+				</Column>
 			</Columns>
 		</Attribute>
+		<ConditionalAppearance>
+			<dcsset:item>
+				<dcsset:selection>
+					<dcsset:item>
+						<dcsset:field>ОпцииЗначение</dcsset:field>
+					</dcsset:item>
+				</dcsset:selection>
+				<dcsset:filter>
+					<dcsset:item xsi:type="dcsset:FilterItemComparison">
+						<dcsset:left xsi:type="dcscor:Field">Опции.Отличается</dcsset:left>
+						<dcsset:comparisonType>Equal</dcsset:comparisonType>
+						<dcsset:right xsi:type="xs:boolean">true</dcsset:right>
+					</dcsset:item>
+				</dcsset:filter>
+				<dcsset:appearance>
+					<dcscor:item xsi:type="dcsset:SettingsParameterValue">
+						<dcscor:parameter>ЦветФона</dcscor:parameter>
+						<dcscor:value xsi:type="v8ui:Color">style:ToolTipBackColor</dcscor:value>
+					</dcscor:item>
+				</dcsset:appearance>
+			</dcsset:item>
+		</ConditionalAppearance>
 	</Attributes>
 </Form>
