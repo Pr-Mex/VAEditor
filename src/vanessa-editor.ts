@@ -191,6 +191,10 @@ export class VanessaEditor implements IVanessaEditor {
     disposeModel(oldModel);
   };
 
+  public set options(value: string) {
+      this.editor.updateOptions(JSON.parse(value));
+  }
+
   public get type() { return VAEditorType.CodeEditor; }
   public focus() { this.editor.focus(); }
   static editors: Array<VanessaEditor> = [];
