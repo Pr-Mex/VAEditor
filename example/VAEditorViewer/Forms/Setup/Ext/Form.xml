@@ -33,6 +33,17 @@
 						<CommandName>Form.StandardCommand.CustomizeForm</CommandName>
 						<ExtendedTooltip name="ОпцииИзменитьФормуРасширеннаяПодсказка" id="41"/>
 					</Button>
+					<Button name="ОпцииСохранитьНастройки" id="42">
+						<Type>CommandBarButton</Type>
+						<DefaultButton>true</DefaultButton>
+						<CommandName>Form.Command.ЗаписатьИЗакрыть</CommandName>
+						<ExtendedTooltip name="ОпцииСохранитьНастройкиРасширеннаяПодсказка" id="43"/>
+					</Button>
+					<Button name="ОпцииЗакрыть" id="44">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.StandardCommand.Close</CommandName>
+						<ExtendedTooltip name="ОпцииЗакрытьРасширеннаяПодсказка" id="45"/>
+					</Button>
 				</ChildItems>
 			</AutoCommandBar>
 			<ExtendedTooltip name="ОпцииРасширеннаяПодсказка" id="4"/>
@@ -102,28 +113,34 @@
 					<ContextMenu name="ОпцииТипКонтекстноеМеню" id="36"/>
 					<ExtendedTooltip name="ОпцииТипРасширеннаяПодсказка" id="37"/>
 				</InputField>
-				<InputField name="Описание" id="29">
+				<InputField name="ОпцииОписание" id="29">
 					<DataPath>Опции.Описание</DataPath>
 					<ReadOnly>true</ReadOnly>
 					<EditMode>EnterOnInput</EditMode>
-					<ContextMenu name="ОписаниеКонтекстноеМеню" id="30"/>
-					<ExtendedTooltip name="ОписаниеРасширеннаяПодсказка" id="31"/>
+					<ContextMenu name="ОпцииОписаниеКонтекстноеМеню" id="30"/>
+					<ExtendedTooltip name="ОпцииОписаниеРасширеннаяПодсказка" id="31"/>
 				</InputField>
 			</ChildItems>
 		</Table>
-		<InputField name="ОпцииСхема" id="32">
+		<InputField name="ПодвалСхема" id="32">
 			<DataPath>Items.Опции.CurrentData.Схема</DataPath>
+			<UserVisible>
+				<xr:Common>false</xr:Common>
+			</UserVisible>
 			<ReadOnly>true</ReadOnly>
 			<AutoMaxWidth>false</AutoMaxWidth>
-			<ContextMenu name="ОпцииСхемаКонтекстноеМеню" id="33"/>
-			<ExtendedTooltip name="ОпцииСхемаРасширеннаяПодсказка" id="34"/>
+			<ContextMenu name="ПодвалСхемаКонтекстноеМеню" id="33"/>
+			<ExtendedTooltip name="ПодвалСхемаРасширеннаяПодсказка" id="34"/>
 		</InputField>
-		<InputField name="ОпцииОписание" id="23">
+		<InputField name="ПодвалОписание" id="23">
 			<DataPath>Items.Опции.CurrentData.Описание</DataPath>
+			<UserVisible>
+				<xr:Common>false</xr:Common>
+			</UserVisible>
 			<ReadOnly>true</ReadOnly>
 			<AutoMaxWidth>false</AutoMaxWidth>
-			<ContextMenu name="ОпцииОписаниеКонтекстноеМеню" id="24"/>
-			<ExtendedTooltip name="ОпцииОписаниеРасширеннаяПодсказка" id="25"/>
+			<ContextMenu name="ПодвалОписаниеКонтекстноеМеню" id="24"/>
+			<ExtendedTooltip name="ПодвалОписаниеРасширеннаяПодсказка" id="25"/>
 		</InputField>
 	</ChildItems>
 	<Attributes>
@@ -258,4 +275,20 @@
 			</dcsset:item>
 		</ConditionalAppearance>
 	</Attributes>
+	<Commands>
+		<Command name="ЗаписатьИЗакрыть" id="1">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Записать и закрыть</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Записать и закрыть</v8:content>
+				</v8:item>
+			</ToolTip>
+		</Command>
+	</Commands>
 </Form>
