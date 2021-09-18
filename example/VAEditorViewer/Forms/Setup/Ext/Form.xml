@@ -25,24 +25,27 @@
 			<EnableStartDrag>true</EnableStartDrag>
 			<EnableDrag>true</EnableDrag>
 			<DataPath>Опции</DataPath>
-			<ContextMenu name="ОпцииКонтекстноеМеню" id="2"/>
-			<AutoCommandBar name="ОпцииКоманднаяПанель" id="3">
+			<ContextMenu name="ОпцииКонтекстноеМеню" id="2">
 				<ChildItems>
 					<Button name="ОпцииИзменитьФорму" id="40">
 						<Type>CommandBarButton</Type>
 						<CommandName>Form.StandardCommand.CustomizeForm</CommandName>
 						<ExtendedTooltip name="ОпцииИзменитьФормуРасширеннаяПодсказка" id="41"/>
 					</Button>
-					<Button name="ОпцииСохранитьНастройки" id="42">
+				</ChildItems>
+			</ContextMenu>
+			<AutoCommandBar name="ОпцииКоманднаяПанель" id="3">
+				<ChildItems>
+					<Button name="ОпцииЗаписатьИЗакрыть" id="44">
 						<Type>CommandBarButton</Type>
 						<DefaultButton>true</DefaultButton>
 						<CommandName>Form.Command.ЗаписатьИЗакрыть</CommandName>
-						<ExtendedTooltip name="ОпцииСохранитьНастройкиРасширеннаяПодсказка" id="43"/>
+						<ExtendedTooltip name="ОпцииЗаписатьИЗакрытьРасширеннаяПодсказка" id="45"/>
 					</Button>
-					<Button name="ОпцииЗакрыть" id="44">
+					<Button name="ОпцииЗакрыть" id="42">
 						<Type>CommandBarButton</Type>
 						<CommandName>Form.StandardCommand.Close</CommandName>
-						<ExtendedTooltip name="ОпцииЗакрытьРасширеннаяПодсказка" id="45"/>
+						<ExtendedTooltip name="ОпцииЗакрытьРасширеннаяПодсказка" id="43"/>
 					</Button>
 				</ChildItems>
 			</AutoCommandBar>
@@ -289,6 +292,7 @@
 					<v8:content>Записать и закрыть</v8:content>
 				</v8:item>
 			</ToolTip>
+			<Action>ЗаписатьИЗакрыть</Action>
 		</Command>
 	</Commands>
 </Form>

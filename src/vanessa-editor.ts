@@ -135,7 +135,7 @@ export class VanessaEditor implements IVanessaEditor {
     readOnly: boolean = false,
     checkSyntax = true,
     options: VAEditorOptions = {
-      renderWhitespace: "none",
+      renderWhitespace: "selection",
       showMinimap: true,
     }
   ) {
