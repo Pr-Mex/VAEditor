@@ -276,6 +276,7 @@ export class VanessaTabs {
   public tabStack: Array<VanessaTabItem> = [];
   private _showMinimap: boolean = true;
   private _renderWhitespace: WhitespaceType = "none";
+  private _editorOptions: monaco.editor.IEditorOptions = {};
   private hiddenEditors: Array<IVanessaEditor> = [];
   private checkSyntax: boolean = true;
   public timer: NodeJS.Timeout;
@@ -387,6 +388,7 @@ export class VanessaTabs {
     }
     const editor = new VanessaEditor(model, readOnly, this.checkSyntax, options);
     editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
+    editor.editor.updateOptions(this._editorOptions);
     return this.open(editor, title, filepath, encoding, newTab);
   }
 
@@ -421,6 +423,7 @@ export class VanessaTabs {
     this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
     editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
+    editor.editor.updateOptions(this._editorOptions);
     return this.open(editor, title, newFilePath, encoding, newTab);
   }
 
@@ -534,5 +537,5 @@ export class VanessaTabs {
   public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
   public get options(): string { let o = monaco.editor.EditorOptions; return JSON.stringify(Object.keys(o).map(k => [k, o[k]])); }
-  public set options(value: string) { VanessaEditor.editors.forEach(e => e.options = value); }
+  public set options(value: string) { VanessaEditor.editors.forEach(e => e.options = value); this._editorOptions = JSON.parse(value); }
 }
