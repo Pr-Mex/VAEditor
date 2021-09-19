@@ -66,9 +66,8 @@ export class VAStepLine {
   constructor(matcher: KeywordMatcher, line: string) {
     let match = line.match(matcher.step);
     if (!match) return;
-    const keyLength = match[0].length - 1;
-    this._keyword = match[0].substring(0, keyLength);
-    const steptext = line.substring(keyLength);
+    this._keyword = match[0];
+    const steptext = line.substring(match[0].length);
     const tokens = [matcher.tokens.word, matcher.tokens.param, matcher.tokens.number, /./];
     const source = tokens.map((reg: RegExp) => "(" + reg.source + ")").join("|");
     const regexp = new RegExp(source, "gui");

@@ -47,6 +47,38 @@ describe('Автоподстановка шагов при вводе', function
     });
   });
   it('Подсказка для строки с ключевым словом', (done) => {
+    const content = "\t\tИ это значит что";
+    model = monaco.editor.createModel(content, language.id);
+    competitions().then(result => {
+      expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
+      result.suggestions.sort((a, b) => a.kind - b.kind);
+      let step = result.suggestions[0];
+      expect(step).to.have.property('detail', 'UI.Таблицы.Выбор таблицы');
+      expect(step).to.have.property('documentation', 'Выбирает таблицу для работы');
+      expect(step).to.have.property('filterText', 'И это значит что я буду работать с таблицей');
+      expect(step).to.have.property('insertText', 'И это значит что я буду работать с таблицей "ТаблицаФормы"\n');
+      expect(step).to.have.property('label', 'я буду работать с таблицей "ТаблицаФормы"');
+      expect(step).to.have.property('kind', 1);
+      done();
+    });
+  });
+  it('Подсказка с ключевым словом и пробелом', (done) => {
+    const content = "\t\tИ это значит что ";
+    model = monaco.editor.createModel(content, language.id);
+    competitions().then(result => {
+      expect(result).to.be.an('object').to.have.property('suggestions').to.be.an('array').to.have.lengthOf(6);
+      result.suggestions.sort((a, b) => a.kind - b.kind);
+      let step = result.suggestions[0];
+      expect(step).to.have.property('detail', 'UI.Таблицы.Выбор таблицы');
+      expect(step).to.have.property('documentation', 'Выбирает таблицу для работы');
+      expect(step).to.have.property('filterText', 'И это значит что я буду работать с таблицей');
+      expect(step).to.have.property('insertText', 'И это значит что я буду работать с таблицей "ТаблицаФормы"\n');
+      expect(step).to.have.property('label', 'я буду работать с таблицей "ТаблицаФормы"');
+      expect(step).to.have.property('kind', 1);
+      done();
+    });
+  });
+  it('Подсказка для строки с началом шага', (done) => {
     const content = "\t\tИ это значит что список";
     model = monaco.editor.createModel(content, language.id);
     competitions().then(result => {

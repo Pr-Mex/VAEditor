@@ -50,9 +50,10 @@ export function getCompletions(
     endColumn: maxColumn ? maxColumn : msg.column,
   };
 
-  if (match = (msg.line + " ").match(ctx.matcher.step)) {
+  if (match = msg.line.match(ctx.matcher.step)) {
     let keytext = msg.line.substring(minColumn - 1, match[0].length);
     keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
+    if (keytext.match(/\S$/)) keytext += " ";
     for (let snippet in ctx.steplist) {
       let e = ctx.steplist[snippet] as VAStepData;
       if (e.documentation) {
