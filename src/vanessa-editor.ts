@@ -1,4 +1,4 @@
-import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorOptions, VAEditorType } from "./common";
+import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorType } from "./common";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { ActionManager } from "./actions";
 import { ProblemManager } from "./problems";
@@ -134,28 +134,25 @@ export class VanessaEditor implements IVanessaEditor {
     model: monaco.editor.ITextModel,
     readOnly: boolean = false,
     checkSyntax = true,
-    options: VAEditorOptions = {
+    options: monaco.editor.IEditorConstructionOptions = {
       renderWhitespace: "selection",
-      showMinimap: true,
+      glyphMargin: true,
+      lightbulb: { enabled: true },
+      minimap: { enabled: true },
     }
   ) {
     let container = document.getElementById("VanessaEditorContainer");
     this._domNode = $("div", { class: "vanessa-editor" });
     container.appendChild(this._domNode);
-    this.editor = monaco.editor.create(this._domNode, {
-      contextmenu: false,
-      model: model,
-      readOnly: readOnly,
-      scrollBeyondLastLine: false,
-      glyphMargin: true,
-      automaticLayout: true,
-      detectIndentation: false,
-      insertSpaces: false,
-      useShadowDOM: false,
-      renderWhitespace: options.renderWhitespace,
-      minimap: { enabled: options.showMinimap},
-      lightbulb: { enabled: true }
-    });
+    const editorOptions = JSON.parse(JSON.stringify(options));
+    editorOptions.model = model;
+    editorOptions.readOnly = readOnly;
+    editorOptions.detectIndentation = false;
+    editorOptions.insertSpaces = false;
+    editorOptions.useShadowDOM = false;
+    editorOptions.contextmenu = false;
+    editorOptions.automaticLayout = true;
+    this.editor = monaco.editor.create(this._domNode, editorOptions);
     this.editor.getModel().updateOptions({ insertSpaces: false });
     this.runtimeManager = new RuntimeManager(this);
     this.actionManager = new ActionManager(this);
@@ -192,7 +189,7 @@ export class VanessaEditor implements IVanessaEditor {
   };
 
   public set options(value: string) {
-      this.editor.updateOptions(JSON.parse(value));
+    this.editor.updateOptions(JSON.parse(value));
   }
 
   public get type() { return VAEditorType.CodeEditor; }

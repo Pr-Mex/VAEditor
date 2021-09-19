@@ -2,7 +2,7 @@ import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { ActionManager } from './actions';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
-import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel, WhitespaceType, VAEditorOptions, VAEditorType } from "./common";
+import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel, WhitespaceType, VAEditorType } from "./common";
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { VanessaViwer } from './vanessa-viewer';
 import { version } from '../version.json'
@@ -274,9 +274,7 @@ export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
-  private _showMinimap: boolean = true;
-  private _renderWhitespace: WhitespaceType = "none";
-  private _editorOptions: monaco.editor.IEditorOptions = {};
+  private editorOptions: monaco.editor.IEditorOptions = {};
   private hiddenEditors: Array<IVanessaEditor> = [];
   private checkSyntax: boolean = true;
   public timer: NodeJS.Timeout;
@@ -382,13 +380,7 @@ export class VanessaTabs {
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
-    const options: VAEditorOptions = {
-      renderWhitespace: this.renderWhitespace,
-      showMinimap: this.showMinimap,
-    }
-    const editor = new VanessaEditor(model, readOnly, this.checkSyntax, options);
-    editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
-    editor.editor.updateOptions(this._editorOptions);
+    const editor = new VanessaEditor(model, readOnly, this.checkSyntax, this.editorOptions);
     return this.open(editor, title, filepath, encoding, newTab);
   }
 
@@ -423,7 +415,7 @@ export class VanessaTabs {
     this.disposeHidden();
     const editor = new VanessaDiffEditor(diff, readOnly);
     editor.editor.updateOptions({ renderWhitespace: this.renderWhitespace });
-    editor.editor.updateOptions(this._editorOptions);
+    editor.editor.updateOptions(this.editorOptions);
     return this.open(editor, title, newFilePath, encoding, newTab);
   }
 
@@ -490,22 +482,21 @@ export class VanessaTabs {
     this.checkSyntax = value;
   }
 
-  public get renderWhitespace(): WhitespaceType { return this._renderWhitespace; }
+  public get renderWhitespace(): WhitespaceType {
+    return this.editorOptions.renderWhitespace as WhitespaceType || "none";
+  }
   public set renderWhitespace(value: WhitespaceType) {
-    this._renderWhitespace = value;
-    this.tabStack.forEach(tab => {
-      if (tab.type == VAEditorType.CodeEditor)
-        tab.editor.editor.updateOptions({ renderWhitespace: value })
-    });
+    this.editorOptions.renderWhitespace = value;
+    VanessaEditor.editors.forEach(e => e.editor.updateOptions({ renderWhitespace: value }));
   }
 
-  public get showMinimap(): boolean { return this._showMinimap; }
+  public get showMinimap(): boolean {
+    return this.editorOptions.minimap && this.editorOptions.minimap.enabled ? true : false;
+  }
   public set showMinimap(value: boolean) {
-    this._showMinimap = value;
-    this.tabStack.forEach(tab => {
-      if (tab.type == VAEditorType.CodeEditor)
-        tab.editor.editor.updateOptions({ minimap: { enabled: value } })
-    });
+    if (this.editorOptions.minimap == undefined) this.editorOptions.minimap = {};
+    this.editorOptions.minimap.enabled = value;
+    VanessaEditor.editors.forEach(e => e.editor.updateOptions({ minimap: { enabled: value } }));
   }
 
   public showContextMenu = () => {
@@ -537,5 +528,5 @@ export class VanessaTabs {
   public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
   public get options(): string { let o = monaco.editor.EditorOptions; return JSON.stringify(Object.keys(o).map(k => [k, o[k]])); }
-  public set options(value: string) { VanessaEditor.editors.forEach(e => e.options = value); this._editorOptions = JSON.parse(value); }
+  public set options(value: string) { VanessaEditor.editors.forEach(e => e.options = value); this.editorOptions = JSON.parse(value); }
 }

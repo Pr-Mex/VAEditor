@@ -24,11 +24,6 @@ export interface IVanessaEditor {
   type: VAEditorType;
 }
 
-export interface VAEditorOptions {
-  renderWhitespace: WhitespaceType,
-  showMinimap: boolean,
-}
-
 export interface IVanessaAction {
   id: string;
   title: string;
