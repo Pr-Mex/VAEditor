@@ -65,7 +65,7 @@ div.welcome {
 }
 
 .welcome li span.path {
-  color:#666666;
+  color: #666666;
   font-family: Calibri, Arial, sans-serif;
   vertical-align: middle;
   padding-left: 1rem;
@@ -73,3 +73,29 @@ div.welcome {
   font-size: 1rem;
 }
 
+body[data-theme="vs-dark"] .vanessa-viewer {
+  background-color: rgba(30, 30, 30);
+  color: rgb(212, 212, 212);
+}
+
+body[data-theme="vs-dark"] .welcome h1 {
+  color: rgb(203, 203, 203);
+}
+
+body[data-theme="vs-dark"] .welcome h2 {
+  color: rgb(120, 120, 120);
+}
+
+body[data-theme="vs-dark"] .welcome h3 {
+  color: rgb(203, 203, 203);
+}
+
+body[data-theme="vs-dark"] .vanessa-viewer a {
+  color: rgb(53, 115, 205);
+  text-decoration-color: rgb(53, 115, 205);
+}
+
+body[data-theme="vs-dark"] .welcome .codicon {
+  color: rgb(53, 115, 205) !important;
+  text-decoration-color: rgb(53, 115, 205);
+}

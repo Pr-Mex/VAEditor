@@ -274,7 +274,7 @@ export class VanessaTabs {
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
   public tabStack: Array<VanessaTabItem> = [];
-  private editorOptions: monaco.editor.IEditorOptions = {};
+  private editorOptions: monaco.editor.IEditorOptions = { glyphMargin: true };
   private hiddenEditors: Array<IVanessaEditor> = [];
   private checkSyntax: boolean = true;
   public timer: NodeJS.Timeout;

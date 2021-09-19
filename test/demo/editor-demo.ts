@@ -61,9 +61,10 @@ export function show() {
     ]
   }
 
-  return
-
   tabs.welcome("Добро пожаловать!", JSON.stringify(welcome))
+  tabs.view("Просмотр.md", "Просмотр.md", "**Заголовок документа**\n\nСтрока обычного текста\n* [Ссылка на внешний ресурс](http://github.com)")
+  tabs.theme = "vs-dark"
+  return;
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
