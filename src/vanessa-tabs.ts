@@ -161,9 +161,9 @@ class VanessaTabItem {
   }
 
   dispose() {
-    this.owner.hideEditor(this.editor);
-    if (this.onChangeHandler) this.onChangeHandler.dispose();
-    if (this.owner.tabStack.length == 0) this.owner.disposeHidden();
+    try { this.owner.hideEditor(this.editor) } catch (e) { console.error(e) }
+    try { if (this.onChangeHandler) this.onChangeHandler.dispose() } catch (e) { console.error(e) }
+    try { if (this.owner.tabStack.length == 0) this.owner.disposeHidden() } catch (e) { console.error(e) }
     this.domNode.remove();
     this.editor = null;
     this.owner = null;
