@@ -56,6 +56,7 @@
 
 .debug-inline-view {
   background-color: rgb(255, 232, 147);
+  color: rgb(102, 102, 102) !important;
 }
 
 body[data-theme="vs-dark"] .debug-current-step {
