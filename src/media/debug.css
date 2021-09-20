@@ -34,16 +34,20 @@
   background: url('src/media/debug-current-and-breakpoint.svg') center center no-repeat;
 }
 
+.monaco-editor .selected-text {
+  background-color: rgba(18, 64, 171, 0.4) !important;
+}
+
 .debug-current-step {
-  background-color: rgba(255, 214, 92, 0.8);
+  background-color: rgba(255, 211, 0, 0.4);
 }
 
 .debug-complete-step {
-  background-color: rgba(129, 238, 147, 0.8);
+  background-color: rgba(0, 204, 0, 0.4)
 }
 
 .debug-error-step {
-  background-color: rgba(247, 96, 96, 0.8);
+  background-color: rgba(255, 0, 0, 0.4);
 }
 
 .debug-pending-step {
