@@ -74,7 +74,7 @@ div.welcome {
 }
 
 body[data-theme="vs-dark"] .vanessa-viewer {
-  background-color: rgba(30, 30, 30);
+  background-color: rgb(30, 30, 30);
   color: rgb(212, 212, 212);
 }
 
