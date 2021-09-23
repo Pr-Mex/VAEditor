@@ -310,7 +310,7 @@ export class VanessaTabs {
     this.disposeHidden();
   }
 
-  public findTab(callback: any) {
+  public findTab(callback: (t: VanessaTabItem) => boolean) {
     let index = -1;
     this.tabStack.forEach((t, i) => { if (callback(t)) index = i; });
     if (index < 0) return undefined;
@@ -425,7 +425,8 @@ export class VanessaTabs {
     src: string,
     newTab: boolean = true,
   ): IVanessaEditor => {
-    this.findTab(tab => tab.key === url && tab.type === VAEditorType.MarkdownViwer)?.close();
+    const key = monaco.Uri.parse(url).toString();
+    this.findTab(tab => tab.key === key && tab.type === VAEditorType.MarkdownViwer)?.close();
     const editor = new VanessaViwer(url, src);
     return this.open(editor, title, url, 0, newTab);
   }
@@ -436,7 +437,8 @@ export class VanessaTabs {
     newTab: boolean = true,
   ): IVanessaEditor => {
     const url = "memory:welcome";
-    this.findTab(tab => tab.key === url && tab.type === VAEditorType.MarkdownViwer)?.close();
+    const key = monaco.Uri.parse(url).toString();
+    this.findTab(tab => tab.key === key && tab.type === VAEditorType.MarkdownViwer)?.close();
     const editor = new VanessaViwer(url, src, false);
     return this.open(editor, title, url, 0, newTab);
   }
