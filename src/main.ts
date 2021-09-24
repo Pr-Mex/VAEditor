@@ -22,6 +22,9 @@ if (localeCode !== 'en') {
   setLocaleData(localeData);
 }
 
+import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+StaticServices.standaloneThemeService.get().registerEditorContainer(document.body);
+
 import { VanessaTabs } from "./vanessa-tabs";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
