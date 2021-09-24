@@ -34,8 +34,6 @@ export function show() {
   provider.setMessages(JSON.stringify(messages))
   provider.setVariables(JSON.stringify(variables))
 
-  const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
-
   const welcome: WelcomeParams = {
     title: "Vanessa Automation",
     subtitle: "Сценарное тестирование",
@@ -62,6 +60,7 @@ export function show() {
   }
 
   tabs.welcome("Добро пожаловать!", JSON.stringify(welcome))
+  const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
   tabs.view("Просмотр.md", "Просмотр.md", "**Заголовок документа**\n\nСтрока обычного текста\n* [Ссылка на внешний ресурс](http://github.com)")
   tabs.theme = "vs-dark"
   return;

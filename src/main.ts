@@ -31,6 +31,9 @@ import { EventsManager, initPage } from "./common";
 
 initPage();
 
+import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+StaticServices.standaloneThemeService.get().registerEditorContainer(document.body);
+
 Object.defineProperties(window, {
   VanessaTabs: { get: () => VanessaTabs.getStandalone() },
   VanessaEditor: { get: () => VanessaEditor.getStandalone() },
