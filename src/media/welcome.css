@@ -1,3 +1,20 @@
+.vanessa-markdown {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 1rem;
+  margin: 0.5em;
+}
+
+.vanessa-markdown a {
+  color: rgb(0, 106, 177);
+  text-decoration-color: rgb(0, 106, 177);
+  font-family: Calibri, Arial, sans-serif;
+  text-decoration: none;
+}
+
+.vanessa-markdown a:visited {
+  text-decoration: none;
+}
+
 div.welcome {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 2em;

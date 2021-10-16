@@ -92,6 +92,7 @@ export class VanessaViwer implements IVanessaEditor {
     this._domNode = $("div", { class: "vanessa-viewer" },
       this._domInner = $("div", { class: "vanessa-inner" }));
     if (markdown) {
+      this._domInner.classList.add("vanessa-markdown");
       this._domInner.appendChild(markdownToHTML(src));
       this._domInner.addEventListener("click", this.onMarkdownClick.bind(this), true);
     }
