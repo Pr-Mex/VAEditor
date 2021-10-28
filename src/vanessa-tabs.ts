@@ -515,6 +515,48 @@ export class VanessaTabs {
     this.current?.editor.trigger(source, handlerId, payload);
   }
 
+  public getСoordinates = (
+    lineNumber: number,
+    column: number,
+  ) => {
+    if (!this.isCodeEditor) return undefined;
+    const editor = this.current.editor.editor;
+    const options = editor.getOptions();
+    const layoutInfo = options.get(monaco.editor.EditorOption.layoutInfo);
+    const height = options.get(monaco.editor.EditorOption.lineHeight);
+    const top = editor.getTopForLineNumber(lineNumber)
+      - editor.getScrollTop() + this.domContainer.offsetHeight;
+    const left = editor.getOffsetForColumn(lineNumber, column)
+      + layoutInfo.glyphMarginWidth
+      + layoutInfo.lineNumbersWidth
+      + layoutInfo.decorationsWidth
+      - editor.getScrollLeft();
+    return { left, top, height };
+  }
+
+  public getRectangle = (
+    startLineNumber: number,
+    startColumn: number,
+    endLineNumber: number,
+    endColumn: number,
+  ) => {
+    if (!this.isCodeEditor) return undefined;
+    const x1 = Math.min(startColumn, endColumn);
+    const x2 = Math.min(startColumn, endColumn);
+    const y1 = Math.min(startLineNumber, endLineNumber);
+    const y2 = Math.max(startLineNumber, endLineNumber);
+    const c1 = this.getСoordinates(y1, x1);
+    const c2 = this.getСoordinates(y2, x2);
+    return {
+      left: c1.left,
+      top: c1.top,
+      right: c2.left,
+      bottom: c2.top,
+      height: c2.top + c2.height - c1.top,
+      width: c2.left + c2.left,
+    };
+  }
+
   public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
   public get isDiffEditor(): boolean { return this.current ? this.current.type === VAEditorType.DiffEditor : false; }
   public get isCodeEditor(): boolean { return this.current ? this.current.type === VAEditorType.CodeEditor : false; }
