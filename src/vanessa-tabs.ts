@@ -515,7 +515,7 @@ export class VanessaTabs {
     this.current?.editor.trigger(source, handlerId, payload);
   }
 
-  public getСoordinates = (
+  public getCoordinates = (
     lineNumber: number,
     column: number,
   ) => {
@@ -523,7 +523,7 @@ export class VanessaTabs {
     const editor = this.current.editor.editor;
     const options = editor.getOptions();
     const layoutInfo = options.get(monaco.editor.EditorOption.layoutInfo);
-    const height = options.get(monaco.editor.EditorOption.lineHeight);
+    const lineHeight = options.get(monaco.editor.EditorOption.lineHeight);
     const top = editor.getTopForLineNumber(lineNumber)
       - editor.getScrollTop() + this.domContainer.offsetHeight;
     const left = editor.getOffsetForColumn(lineNumber, column)
@@ -531,7 +531,8 @@ export class VanessaTabs {
       + layoutInfo.lineNumbersWidth
       + layoutInfo.decorationsWidth
       - editor.getScrollLeft();
-    return { left, top, height };
+    const rect = document.body.getBoundingClientRect();
+    return { left, top, lineHeight, windowWidth: rect.width, windowHeight: rect.height };
   }
 
   public getRectangle = (
@@ -545,15 +546,17 @@ export class VanessaTabs {
     const x2 = Math.min(startColumn, endColumn);
     const y1 = Math.min(startLineNumber, endLineNumber);
     const y2 = Math.max(startLineNumber, endLineNumber);
-    const c1 = this.getСoordinates(y1, x1);
-    const c2 = this.getСoordinates(y2, x2);
+    const c1 = this.getCoordinates(y1, x1);
+    const c2 = this.getCoordinates(y2, x2);
     return {
       left: c1.left,
       top: c1.top,
       right: c2.left,
       bottom: c2.top,
-      height: c2.top + c2.height - c1.top,
+      height: c2.top + c2.lineHeight - c1.top,
       width: c2.left + c2.left,
+      windowWidth: c1.windowWidth,
+      windowHeight: c1.windowWidth,
     };
   }
 
