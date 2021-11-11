@@ -1,7 +1,7 @@
 //@ts-ignore
 self.MonacoEnvironment = {
 	globalAPI: true,
-  getWorkerUrl: function (moduleId: any, label: any): void {
+  getWorkerUrl: function (moduleId: string, label: string): string {
     // tslint:disable-next-line: max-line-length
     return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker");
   }
