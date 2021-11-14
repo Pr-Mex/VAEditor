@@ -5,7 +5,15 @@ import { EventsManager, IVanessaEditor, VAEditorType, VanessaEditorEvent } from 
 const $ = dom.$;
 
 const markdownToHTML = (value: string) => {
-  return renderMarkdown({ value }, { inline: false }).element;
+  return renderMarkdown({ value }, {
+    inline: false,
+    codeBlockRenderer: async function (languageAlias: string, value: string) {
+      const element = document.createElement('span');
+      const html = await monaco.editor.colorize(value, languageAlias, {});
+      element.innerHTML = html;
+      return element;
+    }
+  }).element;
 }
 
 class VanessaViewModel {
