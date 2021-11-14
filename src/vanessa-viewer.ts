@@ -5,16 +5,7 @@ import { EventsManager, IVanessaEditor, VAEditorType, VanessaEditorEvent } from 
 const $ = dom.$;
 
 const markdownToHTML = (value: string) => {
-  const result = renderMarkdown({
-    value
-  }, {
-    inline: false,
-    codeBlockRenderer: async function (languageAlias: string, value: string) {
-      return await monaco.editor.colorize(value, languageAlias, {})
-    }
-
-  })
-  return result
+  return renderMarkdown({ value }, { inline: false }).element;
 }
 
 class VanessaViewModel {

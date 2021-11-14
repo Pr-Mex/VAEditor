@@ -62,8 +62,6 @@ export function show() {
   tabs.welcome("Добро пожаловать!", JSON.stringify(welcome))
   const editor = tabs.edit(content, 'Браузер.feature', 'Браузер.feature', 'Браузер.feature', 0, false, true)
   tabs.view("Просмотр.md", "Просмотр.md", "**Заголовок документа**\n\nСтрока обычного текста\n* [Ссылка на внешний ресурс](http://github.com)")
-  tabs.theme = "vs-dark"
-  return;
 
   // eslint-disable-next-line
   const subcode = '\tК тому же шаг подсценария 1\n\t\tИ шаг подсценария 2\n\t\t\tИ шаг подсценария 3\n\t\t\tИ шаг подсценария 4\n\t\
@@ -74,6 +72,10 @@ export function show() {
 
   let text = content.replace(/(\r\n|\n|\r)/gm, '\n\n')
   const viewer = tabs.view('Markdown', 'Markdown.txt', text)
+
+  return;
+
+  tabs.theme = "vs-dark"
 
   const commands = [
     { eventId: 'Win+F6', keyCode: 'F6', keyMod: ['WinCtrl'] },
