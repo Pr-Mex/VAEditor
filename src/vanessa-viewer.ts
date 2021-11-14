@@ -8,8 +8,12 @@ const markdownToHTML = (value: string) => {
   return renderMarkdown({ value }, {
     inline: false,
     codeBlockRenderer: async function (languageAlias: string, value: string) {
+      const alias = languageAlias.toLowerCase();
+      const id = monaco.languages.getLanguages().find(
+        lang => lang.aliases?.some(a => a.toLocaleLowerCase() === alias)
+      )?.id || alias;
+      const html = await monaco.editor.colorize(value, id, {});
       const element = document.createElement('span');
-      const html = await monaco.editor.colorize(value, languageAlias, {});
       element.innerHTML = html;
       return element;
     }

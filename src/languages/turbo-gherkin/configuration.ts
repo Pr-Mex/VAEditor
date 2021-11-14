@@ -2,6 +2,7 @@ import { VanessaGherkinProvider } from "./provider";
 
 export const language: monaco.languages.ILanguageExtensionPoint = {
   id: "turbo-gherkin",
+  aliases: ["gherkin", "turbo-gherkin"],
   extensions: [".feature"],
 };
 
