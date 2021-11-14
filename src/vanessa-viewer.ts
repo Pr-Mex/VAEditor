@@ -13,7 +13,7 @@ const markdownToHTML = (value: string) => {
         lang => lang.aliases?.some(a => a.toLocaleLowerCase() === alias)
       )?.id || alias;
       const html = await monaco.editor.colorize(value, id, {});
-      const element = document.createElement('span');
+      const element = $("span", { class: "vanessa-markdown-code" });
       element.innerHTML = html;
       return element;
     }

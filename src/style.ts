@@ -32,7 +32,7 @@ export class StyleManager {
       document.head.appendChild(style)
     }
     style.innerHTML = `\
-    .vanessa-code-widget, .vanessa-error-widget {\
+    .vanessa-code-widget, .vanessa-error-widget, .vanessa-markdown-code {\
       font-family: ${fontFamily};\
       font-size: ${fontSize}px;\
       line-height: ${lineHeight}px;\
