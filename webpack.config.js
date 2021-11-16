@@ -53,7 +53,7 @@ module.exports = (env, argv) => {
           loader: 'string-replace-loader',
           options: {
             multiple: [{
-              search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KEY_I */],',
+              search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],',
               replace: 'secondary: null,'
             }]
           }
