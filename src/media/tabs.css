@@ -28,7 +28,7 @@ body {
     left: 0;
 }
 
-a[href] {
+a[data-href] {
     cursor: pointer;
 }
 
