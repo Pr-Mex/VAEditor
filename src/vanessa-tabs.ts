@@ -543,7 +543,7 @@ export class VanessaTabs {
   ) => {
     if (!this.isCodeEditor) return undefined;
     const x1 = Math.min(startColumn, endColumn);
-    const x2 = Math.min(startColumn, endColumn);
+    const x2 = Math.max(startColumn, endColumn);
     const y1 = Math.min(startLineNumber, endLineNumber);
     const y2 = Math.max(startLineNumber, endLineNumber);
     const c1 = this.getCoordinates(y1, x1);
@@ -556,7 +556,7 @@ export class VanessaTabs {
       height: c2.top + c2.lineHeight - c1.top,
       width: c2.left + c2.left,
       windowWidth: c1.windowWidth,
-      windowHeight: c1.windowWidth,
+      windowHeight: c1.windowHeight,
     };
   }
 
