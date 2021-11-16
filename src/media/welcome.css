@@ -19,6 +19,12 @@
   text-decoration: none;
 }
 
+.vanessa-markdown-code {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 19px;
+}
+
 div.welcome {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 2em;
