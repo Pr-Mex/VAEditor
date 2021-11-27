@@ -130,12 +130,18 @@ class VanessaTabItem {
       if (node.nextSibling)
         node.parentElement.appendChild(node);
       this.editor?.focus();
+      if (this.editor instanceof VanessaViwer) {
+        this.editor.restoreScroll();
+      }
     }
     setTimeout(() => show(), 100);
     this.owner.timer = setTimeout(() => show(), 300);
   };
 
   public select = () => {
+    if (this.owner.current && this.owner.current.editor instanceof VanessaViwer) {
+      this.owner.current.editor.saveScroll();
+    }
     const className = "vanessa-tab-select";
     let tabDomElement = this.domNode.parentElement.firstElementChild;
     while (tabDomElement) {

@@ -88,6 +88,7 @@ export class VanessaViwer implements IVanessaEditor {
 
   private _domNode: HTMLElement;
   private _domInner: HTMLElement;
+  private _scrollTop: number;
 
   constructor(uri: string, src: string, markdown: boolean = true) {
     this.editor = new VanessaViewEditor(uri);
@@ -122,4 +123,6 @@ export class VanessaViwer implements IVanessaEditor {
   }
 
   public get type() { return VAEditorType.MarkdownViwer; }
+  public saveScroll() { this._scrollTop = this._domInner.scrollTop; }
+  public restoreScroll() { this._domInner.scrollTop = this._scrollTop; }
 }
