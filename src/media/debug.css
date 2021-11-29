@@ -51,11 +51,11 @@
 }
 
 .debug-pending-step {
-  background-color: rgba(173, 216, 230, 0.8);
+  background-color: rgba(255, 136, 0, 0.4);
 }
 
 .debug-disabled-step {
-  background-color: rgba(192, 192, 192, 0.8);
+  background-color: rgba(192, 192, 192, 0.4);
 }
 
 .debug-inline-view {
@@ -76,7 +76,7 @@ body[data-theme="vs-dark"] .debug-error-step {
 }
 
 body[data-theme="vs-dark"] .debug-pending-step {
-  background-color: rgba(147, 228, 255, 0.3);
+  background-color: rgba(255, 160, 93, 0.3);
 }
 
 body[data-theme="vs-dark"] .debug-disabled-step {
