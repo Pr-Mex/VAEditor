@@ -60,6 +60,7 @@ class VanessaTabItem {
         this.domClose = $(".vanessa-tab-close.codicon-close", { title: "Close" }),
       ));
     this.domItem.addEventListener("click", this.onClick.bind(this), true);
+    this.domItem.addEventListener("mouseup", this.onMouseUp.bind(this), true);
     this.domTitle.innerText = title;
     this.owner.domTabPanel.appendChild(this.domNode);
     this.registerOnDidChangeContent();
@@ -108,6 +109,12 @@ class VanessaTabItem {
       this.onClose();
     } else {
       this.onSelect();
+    }
+  }
+
+  private onMouseUp(event: any) {
+    if (event.button === 1) {
+      this.onClose();
     }
   }
 
