@@ -139,9 +139,7 @@ class VanessaTabItem {
   };
 
   public select = () => {
-    if (this.owner.current && this.owner.current.editor instanceof VanessaViwer) {
-      this.owner.current.editor.saveScroll();
-    }
+    this.owner.saveViewScroll();
     const className = "vanessa-tab-select";
     let tabDomElement = this.domNode.parentElement.firstElementChild;
     while (tabDomElement) {
@@ -368,6 +366,12 @@ export class VanessaTabs {
     return editor;
   }
 
+  public saveViewScroll() {
+    if (this.current && this.current.editor instanceof VanessaViwer) {
+      this.current.editor.saveScroll();
+    }
+  }
+
   public edit = (
     content: string,
     filename: string,
@@ -383,6 +387,7 @@ export class VanessaTabs {
       tab.key === key && tab.type === VAEditorType.CodeEditor
     );
     if (tab) return tab.select();
+    this.saveViewScroll();
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
@@ -410,6 +415,7 @@ export class VanessaTabs {
       && tab.editor.editor.getModel().modified.uri.toString() === modifiedKey
     );
     if (tab) return tab.select();
+    this.saveViewScroll();
     const uriOriginal = monaco.Uri.parse(oldFilePath);
     const uriModified = monaco.Uri.parse(newFilePath);
     const diff: monaco.editor.IDiffEditorModel = {
@@ -432,7 +438,9 @@ export class VanessaTabs {
     newTab: boolean = true,
   ): IVanessaEditor => {
     const key = monaco.Uri.parse(url).toString();
-    this.findTab(tab => tab.key === key && tab.type === VAEditorType.MarkdownViwer)?.close();
+    const tab = this.findTab(tab => tab.key === key && tab.type === VAEditorType.MarkdownViwer);
+    if (tab) return tab.select();
+    this.saveViewScroll();
     const editor = new VanessaViwer(url, src);
     return this.open(editor, title, url, 0, newTab);
   }
