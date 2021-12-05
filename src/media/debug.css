@@ -100,8 +100,13 @@ body[data-theme="vs-dark"] .vanessa-code-border {
 }
 
 .vanessa-style-underline {
-  text-decoration: underline;
-  -webkit-text-decoration: underline;
+  text-decoration: underline black;
+  -webkit-text-decoration: underline black;
+}
+
+body[data-theme="vs-dark"] .vanessa-style-underline {
+  text-decoration: underline white;
+  -webkit-text-decoration: underline white;
 }
 
 .vanessa-subcode-bold {
@@ -113,8 +118,13 @@ body[data-theme="vs-dark"] .vanessa-code-border {
 }
 
 .vanessa-subcode-underline>span {
-  text-decoration: underline;
-  -webkit-text-decoration: underline;
+  text-decoration: underline black;
+  -webkit-text-decoration: underline black;
+}
+
+body[data-theme="vs-dark"] .vanessa-subcode-underline>span {
+  text-decoration: underline white;
+  -webkit-text-decoration: underline white;
 }
 
 .vanessa-subcode-underline>span.space {
