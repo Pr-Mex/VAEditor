@@ -9,6 +9,9 @@ export function patchWebKit1C () {
     })
   }
 
+  // Disabling middle click scrolling
+  document.body.onmousedown = function(e) { if (e.button === 1) return false; }
+
   function dummy (e) {
     e = e || window.event
     if (e.preventDefault) e.preventDefault()
