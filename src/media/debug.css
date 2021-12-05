@@ -100,8 +100,8 @@ body[data-theme="vs-dark"] .vanessa-code-border {
 }
 
 .vanessa-style-underline {
-  text-decoration: underline black;
-  -webkit-text-decoration: underline black;
+  text-decoration: underline;
+  -webkit-text-decoration: underline;
 }
 
 .vanessa-subcode-bold {
@@ -113,8 +113,8 @@ body[data-theme="vs-dark"] .vanessa-code-border {
 }
 
 .vanessa-subcode-underline>span {
-  text-decoration: underline black;
-  -webkit-text-decoration: underline black;
+  text-decoration: underline;
+  -webkit-text-decoration: underline;
 }
 
 .vanessa-subcode-underline>span.space {
