@@ -122,7 +122,16 @@ export class VanessaViwer implements IVanessaEditor {
     }
   }
 
-  public get type() { return VAEditorType.MarkdownViwer; }
-  public saveScroll() { this._scrollTop = this._domInner.scrollTop; }
-  public restoreScroll() { this._domInner.scrollTop = this._scrollTop; }
+  public get type() {
+    return VAEditorType.MarkdownViwer;
+  }
+
+  public saveScroll() {
+    if (this._domNode.offsetParent)
+      this._scrollTop = this._domInner.scrollTop;
+  }
+
+  public restoreScroll() {
+    this._domInner.scrollTop = this._scrollTop;
+  }
 }
