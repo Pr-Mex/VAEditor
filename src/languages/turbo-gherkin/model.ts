@@ -39,7 +39,7 @@ export function getModelTokens(
     } else {
       if (token == VAToken.Multiline) multiline = true;
     }
-    if (token != VAToken.Operator) {
+    if (token != VAToken.Operator && token != VAToken.Asterisk) {
       tokens.push({ token: token, indent: 0 });
     } else {
       let ident = 0;

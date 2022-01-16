@@ -37,4 +37,9 @@ describe('Сворачивание кода', function () {
     expect(ranges).to.deep.include({ start: 30, end: 41 });
     expect(ranges).to.deep.include({ start: 43, end: 50 });
   });
+  it('Группировка шагов звездочкой (*)', () => {
+    expect(ranges).to.deep.include({ start: 54, end: 61 });
+    expect(ranges).to.deep.include({ start: 55, end: 59 });
+    expect(ranges).to.deep.include({ start: 57, end: 59 });
+  });
 })
