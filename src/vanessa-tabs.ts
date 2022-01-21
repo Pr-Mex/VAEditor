@@ -480,6 +480,12 @@ export class VanessaTabs {
     this.findTab((tab: VanessaTabItem) => tab.dom === next).select();
   }
 
+  public onPageNumber = (page: number) => {
+    if (this.tabStack.length === 0) return;
+    const node = this.domTabPanel.childNodes[page];
+    this.findTab((tab: VanessaTabItem) => tab.dom === node).select();
+  }
+
   public onFileSave = () => {
     const tab = this.current;
     if (tab) tab.onFileSave();

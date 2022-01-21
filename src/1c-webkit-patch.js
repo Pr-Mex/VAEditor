@@ -20,7 +20,12 @@ export function patchWebKit1C () {
   }
 
   document.addEventListener('keydown', function (e) {
-    if (e.ctrlKey) {
+    if (e.ctrlKey && !e.altKey && !e.shiftKey) {
+      if (e.keyCode > 48 && e.keyCode < 58) {
+        var tabs = window.VanessaTabs
+        if (tabs) tabs.onPageNumber(e.keyCode - 49)
+        return dummy(e)
+      }
       switch (e.keyCode) {
         case 33:
         case 34: {
