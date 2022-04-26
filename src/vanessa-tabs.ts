@@ -439,17 +439,19 @@ export class VanessaTabs {
   }
 
   public view = (
+    dummy: string,
     title: string,
     url: string,
     src: string,
     newTab: boolean = true,
   ): IVanessaEditor => {
+    const caption = title.normalize();
     const key = monaco.Uri.parse(url).toString();
     const tab = this.findTab(tab => tab.key === key && tab.type === VAEditorType.MarkdownViwer);
     if (tab) return tab.select();
     this.saveViewScroll();
     const editor = new VanessaViwer(url, src);
-    return this.open(editor, title, url, 0, newTab);
+    return this.open(editor, caption, url, 0, newTab);
   }
 
   public welcome = (
