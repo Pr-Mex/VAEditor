@@ -18,15 +18,12 @@ export class ActionManager {
   public codeActions: Array<IVanessaAction> = [];
   public codeLens: Array<IVanessaAction> = [];
   private codiconDecorations: string[] = [];
-  public traceKeyboard: boolean = false;
 
   constructor(
     owner: VanessaEditor
   ) {
     this.owner = owner;
     this.editor = owner.editor;
-    this.editor.onKeyDown(e => { if (this.traceKeyboard) this.owner.fireEvent(VanessaEditorEvent.ON_KEY_DOWN, e) });
-    this.editor.onKeyUp(e => { if (this.traceKeyboard) this.owner.fireEvent(VanessaEditorEvent.ON_KEY_UP, e) });
     this.editor.onDidChangeModelContent(() => this.owner.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
     this.editor.onDidChangeCursorPosition(
       (e: monaco.editor.ICursorPositionChangedEvent) => {

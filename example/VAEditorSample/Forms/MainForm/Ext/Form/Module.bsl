@@ -596,10 +596,6 @@ Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 	ElsIf Event = "F9" Then
 		AppendEventLog(Event, Arg);
 		Editor.toggleBreakpoint();
-	ElsIf Event = "ON_KEY_DOWN" Then
-		AppendEventLog(Event, GetKeyInfo(Arg));
-	ElsIf Event = "ON_KEY_UP" Then
-		AppendEventLog(Event, GetKeyInfo(Arg));
 	ElsIf Event = "CREATE_STEP" Then
 		AppendEventLog(Event, Arg);
 		CreateStep(Editor, Arg);

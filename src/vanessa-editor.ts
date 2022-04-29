@@ -96,8 +96,6 @@ export class VanessaEditor implements IVanessaEditor {
   public showMessage = (arg: string) => this.editor.getContribution('editor.contrib.messageController').showMessage(arg, this.getPosition());
 
   get errorLinks() { return VanessaGherkinProvider.instance.errorLinks; }
-  get traceKeyboard(): boolean { return this.actionManager.traceKeyboard; }
-  set traceKeyboard(value: boolean) { this.actionManager.traceKeyboard = value; }
 
   private static standaloneInstance: VanessaEditor;
   public static useDebuggerDefault: boolean = false;
