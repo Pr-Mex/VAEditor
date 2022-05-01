@@ -585,10 +585,7 @@ EndProcedure
 &AtClient
 Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 
-	If Event = "CONTENT_DID_CHANGE" Then
-		ContentDidChange = True;
-		Modified = True;
-	ElsIf Event = "UPDATE_BREAKPOINTS" Then
+	If Event = "UPDATE_BREAKPOINTS" Then
 		UpdateBreakpoints(Arg);
 		DecorateBreakpoints(Editor);
 	ElsIf Event = "POSITION_DID_CHANGE" Then

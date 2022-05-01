@@ -24,7 +24,6 @@ export class ActionManager {
   ) {
     this.owner = owner;
     this.editor = owner.editor;
-    this.editor.onDidChangeModelContent(() => this.owner.fireEvent(VanessaEditorEvent.CONTENT_DID_CHANGE));
     this.editor.onDidChangeCursorPosition(
       (e: monaco.editor.ICursorPositionChangedEvent) => {
         this.owner.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
