@@ -24,11 +24,6 @@ export class ActionManager {
   ) {
     this.owner = owner;
     this.editor = owner.editor;
-    this.editor.onDidChangeCursorPosition(
-      (e: monaco.editor.ICursorPositionChangedEvent) => {
-        this.owner.fireEvent(VanessaEditorEvent.POSITION_DID_CHANGE, { lineNumber: e.position.lineNumber, column: e.position.column })
-      }
-    );
     //@ts-ignore
     let service = this.editor.getContribution('editor.contrib.hover')._openerService;
     service._original_open = service.open;

@@ -588,8 +588,6 @@ Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 	If Event = "UPDATE_BREAKPOINTS" Then
 		UpdateBreakpoints(Arg);
 		DecorateBreakpoints(Editor);
-	ElsIf Event = "POSITION_DID_CHANGE" Then
-		Position = "(" + Format(Arg.lineNumber, "NG=") + ", " + Format(Arg.column, "NG=") + ")";
 	ElsIf Event = "F9" Then
 		AppendEventLog(Event, Arg);
 		Editor.toggleBreakpoint();

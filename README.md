@@ -101,7 +101,6 @@ VanessaEditor.setContent("Text to edit");
 | Событие                                | Описание                                                                     |
 | -------------------------------------- | ---------------------------------------------------------------------------- |
 | `UPDATE_BREAKPOINTS`                   | При обновлении состояния брейкпоинтов                                        |
-| `POSITION_DID_CHANGE`                  | После изменения позиции курсора в редакторе                                  |
 | `ON_HREF_CLICK`                        | При нажатии на ссылку                                                        |
 | ... другие события ...                 | Команды, переданные в `VanessaEditor.addCommands`                            |
 
@@ -110,8 +109,8 @@ VanessaEditor.setContent("Text to edit");
 ```bsl
 Function VanessaEditorOnReceiveEventHandler(Event, Arg)
 
-  If Event = "POSITION_DID_CHANGE" Then
-    PositionDidChange = True;
+  If Event = "UPDATE_BREAKPOINTS" Then
+    UpdateBreakpoints(Arg);
   EndIf;
 
 EndFunction
