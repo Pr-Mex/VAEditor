@@ -126,6 +126,10 @@ class VanessaTabItem {
     this.fireEvent(VanessaEditorEvent.ON_TAB_CLOSING, () => this.close());
   }
 
+  public onEscapePress() {
+    this.fireEvent(VanessaEditorEvent.PRESS_ESCAPE);
+  }
+
   public onFileSave() {
     this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, () => this.model.resetModified());
   }
@@ -486,6 +490,11 @@ export class VanessaTabs {
     if (this.tabStack.length === 0) return;
     const node = this.domTabPanel.childNodes[page];
     this.findTab((tab: VanessaTabItem) => tab.dom === node).select();
+  }
+
+  public onEscapePress() {
+    const tab = this.current;
+    if (tab) tab.onEscapePress();
   }
 
   public onFileSave = () => {

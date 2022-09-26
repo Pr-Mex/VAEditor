@@ -37,6 +37,7 @@ export enum VanessaEditorEvent {
   ON_LINK_CLICK = "ON_LINK_CLICK",
   ON_MARK_CLICK = "ON_MARK_CLICK",
   PRESS_CTRL_S = "PRESS_CTRL_S",
+  PRESS_ESCAPE = "PRESS_ESCAPE",
 }
 
 export interface VanessaEditorMessage {
