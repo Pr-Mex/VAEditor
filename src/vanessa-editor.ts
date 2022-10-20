@@ -195,6 +195,6 @@ export class VanessaEditor implements IVanessaEditor {
   static editors: Array<VanessaEditor> = [];
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   static checkAllSyntax = () => VanessaEditor.editors.forEach(e => {
-    if (e.syntaxManager) VanessaGherkinProvider.instance.checkSyntax(e.syntaxManager)
+    if (e.syntaxManager) VanessaGherkinProvider.instance.checkSyntax(e.getModel(), e.syntaxManager)
   });
 }

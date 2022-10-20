@@ -29,7 +29,7 @@ export class SyntaxManager {
   public checkSyntax() {
     clearTimeout(this.timer);
     this.timer = setTimeout(() =>
-      VanessaGherkinProvider.instance.checkSyntax(this)
+      VanessaGherkinProvider.instance.checkSyntax(this.getModel(), this)
       , 1000);
   }
 

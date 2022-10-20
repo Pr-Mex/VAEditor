@@ -277,8 +277,8 @@ export class VanessaGherkinProvider {
     return item;
   }
 
-  public checkSyntax(manager: ISyntaxManager) {
-    const model = manager.getModel();
+  public checkSyntax(m: monaco.editor.ITextModel, manager?: ISyntaxManager) {
+    const model = m as IVanessaModel;
     if (model.getLanguageId() != language.id) return;
     return postMessage<ISyntaxDecorations>(model, {
       type: MessageType.CheckSyntax,
@@ -288,7 +288,7 @@ export class VanessaGherkinProvider {
       const oldDecorations = model.stepDecorations || [];
       model.stepDecorations = model.deltaDecorations(oldDecorations, result.decorations);
       monaco.editor.setModelMarkers(model, "syntax", result.problems);
-      manager.setImages(result.images);
+      if (manager) manager.setImages(result.images);
     });
   }
 
