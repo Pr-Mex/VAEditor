@@ -1,4 +1,6 @@
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
+import { IVanessaModel, VAImage } from "./languages/turbo-gherkin/common";
+import { ImageWidget } from "./widgets/image";
 
 export class SyntaxManager {
 
@@ -20,10 +22,14 @@ export class SyntaxManager {
     this.editor = null;
   }
 
+  public getModel(): IVanessaModel {
+    return this.editor.getModel() as IVanessaModel;
+  }
+
   public checkSyntax() {
     clearTimeout(this.timer);
     this.timer = setTimeout(() =>
-      VanessaGherkinProvider.instance.checkSyntax(this.editor.getModel())
+      VanessaGherkinProvider.instance.checkSyntax(this)
       , 1000);
   }
 
@@ -34,6 +40,21 @@ export class SyntaxManager {
       model.normalizeIndentation(line)
     ).join(model.getEOL());
     model.setValue(value);
+  }
+
+  private imageViewZoneIds: Array<string> = [];
+
+  public setImages(images: VAImage[]) {
+    let ids = this.imageViewZoneIds;
+    this.editor.changeViewZones(changeAccessor =>
+      ids.forEach(id => changeAccessor.removeZone(id))
+    );
+    ids.length = 0;
+    images.forEach(image =>{
+      let widget = new ImageWidget(image.height, image.src);
+      let id = widget.show(this.editor, image.lineNumber);
+      ids.push(id);
+    });
   }
 
   get errors(): number[] {

@@ -2,7 +2,7 @@ import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalon
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
-import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage } from './common';
+import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager } from './common';
 import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
@@ -277,8 +277,8 @@ export class VanessaGherkinProvider {
     return item;
   }
 
-  public checkSyntax(m: monaco.editor.ITextModel) {
-    const model = m as IVanessaModel;
+  public checkSyntax(manager: ISyntaxManager) {
+    const model = manager.getModel();
     if (model.getLanguageId() != language.id) return;
     return postMessage<ISyntaxDecorations>(model, {
       type: MessageType.CheckSyntax,
@@ -288,6 +288,7 @@ export class VanessaGherkinProvider {
       const oldDecorations = model.stepDecorations || [];
       model.stepDecorations = model.deltaDecorations(oldDecorations, result.decorations);
       monaco.editor.setModelMarkers(model, "syntax", result.problems);
+      manager.setImages(result.images);
     });
   }
 

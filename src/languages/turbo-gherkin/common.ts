@@ -29,9 +29,21 @@ export interface IVanessaModel
   isModified: Function,
 }
 
+export interface VAImage {
+  lineNumber: number;
+  height: number;
+  src: string;
+}
+
+export interface ISyntaxManager {
+  getModel(): IVanessaModel;
+  setImages(images: VAImage[]): void;
+}
+
 export interface ISyntaxDecorations {
   decorations: monaco.editor.IModelDeltaDecoration[],
   problems: monaco.editor.IMarkerData[],
+  images?: VAImage[],
 }
 
 export enum VAToken {

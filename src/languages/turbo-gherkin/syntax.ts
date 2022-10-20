@@ -1,4 +1,4 @@
-import { getLineMaxColumn, getLineMinColumn, ISyntaxDecorations, IWorkerContext, IWorkerModel, VAToken } from './common';
+import { getLineMaxColumn, getLineMinColumn, ISyntaxDecorations, IWorkerContext, IWorkerModel, VAImage, VAToken } from './common';
 import { VAStepLine } from './stepline';
 
 function groupDecoration(lineNumber: number, style: string = undefined): monaco.editor.IModelDeltaDecoration {
@@ -13,6 +13,18 @@ function groupDecoration(lineNumber: number, style: string = undefined): monaco.
   };
 }
 
+function matchImage(images: VAImage[], lineNumber: number, line: string) {
+  let regexp = /^\s*(\/\/|#)\s*image\s*\:\s+height\s*=\s*(\d+)\s+src\s*=\s*(\S+)/;
+  let match = line.match(regexp);
+  if (match && match.length === 4) {
+    images.push({
+      lineNumber,
+      height: parseInt(match[2]),
+      src: match[3],
+    });
+  }
+}
+
 export function checkSyntax(
   ctx: IWorkerContext,
   model: IWorkerModel,
@@ -22,6 +34,7 @@ export function checkSyntax(
   const groups: Array<{ lineNumber: number, folding: number }> = [];
   const decorations: monaco.editor.IModelDeltaDecoration[] = [];
   const problems: monaco.editor.IMarkerData[] = [];
+  const images: VAImage[] = [];
   const lineCount = model.getLineCount();
   let section = "";
   for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
@@ -29,10 +42,12 @@ export function checkSyntax(
     const token = model.getLineToken(lineNumber);
     switch (token.token) {
       case VAToken.Empty:
-      case VAToken.Comment:
       case VAToken.Multiline:
       case VAToken.Parameter:
       case VAToken.Instruction:
+        continue;
+      case VAToken.Comment:
+        matchImage(images, lineNumber, line);
         continue;
       case VAToken.Section:
         section = ctx.matcher.getSection(line);
@@ -77,5 +92,5 @@ export function checkSyntax(
       break;
     }
   });
-  return { decorations, problems };
+  return { decorations, problems, images };
 }

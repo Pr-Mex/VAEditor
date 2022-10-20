@@ -218,6 +218,10 @@ div.vanessa-inner>div {
     padding: 0.5em;
 }
 
+div.vanessa-img-widget img {
+    height: 100%;
+}
+
 div.vanessa-inner::-webkit-scrollbar {}
 
 div.vanessa-inner::-webkit-scrollbar-track {}
