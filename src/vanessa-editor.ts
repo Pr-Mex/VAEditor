@@ -107,7 +107,7 @@ export class VanessaEditor implements IVanessaEditor {
   public syntaxManager: SyntaxManager;
   public styleManager: StyleManager;
   private _domNode: HTMLElement;
-  private _filepath: string;
+  public filepath: string;
 
   public static createStandalone(
     content: string = "",
@@ -141,6 +141,7 @@ export class VanessaEditor implements IVanessaEditor {
     },
     filepath: string = '',
   ) {
+    this.filepath = filepath;
     let container = document.getElementById("VanessaEditorContainer");
     this._domNode = $("div", { class: "vanessa-editor" });
     container.appendChild(this._domNode);
@@ -161,7 +162,6 @@ export class VanessaEditor implements IVanessaEditor {
     this.styleManager = new StyleManager(this.editor);
     if (checkSyntax) this.syntaxManager = new SyntaxManager(this);
     VanessaEditor.editors.push(this);
-    this._filepath = filepath;
   }
 
   public dispose(): void {
@@ -193,7 +193,6 @@ export class VanessaEditor implements IVanessaEditor {
     this.editor.updateOptions(JSON.parse(value));
   }
 
-  public get filepath() { return this._filepath; }
   public get type() { return VAEditorType.CodeEditor; }
   public focus() { this.editor.focus(); }
   static editors: Array<VanessaEditor> = [];
