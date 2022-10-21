@@ -22,6 +22,7 @@ export interface IVanessaEditor {
   getModel: Function;
   editor: any;
   type: VAEditorType;
+  filepath?: string;
 }
 
 export interface IVanessaAction {

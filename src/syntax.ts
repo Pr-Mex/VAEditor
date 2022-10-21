@@ -65,7 +65,7 @@ export class SyntaxManager {
       } else {
         const eventData = {
           src: image.src,
-          path: this.owner.getModel().uri.path,
+          path: this.owner.filepath,
           show: (src: string) => { image.src = src; this.addImage(image); },
         };
         EventsManager.fireEvent(this.owner, VanessaEditorEvent.REQUEST_IMAGE, eventData);

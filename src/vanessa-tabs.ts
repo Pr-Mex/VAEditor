@@ -402,7 +402,7 @@ export class VanessaTabs {
     let model = monaco.editor.getModel(uri);
     if (!model) model = createModel(content, filename, uri);
     this.disposeHidden();
-    const editor = new VanessaEditor(model, readOnly, this.checkSyntax, this.editorOptions);
+    const editor = new VanessaEditor(model, readOnly, this.checkSyntax, this.editorOptions, filepath);
     return this.open(editor, title, filepath, encoding, newTab);
   }
 
