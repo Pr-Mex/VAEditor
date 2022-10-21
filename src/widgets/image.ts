@@ -18,7 +18,14 @@ export class ImageWidget implements monaco.editor.IViewZone {
     this.domNode.appendChild(img);
   }
 
-  public show(editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number): string {
+  public show(
+    editor: monaco.editor.IStandaloneCodeEditor,
+    lineNumber: number,
+    column: number,
+): string {
+    const fontInfo = monaco.editor.EditorOption.fontInfo;
+    const spaceWidth = editor.getOption(fontInfo).spaceWidth;
+    this.domNode.style.marginLeft = (column - 1) * spaceWidth + 'px';
     this.afterLineNumber = lineNumber;
     editor.changeViewZones(changeAccessor => {
       this.id = changeAccessor.addZone(this)

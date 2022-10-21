@@ -31,6 +31,7 @@ export interface IVanessaModel
 
 export interface VAImage {
   lineNumber: number;
+  column: number;
   height: number;
   src: string;
 }

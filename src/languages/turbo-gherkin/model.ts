@@ -40,12 +40,13 @@ export function getModelTokens(
       if (token == VAToken.Multiline) multiline = true;
     }
     if (token != VAToken.Operator && token != VAToken.Asterisk) {
-      tokens.push({ token: token, indent: 0 });
+      const indent = getIndent(text, tabSize);
+      tokens.push({ token, indent });
     } else {
-      let ident = 0;
+      let indent = 0;
       if (matcher.isSection(text)) token = VAToken.Section;
-      else ident = getIndent(text, tabSize);
-      tokens.push({ token: token, indent: ident });
+      else indent = getIndent(text, tabSize);
+      tokens.push({ token, indent });
     }
   }
   return tokens;

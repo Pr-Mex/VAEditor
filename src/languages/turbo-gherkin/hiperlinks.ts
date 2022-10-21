@@ -75,12 +75,12 @@ function getLinks(
           if (columns === null) {
             columns = match.map(trimQuotes);
           } else {
-            match = match.map(trimQuotes);
-            while (match.length < columns.length) match.push("");
-            let row = { key: match[0], name: match[1], data: {} };
-            for (let col = 0; col < columns.length; col++) row.data[columns[col]] = match[col];
+            const mt = match.map(trimQuotes);
+            while (mt.length < columns.length) mt.push("");
+            let row = { key: mt[0], name: mt[1], data: {} };
+            for (let col = 0; col < columns.length; col++) row.data[columns[col]] = mt[col];
             if (links[tableName] == undefined) links[tableName] = {};
-            links[tableName][match[0].toLowerCase()] = row;
+            links[tableName][mt[0].toLowerCase()] = row;
           }
         } else if ((matches = line.match(/^\s*(\p{L}[\p{L}\p{N}]*)\s*=\s*(.*)\s*$/u)) != null) {
           tableName = "";

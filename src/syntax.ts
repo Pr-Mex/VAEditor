@@ -1,17 +1,18 @@
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { IVanessaModel, VAImage } from "./languages/turbo-gherkin/common";
 import { ImageWidget } from "./widgets/image";
+import { EventsManager, IVanessaEditor, VanessaEditorEvent } from "./common";
 
 export class SyntaxManager {
 
   private editor: monaco.editor.IStandaloneCodeEditor;
   private onChangeModelContent: monaco.IDisposable;
   private timer: NodeJS.Timeout;
+  private owner: IVanessaEditor;
 
-  constructor(
-    editor: monaco.editor.IStandaloneCodeEditor
-  ) {
-    this.editor = editor;
+  constructor(owner: IVanessaEditor) {
+    this.owner = owner;
+    this.editor = owner.editor;
     this.checkSyntax();
     this.onChangeModelContent = this.editor.onDidChangeModelContent(() => this.checkSyntax());
   }
@@ -20,6 +21,7 @@ export class SyntaxManager {
     this.onChangeModelContent.dispose();
     clearTimeout(this.timer);
     this.editor = null;
+    this.owner = null;
   }
 
   public getModel(): IVanessaModel {
@@ -44,16 +46,30 @@ export class SyntaxManager {
 
   private imageViewZoneIds: Array<string> = [];
 
+  private addImage(image: VAImage) {
+    let widget = new ImageWidget(image.height, image.src);
+    let id = widget.show(this.editor, image.lineNumber, image.column);
+    this.imageViewZoneIds.push(id);
+  }
+
   public setImages(images: VAImage[]) {
     let ids = this.imageViewZoneIds;
     this.editor.changeViewZones(changeAccessor =>
       ids.forEach(id => changeAccessor.removeZone(id))
     );
     ids.length = 0;
-    images.forEach(image =>{
-      let widget = new ImageWidget(image.height, image.src);
-      let id = widget.show(this.editor, image.lineNumber);
-      ids.push(id);
+    images.forEach(image => {
+      const regexp = /^https?:\/\//;
+      if (regexp.test(image.src)) {
+        this.addImage(image);
+      } else {
+        const eventData = {
+          src: image.src,
+          path: this.owner.getModel().uri.path,
+          apply: (src: string) => { image.src = src; this.addImage(image); },
+        };
+        EventsManager.fireEvent(this.owner, VanessaEditorEvent.REQUEST_IMAGE, eventData);
+      }
     });
   }
 

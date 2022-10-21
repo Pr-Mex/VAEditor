@@ -80,7 +80,7 @@ export class VanessaEditor implements IVanessaEditor {
   public set enableSyntaxCheck(value: boolean) {
     if (value) {
       if (this.syntaxManager == null) {
-        this.syntaxManager = new SyntaxManager(this.editor);
+        this.syntaxManager = new SyntaxManager(this);
       }
     } else {
       if (this.syntaxManager != null) {
@@ -157,7 +157,7 @@ export class VanessaEditor implements IVanessaEditor {
     this.eventsManager = new EventsManager(this);
     this.problemManager = new ProblemManager(this.editor);
     this.styleManager = new StyleManager(this.editor);
-    if (checkSyntax) this.syntaxManager = new SyntaxManager(this.editor);
+    if (checkSyntax) this.syntaxManager = new SyntaxManager(this);
     VanessaEditor.editors.push(this);
   }
 

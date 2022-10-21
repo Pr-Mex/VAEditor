@@ -42,7 +42,7 @@ export function getCodeFolding(
           if (next.indent <= line.indent) break; else k = j;
         } break;
     }
-    if (k > i) { result.push({ kind: kind, start: i, end: k }); line.folding = k; }
+    if (k > i) { result.push({ kind, start: i, end: k }); line.folding = k; }
     if (line.token == VAToken.Instruction || line.token == VAToken.Comment) i = k;
   }
   return result;
