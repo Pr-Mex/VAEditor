@@ -19,7 +19,7 @@ function matchImage(
   line: string,
   token: VAIndent,
 ): void {
-  let regexp = /^\s*(\/\/|#)\s*image\s*\:\s+height\s*=\s*(\d+)\s+src\s*=\s*(\S+)/;
+  let regexp = /^\s*(\/\/|#)\s*image\s*\:\s*height\s*=\s*(\d+)\s+src\s*=\s*(\S+)/;
   let match = line.match(regexp);
   if (match && match.length === 4) {
     images.push({
