@@ -2,6 +2,7 @@ import { VanessaGherkinProvider } from '../../src/languages/turbo-gherkin/provid
 import { language } from '../../src/languages/turbo-gherkin/configuration';
 import { initGherkinProvider } from '../provider';
 import * as content from './example.file.js'
+import { IVanessaModel } from '../../src/languages/turbo-gherkin/common';
 let expect = require('chai').expect;
 let provider;
 
@@ -139,6 +140,19 @@ describe('Проверка синтаксиса', function () {
         expect(decorations[6]).to.have.property('options').to.have.property('inlineClassName', null);
         done();
       });
+    });
+  });
+  it('Картинки в тексте сценария', (done) => {
+    const checker = new SyntaxChecker(content.f03);
+    checker.check().then(() => {
+      const model = checker.model as IVanessaModel;
+      expect(model.testedImages).to.be.an('array').to.have.lengthOf(1);
+      const image = model.testedImages[0];
+      expect(image).to.have.property('height').to.equal(10);
+      expect(image).to.have.property('src').to.equal('img/logo.png');
+      expect(image).to.have.property('lineNumber').to.equal(6);
+      expect(image).to.have.property('column').to.equal(3);
+      done();
     });
   });
 })

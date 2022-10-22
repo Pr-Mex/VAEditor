@@ -27,6 +27,7 @@ export interface IVanessaModel
   savedVersionId: number,
   resetModified: Function,
   isModified: Function,
+  testedImages?: VAImage[],
 }
 
 export interface VAImage {

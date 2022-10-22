@@ -288,7 +288,11 @@ export class VanessaGherkinProvider {
       const oldDecorations = model.stepDecorations || [];
       model.stepDecorations = model.deltaDecorations(oldDecorations, result.decorations);
       monaco.editor.setModelMarkers(model, "syntax", result.problems);
-      if (manager) manager.setImages(result.images);
+      if (manager) {
+        manager.setImages(result.images);
+      } else {
+        model.testedImages = result.images;
+      }
     });
   }
 
