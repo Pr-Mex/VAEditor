@@ -30,7 +30,7 @@ install:
 build_script:
   - ps: $env:NODE_OPTIONS = "--openssl-legacy-provider"
   - npx webpack --mode production
-  - 7z a VAEditor.zip %CD%/dist/index.html
+  - 7z a VAEditor.zip %CD%/dist/index.html %CD%/dist/worker.js
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
 after_build:
