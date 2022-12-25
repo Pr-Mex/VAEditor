@@ -13,6 +13,7 @@ export class KeywordMatcher {
   public section = new Section;
   public keypairs: RegExp[];
   public metatags: RegExp;
+  public directives: RegExp;
   public primary: RegExp;
   public import: RegExp;
   public step: RegExp;
@@ -96,6 +97,11 @@ export class KeywordMatcher {
 
   public setMetatags(metatags: string[]) {
     this.metatags = this.regex(metatags);
+  }
+
+  public setDirectives(words: string[]) {
+    this.directives = words.length === 0 ?
+      null : this.regex(words, "(\\s+.*$|$)");
   }
 
   public setKeypairs(keypairs: any) {

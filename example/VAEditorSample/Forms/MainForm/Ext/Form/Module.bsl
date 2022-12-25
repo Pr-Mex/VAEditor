@@ -734,6 +734,25 @@ Function GetMetatags()
 
 EndFunction
 
+&AtClient
+Function GetDirectives()
+
+	words = "
+		|#Если
+		|#ИначеЕсли
+		|#Иначе
+		|#КонецЕсли
+		|";
+
+	split = "
+	|";
+
+	Directives = StrSplit(words, split, False);
+
+	Return JsonDump(Directives);
+
+EndFunction
+
 &AtServer
 Function VanessaStepList(language)
 
@@ -817,6 +836,7 @@ Procedure VanessaEditorDocumentComplete(Item)
 	Provider.setKeywords(GetKeywords());
 	Provider.setElements(GetElements());
 	Provider.setVariables(GetVariables());
+	Provider.setDirectives(GetDirectives());
 	Provider.setMessages(MessagesJSON);
 	LoadStepsAll(Undefined);
 

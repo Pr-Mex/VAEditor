@@ -63,6 +63,7 @@ export class VanessaGherkinProvider {
   public get keypairs(): any { return this._keypairs; }
 
   private _metatags: string[] = ["try", "except", "попытка", "исключение"];
+  private _directives: string[] = [];
   private _keypairs: any = {};
   private _errorLinks = [];
   private _matcher: KeywordMatcher;
@@ -74,6 +75,10 @@ export class VanessaGherkinProvider {
 
   public get locale(): string {
     return this._locale;
+  }
+
+  public get directives(): string[] {
+    return this._directives;
   }
 
   public setErrorLinks = (arg: string): void => {
@@ -111,6 +116,13 @@ export class VanessaGherkinProvider {
     this.matcher?.setMetatags(this.metatags);
     this.initTokenizer();
     worker.postMessage({ type: MessageType.SetMetatags, data: this.metatags });
+  }
+
+  public setDirectives = (arg: string): void => {
+    this._directives = [];
+    let list = JSON.parse(arg);
+    list.forEach((w: string) => this._directives.push(w));
+    this.matcher?.setDirectives(this.directives);
   }
 
   public setMessages = (arg: string): void => {
