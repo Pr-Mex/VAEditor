@@ -101,7 +101,7 @@ export class KeywordMatcher {
 
   public setDirectives(words: string[]) {
     this.directives = words.length === 0 ?
-      null : this.regex(words, "(\\s+.*$|$)");
+      null : this.regex(words);
   }
 
   public setKeypairs(keypairs: any) {
