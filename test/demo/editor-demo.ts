@@ -36,6 +36,7 @@ export function show() {
   provider.setKeypairs(JSON.stringify(keypairs))
   provider.setMessages(JSON.stringify(messages))
   provider.setVariables(JSON.stringify(variables))
+  provider.setSPPR(true)
 
   const welcome: WelcomeParams = {
     title: "Vanessa Automation",

@@ -9,6 +9,7 @@ class Section {
 
 export class KeywordMatcher {
 
+  public sppr: boolean = false;
   public stepkey: any = {};
   public section = new Section;
   public keypairs: RegExp[];
@@ -102,6 +103,10 @@ export class KeywordMatcher {
   public setDirectives(words: string[]) {
     this.directives = words.length === 0 ?
       null : this.regex(words);
+  }
+
+  public setSPPR(value: boolean) {
+    this.sppr = value;
   }
 
   public setKeypairs(keypairs: any) {

@@ -42,6 +42,19 @@ export class GherkinLanguage {
     this.tokenizer.feature[0] = [provider.matcher.primary, { token: "metatag.php", next: "@root" }];
     if (provider.matcher.directives)
       this.tokenizer.section.push([provider.matcher.directives, { token: "metatag", next: "@operator" }])
+    if (provider.matcher.sppr) {
+      this.tokenizer.common.push([/\[/, "comment", "@string_bracket"]);
+      this.tokenizer.string.forEach(item => {
+        if (item[1] && item[1].token === "constant") {
+          item[1].token = 'comment';
+        }
+      });
+      this.tokenizer.index.forEach(item => {
+        if (item[1] && item[1].token === "constant") {
+          item[1].token = 'comment';
+        }
+      });
+    }
   }
 
   tokenizer = {
@@ -161,9 +174,16 @@ export class GherkinLanguage {
       [/>/, "string", "@pop"]
     ],
 
+    string_bracket: [
+      { include: "@eol" },
+      [/[^\]\\\{\[\$]+/, "comment"],
+      { include: "@string" },
+      [/\]/, "comment", "@pop"]
+    ],
+
     index: [
       { include: "@eol" },
-      [/[^\\\]]+/, "constant"],
+      [/[^\\\]]+/, {token: "constant"}],
       { include: "@escapes" },
       [/\]/, { bracket: "@close", next: "@pop", token: "constant" }],
     ],

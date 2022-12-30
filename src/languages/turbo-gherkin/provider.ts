@@ -66,6 +66,7 @@ export class VanessaGherkinProvider {
   private _directives: string[] = [];
   private _keypairs: any = {};
   private _errorLinks = [];
+  private _sppr: boolean = false;
   private _matcher: KeywordMatcher;
   private _locale: string;
 
@@ -123,6 +124,11 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg);
     list.forEach((w: string) => this._directives.push(w));
     this.matcher?.setDirectives(this.directives);
+  }
+
+  public setSPPR = (arg: boolean): void => {
+    this._sppr = arg;
+    this.matcher?.setSPPR(arg);
   }
 
   public setMessages = (arg: string): void => {
