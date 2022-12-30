@@ -25,11 +25,11 @@ export class KeywordMatcher {
       .map(w => w.join("\\s+")).join("|") + ")" + postfix, "i");
   }
 
-  public tokens = {
+  tokens = {
     word: /\p{L}[\p{L}\p{N}]*/,
-    param: /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>\\]*(?:\\.[^>\\]*)*>/,
     number: /-?(\d*\.)?\d+([eE][+-]?\d+)?[jJ]?[lL]?/,
-  };
+    param: /"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|<[^>\\]*(?:\\.[^>\\]*)*>|\[[^\]\\]*(?:\\.[^\]\\]*)*\]/,
+  }
 
   public getSnippet(text: string): string {
     const source = [this.tokens.word, this.tokens.param].map((reg: RegExp) => "(" + reg.source + ")").join("|");
