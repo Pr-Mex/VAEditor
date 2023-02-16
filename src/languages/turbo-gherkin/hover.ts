@@ -26,11 +26,13 @@ export function getLineHover(
     let step = ctx.steplist[snippet];
     if (step) {
       let i = String.fromCharCode(60020);
+      let c = String.fromCharCode(60373);
       let s = String.fromCharCode(60277);
       let t = escapeMarkdown(step.section);
       let ih = "#info:" + snippet.replace(/ /g, "-");
+      let ch = "#compass:" + msg.lineNumber;
       let sh = "#sound:" + msg.lineNumber;
-      contents.push({ value: `**${t}** [${i}](${ih}) [${s}](${sh})` });
+      contents.push({ value: `**${t}** [${i}](${ih}) [${c}](${ch}) [${s}](${sh})` });
       contents.push({ value: escapeMarkdown(step.documentation) });
       let regexp = new RegExp(ctx.matcher.tokens.param, "gu");
       let vars = line.match(regexp) || [];

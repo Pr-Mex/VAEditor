@@ -230,7 +230,9 @@ div.monaco-editor div.editor-widget.find-widget.visible {
   transform: translateY(0);
 }
 
-div.hover-contents a[data-href^="#sound:"], div.hover-contents a[data-href^="#info:"] {
+div.hover-contents a[data-href^="#compas:"],
+div.hover-contents a[data-href^="#sound:"],
+div.hover-contents a[data-href^="#info:"] {
   font-family: "codicon";
   text-decoration: none;
   font: normal normal normal 100% codicon;
