@@ -16,7 +16,6 @@ const context: IWorkerContext = {
   keypairs: {},
   elements: {},
   variables: {},
-  directives: {},
   messages: {
     syntaxMsg: "Syntax error",
     soundHint: "Sound",
@@ -86,8 +85,7 @@ export function process(msg: WorkerMessage) {
     case MessageType.SetKeywords:
       context.matcher = new KeywordMatcher(msg.data);
       context.matcher.setKeypairs(context.keypairs);
-      context.matcher.setMetatags(context.metatags);
-      context.matcher.setDirectives(context.directives);
+      context.matcher.setMetatags(context.metatags)
       updateStepLabels(context);
       break;
     case MessageType.SetKeypairs:
@@ -111,10 +109,6 @@ export function process(msg: WorkerMessage) {
     case MessageType.SetVariables:
       setVariables(context, msg);
       updateStepLabels(context);
-      break;
-    case MessageType.SetDirectives:
-      context.directives = msg;
-      context.matcher?.setDirectives(context.directives)
       break;
     case MessageType.SetImports:
       setImports(msg.data);

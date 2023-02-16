@@ -124,7 +124,6 @@ export class VanessaGherkinProvider {
     let list = JSON.parse(arg);
     list.forEach((w: string) => this._directives.push(w));
     this.matcher?.setDirectives(this.directives);
-    worker.postMessage({ type: MessageType.SetDirectives, data: this.directives });
   }
 
   public setSPPR = (arg: boolean): void => {
