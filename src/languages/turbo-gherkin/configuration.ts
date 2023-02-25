@@ -44,6 +44,7 @@ export class GherkinLanguage {
       this.tokenizer.section.push([provider.matcher.directives, { token: "metatag", next: "@operator" }])
     if (provider.matcher.sppr) {
       this.tokenizer.common.push([/\[/, "comment", "@string_bracket"]);
+      this.tokenizer.common.push({include: "@multiline_comment"});
       this.tokenizer.string.forEach(item => {
         if (item[1] && item[1].token === "constant") {
           item[1].token = 'comment';
@@ -98,7 +99,6 @@ export class GherkinLanguage {
       [/'/, "string", "@string_single"],
       [/</, "string", "@string_angle"],
       [/҂+$/, { token: "keyword" }],
-      [/\s*\/\*.*$/, { token: "comment", next: "@multiline_comment" }]
     ],
 
     eol: [
@@ -136,6 +136,10 @@ export class GherkinLanguage {
     ],
 
     multiline_comment: [
+      [/\s*\/\*.*$/, { token: "comment", next: "@multiline_comment_end" }]
+    ],
+
+    multiline_comment_end: [
       [/^.*\*\/\s*$/, { token: "comment", next: "@pop" }],
       [/^.*$/, "comment"],
     ],
