@@ -97,7 +97,8 @@ export class GherkinLanguage {
       [/"/, "string", "@string_double"],
       [/'/, "string", "@string_single"],
       [/</, "string", "@string_angle"],
-      [/҂+$/, { token: "keyword" }]
+      [/҂+$/, { token: "keyword" }],
+      [/\s*\/\*.*$/, { token: "comment", next: "@multiline_comment" }]
     ],
 
     eol: [
@@ -132,6 +133,11 @@ export class GherkinLanguage {
     multyline: [
       [/^\s*""".*$/, { token: "string", next: "@pop" }],
       [/^.*$/, "string"],
+    ],
+
+    multiline_comment: [
+      [/^.*\*\/\s*$/, { token: "comment", next: "@pop" }],
+      [/^.*$/, "comment"],
     ],
 
     embeded: [
