@@ -12,7 +12,11 @@ function getIndent(text: string, tabSize: number) {
   return indent + 1;
 }
 
-function getToken(text: string) {
+function getToken(text: string, sppr: boolean) {
+  if (sppr) {
+    if (/^\s*\/\*.*$/.test(text)) return VAToken.StartComment;
+    if (/^.*\*\/\s*/.test(text)) return VAToken.EndComment;
+  }
   if (/^\s*$/.test(text)) return VAToken.Empty;
   if (/^[\s]*@/.test(text)) return VAToken.Instruction;
   if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
@@ -28,16 +32,30 @@ export function getModelTokens(
   tabSize: number,
 ): Array<VAIndent> {
   const tokens: Array<VAIndent> = [];
-  let multiline = false;
+  let multilineParam = false;
+  let multilineComment = false;
   const lineCount = model.getLineCount();
   for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
     let text = model.getLineContent(lineNumber);
-    let token = getToken(text);
-    if (multiline) {
-      if (token == VAToken.Multiline) multiline = false;
+    let token = getToken(text, matcher.sppr);
+    if (multilineParam) {
+      if (token == VAToken.Multiline) {
+        multilineParam = false;
+      }
       token = VAToken.Multiline;
+    } else if (multilineComment) {
+      if (token == VAToken.EndComment) {
+        console.log("EndComment", lineNumber)
+        multilineComment = false;
+      }
+      token = VAToken.Comment;
     } else {
-      if (token == VAToken.Multiline) multiline = true;
+      if (token == VAToken.Multiline) {
+        multilineParam = true;
+      } else if (token == VAToken.StartComment) {
+        multilineComment = true;
+        token = VAToken.Comment;
+      }
     }
     if (token != VAToken.Operator && token != VAToken.Asterisk) {
       const indent = getIndent(text, tabSize);

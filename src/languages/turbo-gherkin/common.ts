@@ -18,6 +18,7 @@ export interface IWorkerContext {
   elements: any;
   variables: any;
   messages: any;
+  sppr: boolean;
 }
 
 export interface IVanessaModel
@@ -57,6 +58,8 @@ export enum VAToken {
   Instruction,
   Parameter,
   Asterisk,
+  StartComment,
+  EndComment,
 }
 
 export interface VAIndent {
@@ -83,6 +86,7 @@ export enum MessageType {
   GetLineHover,
   GetLinkData,
   CheckSyntax,
+  SetSPPR,
 }
 
 export function type2str(type: MessageType) {
@@ -104,6 +108,7 @@ export function type2str(type: MessageType) {
     case MessageType.GetLineHover: return "GetLineHover";
     case MessageType.GetLinkData: return "GetLinkData";
     case MessageType.CheckSyntax: return "CheckSyntax";
+    case MessageType.SetSPPR: return "SetSPPR";
   }
 }
 
@@ -125,6 +130,7 @@ export type WorkerMessage =
   | { id?: number, type: MessageType.GetLineHover, versionId: number, uri: string, lineNumber: number, minColumn: number, maxColumn: number }
   | { id?: number, type: MessageType.GetLinkData, versionId: number, uri: string, key: string }
   | { id?: number, type: MessageType.CheckSyntax, versionId: number, uri: string }
+  | { id?: number, type: MessageType.SetSPPR, sppr: boolean }
   ;
 
 export interface IWorkerModel {

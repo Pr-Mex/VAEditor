@@ -19,7 +19,8 @@ const context: IWorkerContext = {
   messages: {
     syntaxMsg: "Syntax error",
     soundHint: "Sound",
-  }
+  },
+  sppr: false,
 }
 
 const contentMap = new Map<string, WorkerModel>();
@@ -86,6 +87,7 @@ export function process(msg: WorkerMessage) {
       context.matcher = new KeywordMatcher(msg.data);
       context.matcher.setKeypairs(context.keypairs);
       context.matcher.setMetatags(context.metatags)
+      context.matcher.setSPPR(context.sppr)
       updateStepLabels(context);
       break;
     case MessageType.SetKeypairs:
@@ -96,7 +98,11 @@ export function process(msg: WorkerMessage) {
       context.metatags = msg.data;
       context.matcher?.setMetatags(context.metatags)
       break;
-    case MessageType.SetMessages:
+    case MessageType.SetSPPR:
+      context.sppr = msg.sppr;
+      context.matcher?.setSPPR(context.sppr)
+      break;
+      case MessageType.SetMessages:
       setMessages(context, msg);
       break;
     case MessageType.SetSteplist:

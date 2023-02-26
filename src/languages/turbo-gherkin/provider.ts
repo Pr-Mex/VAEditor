@@ -97,6 +97,7 @@ export class VanessaGherkinProvider {
     this._matcher = new KeywordMatcher(arg);
     this.matcher.setKeypairs(this.keypairs);
     this.matcher.setMetatags(this.metatags);
+    this.matcher.setSPPR(this._sppr);
     this.initTokenizer();
   }
 
@@ -127,6 +128,7 @@ export class VanessaGherkinProvider {
   }
 
   public setSPPR = (arg: boolean): void => {
+    worker.postMessage({ type: MessageType.SetSPPR, sppr: arg });
     this._sppr = arg;
     this.matcher?.setSPPR(arg);
   }
