@@ -13,11 +13,16 @@ function getIndent(text: string, tabSize: number) {
 }
 
 function getToken(text: string, sppr: boolean, direct: IDirectExp) {
+  if (/^\s*$/.test(text)) return VAToken.Empty;
   if (sppr) {
     if (/^\s*\/\*.*$/.test(text)) return VAToken.StartComment;
     if (/^.*\*\/\s*/.test(text)) return VAToken.EndComment;
   }
-  if (/^\s*$/.test(text)) return VAToken.Empty;
+  if (direct) {
+    if (direct.if && direct.if.test(text)) return VAToken.DirectIf;
+    if (direct.else && direct.else.test(text)) return VAToken.DirectElse;
+    if (direct.endif && direct.endif.test(text)) return VAToken.DirectEndif;
+  }
   if (/^[\s]*@/.test(text)) return VAToken.Instruction;
   if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
   if (/^[\s]*[#|//]/.test(text)) return VAToken.Comment;
@@ -32,6 +37,7 @@ export function getModelTokens(
   tabSize: number,
 ): Array<VAIndent> {
   const tokens: Array<VAIndent> = [];
+  let directIndent = 0;
   let multilineParam = false;
   let multilineComment = false;
   const lineCount = model.getLineCount();
@@ -57,14 +63,34 @@ export function getModelTokens(
         token = VAToken.Comment;
       }
     }
-    if (token != VAToken.Operator && token != VAToken.Asterisk) {
-      const indent = getIndent(text, tabSize);
-      tokens.push({ token, indent });
-    } else {
-      let indent = 0;
-      if (matcher.isSection(text)) token = VAToken.Section;
-      else indent = getIndent(text, tabSize);
-      tokens.push({ token, indent });
+    let indent: number;
+    switch (token) {
+      case VAToken.DirectIf:
+        directIndent += 1000;
+        indent = directIndent - 1;
+        tokens.push({ token, indent });
+        break;
+      case VAToken.DirectElse:
+        indent = directIndent - 1;
+        tokens.push({ token, indent });
+        break;
+      case VAToken.DirectEndif:
+        directIndent -= 1000;
+        indent = directIndent - 1;
+        tokens.push({ token, indent });
+        break;
+      case VAToken.Operator:
+      case VAToken.Asterisk:
+        indent = 0;
+        if (matcher.isSection(text)) token = VAToken.Section;
+        else indent = directIndent + getIndent(text, tabSize);
+        tokens.push({ token, indent });
+        break;
+      default: {
+        indent = directIndent + getIndent(text, tabSize);
+        tokens.push({ token, indent });
+        break;
+      }
     }
   }
   return tokens;

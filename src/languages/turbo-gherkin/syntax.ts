@@ -51,6 +51,9 @@ export function checkSyntax(
       case VAToken.Multiline:
       case VAToken.Parameter:
       case VAToken.Instruction:
+      case VAToken.DirectIf:
+      case VAToken.DirectElse:
+      case VAToken.DirectEndif:
         continue;
       case VAToken.Comment:
         matchImage(images, lineNumber, line, token);

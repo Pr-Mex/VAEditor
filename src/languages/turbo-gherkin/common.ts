@@ -61,6 +61,9 @@ export enum VAToken {
   Asterisk,
   StartComment,
   EndComment,
+  DirectIf,
+  DirectElse,
+  DirectEndif,
 }
 
 export interface VAIndent {

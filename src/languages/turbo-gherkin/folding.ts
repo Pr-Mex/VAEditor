@@ -10,6 +10,13 @@ export function getCodeFolding(
     let kind = undefined;
     const line = model.getLineToken(i);
     switch (model.getLineToken(i).token) {
+      case VAToken.DirectIf:
+      case VAToken.DirectElse:
+        for (let j = i + 1; j <= lineCount; j++) {
+          const next = model.getLineToken(j);
+          if (next.indent <= line.indent) break; else k = j;
+        }
+        break;
       case VAToken.Instruction:
         for (let j = i + 1; j <= lineCount; j++) {
           const next = model.getLineToken(j);
