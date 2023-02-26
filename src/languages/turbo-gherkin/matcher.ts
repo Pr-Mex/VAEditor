@@ -101,12 +101,13 @@ export class KeywordMatcher {
   }
 
   public setDirectives(value: any) {
-    const directives = [];
+    let directives = [];
     Object.keys(value).forEach((key: string) => {
       directives.push(key);
       const words = value[key] as Array<string>;
       words.forEach(w => directives.push(w));
     });
+    directives = directives.filter((value, index, array) => array.indexOf(value) === index);
     this.directives = directives.length ? this.regex(directives) : null;
   }
 
