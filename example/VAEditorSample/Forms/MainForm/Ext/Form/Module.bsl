@@ -740,9 +740,8 @@ Function GetDirectives()
 	Map = New Map;
 	Map.Insert("if", StrSplit("Если,If", ","));
 	Map.Insert("elsif", StrSplit("ИначеЕсли,Иначе,ElseIf,Else", ","));
-	Map.Insert("endif", "КонецЕсли,EndIf");
-
-	Return JsonDump(Directives);
+	Map.Insert("endif", StrSplit("КонецЕсли,EndIf", ","));
+	Return JsonDump(Map);
 
 EndFunction
 
