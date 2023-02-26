@@ -40,8 +40,8 @@ export class GherkinLanguage {
     this.tokenizer.keyword.push([provider.matcher.import, { token: "keyword", next: "@operator" }]);
     this.tokenizer.keyword.push([provider.matcher.step, { token: "keyword", next: "@operator" }]);
     this.tokenizer.feature[0] = [provider.matcher.primary, { token: "metatag.php", next: "@root" }];
-    if (provider.matcher.directives)
-      this.tokenizer.section.push([provider.matcher.directives, { token: "metatag", next: "@operator" }])
+    if (provider.matcher.directives && provider.matcher.directives.all)
+      this.tokenizer.section.push([provider.matcher.directives.all, { token: "metatag", next: "@operator" }])
     if (provider.matcher.sppr) {
       this.tokenizer.common.push([/\[/, "comment", "@string_bracket"]);
       this.tokenizer.common.push({include: "@multiline_comment"});

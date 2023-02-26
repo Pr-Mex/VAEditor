@@ -9,14 +9,21 @@ class Section {
   examples: RegExp;
 };
 
+export interface IDirectExp {
+  all?: RegExp,
+  if?: RegExp,
+  else?: RegExp,
+  endif?: RegExp,
+};
+
 export class KeywordMatcher {
 
   public sppr: boolean = false;
+  public directives: IDirectExp;
   public stepkey: any = {};
   public section = new Section;
   public keypairs: RegExp[];
   public metatags: RegExp;
-  public directives: RegExp;
   public primary: RegExp;
   public import: RegExp;
   public step: RegExp;
@@ -103,12 +110,15 @@ export class KeywordMatcher {
   }
 
   public setDirectives(value: ISpprDirect) {
-    let directives = [];
+    this.directives = {};
+    const all: string[] = [];
     Object.keys(value).forEach((key: string) => {
-      const words = value[key] as Array<string>;
-      words.forEach(w => directives.push("#" + w));
+      let words = value[key] as Array<string>;
+      words = words.map(w => '#' + w);
+      this.directives[key] = this.regex(words);
+      all.push(...words);
     });
-    this.directives = directives.length ? this.regex(directives) : null;
+    this.directives.all = this.regex(all);
   }
 
   public setSPPR(value: boolean) {
