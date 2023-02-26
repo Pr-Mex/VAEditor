@@ -60,10 +60,11 @@ export class VanessaGherkinProvider {
 
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
   public get errorLinks(): any { return this._errorLinks; }
+  public get directives(): any { return this._directives; }
   public get keypairs(): any { return this._keypairs; }
 
   private _metatags: string[] = ["try", "except", "попытка", "исключение"];
-  private _directives: string[] = [];
+  private _directives: any = {};
   private _keypairs: any = {};
   private _errorLinks = [];
   private _sppr: boolean = false;
@@ -76,10 +77,6 @@ export class VanessaGherkinProvider {
 
   public get locale(): string {
     return this._locale;
-  }
-
-  public get directives(): string[] {
-    return this._directives;
   }
 
   public setErrorLinks = (arg: string): void => {
@@ -101,6 +98,15 @@ export class VanessaGherkinProvider {
     this.initTokenizer();
   }
 
+  public setDirectives = (arg: string): void => {
+    this._directives = {};
+    let data = JSON.parse(arg);
+    Object.keys(data).forEach((key: string) =>
+      this.directives[key.toLowerCase()] = data[key].map((w: string) => w.toLowerCase())
+    );
+    this.matcher?.setDirectives(this.directives);
+  }
+
   public setKeypairs = (arg: string): void => {
     this._keypairs = {};
     let data = JSON.parse(arg);
@@ -118,13 +124,6 @@ export class VanessaGherkinProvider {
     this.matcher?.setMetatags(this.metatags);
     this.initTokenizer();
     worker.postMessage({ type: MessageType.SetMetatags, data: this.metatags });
-  }
-
-  public setDirectives = (arg: string): void => {
-    this._directives = [];
-    let list = JSON.parse(arg);
-    list.forEach((w: string) => this._directives.push(w));
-    this.matcher?.setDirectives(this.directives);
   }
 
   public setSPPR = (arg: boolean): void => {

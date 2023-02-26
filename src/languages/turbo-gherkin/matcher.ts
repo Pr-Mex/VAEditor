@@ -100,9 +100,14 @@ export class KeywordMatcher {
     this.metatags = this.regex(metatags);
   }
 
-  public setDirectives(words: string[]) {
-    this.directives = words.length === 0 ?
-      null : this.regex(words);
+  public setDirectives(value: any) {
+    const directives = [];
+    Object.keys(value).forEach((key: string) => {
+      directives.push(key);
+      const words = value[key] as Array<string>;
+      words.forEach(w => directives.push(w));
+    });
+    this.directives = directives.length ? this.regex(directives) : null;
   }
 
   public setSPPR(value: boolean) {

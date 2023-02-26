@@ -27,7 +27,7 @@ export function show() {
     soundHint: "Озвучить"
   }
 
-  const directives = ["#Если", "#Иначе", "#ИначеЕсли", "#КонецЕсли"]
+  const directives = {"#Если" : ["#Иначе", "#ИначеЕсли", "#КонецЕсли"]};
 
   const keypairs = { if: ['then'], Если: ['Тогда'] }
 
