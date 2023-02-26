@@ -11,6 +11,7 @@ import { setStepList, updateStepLabels } from './steplist';
 
 const context: IWorkerContext = {
   matcher: undefined,
+  directives: {},
   metatags: ["try", "except", "попытка", "исключение"],
   steplist: {},
   keypairs: {},
@@ -85,10 +86,15 @@ export function process(msg: WorkerMessage) {
       return { id: msg.id, data: { suggestions }, success: true };
     case MessageType.SetKeywords:
       context.matcher = new KeywordMatcher(msg.data);
+      context.matcher.setDirectives(context.directives);
       context.matcher.setKeypairs(context.keypairs);
       context.matcher.setMetatags(context.metatags)
-      context.matcher.setSPPR(context.sppr)
+      context.matcher.setSPPR(context.sppr);
       updateStepLabels(context);
+      break;
+    case MessageType.SetDirectives:
+      context.directives = JSON.parse(msg.data);
+      context.matcher?.setDirectives(context.directives)
       break;
     case MessageType.SetKeypairs:
       context.keypairs = msg.data;

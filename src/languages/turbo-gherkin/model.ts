@@ -1,5 +1,5 @@
 import { IWorkerModel, VAIndent, VAToken } from "./common";
-import { KeywordMatcher } from "./matcher";
+import { IDirectExp, KeywordMatcher } from "./matcher";
 
 function getIndent(text: string, tabSize: number) {
   let indent = 0;
@@ -12,7 +12,7 @@ function getIndent(text: string, tabSize: number) {
   return indent + 1;
 }
 
-function getToken(text: string, sppr: boolean) {
+function getToken(text: string, sppr: boolean, direct: IDirectExp) {
   if (sppr) {
     if (/^\s*\/\*.*$/.test(text)) return VAToken.StartComment;
     if (/^.*\*\/\s*/.test(text)) return VAToken.EndComment;
@@ -37,7 +37,7 @@ export function getModelTokens(
   const lineCount = model.getLineCount();
   for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
     let text = model.getLineContent(lineNumber);
-    let token = getToken(text, matcher.sppr);
+    let token = getToken(text, matcher.sppr, matcher.directives);
     if (multilineParam) {
       if (token == VAToken.Multiline) {
         multilineParam = false;

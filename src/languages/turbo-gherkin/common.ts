@@ -12,6 +12,7 @@ export function getLineMaxColumn(line: string): number {
 
 export interface IWorkerContext {
   matcher: KeywordMatcher;
+  directives: ISpprDirect;
   metatags: string[];
   steplist: any;
   keypairs: any;
@@ -77,6 +78,7 @@ export enum MessageType {
   SetKeypairs,
   SetMessages,
   SetVariables,
+  SetDirectives,
   UpdateModel,
   DeleteModel,
   GetCodeActions,
@@ -99,6 +101,7 @@ export function type2str(type: MessageType) {
     case MessageType.SetKeypairs: return "SetKeypairs";
     case MessageType.SetMessages: return "SetMessages";
     case MessageType.SetVariables: return "SetVariables";
+    case MessageType.SetDirectives: return "SetDirectives";
     case MessageType.UpdateModel: return "UpdateModel";
     case MessageType.DeleteModel: return "DeleteModel";
     case MessageType.GetCodeActions: return "GetCodeActions";
@@ -120,6 +123,7 @@ export type WorkerMessage =
   | { id?: number, type: MessageType.SetMessages, data: any }
   | { id?: number, type: MessageType.SetElements, values: string, clear: boolean }
   | { id?: number, type: MessageType.SetVariables, values: string, clear: boolean }
+  | { id?: number, type: MessageType.SetDirectives, data: any }
   | { id?: number, type: MessageType.SetImports, data: any }
   | { id?: number, type: MessageType.UpdateModel, versionId: number, uri: string }
   | { id?: number, type: MessageType.DeleteModel, uri: string }

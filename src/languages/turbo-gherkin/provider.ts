@@ -99,6 +99,7 @@ export class VanessaGherkinProvider {
   }
 
   public setDirectives = (arg: string): void => {
+    worker.postMessage({ type: MessageType.SetDirectives, data: arg });
     this._directives = JSON.parse(arg) as ISpprDirect;
     this.matcher?.setDirectives(this.directives);
   }
