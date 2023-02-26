@@ -1,6 +1,7 @@
 import { content } from './example.file.js'
 import { initGherkinProvider } from '../provider'
 import { WelcomeParams } from '../../src/vanessa-viewer.js';
+import { ISpprDirect } from '../../src/languages/turbo-gherkin/common.js';
 
 export function show() {
 
@@ -27,7 +28,11 @@ export function show() {
     soundHint: "Озвучить"
   }
 
-  const directives = {"#Если" : ["#Иначе", "#ИначеЕсли", "#КонецЕсли"]};
+  const directives: ISpprDirect = {
+    if: ["Если"],
+    else: ["ИначеЕсли", "Иначе"],
+    endif: ["КонецЕсли"],
+  };
 
   const keypairs = { if: ['then'], Если: ['Тогда'] }
 

@@ -138,3 +138,9 @@ export interface IWorkerModel {
   getLineToken(lineNumber: number): VAIndent;
   getLineCount(): number;
 }
+
+export interface ISpprDirect {
+ if?: string[],
+ else?: string[],
+ endif?: string[],
+}

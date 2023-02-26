@@ -2,7 +2,7 @@ import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalon
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
-import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager } from './common';
+import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
 import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
@@ -59,12 +59,12 @@ export function clearWorkerCache(uri: monaco.Uri) {
 export class VanessaGherkinProvider {
 
   public static get instance(): VanessaGherkinProvider { return window["VanessaGherkinProvider"]; }
+  public get directives(): ISpprDirect { return this._directives; }
   public get errorLinks(): any { return this._errorLinks; }
-  public get directives(): any { return this._directives; }
   public get keypairs(): any { return this._keypairs; }
 
   private _metatags: string[] = ["try", "except", "попытка", "исключение"];
-  private _directives: any = {};
+  private _directives: ISpprDirect = {};
   private _keypairs: any = {};
   private _errorLinks = [];
   private _sppr: boolean = false;
@@ -99,11 +99,7 @@ export class VanessaGherkinProvider {
   }
 
   public setDirectives = (arg: string): void => {
-    this._directives = {};
-    let data = JSON.parse(arg);
-    Object.keys(data).forEach((key: string) =>
-      this.directives[key.toLowerCase()] = data[key].map((w: string) => w.toLowerCase())
-    );
+    this._directives = JSON.parse(arg) as ISpprDirect;
     this.matcher?.setDirectives(this.directives);
   }
 

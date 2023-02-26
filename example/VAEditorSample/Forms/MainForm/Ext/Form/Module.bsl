@@ -737,17 +737,10 @@ EndFunction
 &AtClient
 Function GetDirectives()
 
-	words = "
-		|#Если
-		|#ИначеЕсли
-		|#Иначе
-		|#КонецЕсли
-		|";
-
-	split = "
-	|";
-
-	Directives = StrSplit(words, split, False);
+	Map = New Map;
+	Map.Insert("if", StrSplit("Если,If", ","));
+	Map.Insert("elsif", StrSplit("ИначеЕсли,Иначе,ElseIf,Else", ","));
+	Map.Insert("endif", "КонецЕсли,EndIf");
 
 	Return JsonDump(Directives);
 

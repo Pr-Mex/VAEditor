@@ -1,3 +1,5 @@
+import { ISpprDirect } from "./common";
+
 class Section {
   feature: RegExp;
   variables: RegExp;
@@ -100,14 +102,12 @@ export class KeywordMatcher {
     this.metatags = this.regex(metatags);
   }
 
-  public setDirectives(value: any) {
+  public setDirectives(value: ISpprDirect) {
     let directives = [];
     Object.keys(value).forEach((key: string) => {
-      directives.push(key);
       const words = value[key] as Array<string>;
-      words.forEach(w => directives.push(w));
+      words.forEach(w => directives.push("#" + w));
     });
-    directives = directives.filter((value, index, array) => array.indexOf(value) === index);
     this.directives = directives.length ? this.regex(directives) : null;
   }
 
