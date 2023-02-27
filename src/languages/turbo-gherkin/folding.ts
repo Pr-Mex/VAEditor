@@ -42,6 +42,9 @@ export function getCodeFolding(
         for (let j = i + 1; j <= lineCount; j++) {
           const next = model.getLineToken(j);
           if (next.token == VAToken.Section) break;
+          if (next.token == VAToken.DirectIf) break;
+          if (next.token == VAToken.DirectElse) break;
+          if (next.token == VAToken.DirectEndif) break;
           if (next.token == VAToken.Empty) continue;
           if (next.token == VAToken.Comment) { k = j; continue; }
           if (next.token == VAToken.Multiline) { k = j; continue; }

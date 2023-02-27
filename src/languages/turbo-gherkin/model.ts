@@ -63,35 +63,34 @@ export function getModelTokens(
         token = VAToken.Comment;
       }
     }
-    let indent: number;
+    let indent = 0;
     switch (token) {
       case VAToken.DirectIf:
         directIndent += 1000;
         indent = directIndent - 1;
-        tokens.push({ token, indent });
         break;
       case VAToken.DirectElse:
-        indent = directIndent - 1;
-        tokens.push({ token, indent });
+        if (directIndent > 0) {
+          indent = directIndent - 1;
+        }
         break;
       case VAToken.DirectEndif:
-        directIndent -= 1000;
-        indent = directIndent - 1;
-        tokens.push({ token, indent });
+        if (directIndent > 0) {
+          directIndent -= 1000;
+          indent = directIndent - 1;
+        }
         break;
       case VAToken.Operator:
       case VAToken.Asterisk:
-        indent = 0;
         if (matcher.isSection(text)) token = VAToken.Section;
         else indent = directIndent + getIndent(text, tabSize);
-        tokens.push({ token, indent });
         break;
       default: {
         indent = directIndent + getIndent(text, tabSize);
-        tokens.push({ token, indent });
         break;
       }
     }
+    tokens.push({ token, indent });
   }
   return tokens;
 }

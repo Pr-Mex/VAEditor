@@ -96,9 +96,11 @@ export function checkSyntax(
     }
   }
   groups.forEach(e => {
-    for (let i = e.lineNumber + 1; i <= e.folding; ++i) if (steps[i]) {
-      decorations.push(groupDecoration(e.lineNumber, "vanessa-style-bold"));
-      break;
+    for (let i = e.lineNumber + 1; i <= e.folding; ++i) {
+      if (steps[i]) {
+        decorations.push(groupDecoration(e.lineNumber, "vanessa-style-bold"));
+        break;
+      }
     }
   });
   return { decorations, problems, images };
