@@ -33,7 +33,7 @@ export function getLineHover(
       let ch = "#compass:" + msg.lineNumber;
       let sh = "#sound:" + msg.lineNumber;
       contents.push({ value: `**${t}** [${i}](${ih}) [${c}](${ch}) [${s}](${sh})` });
-      contents.push({ value: escapeMarkdown(step.documentation) });
+      contents.push({ value: step.documentation });
       let regexp = new RegExp(ctx.matcher.tokens.param, "gu");
       let vars = line.match(regexp) || [];
       let used = {};
