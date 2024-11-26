@@ -33,7 +33,7 @@ describe('Всплывающие подсказки', function () {
     hover(7).then(result => {
       expect(result).to.be.an('object').to.have.property('range').to.deep.equal(range(7));
       expect(result).to.have.property('contents').to.be.an('array').to.have.lengthOf(2);
-      expect(result.contents[1].value).to.equal('Условие\\. Проверяет, что появилось окно предупреждения\\.');
+      expect(result.contents[1].value).to.equal('Условие. Проверяет, что появилось окно предупреждения.');
       expect(result.contents[0].value).to.include('**UI\\.Всплывающие окна**');
       expect(result.contents[0].value).to.include('(#info:появилось-предупреждение-тогда)');
       expect(result.contents[0].value).to.include('(#sound:7)');
