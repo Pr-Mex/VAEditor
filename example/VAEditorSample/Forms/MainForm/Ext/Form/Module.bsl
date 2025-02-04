@@ -630,12 +630,22 @@ EndProcedure
 Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
-	If Element.id = "VanessaEditorEventForwarder" Then
-		While (True) Do
-			msg = DefaultView().popVanessaMessage();
-			If (msg = Undefined) Then Break; EndIf;
-			VanessaEditorOnReceiveEventHandler(msg.editor, msg.type, msg.data);
-		EndDo;
+	If Element.id = "VanessaEditorEventForwarder" Then      
+		StandardProcessing = false;
+		If EventData.Event.type <> "click" Then
+			Return;
+		EndIf;
+		EventDataFor1C = EventData.Event.detail;
+		
+		If EventDataFor1C = Undefined Или TypeOf(EventDataFor1C) = Type("Число") Then
+			Return;
+		EndIf;
+		EventType = EventDataFor1C.name; //Строка
+		Data = EventDataFor1C.data; // Неопределено, Строка, Произвольный
+		If Not ValueIsFilled(EventType) Then
+			Return;
+		EndIf;
+		VanessaEditorOnReceiveEventHandler(EventDataFor1C.editor, EventType, Data);
 	ElsIf CharCode(Element.innerText, 1) = 60020 Then
 		Message(Element.title);
 	ElsIf CharCode(Element.innerText, 1) = 60277 Then
