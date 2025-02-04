@@ -155,7 +155,7 @@ export class EventsManager {
     // tslint:disable-next-line: no-console
     console.debug("fireEvent:", event, arg);
 
-    emitEventTo1C(event, arg, undefined);
+    emitEventTo1C(event, arg, this.owner, undefined);
   }
 
   public static fireEvent(
@@ -165,6 +165,6 @@ export class EventsManager {
   ) {
     // tslint:disable-next-line: no-console
     console.debug("fireEvent:", event, arg);
-    emitEventTo1C(event, arg, undefined);
+    emitEventTo1C(event, arg, editor, undefined);
   }
 }
