@@ -109,17 +109,17 @@ function emitEventTo1C(
     event.stopPropagation();
   }
 
-  let eventData = data || "";
-  if (typeof eventData === "object") {
-    eventData = JSON.stringify(eventData);
-  }
+  // let eventData = data || "";
+  // if (typeof eventData === "object") {
+  //   eventData = JSON.stringify(eventData);
+  // }
   let lastEvent = new CustomEvent("click", {
     bubbles: true,
     cancelable: true,
     composed: false,
     detail: {
       name: name,
-      data: eventData,
+      data: data,
       editor,
     },
   });
