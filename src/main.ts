@@ -40,7 +40,7 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { language as gherkin } from './languages/turbo-gherkin/configuration';
-import { EventsManager, initPage } from "./common";
+import { initPage } from "./common";
 
 initPage();
 
@@ -62,6 +62,5 @@ window["disposeVanessaTabs"] = () => VanessaTabs.disposeStandalone();
 window["disposeVanessaEditor"] = () => VanessaEditor.disposeStandalone();
 window["disposeVanessaDiffEditor"] = () => VanessaDiffEditor.disposeStandalone();
 window["useVanessaDebugger"] = (value: boolean) => VanessaTabs.useDebugger(value);
-window["popVanessaMessage"] = () => EventsManager.popMessage();
 
 patchWebKit1C();

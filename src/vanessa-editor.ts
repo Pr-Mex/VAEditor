@@ -15,7 +15,6 @@ const $ = dom.$;
 export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
-  public popMessage = () => EventsManager.popMessage();
   public setTheme = (arg: string) => StyleManager.theme = arg;
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);

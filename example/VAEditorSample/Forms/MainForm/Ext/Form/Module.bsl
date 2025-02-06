@@ -630,17 +630,17 @@ EndProcedure
 Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
-	If Element.id = "VanessaEditorEventForwarder" Then      
+	If Lower(Element.tagName) = "body" Then      
 		StandardProcessing = false;
 		If EventData.Event.type <> "click" Then
 			Return;
 		EndIf;
 		EventDataFor1C = EventData.Event.detail;
 		
-		If EventDataFor1C = Undefined Или TypeOf(EventDataFor1C) = Type("Число") Then
+		If EventDataFor1C = Undefined Или TypeOf(EventDataFor1C) = Type("Number") Then
 			Return;
 		EndIf;
-		EventType = EventDataFor1C.name; //Строка
+		EventType = EventDataFor1C.name; //Строка    
 		Data = EventDataFor1C.data; // Неопределено, Строка, Произвольный
 		If Not ValueIsFilled(EventType) Then
 			Return;

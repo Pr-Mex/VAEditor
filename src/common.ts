@@ -53,8 +53,7 @@ export function initPage() {
     "div",
     { id: "VanessaContainer" },
     $("div.vanessa-hidden", { id: "VanessaTabsContainer" }),
-    $("div", { id: "VanessaEditorContainer" }),
-    $("button", { id: "VanessaEditorEventForwarder" })
+    $("div", { id: "VanessaEditorContainer" })
   );
   document.body.appendChild(domMain);
 }
@@ -125,14 +124,10 @@ function emitEventTo1C(
   });
   lastEvent.preventDefault();
 
-  const fakeButtonFireClickEvent: HTMLButtonElement = document.getElementById(
-    "VanessaEditorEventForwarder"
-  ) as HTMLButtonElement;
-  fakeButtonFireClickEvent.dispatchEvent(lastEvent);
+  document.body.dispatchEvent(lastEvent);
 }
 
 export class EventsManager {
-  private static messages: Array<VanessaEditorMessage> = [];
   private owner: IVanessaEditor;
 
   constructor(owner: IVanessaEditor) {
@@ -148,8 +143,6 @@ export class EventsManager {
       return { id: e.id, alias: e.alias, label: e.label };
     });
   }
-
-  public static popMessage = () => EventsManager.messages.shift();
 
   public fireEvent(event: string, arg: any = undefined) {
     // tslint:disable-next-line: no-console
