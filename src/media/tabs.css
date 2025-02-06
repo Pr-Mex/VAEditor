@@ -32,10 +32,6 @@ a[data-href] {
     cursor: pointer;
 }
 
-#VanessaEditorEventForwarder {
-    display: none;
-}
-
 .vanessa-hidden {
     display: none !important;
 }

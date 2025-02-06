@@ -102,7 +102,6 @@ export class VanessaDiffEditor implements IVanessaEditor {
 
   //@ts-ignore
   public domNode = () => this.editor._containerDomElement;
-  public popMessage = () => EventsManager.popMessage();
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });

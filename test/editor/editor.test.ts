@@ -1,11 +1,10 @@
+import { IVanessaEditor } from '../../src/common';
 import { VanessaEditor } from '../../src/vanessa-editor';
 import { VanessaTabs } from '../../src/vanessa-tabs';
 import { initGherkinProvider } from '../provider'
 let emulator = require('./key-emulator');
 let expect = require('chai').expect;
 
-//@ts-ignore
-const popVanessaMessage = window.popVanessaMessage;
 //@ts-ignore
 const tabs = window.VanessaTabs as VanessaTabs;
 
@@ -16,33 +15,50 @@ const url = 'Браузер.feature';
 const title = 'Заголовок файла';
 
 describe('Управление редактором', function () {
+  let eventsData: {name:string, data:any, editor:IVanessaEditor}[];
   let editor: VanessaEditor;
+
+  function bodyOnClickHandler(ev:Event){
+    if (ev instanceof CustomEvent) {
+
+      if (Number.isInteger(ev.detail)) {
+        return;
+      }
+      eventsData.push(ev.detail)
+    }
+  }
+
   before((done) => {
+    eventsData = [];
+    document.body.addEventListener('click', bodyOnClickHandler)
     initGherkinProvider();
-    while (popVanessaMessage()) { }
     editor = tabs.edit(content, url, url, title, 0, false, true) as VanessaEditor;
     setTimeout(done, 100);
   });
+  after((done)=>{
+    document.body.removeEventListener('click', bodyOnClickHandler)
+    done()
+  })
   it('Событие на открытие вкладки', () => {
-    let message = popVanessaMessage();
-    expect(message.type).to.equal("ON_TAB_SELECT");
+    let message = eventsData.shift();
+    expect(message.name).to.equal("ON_TAB_SELECT");
     expect(message.data.filename).to.equal(url);
     expect(message.data.title).to.equal(title);
   });
   it('Событие на закрытие вкладки', () => {
-    while (popVanessaMessage()) { }
+    eventsData = []
     //@ts-ignore
     tabs.current.domClose.click()
-    let message = popVanessaMessage();
-    expect(message.type).to.equal("ON_TAB_CLOSING");
+    let message = eventsData.shift();
+    expect(message.name).to.equal("ON_TAB_CLOSING");
     expect(message.data.filename).to.equal(url);
     expect(message.data.title).to.equal(title);
   });
   it('Событие на запись документа', () => {
-    while (popVanessaMessage()) { }
+    eventsData = []
     emulator.keyboard("keydown", { keyCode: 83, ctrlKey: true });
-    let message = popVanessaMessage();
-    expect(message.type).to.equal("PRESS_CTRL_S");
+    let message = eventsData.shift();
+    expect(message.name).to.equal("PRESS_CTRL_S");
     expect(message.data.filename).to.equal(url);
     expect(message.data.title).to.equal(title);
   });
