@@ -8,9 +8,7 @@ const nls = require.resolve('monaco-editor-nls')
 module.exports = (env, argv) => {
   const entry = {
     app: './src/main',
-  }
-  if (argv.mode !== 'production') {
-    entry.test = './test/autotest.js'
+    test: './test/autotest.js'
   }
 
   return {
@@ -107,14 +105,11 @@ module.exports = (env, argv) => {
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
+        filename: 'index.html',
         title: 'VAEditor',
-        cache: false
+        cache: false,
+        template: path.resolve(__dirname, 'template.html')
       }),
-      new ScriptExtHtmlWebpackPlugin({
-        inline: [
-          'app.js'
-        ]
-      })
     ],
     optimization: {
       minimize: argv.mode === 'production'
