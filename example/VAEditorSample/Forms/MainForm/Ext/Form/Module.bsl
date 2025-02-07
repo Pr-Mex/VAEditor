@@ -615,10 +615,8 @@ Procedure VanessaEditorLoad(TemplateBinaryData)
 	For each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
 		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
-		VanessaEditorURL = GetInfoBaseURL() + "/" + PutToTempStorage(BinaryData, UUID)
-			+ "&localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
+		VanessaEditorURL = TempFileName + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 	EndDo;
-	DeleteFiles(TempFileName);
 
 EndProcedure
 
