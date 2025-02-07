@@ -19,7 +19,7 @@ module.exports = (env, argv) => {
     output: {
       globalObject: 'self',
       filename: '[name].js',
-      chunkFilename: 'worker.js',
+      chunkFilename: 'app.worker.js',
       path: path.resolve(__dirname, 'dist')
     },
     resolveLoader: {
