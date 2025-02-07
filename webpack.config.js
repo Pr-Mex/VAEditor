@@ -101,11 +101,18 @@ module.exports = (env, argv) => {
         resource.resource = nls
       }),
       new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1
+        maxChunks: 3
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         filename: 'index.html',
+        title: 'VAEditor',
+        cache: false,
+        chunks:['app'],
+        template: path.resolve(__dirname, 'template.html')
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'test.html',
         title: 'VAEditor',
         cache: false,
         template: path.resolve(__dirname, 'template.html')
