@@ -614,9 +614,8 @@ Procedure VanessaEditorLoad(TemplateBinaryData)
 	ZipFileReader = New ZipFileReader(TemplateBinaryData.OpenStreamForRead());
 	For each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
-		VanessaEditorURL = TempFileName + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 	EndDo;
+	VanessaEditorURL = TempFileName + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 
 EndProcedure
 
@@ -628,17 +627,17 @@ EndProcedure
 Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
-	If Lower(Element.tagName) = "body" Then      
+	If Lower(Element.tagName) = "body" Then
 		StandardProcessing = false;
 		If EventData.Event.type <> "click" Then
 			Return;
 		EndIf;
 		EventDataFor1C = EventData.Event.detail;
-		
+
 		If EventDataFor1C = Undefined Или TypeOf(EventDataFor1C) = Type("Number") Then
 			Return;
 		EndIf;
-		EventType = EventDataFor1C.name; //Строка    
+		EventType = EventDataFor1C.name; //Строка
 		Data = EventDataFor1C.data; // Неопределено, Строка, Произвольный
 		If Not ValueIsFilled(EventType) Then
 			Return;
