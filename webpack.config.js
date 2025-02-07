@@ -6,11 +6,15 @@ const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls')
 
 module.exports = (env, argv) => {
+  const entry = {
+    app: './src/main',
+  }
+  if (argv.mode !== 'production') {
+    entry.test = './test/autotest.js'
+  }
+
   return {
-    entry: {
-      app: './src/main',
-      test: './test/autotest.js'
-    },
+    entry,
     resolve: {
       extensions: ['.ts', '.js', '.css']
     },
