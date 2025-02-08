@@ -8,7 +8,7 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	DataObject = FormAttributeToValue("Object");
 	ExtractTemplate(DataObject, TempDirectory, "VAEditor");
 	ExtractTemplate(DataObject, TempDirectory, "AutoTest");
-	VanessaEditorURL = TempDirectory + "/index.html";
+	VanessaEditorURL = TempDirectory + "/test.html";
 
 	DataDile = New File(DataObject.UsedFileName);
 	CurrentPath = DataDile.Path;

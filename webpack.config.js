@@ -6,18 +6,20 @@ const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls')
 
 module.exports = (env, argv) => {
+  const entry = {
+    app: './src/main',
+    test: './test/autotest.js'
+  }
+
   return {
-    entry: {
-      app: './src/main',
-      test: './test/autotest.js'
-    },
+    entry,
     resolve: {
       extensions: ['.ts', '.js', '.css']
     },
     output: {
       globalObject: 'self',
       filename: '[name].js',
-      chunkFilename: 'worker.js',
+      chunkFilename: 'app.worker.js',
       path: path.resolve(__dirname, 'dist')
     },
     resolveLoader: {
@@ -99,18 +101,22 @@ module.exports = (env, argv) => {
         resource.resource = nls
       }),
       new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1
+        maxChunks: 3
       }),
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
+        filename: 'index.html',
         title: 'VAEditor',
-        cache: false
+        cache: false,
+        chunks:['app'],
+        template: path.resolve(__dirname, 'template.html')
       }),
-      new ScriptExtHtmlWebpackPlugin({
-        inline: [
-          'app.js'
-        ]
-      })
+      new HtmlWebpackPlugin({
+        filename: 'test.html',
+        title: 'VAEditor',
+        cache: false,
+        template: path.resolve(__dirname, 'template.html')
+      }),
     ],
     optimization: {
       minimize: argv.mode === 'production'
