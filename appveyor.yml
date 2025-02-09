@@ -4,17 +4,17 @@ configuration: Release
 platform: x64
 
 environment:
-  nodejs_version: "16"
+  nodejs_version: 18
   KEY_1CV8T:
     secure: OolAVEKkEg1cGCpG/VK2FaM0LWrPgMR/Kn4nTLYyKR0=
   APPVEYOR_RDP_PASSWORD:
     secure: Eh+U4U31T7wawjBeINftkw==
 
 install:
-  - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
-  - cd bin
-  - 7z x tools1c.part01.rar -p%KEY_1CV8T%
-  - cd ..
+  # - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
+  # - cd bin
+  # - 7z x tools1c.part01.rar -p%KEY_1CV8T%
+  # - cd ..
 
   - git clone -q --branch=oscript.w64 https://github.com/lintest/tools1c.git oscript
   - cd oscript
@@ -26,37 +26,36 @@ install:
   - ps: $package = (Get-Content -Raw -Path package.json | ConvertFrom-Json)
   - ps: $package.version = "$env:APPVEYOR_BUILD_VERSION"
   - ps: $package | ConvertTo-Json | Out-File -Encoding UTF8 version.json
-  - npm -q --no-progress install .
+  - npm -q --no-progress ci
 
 build_script:
-  - ps: $env:NODE_OPTIONS = "--openssl-legacy-provider"
-  - npx webpack --mode production
+  - npm run build
   - 7z a VAEditor.zip %CD%/dist/*.*
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
-after_build:
-  - mkdir database
-  - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
-  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
-  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
-  - appveyor PushArtifact example.log
-  - appveyor PushArtifact VAEditorSample.epf
-  - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
-  - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
+# after_build:
+#   - mkdir database
+#   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
+#   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
+#   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
+#   - appveyor PushArtifact example.log
+#   - appveyor PushArtifact VAEditorSample.epf
+#   - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
+#   - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
 
 artifacts:
-  - path: AutoTest.zip
+  # - path: AutoTest.zip
   - path: VAEditor.zip
-  - path: VAEditorSample.epf
+  # - path: VAEditorSample.epf
 
-deploy:
-  - provider: GitHub
-    auth_token:
-      secure: v7P89NQ2I5+WGNNdhpFrZEt6OCTPf8A8VSC5rttZMXh3DJ2fTChNEjZ1Wvm3kfBt
-    repository: Pr-Mex/VAEditor
-    artifact: VAEditor.zip, VAEditorSample.epf
-    draft: true
-    prerelease: true
-    force_update: true
-    on:
-      branch: master
+# deploy:
+#   - provider: GitHub
+#     auth_token:
+#       secure: v7P89NQ2I5+WGNNdhpFrZEt6OCTPf8A8VSC5rttZMXh3DJ2fTChNEjZ1Wvm3kfBt
+#     repository: Pr-Mex/VAEditor
+#     artifact: VAEditor.zip, VAEditorSample.epf
+#     draft: true
+#     prerelease: true
+#     force_update: true
+#     on:
+#       branch: master
