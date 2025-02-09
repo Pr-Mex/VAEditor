@@ -30,8 +30,8 @@ install:
   - npm -q --no-progress ci
 
 build_script:
-  - node -v -q --no-progress
-  - npm run build
+  - node -v
+  - npm run build -q --no-progress
   - 7z a VAEditor.zip %CD%/dist/*.*
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
