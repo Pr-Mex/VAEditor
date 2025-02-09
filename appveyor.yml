@@ -7,14 +7,12 @@ environment:
   nodejs_version: "18"
   KEY_1CV8T:
     secure: OolAVEKkEg1cGCpG/VK2FaM0LWrPgMR/Kn4nTLYyKR0=
-  APPVEYOR_RDP_PASSWORD:
-    secure: Eh+U4U31T7wawjBeINftkw==
 
 install:
-  # - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
-  # - cd bin
-  # - 7z x tools1c.part01.rar -p%KEY_1CV8T%
-  # - cd ..
+  - git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
+  - cd bin
+  - 7z x tools1c.part01.rar -p%KEY_1CV8T%
+  - cd ..
 
   - git clone -q --branch=oscript.w64 https://github.com/lintest/tools1c.git oscript
   - cd oscript
@@ -30,25 +28,24 @@ install:
   - npm -q --no-progress ci
 
 build_script:
-  - node -v
   - npm run buildci
   - 7z a VAEditor.zip %CD%/dist/*.*
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
-# after_build:
-#   - mkdir database
-#   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
-#   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
-#   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
-#   - appveyor PushArtifact example.log
-#   - appveyor PushArtifact VAEditorSample.epf
-#   - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
-#   - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
+after_build:
+  - mkdir database
+  - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
+  - appveyor PushArtifact example.log
+  - appveyor PushArtifact VAEditorSample.epf
+  - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
+  - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
 
 artifacts:
-  # - path: AutoTest.zip
+  - path: AutoTest.zip
   - path: VAEditor.zip
-  # - path: VAEditorSample.epf
+  - path: VAEditorSample.epf
 
 # deploy:
 #   - provider: GitHub
