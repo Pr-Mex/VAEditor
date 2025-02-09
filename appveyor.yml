@@ -47,14 +47,14 @@ artifacts:
   - path: VAEditor.zip
   - path: VAEditorSample.epf
 
-# deploy:
-#   - provider: GitHub
-#     auth_token:
-#       secure: v7P89NQ2I5+WGNNdhpFrZEt6OCTPf8A8VSC5rttZMXh3DJ2fTChNEjZ1Wvm3kfBt
-#     repository: Pr-Mex/VAEditor
-#     artifact: VAEditor.zip, VAEditorSample.epf
-#     draft: true
-#     prerelease: true
-#     force_update: true
-#     on:
-#       branch: master
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: v7P89NQ2I5+WGNNdhpFrZEt6OCTPf8A8VSC5rttZMXh3DJ2fTChNEjZ1Wvm3kfBt
+    repository: Pr-Mex/VAEditor
+    artifact: VAEditor.zip, VAEditorSample.epf
+    draft: true
+    prerelease: true
+    force_update: true
+    on:
+      branch: master
