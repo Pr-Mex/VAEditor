@@ -31,7 +31,7 @@ install:
 
 build_script:
   - node -v
-  - npm run build -q --no-progress
+  - npm run buildci
   - 7z a VAEditor.zip %CD%/dist/*.*
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
