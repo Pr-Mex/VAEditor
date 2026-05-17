@@ -9,7 +9,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "npm.cmd",
-      "args": ["run", "debug"],
+      "args": ["run", "demo"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
