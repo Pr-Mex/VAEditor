@@ -402,7 +402,7 @@ export class RuntimeManager {
     return this.editor.getModel().getLineContent(lineNumber);
   }
 
-  public getCurrent(): IRuntimePosition {
+  public getCurrent(): IRuntimePosition | undefined {
     const model = this.editor.getModel();
     let decoration = this.currentDecorationIds[0];
     let range = decoration ? model.getDecorationRange(decoration) : undefined;
@@ -410,9 +410,10 @@ export class RuntimeManager {
     let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
     let lineNumber = widget ? widget.getCurrent() : undefined;
     if (lineNumber) return new RuntimePosition(lineNumber, widget.id);
+    return undefined;
   }
 
-  public setCurrent(lineNumber: number, codeWidget: string = ""): IRuntimePosition {
+  public setCurrent(lineNumber: number, codeWidget: string = ""): IRuntimePosition | undefined {
     const model = this.editor.getModel();
     this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
     let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
@@ -426,6 +427,7 @@ export class RuntimeManager {
         widget.setCurrent(lineNumber);
         return new RuntimePosition(lineNumber, codeWidget);
       }
+      return undefined;
     } else {
       if (lineNumber <= 0 || lineNumber > model.getLineCount()) return undefined;
       const oldDecorations = [];
@@ -450,7 +452,7 @@ export class RuntimeManager {
     }
   }
 
-  public next(): IRuntimePosition {
+  public next(): IRuntimePosition | undefined {
     let step = this.getCurrent();
     if (step == undefined) return this.setCurrent(1);
     if (step.codeWidget) {
@@ -462,6 +464,9 @@ export class RuntimeManager {
         lineNumber = widget.lineNumber(this.editor) + 1;
         return this.setCurrent(lineNumber);
       }
+      // widget was disposed (e.g. clearSubcode) — fall back to advancing on the editor line
+      let lineNumber = step.lineNumber + 1;
+      return this.setCurrent(lineNumber);
     } else {
       let decorations = this.editor.getLineDecorations(step.lineNumber);
       for (let id in this.codeWidgets) {
@@ -475,10 +480,11 @@ export class RuntimeManager {
     }
   }
 
-  public showError(lineNumber: number, codeWidget: string, data: string, text: string) {
+  public showError(lineNumber: number, codeWidget: string, data: string, text: string): string | undefined {
     if (codeWidget) {
       let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
       if (widget) widget.showError(lineNumber, data, text);
+      return undefined;
     } else {
       let widget = new ErrorWidget(this.owner, data, text);
       let id = widget.show(this.editor, lineNumber);

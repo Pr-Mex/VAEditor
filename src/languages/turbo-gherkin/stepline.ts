@@ -17,7 +17,7 @@ export interface VAStepWord {
 function stepDecoration(
   step: VAStepData,
   lineNumber: number,
-): monaco.editor.IModelDeltaDecoration {
+): monaco.editor.IModelDeltaDecoration | undefined {
   let glyph = undefined;
   let style = undefined;
   switch (step.kind) {
@@ -33,6 +33,7 @@ function stepDecoration(
       inlineClassName: style,
     }
   };
+  return undefined;
 }
 
 function conditionDecoration(
