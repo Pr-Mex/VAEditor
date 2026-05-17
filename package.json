@@ -8,7 +8,7 @@
 		"demo": "webpack serve --progress --mode development --env demo",
 		"test": "webpack serve --progress --mode development --env test",
 		"build": "webpack --progress --mode production",
-		"buildci":"webpack --mode production",
+		"buildci": "webpack --mode production",
 		"compile": "run-script-os",
 		"compile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
 		"compile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/ZipTemplates.os & ~/.local/share/ovm/current/bin/oscript ./tools/onescript/Compile.os ./example",
@@ -71,7 +71,7 @@
 		"typescript": "^4.9.5",
 		"webpack": "^4.46.0",
 		"webpack-cli": "^4.10.0",
-		"webpack-dev-server": "^3.11.3"
+		"webpack-dev-server": "^4.15.2"
 	},
 	"engines": {
 		"node": ">=8.10.0"
