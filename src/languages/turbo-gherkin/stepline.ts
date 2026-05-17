@@ -125,11 +125,6 @@ export class VAStepLine {
     ).map(w => w.text);
   }
 
-  private keypair(ctx: IWorkerContext): string {
-    let keyword = this.keyword.trim().replace(/\s+/, " ").toLowerCase();
-    return ctx.keypairs[keyword];
-  }
-
   public checkSyntax(
     ctx: IWorkerContext,
     lineNumber: number,
