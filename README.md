@@ -51,6 +51,8 @@ npm run codestyle
 
 ## API
 
+> Полный машиночитаемый контракт публичного API с JSDoc для каждого метода — в [`src/types/public-api.d.ts`](./src/types/public-api.d.ts). TS/JS-интеграторы получают autocomplete и проверку типов в IDE автоматически.
+
 ### Глобальные свойства
 
 **VanessaGherkinProvider** - экземпляр класса, реализующего поддержку языка Gherkin и обеспечивающий его конфигурирование.
@@ -79,7 +81,7 @@ npm run codestyle
 | `setContent`                   | Загрузить контент в модель редактора                                                            |
 | `getContent`                   | Получить текст из модели редактора                                                              |
 | `revealLine`                   | Выполнить прокрутку редактора до определенной строки                                            |
-| ... другие команды ...         | см. другие команды в [vanessa-editor.ts](./src/vanessa-editor.ts)                               |
+| ... другие команды ...         | полный список (53 метода) с JSDoc — [`public-api.d.ts`](./src/types/public-api.d.ts) → `IPublicVanessaEditor` |
 
 Пример:
 
@@ -100,7 +102,7 @@ VanessaEditor.setContent("Text to edit");
 | -------------------------------------- | ---------------------------------------------------------------------------- |
 | `UPDATE_BREAKPOINTS`                   | При обновлении состояния брейкпоинтов                                        |
 | `ON_HREF_CLICK`                        | При нажатии на ссылку                                                        |
-| ... другие события ...                 | Команды, переданные в `VanessaEditor.addCommands`                            |
+| ... другие события ...                 | полный enum (9 событий) — [`public-api.d.ts`](./src/types/public-api.d.ts) → `VanessaEditorEventName`, плюс кастомные через `VanessaEditor.addCommands` |
 
 Пример:
 
