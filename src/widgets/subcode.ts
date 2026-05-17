@@ -1,11 +1,11 @@
 import { WidgetBase } from "./base";
 import { RuntimeManager, IBreakpoint, Breakpoint } from "../runtime";
-import { SubcodeLine, RuntileGlyphs, BreakpointState } from "./subline";
+import { SubcodeLine, BreakpointState } from "./subline";
 import { getCodeFolding } from '../languages/turbo-gherkin/folding'
 import { language as gherkin } from '../languages/turbo-gherkin/configuration'
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import { VanessaGherkinProvider } from "../languages/turbo-gherkin/provider";
-import { VAIndent, VAToken } from "../languages/turbo-gherkin/common";
+import { VAIndent } from "../languages/turbo-gherkin/common";
 import { getModelTokens } from "../languages/turbo-gherkin/model";
 
 const $ = dom.$;

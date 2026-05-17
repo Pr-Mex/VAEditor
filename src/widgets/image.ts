@@ -1,6 +1,3 @@
-import { VanessaEditor } from "../vanessa-editor";
-import { WidgetBase } from "./base";
-
 export class ImageWidget implements monaco.editor.IViewZone {
 
   public id: string;
