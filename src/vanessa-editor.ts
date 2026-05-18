@@ -63,7 +63,7 @@ export class VanessaEditor implements IVanessaEditor {
   public insertText = (text: string, arg: string = undefined) => this.actionManager.insertText(text, arg);
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
-  public getSyntaxErrors = () => JSON.stringify(this.syntaxManager.errors);
+  public getSyntaxErrors = () => JSON.stringify(this.syntaxManager?.errors ?? []);
   public showMinimap = (value: boolean) => this.editor.updateOptions({ minimap: { enabled: value } });
   public useDebugger = (value: boolean) => this.runtimeManager.useDebugger = value;
   public getModel = () => this.editor.getModel();
@@ -72,7 +72,7 @@ export class VanessaEditor implements IVanessaEditor {
   public setTabSize = (arg: number) => this.editor.getModel().updateOptions({ tabSize: arg });
   public setInsertSpaces = (arg: boolean) => this.editor.getModel().updateOptions({ insertSpaces: arg });
   public setDetectIndentation = (arg: boolean) => this.editor.updateOptions({ detectIndentation: arg });
-  public normalizeIndentation = () => this.syntaxManager.normalizeIndentation();
+  public normalizeIndentation = () => this.syntaxManager?.normalizeIndentation();
 
   public checkSyntax = () => { if (this.syntaxManager) this.syntaxManager.checkSyntax(); }
   public get enableSyntaxCheck(): boolean { return this.syntaxManager !== null; }
@@ -171,7 +171,7 @@ export class VanessaEditor implements IVanessaEditor {
     this.runtimeManager.dispose();
     this.problemManager.dispose();
     this.actionManager.dispose();
-    this.syntaxManager.dispose();
+    this.syntaxManager?.dispose();
     this.styleManager.dispose();
     this.editor.dispose();
     disposeModel(model);
