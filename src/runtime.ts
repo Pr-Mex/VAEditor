@@ -86,7 +86,7 @@ export class RuntimeManager {
 
   private forEachSubcode(callbackfn: (widget: SubcodeWidget, id: string) => void) {
     for (let id in this.codeWidgets) {
-      let widget = this.codeWidgets[id] as SubcodeWidget;
+      let widget = this.codeWidgets[id];
       callbackfn(widget, widget.id);
     }
   }
@@ -193,7 +193,7 @@ export class RuntimeManager {
       codeWidget = position.codeWidget;
     }
     if (codeWidget) {
-      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      let widget = this.codeWidgets[codeWidget];
       if (widget) widget.togleBreakpoint(lineNumber);
     } else {
       const breakpointIndex: number = this.breakpointIndexByLineNumber(lineNumber);
@@ -258,7 +258,7 @@ export class RuntimeManager {
   private currentDecorationIds: string[] = [];
   private stackDecorationIds: string[] = [];
   private errorViewZoneIds: Array<string> = [];
-  private codeWidgets = {};
+  private codeWidgets: Record<string, SubcodeWidget> = {};
   private currentCodeWidget: string = "";
   private showBreakpoints: boolean = false;
 
@@ -388,7 +388,7 @@ export class RuntimeManager {
 
   public getContent(codeWidget: string = "") {
     if (codeWidget) {
-      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      let widget = this.codeWidgets[codeWidget];
       return widget ? widget.getContent() : undefined;
     }
     return this.editor.getValue();
@@ -396,7 +396,7 @@ export class RuntimeManager {
 
   public getLineContent(lineNumber: number, codeWidget: string = "") {
     if (codeWidget) {
-      let widhet = this.codeWidgets[codeWidget] as SubcodeWidget;
+      let widhet = this.codeWidgets[codeWidget];
       return widhet ? widhet.getLineContent(lineNumber) : undefined;
     }
     return this.editor.getModel().getLineContent(lineNumber);
@@ -407,7 +407,7 @@ export class RuntimeManager {
     let decoration = this.currentDecorationIds[0];
     let range = decoration ? model.getDecorationRange(decoration) : undefined;
     if (range) return new RuntimePosition(range.startLineNumber);
-    let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
+    let widget = this.codeWidgets[this.currentCodeWidget];
     let lineNumber = widget ? widget.getCurrent() : undefined;
     if (lineNumber) return new RuntimePosition(lineNumber, widget.id);
     return undefined;
@@ -416,12 +416,12 @@ export class RuntimeManager {
   public setCurrent(lineNumber: number, codeWidget: string = ""): IRuntimePosition | undefined {
     const model = this.editor.getModel();
     this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
-    let widget = this.codeWidgets[this.currentCodeWidget] as SubcodeWidget;
+    let widget = this.codeWidgets[this.currentCodeWidget];
     if (widget) widget.setCurrent(0);
     this.currentCodeWidget = "";
     if (codeWidget) {
       this.currentDecorationIds = model.deltaDecorations(this.currentDecorationIds, []);
-      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      let widget = this.codeWidgets[codeWidget];
       if (widget) {
         this.currentCodeWidget = codeWidget;
         widget.setCurrent(lineNumber);
@@ -457,7 +457,7 @@ export class RuntimeManager {
     if (step == undefined) return this.setCurrent(1);
     if (step.codeWidget) {
       let id = step.codeWidget;
-      let widget = this.codeWidgets[id] as SubcodeWidget;
+      let widget = this.codeWidgets[id];
       if (widget) {
         let lineNumber = widget.next();
         if (lineNumber) return { lineNumber: lineNumber, codeWidget: id };
@@ -470,7 +470,7 @@ export class RuntimeManager {
     } else {
       let decorations = this.editor.getLineDecorations(step.lineNumber);
       for (let id in this.codeWidgets) {
-        let widget = this.codeWidgets[id] as SubcodeWidget;
+        let widget = this.codeWidgets[id];
         if (decorations.some(d => d.id == widget.decoration)) {
           return this.setCurrent(1, widget.id);
         }
@@ -482,7 +482,7 @@ export class RuntimeManager {
 
   public showError(lineNumber: number, codeWidget: string, data: string, text: string): string | undefined {
     if (codeWidget) {
-      let widget = this.codeWidgets[codeWidget] as SubcodeWidget;
+      let widget = this.codeWidgets[codeWidget];
       if (widget) widget.showError(lineNumber, data, text);
       return undefined;
     } else {
@@ -549,7 +549,7 @@ export class RuntimeManager {
     while (node) {
       if (node.classList && node.classList.contains('vanessa-code-widget')) {
         for (let id in this.codeWidgets) {
-          let widget = this.codeWidgets[id] as SubcodeWidget;
+          let widget = this.codeWidgets[id];
           if (widget.domNode == node) return widget;
         }
       };
@@ -573,7 +573,7 @@ export class RuntimeManager {
   set position(position: IVanessaPosition) {
     window.getSelection().empty();
     if (position.codeWidget) {
-      let widget = this.codeWidgets[position.codeWidget] as SubcodeWidget;
+      let widget = this.codeWidgets[position.codeWidget];
       if (widget) widget.position = position;
     } else {
       this.editor.setPosition(position);
