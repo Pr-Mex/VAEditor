@@ -3,11 +3,20 @@ import { KeywordMatcher } from "./matcher";
 
 let imports = {};
 
+interface IToken {
+  text: string;
+}
+
 interface IImportedItem {
   name: string;
-  value?: any;
-  table?: any;
-  lines?: any;
+  value?: IToken;
+  table?: {
+    head: { tokens: IToken[] };
+    body: Array<{ tokens: IToken[] }>;
+  };
+  lines?: {
+    lines: IToken[];
+  };
 }
 
 interface IImportedFile {
