@@ -4,7 +4,7 @@ configuration: Release
 platform: x64
 
 environment:
-  nodejs_version: "18"
+  nodejs_version: "20"
   KEY_1CV8T:
     secure: OolAVEKkEg1cGCpG/VK2FaM0LWrPgMR/Kn4nTLYyKR0=
 

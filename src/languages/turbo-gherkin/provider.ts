@@ -155,10 +155,6 @@ export class VanessaGherkinProvider {
     this.createTheme1C();
   }
 
-  private clearObject(target: Object) {
-    Object.keys(target).forEach(key => delete target[key]);
-  }
-
   private clearArray(target: Array<any>) {
     target.splice(0, target.length);
   }
@@ -295,7 +291,7 @@ export class VanessaGherkinProvider {
 
   public checkSyntax(m: monaco.editor.ITextModel, manager?: ISyntaxManager) {
     const model = m as IVanessaModel;
-    if (model.getLanguageId() != language.id) return;
+    if (model.getLanguageId() != language.id) return Promise.resolve();
     return postMessage<ISyntaxDecorations>(model, {
       type: MessageType.CheckSyntax,
       versionId: model.getVersionId(),

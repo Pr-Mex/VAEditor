@@ -58,7 +58,7 @@ export function initPage() {
   document.body.appendChild(domMain);
 }
 
-function getLanguage(filename: string): string {
+function getLanguage(filename: string): string | undefined {
   let ext = "." + filename.split(".").pop().toLowerCase();
   let languages = monaco.languages.getLanguages();
   for (let key in languages) {
@@ -66,6 +66,7 @@ function getLanguage(filename: string): string {
     if (lang.extensions == undefined) continue;
     if (lang.extensions.some((e) => e == ext)) return lang.id;
   }
+  return undefined;
 }
 
 export function createModel(

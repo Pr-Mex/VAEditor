@@ -17,7 +17,7 @@ export interface VAStepWord {
 function stepDecoration(
   step: VAStepData,
   lineNumber: number,
-): monaco.editor.IModelDeltaDecoration {
+): monaco.editor.IModelDeltaDecoration | undefined {
   let glyph = undefined;
   let style = undefined;
   switch (step.kind) {
@@ -33,6 +33,7 @@ function stepDecoration(
       inlineClassName: style,
     }
   };
+  return undefined;
 }
 
 function conditionDecoration(
@@ -123,11 +124,6 @@ export class VAStepLine {
     return this._words.filter(
       w => w.type === VAWordType.Numerical || w.type === VAWordType.Parameter
     ).map(w => w.text);
-  }
-
-  private keypair(ctx: IWorkerContext): string {
-    let keyword = this.keyword.trim().replace(/\s+/, " ").toLowerCase();
-    return ctx.keypairs[keyword];
   }
 
   public checkSyntax(

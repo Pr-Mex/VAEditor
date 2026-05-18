@@ -1,5 +1,5 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext } from './common';
-import { VAStepData, VAStepInfo } from './steplist';
+import { VAStepData } from './steplist';
 
 export function getCompletions(
   ctx: IWorkerContext,

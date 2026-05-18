@@ -1,3 +1,4 @@
+// @ts-nocheck — demo file with intentionally loose typing; production-bundle не зависит.
 import { content } from './example.file.js'
 import { initGherkinProvider } from '../provider'
 import { WelcomeParams } from '../../src/vanessa-viewer.js';
