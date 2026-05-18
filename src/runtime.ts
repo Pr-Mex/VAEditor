@@ -28,7 +28,7 @@ export class Breakpoint implements IBreakpoint {
 
 interface IBreakpointDecoration {
   id: string;
-  range: any;
+  range: monaco.IRange;
   enable: boolean;
   verified: boolean;
 }
@@ -170,8 +170,8 @@ export class RuntimeManager {
       if (!breakpoint.verified) {
         return;
       }
-      const newBreakpointRange: monaco.Range = this.editor.getModel().getDecorationRange(breakpoint.id);
-      if (newBreakpointRange && !breakpoint.range.equalsRange(newBreakpointRange)) {
+      const newBreakpointRange = this.editor.getModel().getDecorationRange(breakpoint.id);
+      if (newBreakpointRange && !monaco.Range.equalsRange(breakpoint.range, newBreakpointRange)) {
         somethingChanged = true;
       }
     });
@@ -245,7 +245,7 @@ export class RuntimeManager {
     }, 100);
   }
 
-  private breakpointIndexByLineNumber(lineNumber: any): number {
+  private breakpointIndexByLineNumber(lineNumber: number): number {
     let index = -1;
     this.breakpointDecorations.forEach((b, i) => {
       if (b.range.startLineNumber === lineNumber) index = i;
