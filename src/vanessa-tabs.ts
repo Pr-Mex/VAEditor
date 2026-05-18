@@ -265,7 +265,7 @@ class VanessaTabItem {
     return JSON.stringify(this.editor.editor.getOption(id));
   }
 
-  public get options(): string {
+  public get options(): string | undefined {
     if (this.editor.type === VAEditorType.CodeEditor) {
       const result = {};
       Object.keys(monaco.editor.EditorOption).forEach(id => {
@@ -274,6 +274,7 @@ class VanessaTabItem {
       });
       return JSON.stringify(result);
     }
+    return undefined;
   }
 
   public set options(value: string) {
@@ -334,6 +335,7 @@ export class VanessaTabs {
 
   public get current() {
     if (this.tabStack.length) return this.tabStack[this.tabStack.length - 1];
+    return undefined;
   }
 
   private key(original: string, modified: string = undefined) {
@@ -356,10 +358,11 @@ export class VanessaTabs {
   public find = (
     original: string = "",
     modified: string = "",
-  ): IVanessaEditor => {
+  ): IVanessaEditor | undefined => {
     const key = this.key(original, modified);
     let tab = this.findTab(t => t.key === key);
     if (tab) return tab.select();
+    return undefined;
   }
 
   private open(

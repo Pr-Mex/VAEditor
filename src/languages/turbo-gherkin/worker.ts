@@ -139,4 +139,5 @@ export function process(msg: WorkerMessage) {
         data: res
       };
   }
+  return undefined;
 }
