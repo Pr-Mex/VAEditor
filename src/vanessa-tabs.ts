@@ -104,7 +104,7 @@ class VanessaTabItem {
     }
   }
 
-  private onClick(event: any) {
+  private onClick(event: MouseEvent) {
     if (event.target === this.domClose) {
       this.onClose();
     } else {
@@ -112,7 +112,7 @@ class VanessaTabItem {
     }
   }
 
-  private onMouseUp(event: any) {
+  private onMouseUp(event: MouseEvent) {
     if (event.button === 1) {
       this.onClose();
     }
