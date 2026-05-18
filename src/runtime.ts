@@ -106,11 +106,11 @@ export class RuntimeManager {
   }
 
   set breakpoints(breakpoints: IBreakpoint[]) {
-    const widgetsBreakpoints = {};
+    const widgetsBreakpoints: Record<string, IBreakpoint[]> = {};
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     breakpoints.forEach(breakpoint => {
       if (breakpoint.codeWidget) {
-        let ids: Array<IBreakpoint> = widgetsBreakpoints[breakpoint.codeWidget];
+        let ids = widgetsBreakpoints[breakpoint.codeWidget];
         if (ids == undefined) widgetsBreakpoints[breakpoint.codeWidget] = ids = [];
         ids.push(breakpoint);
       }
