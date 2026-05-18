@@ -1,6 +1,6 @@
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaEditorEvent } from "./common";
-import { IRange, IDisposable } from "monaco-editor";
+import { IDisposable } from "monaco-editor";
 
 import { SubcodeWidget } from "./widgets/subcode";
 import { ErrorWidget } from "./widgets/error";

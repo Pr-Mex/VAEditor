@@ -155,10 +155,6 @@ export class VanessaGherkinProvider {
     this.createTheme1C();
   }
 
-  private clearObject(target: Object) {
-    Object.keys(target).forEach(key => delete target[key]);
-  }
-
   private clearArray(target: Array<any>) {
     target.splice(0, target.length);
   }
