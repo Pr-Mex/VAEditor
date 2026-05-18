@@ -35,7 +35,7 @@
 		}
 	],
 	"dependencies": {
-		"autoprefixer": "^9.8.8",
+		"autoprefixer": "^10.5.0",
 		"monaco-editor": "^0.30.1",
 		"monaco-editor-nls": "^2.0.0",
 		"postcss-base64": "^0.7.1",
@@ -43,19 +43,23 @@
 		"string-replace-loader": "^2.3.0"
 	},
 	"devDependencies": {
-		"@types/mocha": "^9.1.1",
-		"@vscode/codicons": "0.0.32",
-		"chai": "^4.3.7",
+		"@types/mocha": "^10.0.10",
+		"@vscode/codicons": "0.0.45",
+		"babel-cli": "^6.26.0",
+		"babel-core": "^6.26.3",
+		"babel-loader": "^8.3.0",
+		"babel-preset-env": "^1.7.0",
+		"chai": "^4.5.0",
 		"clean-webpack-plugin": "^4.0.0",
 		"css-loader": "^2.1.1",
 		"expect": "^27.5.1",
 		"html-webpack-plugin": "^4.5.2",
 		"jaro-winkler": "^0.2.8",
 		"jest-environment-jsdom-fourteen": "^1.0.1",
-		"mocha": "^9.2.2",
+		"mocha": "^10.8.2",
 		"postcss": "^8.4.21",
 		"postcss-alter-property-value": "^1.1.3",
-		"postcss-loader": "^3.0.0",
+		"postcss-loader": "^4.3.0",
 		"raw-loader": "^4.0.2",
 		"requirejs": "^2.3.6",
 		"run-script-os": "^1.1.1",
@@ -70,6 +74,6 @@
 		"webpack-dev-server": "^4.15.2"
 	},
 	"engines": {
-		"node": ">=8.10.0"
+		"node": ">=18.0.0"
 	}
 }
