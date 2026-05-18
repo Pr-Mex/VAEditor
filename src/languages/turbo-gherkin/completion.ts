@@ -1,5 +1,4 @@
 import { getLineMaxColumn, getLineMinColumn, IWorkerContext } from './common';
-import { VAStepData } from './steplist';
 
 export function getCompletions(
   ctx: IWorkerContext,
@@ -55,7 +54,7 @@ export function getCompletions(
     keytext = keytext.charAt(0).toUpperCase() + keytext.slice(1);
     if (keytext.match(/\S$/)) keytext += " ";
     for (let snippet in ctx.steplist) {
-      let e = ctx.steplist[snippet] as VAStepData;
+      let e = ctx.steplist[snippet];
       if (e.documentation) {
         result.push({
           label: e.label,
@@ -79,7 +78,7 @@ export function getCompletions(
       });
     });
     for (let snippet in ctx.steplist) {
-      let e = ctx.steplist[snippet] as VAStepData;
+      let e = ctx.steplist[snippet];
       if (e.documentation) {
         result.push({
           label: e.label,

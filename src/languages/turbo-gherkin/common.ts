@@ -1,6 +1,17 @@
 import { firstNonWhitespaceIndex, lastNonWhitespaceIndex } from 'monaco-editor/esm/vs/base/common/strings'
 import { KeywordMatcher } from './matcher';
 import { VACodeError } from './quickfix';
+import type { VAStepData } from './steplist';
+
+export interface IVariable {
+  name: string;
+  value: string;
+}
+
+export interface IWorkerMessages {
+  syntaxMsg: string;
+  soundHint: string;
+}
 
 export function getLineMinColumn(line: string): number {
   return firstNonWhitespaceIndex(line) + 1;
@@ -14,11 +25,11 @@ export interface IWorkerContext {
   matcher: KeywordMatcher;
   directives: ISpprDirect;
   metatags: string[];
-  steplist: any;
-  keypairs: any;
-  elements: any;
-  variables: any;
-  messages: any;
+  steplist: Record<string, VAStepData>;
+  keypairs: Record<string, string[]>;
+  elements: Record<string, string>;
+  variables: Record<string, IVariable>;
+  messages: IWorkerMessages;
   sppr: boolean;
 }
 
