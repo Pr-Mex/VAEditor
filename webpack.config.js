@@ -69,10 +69,7 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.ts$/,
-          use: [
-            'babel-loader',
-            'ts-loader'
-          ]
+          use: 'ts-loader'
         },
         {
           test: /\.css$/,
