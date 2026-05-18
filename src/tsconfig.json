@@ -3,7 +3,8 @@
       "target": "es2015",
       "module": "commonjs",
       "removeComments": true,
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
+      "noImplicitReturns": true
   },
   "exclude": [
       "node_modules"

@@ -291,7 +291,7 @@ export class VanessaGherkinProvider {
 
   public checkSyntax(m: monaco.editor.ITextModel, manager?: ISyntaxManager) {
     const model = m as IVanessaModel;
-    if (model.getLanguageId() != language.id) return;
+    if (model.getLanguageId() != language.id) return Promise.resolve();
     return postMessage<ISyntaxDecorations>(model, {
       type: MessageType.CheckSyntax,
       versionId: model.getVersionId(),
