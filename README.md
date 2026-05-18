@@ -1,6 +1,6 @@
 # Vanessa Automation Editor
 
-Редактор сценариев, созданный с помощью [Monaco](https://github.com/Microsoft/monaco-editor) и поддерживающий взаимодействие с платформой [1C:Предприятие](https://1c-dn.com/) 8.3.15+.
+Редактор сценариев, созданный с помощью [Monaco](https://github.com/Microsoft/monaco-editor) и поддерживающий взаимодействие с платформой [1C:Предприятие](https://1c-dn.com/) 8.3.14+ (рекомендуется 8.3.18+).
 
 Собрано для [Vanessa Automation](https://github.com/Pr-Mex/vanessa-automation).
 

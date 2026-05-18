@@ -5,7 +5,7 @@ const base64 = require('postcss-base64')
 module.exports = {
   plugins: [
     autoprefixer({
-      overrideBrowserslist: ['ie >= 8', 'last 4 version'],
+      overrideBrowserslist: ['safari >= 11', 'chrome >= 63', '> 1%'],
       extensions: ['.css']
     }),
     base64({
