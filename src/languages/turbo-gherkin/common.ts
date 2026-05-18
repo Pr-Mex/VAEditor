@@ -145,7 +145,7 @@ export type WorkerMessage =
   | { id?: number, type: MessageType.GetCodeFolding, versionId: number, uri: string }
   | { id?: number, type: MessageType.GetCompletions, line: string, lineNumber: number, column: number }
   | { id?: number, type: MessageType.GetHiperlinks, versionId: number, uri: string }
-  | { id?: number, type: MessageType.GetLineHover, versionId: number, uri: string, lineNumber: number, minColumn: number, maxColumn: number }
+  | { id?: number, type: MessageType.GetLineHover, versionId: number, uri: string, lineNumber: number }
   | { id?: number, type: MessageType.GetLinkData, versionId: number, uri: string, key: string }
   | { id?: number, type: MessageType.CheckSyntax, versionId: number, uri: string }
   | { id?: number, type: MessageType.SetSPPR, sppr: boolean }
