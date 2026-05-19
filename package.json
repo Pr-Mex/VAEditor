@@ -44,10 +44,6 @@
 	"devDependencies": {
 		"@types/mocha": "^10.0.10",
 		"@vscode/codicons": "0.0.45",
-		"babel-cli": "^6.26.0",
-		"babel-core": "^6.26.3",
-		"babel-loader": "^8.3.0",
-		"babel-preset-env": "^1.7.0",
 		"chai": "^4.5.0",
 		"clean-webpack-plugin": "^4.0.0",
 		"css-loader": "^2.1.1",
