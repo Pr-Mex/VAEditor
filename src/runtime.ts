@@ -540,7 +540,7 @@ export class RuntimeManager {
 
   public setFolding(lineNumber: number, codeWidget: string, collapsed: boolean) {
     this.forEachSubcode((widget: SubcodeWidget) => {
-      if (widget.id = codeWidget) widget.setFolding(lineNumber, collapsed);
+      if (widget.id == codeWidget) widget.setFolding(lineNumber, collapsed);
     });
   }
 
