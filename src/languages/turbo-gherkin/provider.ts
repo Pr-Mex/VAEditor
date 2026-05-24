@@ -1,6 +1,8 @@
-import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
-import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
-import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
+import { MonarchTokenizer } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { ILanguageService } from 'monaco-editor/esm/vs/editor/common/services/language';
+import { IStandaloneThemeService } from 'monaco-editor/esm/vs/editor/standalone/common/standaloneTheme';
+import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/languages';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
 import { language, GherkinLanguage } from './configuration';
@@ -311,9 +313,9 @@ export class VanessaGherkinProvider {
   public initTokenizer() {
     let lang = new GherkinLanguage(this);
     if (this.tokenizer) this.tokenizer.dispose();
-    this.tokenizer = createTokenizationSupport(
-      StaticServices.modeService.get(),
-      StaticServices.standaloneThemeService.get(),
+    this.tokenizer = new MonarchTokenizer(
+      StandaloneServices.get(ILanguageService),
+      StandaloneServices.get(IStandaloneThemeService),
       language.id,
       compile(language.id, lang),
     );

@@ -6,7 +6,8 @@ module.exports = function (content, map, meta) {
     const vsPath = this.resourcePath.split(/monaco-editor[\\/]esm[\\/]/).pop()
     if (vsPath) {
       const path = vsPath.replace(/\\/g, '/').replace('.js', '')
-      return content.replace(/localize\(/g, `localize('${path}', `)
+      // Avoid patching function declarations like `function localize(` — only patch call-sites
+      return content.replace(/(?<!function )localize\(/g, `localize('${path}', `)
     }
   }
   return content

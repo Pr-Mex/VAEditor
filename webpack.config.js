@@ -56,7 +56,6 @@ module.exports = (env, argv) => {
           loader: 'replace-strings',
           options: {
             replacements: [
-              { search: 'let __insane_func;', replace: 'var __insane_func;' },
               { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' }
             ]
           }
