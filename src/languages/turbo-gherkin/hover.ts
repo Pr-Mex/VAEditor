@@ -8,7 +8,7 @@ function escapeMarkdown(text: string): string {
 export function getLineHover(
   ctx: IWorkerContext,
   model: IWorkerModel,
-  msg: any,
+  msg: { lineNumber: number },
 ): monaco.languages.Hover {
   const line = model.getLineContent(msg.lineNumber);
   const contents = [];

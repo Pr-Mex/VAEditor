@@ -1,6 +1,6 @@
 interface IProblem {
   lineNumber: number;
-  severity: string;
+  severity: "Hint" | "Info" | "Warning" | "Error";
   message: string;
   code: string;
   source: string;

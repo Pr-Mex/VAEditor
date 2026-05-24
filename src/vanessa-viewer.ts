@@ -107,17 +107,17 @@ export class VanessaViwer implements IVanessaEditor {
     node.appendChild(this._domNode);
   }
 
-  private onMarkdownClick(event: any) {
+  private onMarkdownClick(event: MouseEvent) {
     if (event.target instanceof HTMLAnchorElement) {
-      const data = (event.target as HTMLAnchorElement).dataset.href;
+      const data = event.target.dataset.href;
       EventsManager.fireEvent(this, VanessaEditorEvent.ON_MARK_CLICK, data);
     }
   }
 
-  private onWelcomeClick(event: any) {
+  private onWelcomeClick(event: MouseEvent) {
     if (event.target instanceof HTMLAnchorElement) {
-      const id = (event.target as HTMLAnchorElement).dataset.event;
-      const data = (event.target as HTMLAnchorElement).dataset.href;
+      const id = event.target.dataset.event;
+      const data = event.target.dataset.href;
       EventsManager.fireEvent(this, id, data);
     }
   }

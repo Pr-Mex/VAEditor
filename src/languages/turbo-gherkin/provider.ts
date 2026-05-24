@@ -266,8 +266,6 @@ export class VanessaGherkinProvider {
       versionId: model.getVersionId(),
       uri: model.uri.toString(),
       lineNumber: position.lineNumber,
-      minColumn: model.getLineMinColumn(position.lineNumber),
-      maxColumn: model.getLineMaxColumn(position.lineNumber),
     });
   }
 

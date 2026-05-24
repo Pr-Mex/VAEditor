@@ -30,7 +30,7 @@ export class GherkinLanguage {
 
   escapes = /\\(?:[abfnrtv\\"'{}\[\]\$]|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/;
 
-  word = /\p{L}[\p{L}\p{N}]*/;
+  word = /\p{L}[\p{L}\p{N}]*/u;
 
   constructor(provider: VanessaGherkinProvider) {
     const metatags = provider.matcher.regex(provider.metatags);

@@ -100,7 +100,7 @@ export class WorkerModel implements IWorkerModel {
   private content: string[];
   private versionId: number;
 
-  constructor(matcher: KeywordMatcher, msg: any) {
+  constructor(matcher: KeywordMatcher, msg: { content: string[]; versionId: number; tabSize: number }) {
     this.content = msg.content;
     this.versionId = msg.versionId;
     this.tokens = getModelTokens(matcher, this, msg.tabSize);
