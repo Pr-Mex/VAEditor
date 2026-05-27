@@ -1,7 +1,8 @@
-/node_modules
-/dist
 *.epf
-fileversion
-Template.bin
 /debug.log
+/dist
+/node_modules
+Template.bin
 example/success.txt
+fileversion
+test-results/
