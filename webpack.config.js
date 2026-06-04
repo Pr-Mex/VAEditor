@@ -37,8 +37,7 @@ module.exports = (env, argv) => {
     module: {
       parser: {
         javascript: {
-          worker: false,
-          url: false
+          worker: false
         }
       },
       rules: [
