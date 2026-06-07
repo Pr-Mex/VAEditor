@@ -35,22 +35,22 @@
 		}
 	],
 	"dependencies": {
+		"buffer": "^6.0.3",
+		"jaro-winkler": "^0.2.8",
 		"monaco-editor": "^0.30.1",
-		"monaco-editor-nls": "^2.0.0"
+		"monaco-editor-nls": "^2.0.0",
+		"process": "^0.11.10"
 	},
 	"devDependencies": {
 		"@types/mocha": "^10.0.10",
 		"@vscode/codicons": "0.0.45",
 		"autoprefixer": "^10.5.0",
-		"buffer": "^6.0.3",
 		"chai": "^4.5.0",
 		"css-loader": "^7.1.4",
 		"html-webpack-plugin": "^5.6.0",
-		"jaro-winkler": "^0.2.8",
 		"mocha": "^10.8.2",
 		"postcss": "^8.5.15",
 		"postcss-loader": "^8.2.1",
-		"process": "^0.11.10",
 		"run-script-os": "^1.1.1",
 		"standard": "^16.0.4",
 		"stream-browserify": "^3.0.0",

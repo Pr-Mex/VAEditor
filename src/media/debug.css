@@ -1,37 +1,37 @@
 .debug-breakpoint-glyph {
-  background: url('src/media/debug-breakpoint.svg') center center no-repeat;
+  background: url('./debug-breakpoint.svg') center center no-repeat;
 }
 
 .debug-breakpoint-disabled-glyph {
-  background: url('src/media/debug-breakpoint-disabled.svg') center center no-repeat;
+  background: url('./debug-breakpoint-disabled.svg') center center no-repeat;
 }
 
 .debug-breakpoint-hint-glyph {
-  background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
+  background: url('./debug-breakpoint-hint.svg') center center no-repeat;
 }
 
 .debug-breakpoint-unverified-glyph {
-  background: url('src/media/debug-breakpoint-unverified.svg') center center no-repeat;
+  background: url('./debug-breakpoint-unverified.svg') center center no-repeat;
 }
 
 .debug-current-step-glyph {
-  background: url('src/media/debug-current-arrow.svg') center center no-repeat;
+  background: url('./debug-current-arrow.svg') center center no-repeat;
 }
 
 .debug-stackframe-glyph {
-  background: url('src/media/debug-stackframe-arrow.svg') center center no-repeat;
+  background: url('./debug-stackframe-arrow.svg') center center no-repeat;
 }
 
 .debug-breakpoint-glyph.debug-stackframe-glyph {
-  background: url('src/media/debug-stackframe-and-breakpoint.svg') center center no-repeat;
+  background: url('./debug-stackframe-and-breakpoint.svg') center center no-repeat;
 }
 
 .debug-breakpoint-unverified-glyph.debug-stackframe-glyph {
-  background: url('src/media/debug-stackframe-and-breakpoint.svg') center center no-repeat;
+  background: url('./debug-stackframe-and-breakpoint.svg') center center no-repeat;
 }
 
 .debug-breakpoint-glyph.debug-current-step-glyph {
-  background: url('src/media/debug-current-and-breakpoint.svg') center center no-repeat;
+  background: url('./debug-current-and-breakpoint.svg') center center no-repeat;
 }
 
 .monaco-editor .selected-text {
@@ -158,7 +158,7 @@ body[data-theme="vs-dark"] .vanessa-subcode-underline>span {
 }
 
 .vanessa-code-border.vanessa-use-breakpoints div.cgmr:hover:not(.debug-breakpoint-glyph):not(.debug-breakpoint-unverified-glyph) {
-  background: url('src/media/debug-breakpoint-hint.svg') center center no-repeat;
+  background: url('./debug-breakpoint-hint.svg') center center no-repeat;
 }
 
 .vanessa-code-widget .vanessa-code-lines {
