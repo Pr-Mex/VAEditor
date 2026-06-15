@@ -29,6 +29,7 @@ install:
 
 build_script:
   - npm run buildci
+  - npm run escheck
   - 7z a VAEditor.zip %CD%/dist/index.html
   - 7z a VAEditor.zip %CD%/dist/app.worker.js
   - 7z a VAEditor.zip %CD%/dist/app.js

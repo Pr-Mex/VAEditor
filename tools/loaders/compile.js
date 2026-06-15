@@ -8,6 +8,12 @@
 const WebWorkerTemplatePlugin = require('webpack/lib/webworker/WebWorkerTemplatePlugin')
 const EntryPlugin = require('webpack/lib/EntryPlugin')
 
+// Полифил queueMicrotask внутри blob-воркера: у воркера свой глобальный контекст,
+// полифил из main-бандла (src/polyfills.ts) туда не доезжает. monaco ≥0.32 зовёт
+// queueMicrotask при загрузке (AsyncIterableObject.EMPTY, vs/base/common/async.js),
+// которая попадает и в worker. Баннер (raw) встаёт раньше webpack-бутстрапа.
+const WORKER_POLYFILL = 'if(typeof queueMicrotask!=="function"){var __qmt=Promise.resolve();self.queueMicrotask=function(cb){__qmt.then(cb).catch(function(e){setTimeout(function(){throw e},0)})}}'
+
 module.exports.pitch = function pitch (remainingRequest) {
   this.cacheable(false)
 
@@ -40,6 +46,8 @@ module.exports.pitch = function pitch (remainingRequest) {
     for (const name of Object.keys(currentCompilation.assets)) {
       if (!beforeAssets.has(name)) currentCompilation.deleteAsset(name)
     }
-    callback(null, source)
+    // Префиксуем полифил queueMicrotask в исходник воркера (а не через
+    // BannerPlugin — тот в child-compilation не доезжает до этого asset'а).
+    callback(null, source ? WORKER_POLYFILL + '\n' + source : source)
   })
 }

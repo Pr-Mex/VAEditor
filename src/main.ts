@@ -20,6 +20,7 @@ self.MonacoEnvironment = {
   }
 };
 
+import "./polyfills"; // ПЕРВЫМ: queueMicrotask/ResizeObserver до загрузки monaco
 import "./media/debug";
 import "./media/tabs";
 import "./media/welcome";

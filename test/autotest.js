@@ -1,3 +1,4 @@
+import '../src/polyfills' // ПЕРВЫМ: queueMicrotask/ResizeObserver до загрузки monaco
 import mocha from 'mocha'
 import '../node_modules/mocha/mocha.css'
 import * as demo from './demo/editor-demo'

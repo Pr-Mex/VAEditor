@@ -51,14 +51,27 @@ module.exports = (env, argv) => {
           }
         },
         {
-          // Патчи monaco под совместимость с 1С runtime
+          // Патчи monaco под совместимость с 1С runtime + транспиляция в es2015.
+          // esbuild понижает ?. (ES2020) и class fields (ES2022) из esbuild-сборки
+          // monaco ≥0.31 — WebKit 1С их не парсит (SyntaxError всего бандла).
+          // Порядок use справа налево: replace-strings (строковый патч на сыром
+          // коде, до того как esbuild свернёт `2048 | 39` и срежет комментарии) →
+          // esbuild (финальная транспиляция). monaco-nls (enforce:pre) идёт раньше.
           test: /node_modules[\\/]monaco-editor[\\/]esm[\\/].+\.js$/,
-          loader: 'replace-strings',
-          options: {
-            replacements: [
-              { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' }
-            ]
-          }
+          use: [
+            {
+              loader: 'esbuild-loader',
+              options: { target: 'es2015' }
+            },
+            {
+              loader: 'replace-strings',
+              options: {
+                replacements: [
+                  { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' }
+                ]
+              }
+            }
+          ]
         },
         {
           test: /\.js$/,
