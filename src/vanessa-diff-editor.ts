@@ -49,6 +49,10 @@ export class VanessaDiffEditor implements IVanessaEditor {
       automaticLayout: true,
       readOnly: readOnly,
       useShadowDOM: false,
+      // 0.55: выключаем дефолтный color-computer (lookbehind-regex несовместим с
+      // WebKit 1С — см. vanessa-editor.ts).
+      colorDecorators: false,
+      defaultColorDecorators: 'never',
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);

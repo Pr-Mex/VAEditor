@@ -49,6 +49,12 @@ if (typeof _self.addEventListener === 'function') {
 // FinalizationRegistry — no-op (колбэк очистки просто не вызывается). Для
 // кэшей monaco это безопасно. Голые WeakRef/FinalizationRegistry резолвятся
 // через self (как globalThis).
+// Примечание: RegExp-флаг 'd' (hasIndices, Safari 15) из monaco 0.55
+// (findSectionHeaders + editorOptions `new RegExp(inputRegex,'d')`) срезается
+// точечно через replace-strings в webpack.config.js. Глобальную обёртку RegExp
+// НЕ ставим: она реконструировала regex через .source, а конструктор старого
+// WebKit 1С отвергает именованные группы (?<name>) (литерал-парсер — принимает).
+
 if (typeof _self.WeakRef !== 'function') {
   _self.WeakRef = function (target: any) { this._t = target; };
   _self.WeakRef.prototype.deref = function () { return this._t; };
@@ -161,4 +167,54 @@ if (typeof _self.ResizeObserver !== 'function') {
   def(Array.prototype, 'flatMap', function (this: any[], cb: any, thisArg?: any) {
     return (Array.prototype.map.call(this, cb, thisArg) as any).flat();
   });
+  // String.prototype.replaceAll (ES2021, Safari 13.1) — движок 1С его лишён, а
+  // monaco 0.55 зовёт его в getCSS (тема) при загрузке → TypeError. Реализация
+  // через глобальный regex из экранированного поиска (корректно для строкового
+  // и функционального replace, и для RegExp-поиска).
+  def(String.prototype, 'replaceAll', function (this: string, search: any, replace: any) {
+    if (Object.prototype.toString.call(search) === '[object RegExp]') {
+      return String.prototype.replace.call(this, search, replace);
+    }
+    var escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return String.prototype.replace.call(this, new RegExp(escaped, 'g'), replace);
+  });
+  // Array/String.prototype.at (ES2022, Safari 15.4) — движок 1С их лишён, monaco
+  // 0.55 зовёт listCodeEditors().at(...) в get mainContainer при создании редактора.
+  def(Array.prototype, 'at', function (this: any[], n: number) {
+    n = Math.trunc(n) || 0; if (n < 0) n += this.length;
+    return (n < 0 || n >= this.length) ? undefined : this[n];
+  });
+  def(String.prototype, 'at', function (this: string, n: number) {
+    n = Math.trunc(n) || 0; if (n < 0) n += this.length;
+    return (n < 0 || n >= this.length) ? undefined : this.charAt(n);
+  });
+  // String.prototype.matchAll (ES2020, Safari 13) — движок 1С лишён, monaco 0.55
+  // зовёт r.matchAll(e). Возвращаем итератор массива всех совпадений.
+  def(String.prototype, 'matchAll', function (this: string, re: any) {
+    var rx = (re instanceof RegExp)
+      ? new RegExp(re.source, re.flags.indexOf('g') >= 0 ? re.flags : re.flags + 'g')
+      : new RegExp(re, 'g');
+    var str = String(this), out: any[] = [], m: any;
+    while ((m = rx.exec(str)) !== null) { out.push(m); if (m[0] === '') rx.lastIndex++; }
+    return out[Symbol.iterator]();
+  });
 })();
+
+// Object.fromEntries (ES2019, Safari 12.1) / Promise.allSettled (ES2020, Safari 13)
+// — движок 1С их лишён; monaco может использовать. Проактивные полифилы.
+if (typeof (Object as any).fromEntries !== 'function') {
+  (Object as any).fromEntries = function (entries: any) {
+    var o: any = {}; var arr = Array.from(entries as any) as any[];
+    for (var i = 0; i < arr.length; i++) { o[arr[i][0]] = arr[i][1]; }
+    return o;
+  };
+}
+if (typeof (Promise as any).allSettled !== 'function') {
+  (Promise as any).allSettled = function (ps: any) {
+    return Promise.all(Array.from(ps as any).map(function (p: any) {
+      return Promise.resolve(p).then(
+        function (v: any) { return { status: 'fulfilled', value: v }; },
+        function (r: any) { return { status: 'rejected', reason: r }; });
+    }));
+  };
+}

@@ -138,6 +138,12 @@ export class VanessaEditor implements IVanessaEditor {
       // 0.52: lightbulb.enabled boolean → ShowLightbulbIconMode ('off'|'onCode'|'on')
       lightbulb: { enabled: 'onCode' as monaco.editor.ShowLightbulbIconMode },
       minimap: { enabled: true },
+      // 0.55: дефолтный color-computer (defaultDocumentColorsComputer) ищет цвета
+      // regex'ом с lookbehind (?<=['"\s])(#)..., а WebKit 1С (нет lookbehind до
+      // Safari 16.4) парсит (?<= как невалидную named-group → "invalid group
+      // specifier name" при создании редактора. В gherkin цвета не нужны — выкл.
+      colorDecorators: false,
+      defaultColorDecorators: 'never',
     },
     filepath: string = '',
   ) {

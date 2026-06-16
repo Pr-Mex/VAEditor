@@ -23,7 +23,11 @@ const WORKER_POLYFILL = [
   'if(typeof Array.prototype.flat!=="function"){Object.defineProperty(Array.prototype,"flat",{value:function(d){d=d===undefined?1:Number(d);return d<1?Array.prototype.slice.call(this):Array.prototype.reduce.call(this,function(a,v){return a.concat(Array.isArray(v)&&d>1?v.flat(d-1):v)},[])},writable:true,configurable:true});}',
   'if(typeof Array.prototype.flatMap!=="function"){Object.defineProperty(Array.prototype,"flatMap",{value:function(cb,t){return Array.prototype.map.call(this,cb,t).flat()},writable:true,configurable:true});}',
   'if(typeof Object.fromEntries!=="function"){Object.fromEntries=function(it){var o={},a=Array.from(it);for(var i=0;i<a.length;i++){o[a[i][0]]=a[i][1]}return o};}',
-  'if(typeof Promise.allSettled!=="function"){Promise.allSettled=function(ps){return Promise.all(Array.from(ps).map(function(p){return Promise.resolve(p).then(function(v){return{status:"fulfilled",value:v}},function(r){return{status:"rejected",reason:r}})}))};}'
+  'if(typeof Promise.allSettled!=="function"){Promise.allSettled=function(ps){return Promise.all(Array.from(ps).map(function(p){return Promise.resolve(p).then(function(v){return{status:"fulfilled",value:v}},function(r){return{status:"rejected",reason:r}})}))};}',
+  'if(typeof String.prototype.replaceAll!=="function"){Object.defineProperty(String.prototype,"replaceAll",{value:function(s,r){return s instanceof RegExp?String.prototype.replace.call(this,s,r):this.split(s).join(r)},writable:true,configurable:true});}',
+  'if(typeof Array.prototype.at!=="function"){Object.defineProperty(Array.prototype,"at",{value:function(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return n<0||n>=this.length?undefined:this[n]},writable:true,configurable:true});}',
+  'if(typeof String.prototype.at!=="function"){Object.defineProperty(String.prototype,"at",{value:function(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return n<0||n>=this.length?undefined:this.charAt(n)},writable:true,configurable:true});}',
+  'if(typeof String.prototype.matchAll!=="function"){Object.defineProperty(String.prototype,"matchAll",{value:function(re){var rx=re instanceof RegExp?new RegExp(re.source,re.flags.indexOf("g")>=0?re.flags:re.flags+"g"):new RegExp(re,"g");var str=String(this),out=[],m;while((m=rx.exec(str))!==null){out.push(m);if(m[0]==="")rx.lastIndex++}return out[Symbol.iterator]()},writable:true,configurable:true});}'
 ].join('')
 
 module.exports.pitch = function pitch (remainingRequest) {
