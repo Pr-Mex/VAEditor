@@ -5,6 +5,7 @@
 // для последующей упаковки в blob URL (см. blobUrl loader). Worker никогда
 // не записывается в dist.
 
+const webpack = require('webpack')
 const WebWorkerTemplatePlugin = require('webpack/lib/webworker/WebWorkerTemplatePlugin')
 const EntryPlugin = require('webpack/lib/EntryPlugin')
 
@@ -31,9 +32,18 @@ module.exports.pitch = function pitch (remainingRequest) {
   const currentCompilation = this._compilation
   const childCompiler = currentCompilation.createChildCompiler('worker', {
     filename: 'worker.js',
+    // monaco 0.52 дробит worker через import() на async-чанки. Blob-воркер не
+    // может догрузить отдельные файлы (нет сети) → воркер ломается. asyncChunks:
+    // false инлайнит все dynamic import в единственный чанк (воркер = 1 блоб).
+    // Заодно убирает коллизию имён при runAsChild-мердже в parent.
+    asyncChunks: false,
     publicPath: currentCompilation.outputOptions.publicPath
   }, [
     new WebWorkerTemplatePlugin(),
+    // 0.52: monaco дробит worker на несколько чанков (dynamic import), а у нас
+    // фиксированный chunkFilename 'app.worker.js' → "Multiple chunks emit ... same
+    // filename". Воркер обязан быть ОДНИМ инлайн-блобом → схлопываем в 1 чанк.
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
     new EntryPlugin(this.context, '!!' + remainingRequest, { name: 'main' })
   ])
 

@@ -58,7 +58,12 @@ module.exports = (env, argv) => {
               loader: 'replace-strings',
               options: {
                 replacements: [
-                  { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' }
+                  { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' },
+                  // 0.52: findSectionHeaders.js top-level `new RegExp(..., 'd')` (флаг
+                  // hasIndices, Safari 15) → "Invalid flags" в WebKit 1С при загрузке
+                  // модуля. Срезаем 'd' (даёт лишь .indices для MARK:-заголовков —
+                  // в gherkin их нет). Единственный 'd'/'v'-regex в monaco esm.
+                  { search: "(.*)$', 'd'", replace: "(.*)$', ''" }
                 ]
               }
             }

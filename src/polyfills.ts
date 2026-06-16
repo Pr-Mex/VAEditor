@@ -26,6 +26,21 @@ if (typeof _self.globalThis === 'undefined') {
   _self.globalThis = _self;
 }
 
+// monaco при dispose/отмене реджектит pending-промисы CancellationError'ом
+// (name==='Canceled') — это штатное управление потоком, monaco сам его игнорит
+// (onUnexpectedError). Но необработанный reject доходит до window и в 1С
+// каскадит в mocha/ошибку формы. Гасим именно Canceled (capture+первый листенер
+// → раньше mocha). Регистрируем до загрузки monaco.
+if (typeof _self.addEventListener === 'function') {
+  _self.addEventListener('unhandledrejection', function (e: any) {
+    var r = e && e.reason;
+    if (r && (r.name === 'Canceled' || r.message === 'Canceled')) {
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      if (e.preventDefault) e.preventDefault();
+    }
+  }, true);
+}
+
 // WeakRef / FinalizationRegistry (ES2021, Safari 14.1) — движок 1С их лишён, а
 // monaco >=0.45 использует WeakRef при создании модели/редактора (_attachModel)
 // без guard'а → ReferenceError убивает editor.create(). Семантически (GC) не

@@ -45,6 +45,13 @@ function localize2(path, data, defaultMessage) {
 
 function getConfiguredDefaultLocale() { return undefined; }
 
+// 0.52: vs/nls реэкспортит их из nls.messages.js (читают globalThis._VSCODE_NLS_*).
+// Импортятся defaultWorkerFactory.js/platform.js из vs/nls (который мы заменяем),
+// поэтому экспортим из шима. Наш localize не использует _VSCODE_NLS_MESSAGES
+// (берёт из вендоренной таблицы по path+key), поэтому undefined безопасен.
+function getNLSLanguage() { return undefined; }
+function getNLSMessages() { return undefined; }
+
 function setLocaleData(data) { CURRENT_LOCALE_DATA = data; }
 
 // AMD-совместимость (на случай прямых обращений); в ESM не используется.
@@ -54,6 +61,8 @@ function config() { return loadMessageBundle; }
 module.exports.localize = localize;
 module.exports.localize2 = localize2;
 module.exports.getConfiguredDefaultLocale = getConfiguredDefaultLocale;
+module.exports.getNLSLanguage = getNLSLanguage;
+module.exports.getNLSMessages = getNLSMessages;
 module.exports.setLocaleData = setLocaleData;
 module.exports.loadMessageBundle = loadMessageBundle;
 module.exports.config = config;

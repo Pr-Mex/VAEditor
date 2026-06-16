@@ -135,7 +135,8 @@ export class VanessaEditor implements IVanessaEditor {
     options: monaco.editor.IEditorConstructionOptions = {
       renderWhitespace: "selection",
       glyphMargin: true,
-      lightbulb: { enabled: true },
+      // 0.52: lightbulb.enabled boolean → ShowLightbulbIconMode ('off'|'onCode'|'on')
+      lightbulb: { enabled: 'onCode' as monaco.editor.ShowLightbulbIconMode },
       minimap: { enabled: true },
     },
     filepath: string = '',
