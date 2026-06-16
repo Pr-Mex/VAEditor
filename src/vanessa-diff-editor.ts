@@ -10,7 +10,8 @@ export class VanessaDiffEditor implements IVanessaEditor {
 
   static editors: Array<VanessaDiffEditor> = [];
   private static standaloneInstance: VanessaDiffEditor;
-  public navigator: monaco.editor.IDiffNavigator;
+  // 0.45: IDiffNavigator/createDiffNavigator удалены из API. Навигация по диффам
+  // теперь через методы самого редактора (goToDiff/getLineChanges) — см. ниже.
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
 
@@ -51,7 +52,6 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
-    this.navigator = monaco.editor.createDiffNavigator(this.editor);
     VanessaDiffEditor.editors.push(this);
   }
 
@@ -64,7 +64,6 @@ export class VanessaDiffEditor implements IVanessaEditor {
     const original = oe ? oe.getModel() : null;
     const modified = me ? me.getModel() : null;
     this.eventsManager.dispose();
-    this.navigator.dispose();
     this.editor.dispose();
     disposeModel(original);
     disposeModel(modified);
@@ -108,9 +107,10 @@ export class VanessaDiffEditor implements IVanessaEditor {
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public getModel = () => this.editor.getModifiedEditor().getModel();
-  public canNavigate = () => this.navigator.canNavigate() ? true : false;
-  public previous = () => this.navigator.previous();
-  public next = () => this.navigator.next();
+  // 0.45: навигация по диффам без IDiffNavigator.
+  public canNavigate = () => { const c = this.editor.getLineChanges(); return !!(c && c.length); };
+  public previous = () => this.editor.goToDiff('previous');
+  public next = () => this.editor.goToDiff('next');
   public focus() { this.editor.focus(); }
   public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
   public get type() { return VAEditorType.DiffEditor; }

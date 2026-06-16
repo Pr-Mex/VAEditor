@@ -18,6 +18,68 @@ import { ResizeObserver as ResizeObserverPolyfill } from '@juggle/resize-observe
 
 const _self: any = self;
 
+// globalThis (ES2020, Safari 12.1) — движок 1С его лишён, а monaco >=0.45
+// ссылается на ГОЛЫЙ globalThis при загрузке модулей → ReferenceError убивает
+// бандл. Определяем как свойство глобального объекта (self == output.globalObject),
+// тогда голая ссылка globalThis резолвится. typeof на undeclared безопасен.
+if (typeof _self.globalThis === 'undefined') {
+  _self.globalThis = _self;
+}
+
+// WeakRef / FinalizationRegistry (ES2021, Safari 14.1) — движок 1С их лишён, а
+// monaco >=0.45 использует WeakRef при создании модели/редактора (_attachModel)
+// без guard'а → ReferenceError убивает editor.create(). Семантически (GC) не
+// полифилятся; ставим функциональные стабы: WeakRef держит СИЛЬНУЮ ссылку
+// (deref всегда возвращает значение — теряется только GC-оптимизация),
+// FinalizationRegistry — no-op (колбэк очистки просто не вызывается). Для
+// кэшей monaco это безопасно. Голые WeakRef/FinalizationRegistry резолвятся
+// через self (как globalThis).
+if (typeof _self.WeakRef !== 'function') {
+  _self.WeakRef = function (target: any) { this._t = target; };
+  _self.WeakRef.prototype.deref = function () { return this._t; };
+}
+if (typeof _self.FinalizationRegistry !== 'function') {
+  _self.FinalizationRegistry = function (_cb: any) {};
+  _self.FinalizationRegistry.prototype.register = function () {};
+  _self.FinalizationRegistry.prototype.unregister = function () { return false; };
+}
+
+// ClipboardItem (Safari 13.1) + async navigator.clipboard — движок 1С (WebKit
+// ~Safari 11.x) их лишён. monaco на WebKit-пути (isSafari/isWebkitWebView) в
+// BrowserClipboardService.installWebKitWriteTextWorkaround зовёт
+// `navigator.clipboard.write([new ClipboardItem(...)])` СРАЗУ при создании
+// сервиса (Event.runAndSubscribe) → ReferenceError убивает editor.create()
+// (проявляется только в WebKit, в Chrome isSafari=false — путь не берётся).
+// Стабы: ClipboardItem-обёртка + no-op async-clipboard (копирование этим путём
+// не работает, но редактор создаётся; автотест буфер обмена не проверяет).
+if (typeof _self.ClipboardItem !== 'function') {
+  _self.ClipboardItem = function (items: any) {
+    this.items = items;
+    // monaco передаёт сюда DeferredPromise.p; при отмене (новый клик/закрытие
+    // вкладки) он реджектится Canceled. Настоящий ClipboardItem его потребляет,
+    // наш стаб — нет, поэтому гасим, иначе unhandledrejection каскадит в mocha.
+    for (var k in items) {
+      if (items[k] && typeof items[k].then === 'function') {
+        items[k].then(function () {}, function () {});
+      }
+    }
+  };
+}
+try {
+  var _nav: any = _self.navigator;
+  if (_nav) {
+    if (!_nav.clipboard) {
+      try { _nav.clipboard = {}; } catch (e) { Object.defineProperty(_nav, 'clipboard', { value: {}, configurable: true }); }
+    }
+    var _clip: any = _nav.clipboard;
+    if (_clip) {
+      if (typeof _clip.write !== 'function') _clip.write = function () { return Promise.resolve(); };
+      if (typeof _clip.writeText !== 'function') _clip.writeText = function () { return Promise.resolve(); };
+      if (typeof _clip.readText !== 'function') _clip.readText = function () { return Promise.resolve(''); };
+    }
+  }
+} catch (e) { /* ignore */ }
+
 if (typeof _self.queueMicrotask !== 'function') {
   const resolved = Promise.resolve();
   _self.queueMicrotask = function (callback: () => void): void {

@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
-const nls = require.resolve('monaco-editor-nls')
+const nls = path.resolve(__dirname, 'src/nls/nls.js') // свой NLS-шим (заменяет monaco-editor-nls)
 
 module.exports = (env, argv) => {
   return {
@@ -41,20 +41,6 @@ module.exports = (env, argv) => {
         }
       },
       rules: [
-        {
-          test: /node_modules[\\/]monaco-editor-nls[\\/].+\.js$/,
-          loader: 'replace-strings',
-          options: {
-            replacements: [
-              { search: 'let CURRENT_LOCALE_DATA = null;', replace: 'var CURRENT_LOCALE_DATA = null;' },
-              // monaco >=0.34: vs/base/common/platform.js зовёт nls.getConfiguredDefaultLocale(),
-              // которого нет в monaco-editor-nls@2.0.0 -> TypeError убивает бандл. Возвращаем
-              // undefined (дефолт monaco; наша RU-локализация идёт через setLocaleData/localize).
-              // Полноценный свой NLS-шим — шаг 3 (0.45, localize2).
-              { search: "module.exports['config'] = config;", replace: "module.exports['config'] = config;\nmodule.exports['getConfiguredDefaultLocale'] = function () { return undefined; };" }
-            ]
-          }
-        },
         {
           // Патчи monaco под совместимость с 1С runtime + транспиляция в es2015.
           // esbuild понижает ?. (ES2020) и class fields (ES2022) из esbuild-сборки

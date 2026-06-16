@@ -6,8 +6,10 @@ module.exports = function (content, map, meta) {
     const vsPath = this.resourcePath.split(/monaco-editor[\\/]esm[\\/]/).pop()
     if (vsPath) {
       const path = vsPath.replace(/\\/g, '/').replace('.js', '')
-      // Avoid patching function declarations like `function localize(` — only patch call-sites
-      return content.replace(/(?<!function )localize\(/g, `localize('${path}', `)
+      // Дописываем путь модуля первым аргументом в call-sites localize( и localize2(
+      // (0.45: добавился localize2 -> ILocalizedString). Lookbehind исключает
+      // объявления `function localize(` / `function localize2(`.
+      return content.replace(/(?<!function )(localize2?)\(/g, `$1('${path}', `)
     }
   }
   return content
