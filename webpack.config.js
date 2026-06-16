@@ -46,7 +46,12 @@ module.exports = (env, argv) => {
           loader: 'replace-strings',
           options: {
             replacements: [
-              { search: 'let CURRENT_LOCALE_DATA = null;', replace: 'var CURRENT_LOCALE_DATA = null;' }
+              { search: 'let CURRENT_LOCALE_DATA = null;', replace: 'var CURRENT_LOCALE_DATA = null;' },
+              // monaco >=0.34: vs/base/common/platform.js зовёт nls.getConfiguredDefaultLocale(),
+              // которого нет в monaco-editor-nls@2.0.0 -> TypeError убивает бандл. Возвращаем
+              // undefined (дефолт monaco; наша RU-локализация идёт через setLocaleData/localize).
+              // Полноценный свой NLS-шим — шаг 3 (0.45, localize2).
+              { search: "module.exports['config'] = config;", replace: "module.exports['config'] = config;\nmodule.exports['getConfiguredDefaultLocale'] = function () { return undefined; };" }
             ]
           }
         },

@@ -62,3 +62,26 @@ if (typeof _self.ResizeObserver !== 'function') {
     return mql;
   };
 })();
+
+// Array.prototype.flat / flatMap (ES2019, Safari 12.0). Движок 1С — ~Safari 11.x
+// (проба capabilities из 1С: flat/flatMap = undefined). monaco >=0.34 зовёт
+// `xs.map(...).flat()` при создании редактора → TypeError. esbuild рантайм-методы
+// не полифилит. defineProperty(enumerable:false) — чтобы не светить в for..in.
+(function () {
+  function def(proto: any, name: string, fn: any) {
+    if (typeof proto[name] !== 'function') {
+      Object.defineProperty(proto, name, { value: fn, writable: true, configurable: true, enumerable: false });
+    }
+  }
+  def(Array.prototype, 'flat', function (this: any[], depth?: number) {
+    var d = depth === undefined ? 1 : Number(depth);
+    return d < 1
+      ? Array.prototype.slice.call(this)
+      : Array.prototype.reduce.call(this, function (acc: any[], val: any) {
+          return acc.concat(Array.isArray(val) && d > 1 ? (val as any).flat(d - 1) : val);
+        }, [] as any[]);
+  });
+  def(Array.prototype, 'flatMap', function (this: any[], cb: any, thisArg?: any) {
+    return (Array.prototype.map.call(this, cb, thisArg) as any).flat();
+  });
+})();

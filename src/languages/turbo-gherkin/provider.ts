@@ -1,7 +1,8 @@
 import { MonarchTokenizer } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
 import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
-import { ILanguageService } from 'monaco-editor/esm/vs/editor/common/services/language';
+import { ILanguageService } from 'monaco-editor/esm/vs/editor/common/languages/language'; // 0.34: переехал из common/services/language
 import { IStandaloneThemeService } from 'monaco-editor/esm/vs/editor/standalone/common/standaloneTheme';
+import { IConfigurationService } from 'monaco-editor/esm/vs/platform/configuration/common/configuration';
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/languages';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
@@ -218,7 +219,9 @@ export class VanessaGherkinProvider {
           edit: {
             edits: [{
               resource: model.uri,
-              edit: { range, text: e.text }
+              // 0.34: IWorkspaceTextEdit.edit -> textEdit (+ обязательный versionId)
+              textEdit: { range, text: e.text },
+              versionId: undefined
             }]
           },
           isPreferred: i === 0
@@ -318,6 +321,9 @@ export class VanessaGherkinProvider {
       StandaloneServices.get(IStandaloneThemeService),
       language.id,
       compile(language.id, lang),
+      // 0.34: 5-й арг конструктора. Не undefined — конструктор сразу зовёт
+      // _configurationService.getValue()/onDidChangeConfiguration().
+      StandaloneServices.get(IConfigurationService),
     );
   }
 
