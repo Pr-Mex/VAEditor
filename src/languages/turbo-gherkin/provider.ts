@@ -346,22 +346,8 @@ export class VanessaGherkinProvider {
       if (e !== BreakException) throw e;
     }
     let tokens = [];
-    let result = this.tokenizer.tokenize(line, true, state, 0);
+    let result = this.tokenizer.tokenize(line, true, state);
     result.tokens.forEach((t: monaco.Token) => tokens.push({ startIndex: t.offset, scopes: t.type }));
     return { tokens: tokens, endState: result.endState };
-  }
-
-  public logTokens(model: monaco.editor.ITextModel) {
-    const tokenizationSupport = TokenizationRegistry.get(language.id);
-    if (tokenizationSupport) {
-      const lineCount = model.getLineCount();
-      let state = tokenizationSupport.getInitialState();
-      for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-        const line = model.getLineContent(lineNumber);
-        const tokenizationResult = tokenizationSupport.tokenize(line, true, state, 0);
-        state = tokenizationResult.endState;
-        console.log(lineNumber, state.stack.state, tokenizationResult.tokens);
-      }
-    };
   }
 }

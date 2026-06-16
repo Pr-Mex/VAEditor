@@ -54,15 +54,9 @@ function getNLSMessages() { return undefined; }
 
 function setLocaleData(data) { CURRENT_LOCALE_DATA = data; }
 
-// AMD-совместимость (на случай прямых обращений); в ESM не используется.
-function loadMessageBundle() { return localize; }
-function config() { return loadMessageBundle; }
-
 module.exports.localize = localize;
 module.exports.localize2 = localize2;
 module.exports.getConfiguredDefaultLocale = getConfiguredDefaultLocale;
 module.exports.getNLSLanguage = getNLSLanguage;
 module.exports.getNLSMessages = getNLSMessages;
 module.exports.setLocaleData = setLocaleData;
-module.exports.loadMessageBundle = loadMessageBundle;
-module.exports.config = config;

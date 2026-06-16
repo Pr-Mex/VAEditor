@@ -67,11 +67,9 @@ module.exports = (env, argv) => {
                 replacements: [
                   { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' },
                   // RegExp-флаг 'd' (hasIndices, Safari 15) → "Invalid flags" в WebKit
-                  // 1С при new RegExp(..., 'd'). Срезаем 'd' у двух конструкторов monaco:
-                  // 0.52 findSectionHeaders (MARK:, .indices не нужен в gherkin) и
-                  // 0.55 editorOptions `new RegExp(inputRegex, 'd')`. Глобальную обёртку
-                  // RegExp не делаем — ломает именованные группы (?<name>) в 1С.
-                  { search: "(.*)$', 'd'", replace: "(.*)$', ''" },
+                  // 1С при new RegExp(..., 'd'). Срезаем 'd' у editorOptions
+                  // `new RegExp(inputRegex, 'd')` (0.55). Глобальную обёртку RegExp не
+                  // делаем — ломает именованные группы (?<name>) в 1С.
                   { search: 'new RegExp(inputRegex, \'d\')', replace: 'new RegExp(inputRegex, \'\')' },
                   // 0.55: defaultDocumentColorsComputer.initialValidationRegex —
                   // raw-литерал с lookbehind (?<=['"\s]) (×4). WebKit 1С (нет lookbehind
