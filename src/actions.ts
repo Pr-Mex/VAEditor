@@ -1,6 +1,12 @@
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaEditorEvent, IVanessaAction } from "./common";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { IOpenerService } from 'monaco-editor/esm/vs/platform/opener/common/opener';
+
+// Последний созданный редактор — для маршрутизации клика по ссылке (opener —
+// общий singleton, оборачиваем его один раз; раньше код брал per-editor hover).
+let activeOwner: VanessaEditor;
 
 interface IVanessaCommand {
   eventId: string;
@@ -24,23 +30,31 @@ export class ActionManager {
   ) {
     this.owner = owner;
     this.editor = owner.editor;
+    activeOwner = owner;
+    // 0.52: getContribution('editor.contrib.hover') стал lazy → null до первого
+    // ховера (раньше отсюда брался _openerService). Берём IOpenerService напрямую
+    // из StandaloneServices — это тот же singleton, что инжектится в hover, —
+    // и оборачиваем open ОДИН раз (повторная обёртка общего сервиса → рекурсия).
     //@ts-ignore
-    let service = this.editor.getContribution('editor.contrib.hover')._openerService;
-    service._original_open = service.open;
-    service.open = (target: any, options: any) => {
-      if (typeof (target) == "string") {
-        if (/^\s*(https?:\/\/|e1cib\/)/.test(target)) {
-          this.owner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
-          return { catch: () => { } };
+    const service: any = StandaloneServices.get(IOpenerService);
+    if (service && !service._vanessa_wrapped) {
+      service._vanessa_wrapped = true;
+      const originalOpen = service.open.bind(service);
+      service.open = (target: any, options: any) => {
+        if (typeof (target) == "string") {
+          if (/^\s*(https?:\/\/|e1cib\/)/.test(target)) {
+            activeOwner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
+            return { catch: () => { } };
+          }
+          if (/^\s*link:/.test(target)) {
+            const promise = VanessaGherkinProvider.instance.getLinkData(activeOwner.editor.getModel(), target.substr(5));
+            promise.then((data) => activeOwner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data)));
+            return { catch: () => { } };
+          }
         }
-        if (/^\s*link:/.test(target)) {
-          const promise = VanessaGherkinProvider.instance.getLinkData(this.editor.getModel(), target.substr(5));
-          promise.then((data) => this.owner.fireEvent(VanessaEditorEvent.ON_LINK_CLICK, JSON.stringify(data)));
-          return { catch: () => { } };
-        }
-      }
-      return service._original_open(target, options);
-    };
+        return originalOpen(target, options);
+      };
+    }
   }
 
   public dispose(): void {

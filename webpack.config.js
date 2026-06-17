@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
-const nls = require.resolve('monaco-editor-nls')
+const nls = path.resolve(__dirname, 'src/nls/nls.js') // свой NLS-шим (заменяет monaco-editor-nls)
 
 module.exports = (env, argv) => {
   return {
@@ -12,6 +12,13 @@ module.exports = (env, argv) => {
     },
     resolve: {
       extensions: ['.ts', '.js', '.css'],
+      alias: {
+        // 0.55: package "exports" мапит require→min/vs/editor/editor.main.js (AMD,
+        // webpack не парсит) и import→esm. Наш TS компилится в commonjs (require),
+        // поэтому bare `import * as monaco from "monaco-editor"` тянул AMD-min.
+        // Алиасим на ESM-точку входа. `$` — точное совпадение, deep-import не задет.
+        'monaco-editor$': path.resolve(__dirname, 'node_modules/monaco-editor/esm/vs/editor/editor.main.js')
+      },
       fallback: {
         util: require.resolve('util/'),
         stream: require.resolve('stream-browserify'),
@@ -42,24 +49,40 @@ module.exports = (env, argv) => {
       },
       rules: [
         {
-          test: /node_modules[\\/]monaco-editor-nls[\\/].+\.js$/,
-          loader: 'replace-strings',
-          options: {
-            replacements: [
-              { search: 'let CURRENT_LOCALE_DATA = null;', replace: 'var CURRENT_LOCALE_DATA = null;' }
-            ]
-          }
-        },
-        {
-          // Патчи monaco под совместимость с 1С runtime
+          // Патчи monaco под совместимость с 1С runtime + транспиляция в es2015.
+          // esbuild понижает ?. (ES2020) и class fields (ES2022) из esbuild-сборки
+          // monaco ≥0.31 — WebKit 1С их не парсит (SyntaxError всего бандла).
+          // Порядок use справа налево: replace-strings (строковый патч на сыром
+          // коде, до того как esbuild свернёт `2048 | 39` и срежет комментарии) →
+          // esbuild (финальная транспиляция). monaco-nls (enforce:pre) идёт раньше.
           test: /node_modules[\\/]monaco-editor[\\/]esm[\\/].+\.js$/,
-          loader: 'replace-strings',
-          options: {
-            replacements: [
-              { search: 'let __insane_func;', replace: 'var __insane_func;' },
-              { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' }
-            ]
-          }
+          use: [
+            {
+              loader: 'esbuild-loader',
+              options: { target: 'es2015' }
+            },
+            {
+              loader: 'replace-strings',
+              options: {
+                replacements: [
+                  { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' },
+                  // RegExp-флаг 'd' (hasIndices, Safari 15) → "Invalid flags" в WebKit
+                  // 1С при new RegExp(..., 'd'). Срезаем 'd' у editorOptions
+                  // `new RegExp(inputRegex, 'd')` (0.55). Глобальную обёртку RegExp не
+                  // делаем — ломает именованные группы (?<name>) в 1С.
+                  { search: 'new RegExp(inputRegex, \'d\')', replace: 'new RegExp(inputRegex, \'\')' },
+                  // 0.55: defaultDocumentColorsComputer.initialValidationRegex —
+                  // raw-литерал с lookbehind (?<=['"\s]) (×4). WebKit 1С (нет lookbehind
+                  // до Safari 16.4) читает (?<= как невалидную named-group → "invalid
+                  // group specifier name" при require модуля (color provider на старте).
+                  // Меняем lookbehind на консумирующую группу — regex валиден; диапазон
+                  // смещается на 1 символ, но color-дисплей выключен (colorDecorators).
+                  // (linesOperations использует BackwardsCompatibleRegExp с try/catch — graceful.)
+                  { search: "(?<=['\"\\s])", replace: "(?:['\"\\s])" }
+                ]
+              }
+            }
+          ]
         },
         {
           test: /\.js$/,

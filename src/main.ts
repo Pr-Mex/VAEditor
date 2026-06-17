@@ -20,10 +20,11 @@ self.MonacoEnvironment = {
   }
 };
 
+import "./polyfills"; // ПЕРВЫМ: queueMicrotask/ResizeObserver до загрузки monaco
 import "./media/debug";
 import "./media/tabs";
 import "./media/welcome";
-import { setLocaleData } from 'monaco-editor-nls';
+import { setLocaleData } from './nls/nls';
 import { patchWebKit1C } from "./1c-webkit-patch";
 
 let reg = new RegExp('[?&]localeCode=([^&#]*)', 'i');
@@ -31,8 +32,14 @@ let queryString = reg.exec(window.location.search);
 let localeCode = queryString ? queryString[1] : 'en';
 console.log('Current locale is: ' + localeCode);
 if (localeCode !== 'en') {
-  const localeData = require('monaco-editor-nls/locale/' + localeCode + '.json');
-  setLocaleData(localeData);
+  // Вендоренные locale-данные в src/nls/locale/*.json. Сейчас вендорим ru;
+  // отсутствие локали — не ошибка (фолбэк на английский).
+  try {
+    const localeData = require('./nls/locale/' + localeCode + '.json');
+    setLocaleData(localeData);
+  } catch (e) {
+    console.warn('VAEditor: нет вендоренной локали "' + localeCode + '", использую английский.');
+  }
 }
 
 import { VanessaTabs } from "./vanessa-tabs";
@@ -44,8 +51,9 @@ import { initPage } from "./common";
 
 initPage();
 
-import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
-StaticServices.standaloneThemeService.get().registerEditorContainer(document.body);
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { IStandaloneThemeService } from 'monaco-editor/esm/vs/editor/standalone/common/standaloneTheme';
+StandaloneServices.get(IStandaloneThemeService).registerEditorContainer(document.body);
 
 Object.defineProperties(window, {
   VanessaTabs: { get: () => VanessaTabs.getStandalone() },

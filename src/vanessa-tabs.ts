@@ -3,7 +3,8 @@ import { ActionManager } from './actions';
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { IVanessaEditor, createModel, VanessaEditorEvent, EventsManager, disposeModel, WhitespaceType, VAEditorType } from "./common";
-import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { IModelService } from 'monaco-editor/esm/vs/editor/common/services/model';
 import { VanessaViwer } from './vanessa-viewer';
 import { version } from '../version.json'
 import { StyleManager } from './style';
@@ -247,7 +248,7 @@ class VanessaTabItem {
       disposeModel(oldModel);
     } else {
       this.editor.getModel()._associatedResource = uri;
-      const service = StaticServices.modelService.get();
+      const service = StandaloneServices.get(IModelService);
       const data = service._models[oldKey];
       delete service._models[oldKey];
       service._models[newKey] = data;

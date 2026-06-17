@@ -1,6 +1,9 @@
-import { createTokenizationSupport } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
-import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
-import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
+import { MonarchTokenizer } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchLexer';
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { ILanguageService } from 'monaco-editor/esm/vs/editor/common/languages/language'; // 0.34: переехал из common/services/language
+import { IStandaloneThemeService } from 'monaco-editor/esm/vs/editor/standalone/common/standaloneTheme';
+import { IConfigurationService } from 'monaco-editor/esm/vs/platform/configuration/common/configuration';
+import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/languages';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
 import { language, GherkinLanguage } from './configuration';
@@ -216,7 +219,9 @@ export class VanessaGherkinProvider {
           edit: {
             edits: [{
               resource: model.uri,
-              edit: { range, text: e.text }
+              // 0.34: IWorkspaceTextEdit.edit -> textEdit (+ обязательный versionId)
+              textEdit: { range, text: e.text },
+              versionId: undefined
             }]
           },
           isPreferred: i === 0
@@ -311,11 +316,14 @@ export class VanessaGherkinProvider {
   public initTokenizer() {
     let lang = new GherkinLanguage(this);
     if (this.tokenizer) this.tokenizer.dispose();
-    this.tokenizer = createTokenizationSupport(
-      StaticServices.modeService.get(),
-      StaticServices.standaloneThemeService.get(),
+    this.tokenizer = new MonarchTokenizer(
+      StandaloneServices.get(ILanguageService),
+      StandaloneServices.get(IStandaloneThemeService),
       language.id,
       compile(language.id, lang),
+      // 0.34: 5-й арг конструктора. Не undefined — конструктор сразу зовёт
+      // _configurationService.getValue()/onDidChangeConfiguration().
+      StandaloneServices.get(IConfigurationService),
     );
   }
 
@@ -338,22 +346,8 @@ export class VanessaGherkinProvider {
       if (e !== BreakException) throw e;
     }
     let tokens = [];
-    let result = this.tokenizer.tokenize(line, true, state, 0);
+    let result = this.tokenizer.tokenize(line, true, state);
     result.tokens.forEach((t: monaco.Token) => tokens.push({ startIndex: t.offset, scopes: t.type }));
     return { tokens: tokens, endState: result.endState };
-  }
-
-  public logTokens(model: monaco.editor.ITextModel) {
-    const tokenizationSupport = TokenizationRegistry.get(language.id);
-    if (tokenizationSupport) {
-      const lineCount = model.getLineCount();
-      let state = tokenizationSupport.getInitialState();
-      for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-        const line = model.getLineContent(lineNumber);
-        const tokenizationResult = tokenizationSupport.tokenize(line, true, state, 0);
-        state = tokenizationResult.endState;
-        console.log(lineNumber, state.stack.state, tokenizationResult.tokens);
-      }
-    };
   }
 }

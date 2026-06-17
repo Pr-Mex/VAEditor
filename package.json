@@ -9,6 +9,7 @@
 		"test": "webpack serve --progress --mode development --open test.html?test",
 		"build": "webpack --progress --mode production",
 		"buildci": "webpack --mode production",
+		"escheck": "es-check es2019 dist/app.js dist/app.worker.js dist/test.js",
 		"compile": "run-script-os",
 		"compile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
 		"compile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/ZipTemplates.os & ~/.local/share/ovm/current/bin/oscript ./tools/onescript/Compile.os ./example",
@@ -35,10 +36,10 @@
 		}
 	],
 	"dependencies": {
+		"@juggle/resize-observer": "^3.4.0",
 		"buffer": "^6.0.3",
 		"jaro-winkler": "^0.2.8",
-		"monaco-editor": "^0.30.1",
-		"monaco-editor-nls": "^2.0.0",
+		"monaco-editor": "^0.55.1",
 		"process": "^0.11.10"
 	},
 	"devDependencies": {
@@ -47,6 +48,8 @@
 		"autoprefixer": "^10.5.0",
 		"chai": "^4.5.0",
 		"css-loader": "^7.1.4",
+		"es-check": "^9.6.4",
+		"esbuild-loader": "^4.5.0",
 		"html-webpack-plugin": "^5.6.0",
 		"mocha": "^10.8.2",
 		"postcss": "^8.5.15",
