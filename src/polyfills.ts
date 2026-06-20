@@ -71,20 +71,32 @@ if (typeof _self.FinalizationRegistry !== 'function') {
 // `navigator.clipboard.write([new ClipboardItem(...)])` СРАЗУ при создании
 // сервиса (Event.runAndSubscribe) → ReferenceError убивает editor.create()
 // (проявляется только в WebKit, в Chrome isSafari=false — путь не берётся).
-// Стабы: ClipboardItem-обёртка + no-op async-clipboard (копирование этим путём
-// не работает, но редактор создаётся; автотест буфер обмена не проверяет).
-if (typeof _self.ClipboardItem !== 'function') {
-  _self.ClipboardItem = function (items: any) {
-    this.items = items;
-    // monaco передаёт сюда DeferredPromise.p; при отмене (новый клик/закрытие
-    // вкладки) он реджектится Canceled. Настоящий ClipboardItem его потребляет,
-    // наш стаб — нет, поэтому гасим, иначе unhandledrejection каскадит в mocha.
-    for (var k in items) {
-      if (items[k] && typeof items[k].then === 'function') {
-        items[k].then(function () {}, function () {});
-      }
+// Раньше тут стояли no-op-стабы, но monaco 0.55 на paste
+// (editor.action.clipboardPasteAction → BrowserClipboardService.readText, ветка
+// isWeb) читает именно navigator.clipboard.readText(), тогда как copy/cut пишут
+// текст через DOM-событие execCommand. No-op readText() → '' → кнопка «Вставить»
+// вставляла пусто. Держим собственный in-memory буфер и пишем в него из ВСЕХ путей
+// monaco: writeText, write([ClipboardItem]) (WebKit-workaround отдаёт текст через
+// promise внутри ClipboardItem) и перехват DOM copy/cut. readText отдаёт буфер —
+// кнопки Вырезать/Копировать/Вставить снова работают (как на monaco 0.30).
+var _clipboard = { text: '' };
+function _grabClipboardItems(items: any) {
+  for (var k in items) {
+    var v = items[k];
+    if (v && typeof v.then === 'function') {
+      // monaco передаёт DeferredPromise.p; при отмене он реджектится Canceled —
+      // гасим (иначе unhandledrejection каскадит в mocha), а текст забираем в буфер.
+      v.then(function (val: any) {
+        if (typeof val === 'string') _clipboard.text = val;
+        else if (val && typeof val.text === 'function') { try { val.text().then(function (t: any) { _clipboard.text = String(t); }, function () {}); } catch (e) {} }
+      }, function () {});
+    } else if (typeof v === 'string') {
+      _clipboard.text = v;
     }
-  };
+  }
+}
+if (typeof _self.ClipboardItem !== 'function') {
+  _self.ClipboardItem = function (items: any) { this.items = items; _grabClipboardItems(items); };
 }
 try {
   var _nav: any = _self.navigator;
@@ -94,12 +106,30 @@ try {
     }
     var _clip: any = _nav.clipboard;
     if (_clip) {
-      if (typeof _clip.write !== 'function') _clip.write = function () { return Promise.resolve(); };
-      if (typeof _clip.writeText !== 'function') _clip.writeText = function () { return Promise.resolve(); };
-      if (typeof _clip.readText !== 'function') _clip.readText = function () { return Promise.resolve(''); };
+      if (typeof _clip.write !== 'function') _clip.write = function (data: any) {
+        try { for (var i = 0; i < (data || []).length; i++) { var it = data[i]; if (it && it.items) _grabClipboardItems(it.items); } } catch (e) { /* ignore */ }
+        return Promise.resolve();
+      };
+      if (typeof _clip.writeText !== 'function') _clip.writeText = function (t: any) { _clipboard.text = (t == null ? '' : String(t)); return Promise.resolve(); };
+      if (typeof _clip.readText !== 'function') _clip.readText = function () { return Promise.resolve(_clipboard.text); };
     }
   }
 } catch (e) { /* ignore */ }
+// Мост DOM copy/cut → in-memory буфер. monaco кладёт скопированный текст в
+// ClipboardEvent.clipboardData (ClipboardEventUtils.setTextData) в обработчике
+// textarea; перехватываем на всплытии (document, bubble — после обработчика
+// редактора) и дублируем в буфер, чтобы readText на paste его увидел.
+if (typeof _self.addEventListener === 'function') {
+  var _grabClipboardEvent = function (e: any) {
+    try {
+      var cd = e && e.clipboardData;
+      var t = cd && typeof cd.getData === 'function' ? cd.getData('text/plain') : '';
+      if (t) _clipboard.text = t;
+    } catch (err) { /* ignore */ }
+  };
+  _self.addEventListener('copy', _grabClipboardEvent, false);
+  _self.addEventListener('cut', _grabClipboardEvent, false);
+}
 
 if (typeof _self.queueMicrotask !== 'function') {
   const resolved = Promise.resolve();
