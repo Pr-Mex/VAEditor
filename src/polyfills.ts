@@ -228,6 +228,16 @@ if (typeof _self.ResizeObserver !== 'function') {
     while ((m = rx.exec(str)) !== null) { out.push(m); if (m[0] === '') rx.lastIndex++; }
     return out[Symbol.iterator]();
   });
+  // String.prototype.trimStart/trimEnd (ES2019, Safari 12) — движок 1С (~Safari 11)
+  // их лишён. marked (markdown-рендер monaco 0.55) зовёт line.trimEnd() в list-
+  // токенизаторе (Tokenizer.list, ×3) при разборе ЛЮБОГО списка → TypeError рушит
+  // renderMarkdown СИНХРОННО в конструкторе VanessaViwer → markdown-вкладки (список
+  // уроков, MD-файлы, интерактивная справка) не открываются (VanessaTabs.count()=0).
+  // Код-редактор не затронут (markdown не рендерит). esbuild строковые методы не полифилит.
+  def(String.prototype, 'trimStart', function (this: string) { return String(this).replace(/^\s+/, ''); });
+  def(String.prototype, 'trimEnd', function (this: string) { return String(this).replace(/\s+$/, ''); });
+  def(String.prototype, 'trimLeft', (String.prototype as any).trimStart);
+  def(String.prototype, 'trimRight', (String.prototype as any).trimEnd);
 })();
 
 // Object.fromEntries (ES2019, Safari 12.1) / Promise.allSettled (ES2020, Safari 13)
