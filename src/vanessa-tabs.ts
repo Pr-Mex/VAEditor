@@ -616,6 +616,25 @@ export class VanessaTabs {
   public select = (index: number) => this.tabStack[index].select();
   public set theme(arg: string) { StyleManager.theme = arg; }
   public get version(): string { return version }
-  public get options(): string { let o = monaco.editor.EditorOptions; return JSON.stringify(Object.keys(o).map(k => [k, o[k]])); }
+  public get options(): string {
+    const o = monaco.editor.EditorOptions;
+    return JSON.stringify(Object.keys(o).map(k => {
+      const opt: any = o[k];
+      const schema = opt && opt.schema;
+      // monaco 0.55: wrappingIndent/wrappingStrategy описывают schema как
+      // namespaced-обёртку { "editor.<name>": {...настоящая схема...} } — без
+      // верхнеуровневого type/anyOf. Форма 1С НастройкаРедактора при этом уходит
+      // в рекурсию по schema и валится на скалярном текущем значении опции
+      // («Значение не является значением объектного типа»). Разворачиваем обёртку
+      // к «голой» схеме (как у остальных enum-опций: type/enum/default напрямую).
+      // Объектные опции (bracketPairColorization и т.п.) имеют ключи вида
+      // editor.<name>.<subkey> — обёртка не разворачивается, рекурсия корректна.
+      if (schema && typeof schema === 'object' && !schema.type && !schema.anyOf) {
+        const inner = schema['editor.' + opt.name];
+        if (inner && typeof inner === 'object') return [k, { ...opt, schema: inner }];
+      }
+      return [k, opt];
+    }));
+  }
   public set options(value: string) { VanessaEditor.editors.forEach(e => e.options = value); this.editorOptions = JSON.parse(value); }
 }

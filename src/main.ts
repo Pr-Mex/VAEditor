@@ -21,6 +21,7 @@ self.MonacoEnvironment = {
 };
 
 import "./polyfills"; // ПЕРВЫМ: queueMicrotask/ResizeObserver до загрузки monaco
+import "./product-service"; // регистрация IProductService до StandaloneServices (нужен paste)
 import "./media/debug";
 import "./media/tabs";
 import "./media/welcome";
