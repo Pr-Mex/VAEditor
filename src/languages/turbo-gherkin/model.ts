@@ -25,7 +25,7 @@ function getToken(text: string, sppr: boolean, direct: IDirectExp) {
   }
   if (/^[\s]*@/.test(text)) return VAToken.Instruction;
   if (/^[\s]*\|/.test(text)) return VAToken.Parameter;
-  if (/^[\s]*[#|//]/.test(text)) return VAToken.Comment;
+  if (/^[\s]*(#|\/\/)/.test(text)) return VAToken.Comment;
   if (/^[\s]*"""/.test(text)) return VAToken.Multiline;
   if (/^[\s]*\*/.test(text)) return VAToken.Asterisk;
   return VAToken.Operator;
@@ -51,7 +51,6 @@ export function getModelTokens(
       token = VAToken.Multiline;
     } else if (multilineComment) {
       if (token == VAToken.EndComment) {
-        console.log("EndComment", lineNumber)
         multilineComment = false;
       }
       token = VAToken.Comment;

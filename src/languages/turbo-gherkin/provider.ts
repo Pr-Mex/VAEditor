@@ -30,6 +30,13 @@ worker.onmessage = function (e) {
   }
 }
 
+worker.onerror = function (e: any) {
+  // ошибка верхнего уровня в воркере — отклоняем все ожидающие промисы, иначе
+  // провайдеры висят навсегда (документированная боль: зависание автотеста).
+  messageMap.forEach((p: any) => { try { p.reject((e && e.message) || "worker error") } catch (_) { } });
+  messageMap.clear();
+}
+
 function postMessage<T>(mod: monaco.editor.ITextModel, message: WorkerMessage)
   : Promise<T> {
   if (mod) {

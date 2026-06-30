@@ -138,8 +138,9 @@ export class KeywordMatcher {
   }
 
   public isSection(text: string) {
-    const regexp = new RegExp(this.primary);
-    return regexp.test(text);
+    // this.primary с флагом только "i" (без g/y) — .test() не использует lastIndex,
+    // поэтому клонировать RegExp на каждом вызове не нужно (горячий путь токенизации).
+    return this.primary.test(text);
   }
 
   public getSection(text: string) {
