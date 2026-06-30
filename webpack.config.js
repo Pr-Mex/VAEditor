@@ -3,6 +3,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const nls = path.resolve(__dirname, 'src/nls/nls.js') // свой NLS-шим (заменяет monaco-editor-nls)
+const replaceStrings = require('./tools/loaders/replaceStrings') // counts + assertApplied (#10)
 
 module.exports = (env, argv) => {
   return {
@@ -65,7 +66,9 @@ module.exports = (env, argv) => {
               loader: 'replace-strings',
               options: {
                 replacements: [
-                  { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' },
+                  // 0.55 сменил формат комментариев на KeyMod./KeyCode.-квалифицированный
+                  // (suggestController.js) — старый search перестал совпадать (поймано #10).
+                  { search: 'secondary: [2048 /* KeyMod.CtrlCmd */ | 39 /* KeyCode.KeyI */],', replace: 'secondary: null,' },
                   // RegExp-флаг 'd' (hasIndices, Safari 15) → "Invalid flags" в WebKit
                   // 1С при new RegExp(..., 'd'). Срезаем 'd' у editorOptions
                   // `new RegExp(inputRegex, 'd')` (0.55). Глобальную обёртку RegExp не
@@ -116,6 +119,15 @@ module.exports = (env, argv) => {
         }]
     },
     plugins: [
+      // #10: валим сборку, если строковый патч monaco не наложился (дрейф версии)
+      {
+        apply(compiler) {
+          compiler.hooks.afterEmit.tapAsync('AssertMonacoPatches', (compilation, cb) => {
+            try { replaceStrings.assertApplied(); cb(); }
+            catch (e) { cb(e); }
+          });
+        },
+      },
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser'
