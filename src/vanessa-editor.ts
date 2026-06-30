@@ -144,6 +144,13 @@ export class VanessaEditor implements IVanessaEditor {
       // specifier name" при создании редактора. В gherkin цвета не нужны — выкл.
       colorDecorators: false,
       defaultColorDecorators: 'never',
+      // 0.55: monaco подсвечивает «неоднозначные» символы (кириллица-двойники
+      // латиницы: а/a, е/e, о/o…). В русском gherkin это сплошной шум — выкл.
+      unicodeHighlight: {
+        ambiguousCharacters: false,
+        invisibleCharacters: false,
+        nonBasicASCII: false,
+      },
     },
     filepath: string = '',
   ) {

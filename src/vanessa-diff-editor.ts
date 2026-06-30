@@ -53,6 +53,12 @@ export class VanessaDiffEditor implements IVanessaEditor {
       // WebKit 1С — см. vanessa-editor.ts).
       colorDecorators: false,
       defaultColorDecorators: 'never',
+      // 0.55: не подсвечивать «неоднозначные» лат/кир-двойники (шум в русском gherkin).
+      unicodeHighlight: {
+        ambiguousCharacters: false,
+        invisibleCharacters: false,
+        nonBasicASCII: false,
+      },
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
