@@ -77,7 +77,13 @@ class VanessaViewEditor {
 
 export class VanessaViwer implements IVanessaEditor {
   domNode(): HTMLElement { return this._domNode; }
-  dispose(): void { }
+  dispose(): void {
+    // вьюер живёт в одном HTML-поле 1С; справка/markdown-вкладки открываются
+    // многократно. Без удаления DOM-поддерево с click-листенером копится навсегда.
+    if (this._domNode) this._domNode.remove();
+    this._domNode = null;
+    this._domInner = null;
+  }
   focus = () => { };
   undo = () => { };
   redo = () => { };

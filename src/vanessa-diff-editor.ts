@@ -87,10 +87,16 @@ export class VanessaDiffEditor implements IVanessaEditor {
   };
 
   public setValue = (oldValue: string, oldFile: string, newValue: string, newFile: string) => {
+    const oe = this.editor.getOriginalEditor();
+    const me = this.editor.getModifiedEditor();
+    const oldOriginal = oe ? oe.getModel() : null;
+    const oldModified = me ? me.getModel() : null;
     this.editor.setModel({
       original: createModel(oldValue, oldFile),
       modified: createModel(newValue, newFile),
     });
+    disposeModel(oldOriginal);
+    disposeModel(oldModified);
   }
 
   public static findModel(model: monaco.editor.ITextModel): boolean {
