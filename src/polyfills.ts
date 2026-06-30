@@ -238,6 +238,17 @@ if (typeof _self.ResizeObserver !== 'function') {
   def(String.prototype, 'trimEnd', function (this: string) { return String(this).replace(/\s+$/, ''); });
   def(String.prototype, 'trimLeft', (String.prototype as any).trimStart);
   def(String.prototype, 'trimRight', (String.prototype as any).trimEnd);
+  // Array.prototype.findLast / findLastIndex (ES2023, Safari 15.4) — движок 1С их
+  // лишён; monaco 0.55 зовёт getBracketPairsInRange().findLast() в bracket-pair
+  // colorization (включена по умолчанию) → TypeError. Реализация — обратный обход.
+  def(Array.prototype, 'findLast', function (this: any[], cb: any, thisArg?: any) {
+    for (var i = this.length - 1; i >= 0; i--) { if (cb.call(thisArg, this[i], i, this)) return this[i]; }
+    return undefined;
+  });
+  def(Array.prototype, 'findLastIndex', function (this: any[], cb: any, thisArg?: any) {
+    for (var i = this.length - 1; i >= 0; i--) { if (cb.call(thisArg, this[i], i, this)) return i; }
+    return -1;
+  });
 })();
 
 // Object.fromEntries (ES2019, Safari 12.1) / Promise.allSettled (ES2020, Safari 13)
@@ -257,4 +268,10 @@ if (typeof (Promise as any).allSettled !== 'function') {
         function (r: any) { return { status: 'rejected', reason: r }; });
     }));
   };
+}
+// Object.hasOwn (ES2022, Safari 15.4) — движок 1С лишён; monaco 0.55 зовёт его в
+// AmbiguousCharacters._getData (unicode-подсветка: кириллица = ambiguous → путь
+// активен на RU-фичах) → TypeError. Делегируем hasOwnProperty.
+if (typeof (Object as any).hasOwn !== 'function') {
+  (Object as any).hasOwn = function (o: any, k: any) { return Object.prototype.hasOwnProperty.call(o, k); };
 }

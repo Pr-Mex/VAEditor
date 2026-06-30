@@ -27,7 +27,13 @@ const WORKER_POLYFILL = [
   'if(typeof String.prototype.replaceAll!=="function"){Object.defineProperty(String.prototype,"replaceAll",{value:function(s,r){return s instanceof RegExp?String.prototype.replace.call(this,s,r):this.split(s).join(r)},writable:true,configurable:true});}',
   'if(typeof Array.prototype.at!=="function"){Object.defineProperty(Array.prototype,"at",{value:function(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return n<0||n>=this.length?undefined:this[n]},writable:true,configurable:true});}',
   'if(typeof String.prototype.at!=="function"){Object.defineProperty(String.prototype,"at",{value:function(n){n=Math.trunc(n)||0;if(n<0)n+=this.length;return n<0||n>=this.length?undefined:this.charAt(n)},writable:true,configurable:true});}',
-  'if(typeof String.prototype.matchAll!=="function"){Object.defineProperty(String.prototype,"matchAll",{value:function(re){var rx=re instanceof RegExp?new RegExp(re.source,re.flags.indexOf("g")>=0?re.flags:re.flags+"g"):new RegExp(re,"g");var str=String(this),out=[],m;while((m=rx.exec(str))!==null){out.push(m);if(m[0]==="")rx.lastIndex++}return out[Symbol.iterator]()},writable:true,configurable:true});}'
+  'if(typeof String.prototype.matchAll!=="function"){Object.defineProperty(String.prototype,"matchAll",{value:function(re){var rx=re instanceof RegExp?new RegExp(re.source,re.flags.indexOf("g")>=0?re.flags:re.flags+"g"):new RegExp(re,"g");var str=String(this),out=[],m;while((m=rx.exec(str))!==null){out.push(m);if(m[0]==="")rx.lastIndex++}return out[Symbol.iterator]()},writable:true,configurable:true});}',
+  // выровнено с polyfills.ts (#14): worker лишён своего глобального контекста, эти API monaco 0.55 зовёт и в worker-коде
+  'if(typeof String.prototype.trimStart!=="function"){Object.defineProperty(String.prototype,"trimStart",{value:function(){return String(this).replace(/^\\s+/,"")},writable:true,configurable:true});String.prototype.trimLeft=String.prototype.trimStart;}',
+  'if(typeof String.prototype.trimEnd!=="function"){Object.defineProperty(String.prototype,"trimEnd",{value:function(){return String(this).replace(/\\s+$/,"")},writable:true,configurable:true});String.prototype.trimRight=String.prototype.trimEnd;}',
+  'if(typeof Object.hasOwn!=="function"){Object.hasOwn=function(o,k){return Object.prototype.hasOwnProperty.call(o,k)};}',
+  'if(typeof Array.prototype.findLast!=="function"){Object.defineProperty(Array.prototype,"findLast",{value:function(cb,t){for(var i=this.length-1;i>=0;i--){if(cb.call(t,this[i],i,this))return this[i]}return undefined},writable:true,configurable:true});}',
+  'if(typeof Array.prototype.findLastIndex!=="function"){Object.defineProperty(Array.prototype,"findLastIndex",{value:function(cb,t){for(var i=this.length-1;i>=0;i--){if(cb.call(t,this[i],i,this))return i}return -1},writable:true,configurable:true});}'
 ].join('')
 
 module.exports.pitch = function pitch (remainingRequest) {
