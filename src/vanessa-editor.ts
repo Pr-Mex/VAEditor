@@ -16,7 +16,7 @@ export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
   public setTheme = (arg: string) => StyleManager.theme = arg;
-  public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); this.editor.setModel(createModel(value, filename)); }
+  public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); const old = this.editor.getModel(); this.editor.setModel(createModel(value, filename)); disposeModel(old); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
   public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
@@ -144,6 +144,13 @@ export class VanessaEditor implements IVanessaEditor {
       // specifier name" при создании редактора. В gherkin цвета не нужны — выкл.
       colorDecorators: false,
       defaultColorDecorators: 'never',
+      // 0.55: monaco подсвечивает «неоднозначные» символы (кириллица-двойники
+      // латиницы: а/a, е/e, о/o…). В русском gherkin это сплошной шум — выкл.
+      unicodeHighlight: {
+        ambiguousCharacters: false,
+        invisibleCharacters: false,
+        nonBasicASCII: false,
+      },
     },
     filepath: string = '',
   ) {

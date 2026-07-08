@@ -79,7 +79,10 @@ function getLinks(
         if (/^\s*""".*$/.test(line)) { if (multiline = !multiline) multitext = ""; continue; }
         if (multiline) { multitext += (multitext == "" ? "" : "\n") + line; multidata["name"] = multitext; continue; }
         if (line.match(/^\s*\|/)) {
-          let match = line.match(/"(\\\|[^"])*"|'(\\'|[^'])*'|[^\s\|][^\|]*[^\s\|]|[^\s\|]/g);
+          // disjoint-альтернация (как в getHiperlinks): без квантифицированных
+          // перекрывающихся групп ('(\\'|[^'])*), которые роняют старый YARR
+          // WebKit 1С в рекурсию на длинной строке → нативный stack overflow.
+          let match = line.match(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[^\s\|][^\|]*[^\s\|]|[^\s\|]/g);
           if (match === null) continue;
           if (columns === null) {
             columns = match.map(trimQuotes);
@@ -91,7 +94,7 @@ function getLinks(
             if (links[tableName] == undefined) links[tableName] = {};
             links[tableName][mt[0].toLowerCase()] = row;
           }
-        } else if ((matches = line.match(/^\s*(\p{L}[\p{L}\p{N}]*)\s*=\s*(.*)\s*$/u)) != null) {
+        } else if ((matches = line.match(/^\s*([A-Za-zЀ-ӿ][A-Za-z0-9Ѐ-ӿ]*)\s*=\s*(.*)\s*$/)) != null) {
           tableName = "";
           columns = null;
           multidata = {};
@@ -162,7 +165,12 @@ export function getHiperlinks(
   let result = [];
   let pos = { lineNumber: 1, lineCount: lineCount };
   let links = getLinks(ctx.matcher, model, pos);
-  let pattern = /(["'])((?:\\\1|(?:(?!\1)).)*)(\1)/;
+  // disjoint-альтернация вместо backreference+lookahead (\1 + (?!\1)): прежняя
+  // пара снимала паттерн с YARR-JIT в рекурсивный интерпретатор старого WebKit 1С,
+  // где глубина рекурсии ∝ длине строки → нативный stack overflow (AV 0xc0000005)
+  // на длинной строке (напр. актуализированный макет). disjoint-вариант JIT-able
+  // (итеративный, без рекурсии); matches[0]/.index/lastIndex идентичны прежнему.
+  let pattern = /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/;
   for (var lineNumber = 1; lineNumber <= pos.lineCount; lineNumber++) {
     let matches = undefined;
     let regexp = new RegExp(pattern.source, "g");
@@ -179,7 +187,7 @@ export function getHiperlinks(
       if (e1cib.test(param)) {
         result.push({ range: range, url: trimQuotes(matches[0]) });
       } else if (lineNumber > pos.lineNumber) {
-        let pattern = /^(\p{L}[\p{L}\p{N}]*)(\.\p{L}[\p{L}\p{N}]*)*$/u;
+        let pattern = /^([A-Za-zЀ-ӿ][A-Za-z0-9Ѐ-ӿ]*)(\.[A-Za-zЀ-ӿ][A-Za-z0-9Ѐ-ӿ]*)*$/;
         let add = (table: string, row: string, col: string = undefined): any => {
           if (links[table] && links[table][row]) {
             let obj = links[table][row];

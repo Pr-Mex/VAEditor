@@ -267,15 +267,21 @@ class VanessaTabItem {
   }
 
   public get options(): string | undefined {
-    if (this.editor.type === VAEditorType.CodeEditor) {
-      const result = {};
-      Object.keys(monaco.editor.EditorOption).forEach(id => {
-        const name = monaco.editor.EditorOption[id];
-        result[name] = this.editor.editor.getOption(id);
-      });
-      return JSON.stringify(result);
-    }
-    return undefined;
+    if (this.editor.type !== VAEditorType.CodeEditor) return undefined;
+    const result = {};
+    const reg: any = monaco.editor.EditorOptions;
+    // monaco 0.55: реестр EditorOptions и enum EditorOption расходятся в именах
+    // для части опций (реестр `unicodeHighlight` ↔ enum `unicodeHighlighting` и др.).
+    // Геттер схемы (VanessaTabs.options) перечисляет реестр и ключует по ключу
+    // реестра, поэтому и текущие значения кладём под ключом реестра, доставая
+    // значение по числовому reg[key].id. Иначе форма 1С НастройкаРедактора берёт
+    // current-значение объектной опции по ключу реестра, получает Неопределено и
+    // валится в рекурсии по schema («Значение не является значением объектного
+    // типа (Получить)») на namespaced-опции без верхнеуровневого type/anyOf.
+    Object.keys(reg).forEach(key => {
+      result[key] = this.editor.editor.getOption(reg[key].id);
+    });
+    return JSON.stringify(result);
   }
 
   public set options(value: string) {
