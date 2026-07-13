@@ -14,10 +14,11 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.ts', '.js', '.css'],
       alias: {
-        // 0.55: package "exports" мапит require→min/vs/editor/editor.main.js (AMD,
-        // webpack не парсит) и import→esm. Наш TS компилится в commonjs (require),
-        // поэтому bare `import * as monaco from "monaco-editor"` тянул AMD-min.
-        // Алиасим на ESM-точку входа. `$` — точное совпадение, deep-import не задет.
+        // 0.52.2: поля "exports" в пакете нет (module → тот же esm-файл), алиас —
+        // инертная страховка. ОБЯЗАТЕЛЕН при апгрейде на 0.53+: там "exports"
+        // мапит require→min/vs/editor/editor.main.js (AMD, webpack не парсит), и
+        // bare `import * as monaco from "monaco-editor"` из нашего commonjs-TS
+        // тянул бы AMD-min. `$` — точное совпадение, deep-import не задет.
         'monaco-editor$': path.resolve(__dirname, 'node_modules/monaco-editor/esm/vs/editor/editor.main.js')
       },
       fallback: {
@@ -66,22 +67,17 @@ module.exports = (env, argv) => {
               loader: 'replace-strings',
               options: {
                 replacements: [
-                  // 0.55 сменил формат комментариев на KeyMod./KeyCode.-квалифицированный
-                  // (suggestController.js) — старый search перестал совпадать (поймано #10).
+                  // Формат комментариев KeyMod./KeyCode.-квалифицированный — литерал
+                  // дословно совпадает в 0.52.2 (suggestController.js ×3, Windows-ветки)
+                  // и 0.55 (#10). mac-ветки (хвост `] }` → в dist "secondary":[2087])
+                  // намеренно НЕ патчим — в 1С/Windows mac-набор не активируется.
                   { search: 'secondary: [2048 /* KeyMod.CtrlCmd */ | 39 /* KeyCode.KeyI */],', replace: 'secondary: null,' },
-                  // RegExp-флаг 'd' (hasIndices, Safari 15) → "Invalid flags" в WebKit
-                  // 1С при new RegExp(..., 'd'). Срезаем 'd' у editorOptions
-                  // `new RegExp(inputRegex, 'd')` (0.55). Глобальную обёртку RegExp не
+                  // RegExp-флаг 'd' (hasIndices, Safari 15) → "Invalid flags" в WebKit 1С.
+                  // 0.52.2: findSectionHeaders.js — top-level
+                  // new RegExp('\\bMARK:\\s*(.*)$', 'd') бросает ПРИ ЗАГРУЗКЕ модуля →
+                  // мёртв весь бандл. Срезаем флаг. Глобальную обёртку RegExp не
                   // делаем — ломает именованные группы (?<name>) в 1С.
-                  { search: 'new RegExp(inputRegex, \'d\')', replace: 'new RegExp(inputRegex, \'\')' },
-                  // 0.55: defaultDocumentColorsComputer.initialValidationRegex —
-                  // raw-литерал с lookbehind (?<=['"\s]) (×4). WebKit 1С (нет lookbehind
-                  // до Safari 16.4) читает (?<= как невалидную named-group → "invalid
-                  // group specifier name" при require модуля (color provider на старте).
-                  // Меняем lookbehind на консумирующую группу — regex валиден; диапазон
-                  // смещается на 1 символ, но color-дисплей выключен (colorDecorators).
-                  // (linesOperations использует BackwardsCompatibleRegExp с try/catch — graceful.)
-                  { search: "(?<=['\"\\s])", replace: "(?:['\"\\s])" }
+                  { search: "(.*)$', 'd'", replace: "(.*)$', ''" }
                 ]
               }
             }

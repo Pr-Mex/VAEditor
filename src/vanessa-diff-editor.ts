@@ -49,11 +49,9 @@ export class VanessaDiffEditor implements IVanessaEditor {
       automaticLayout: true,
       readOnly: readOnly,
       useShadowDOM: false,
-      // 0.55: выключаем дефолтный color-computer (lookbehind-regex несовместим с
-      // WebKit 1С — см. vanessa-editor.ts).
+      // В gherkin color-декорации не нужны — выкл (см. vanessa-editor.ts).
       colorDecorators: false,
-      defaultColorDecorators: 'never',
-      // 0.55: не подсвечивать «неоднозначные» лат/кир-двойники (шум в русском gherkin).
+      // Не подсвечивать «неоднозначные» лат/кир-двойники (шум в русском gherkin).
       unicodeHighlight: {
         ambiguousCharacters: false,
         invisibleCharacters: false,
@@ -115,8 +113,9 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
   }
 
-  //@ts-ignore
-  public domNode = () => this.editor._containerDomElement;
+  // 0.52.2: приватного _containerDomElement больше нет (новый DiffEditorWidget
+  // хранит контейнер в _domElement) — используем публичный getContainerDomNode().
+  public domNode = () => this.editor.getContainerDomNode();
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
