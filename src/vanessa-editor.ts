@@ -128,32 +128,35 @@ export class VanessaEditor implements IVanessaEditor {
     }
   }
 
+  // Дефолты редактора: применяются и при создании через вкладки (VanessaTabs
+  // передаёт свой editorOptions — раньше он полностью ЗАМЕЩАЛ этот объект, и
+  // фиксы unicodeHighlight/colorDecorators не действовали на основном пути VA).
+  public static readonly defaultOptions: monaco.editor.IEditorConstructionOptions = {
+    renderWhitespace: "selection",
+    glyphMargin: true,
+    // 0.52: lightbulb.enabled boolean → ShowLightbulbIconMode ('off'|'onCode'|'on')
+    lightbulb: { enabled: 'onCode' as monaco.editor.ShowLightbulbIconMode },
+    minimap: { enabled: true },
+    // В gherkin color-декорации не нужны — выкл. (0.52.2: опция boolean,
+    // enum 'never' появился только в 0.53+ — не использовать.)
+    colorDecorators: false,
+    // monaco подсвечивает «неоднозначные» символы (кириллица-двойники
+    // латиницы: а/a, е/e, о/o…). В русском gherkin это сплошной шум — выкл.
+    unicodeHighlight: {
+      ambiguousCharacters: false,
+      invisibleCharacters: false,
+      nonBasicASCII: false,
+    },
+  };
+
   constructor(
     model: monaco.editor.ITextModel,
     readOnly: boolean = false,
     checkSyntax = true,
-    options: monaco.editor.IEditorConstructionOptions = {
-      renderWhitespace: "selection",
-      glyphMargin: true,
-      // 0.52: lightbulb.enabled boolean → ShowLightbulbIconMode ('off'|'onCode'|'on')
-      lightbulb: { enabled: 'onCode' as monaco.editor.ShowLightbulbIconMode },
-      minimap: { enabled: true },
-      // 0.55: дефолтный color-computer (defaultDocumentColorsComputer) ищет цвета
-      // regex'ом с lookbehind (?<=['"\s])(#)..., а WebKit 1С (нет lookbehind до
-      // Safari 16.4) парсит (?<= как невалидную named-group → "invalid group
-      // specifier name" при создании редактора. В gherkin цвета не нужны — выкл.
-      colorDecorators: false,
-      defaultColorDecorators: 'never',
-      // 0.55: monaco подсвечивает «неоднозначные» символы (кириллица-двойники
-      // латиницы: а/a, е/e, о/o…). В русском gherkin это сплошной шум — выкл.
-      unicodeHighlight: {
-        ambiguousCharacters: false,
-        invisibleCharacters: false,
-        nonBasicASCII: false,
-      },
-    },
+    options: monaco.editor.IEditorConstructionOptions = {},
     filepath: string = '',
   ) {
+    options = Object.assign({}, VanessaEditor.defaultOptions, options);
     this.filepath = filepath;
     let container = document.getElementById("VanessaEditorContainer");
     this._domNode = $("div", { class: "vanessa-editor" });

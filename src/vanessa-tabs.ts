@@ -213,7 +213,9 @@ class VanessaTabItem {
   }
 
   private rewriteModel(model: any) {
-    model.pushEditOperations("save-file-as", [{
+    // 1-й арг — beforeCursorState: Selection[]|null (строка попадала в
+    // undo-stack как мусорный cursor-state).
+    model.pushEditOperations(null, [{
       text: this.editor.getModel().getValue(),
       range: model.getFullModelRange(),
       forceMoveMarkers: true,
@@ -270,7 +272,7 @@ class VanessaTabItem {
     if (this.editor.type !== VAEditorType.CodeEditor) return undefined;
     const result = {};
     const reg: any = monaco.editor.EditorOptions;
-    // monaco 0.55: реестр EditorOptions и enum EditorOption расходятся в именах
+    // monaco 0.52+: реестр EditorOptions и enum EditorOption расходятся в именах
     // для части опций (реестр `unicodeHighlight` ↔ enum `unicodeHighlighting` и др.).
     // Геттер схемы (VanessaTabs.options) перечисляет реестр и ключует по ключу
     // реестра, поэтому и текущие значения кладём под ключом реестра, доставая
@@ -627,7 +629,7 @@ export class VanessaTabs {
     return JSON.stringify(Object.keys(o).map(k => {
       const opt: any = o[k];
       const schema = opt && opt.schema;
-      // monaco 0.55: wrappingIndent/wrappingStrategy описывают schema как
+      // monaco 0.52+: wrappingIndent/wrappingStrategy описывают schema как
       // namespaced-обёртку { "editor.<name>": {...настоящая схема...} } — без
       // верхнеуровневого type/anyOf. Форма 1С НастройкаРедактора при этом уходит
       // в рекурсию по schema и валится на скалярном текущем значении опции
