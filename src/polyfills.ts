@@ -65,6 +65,31 @@ if (typeof _self.FinalizationRegistry !== 'function') {
   _self.FinalizationRegistry.prototype.unregister = function () { return false; };
 }
 
+// ParentNode.replaceChildren (Safari 14) — движок 1С его лишён. DiffEditorWidget
+// (0.52.2) зовёт element.replaceChildren() в movedBlocksLinesFeature (derived-
+// observable ПРИ СОЗДАНИИ diff-редактора) → TypeError рушит new VanessaDiffEditor:
+// diff-вкладка не открывается (git-сравнение, «сравнение настроек», уроки).
+// Также используется в hideUnchangedRegions/gutterFeature/hover.
+(function () {
+  function replaceChildren(this: any) {
+    while (this.firstChild) this.removeChild(this.firstChild);
+    for (var i = 0; i < arguments.length; i++) {
+      var child = arguments[i];
+      this.appendChild(typeof child === 'string' ? document.createTextNode(child) : child);
+    }
+  }
+  [
+    typeof Element !== 'undefined' ? Element.prototype : null,
+    typeof Document !== 'undefined' ? Document.prototype : null,
+    typeof DocumentFragment !== 'undefined' ? DocumentFragment.prototype : null,
+  ].forEach(function (proto: any) {
+    if (proto && typeof proto.replaceChildren !== 'function') {
+      Object.defineProperty(proto, 'replaceChildren',
+        { value: replaceChildren, writable: true, configurable: true });
+    }
+  });
+})();
+
 // ClipboardItem (Safari 13.1) + async navigator.clipboard — движок 1С (WebKit
 // ~Safari 11.x) их лишён. monaco на WebKit-пути (isSafari/isWebkitWebView) в
 // BrowserClipboardService.installWebKitWriteTextWorkaround зовёт
