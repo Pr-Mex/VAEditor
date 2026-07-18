@@ -42,8 +42,13 @@ export function patchWebKit1C() {
       else {
         switch (e.keyCode) {
           case 27: {
-            tabs.onEscapePress()
-            return false
+            // до createVanessaTabs (или в одиночном редакторе) tabs нет —
+            // без guard'а Escape давал TypeError в keydown-обработчике
+            if (tabs) {
+              tabs.onEscapePress()
+              return false
+            }
+            break
           }
         }
       }

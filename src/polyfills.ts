@@ -245,13 +245,20 @@ if (typeof _self.ResizeObserver !== 'function') {
   });
   // String.prototype.matchAll (ES2020, Safari 13) — движок 1С лишён, monaco зовёт
   // matchAll (0.52.2: textModelSync — синк моделей с воркером). Возвращаем
-  // итератор массива всех совпадений.
+  // итератор массива всех совпадений. ВАЖНО: глобальный RegExp НЕ пересоздаём
+  // через конструктор — он в WebKit 1С отвергает named groups (?<name>), которые
+  // литерал-парсер принимает; итерируем сам объект с восстановлением lastIndex.
   def(String.prototype, 'matchAll', function (this: string, re: any) {
-    var rx = (re instanceof RegExp)
-      ? new RegExp(re.source, re.flags.indexOf('g') >= 0 ? re.flags : re.flags + 'g')
-      : new RegExp(re, 'g');
+    var rx: any, saved = 0, own = false;
+    if (re instanceof RegExp && re.flags.indexOf('g') >= 0) {
+      rx = re; own = true; saved = rx.lastIndex;
+    } else {
+      rx = (re instanceof RegExp) ? new RegExp(re.source, re.flags + 'g') : new RegExp(re, 'g');
+    }
     var str = String(this), out: any[] = [], m: any;
+    rx.lastIndex = 0;
     while ((m = rx.exec(str)) !== null) { out.push(m); if (m[0] === '') rx.lastIndex++; }
+    if (own) rx.lastIndex = saved;
     return out[Symbol.iterator]();
   });
   // String.prototype.trimStart/trimEnd (ES2019, Safari 12) — движок 1С (~Safari 11)
@@ -301,3 +308,173 @@ if (typeof (Promise as any).allSettled !== 'function') {
 if (typeof (Object as any).hasOwn !== 'function') {
   (Object as any).hasOwn = function (o: any, k: any) { return Object.prototype.hasOwnProperty.call(o, k); };
 }
+
+// Symbol.asyncIterator (ES2018, Safari 12) — AsyncIterableObject (monaco,
+// vs/base/common/async.js) объявляет метод по этому символу ПРИ ЗАГРУЗКЕ бандла;
+// без символа ключ вырождается в строку "undefined", и for await (hover:
+// HoverOperation) итератор не находит → TypeError на каждом наведении, monaco
+// гасит его try/catch → hover МОЛЧА мёртв. Symbol.for — чтобы ключ класса и
+// esbuild-хелпер __forAwait сошлись на одном символе.
+if (!(Symbol as any).asyncIterator) {
+  Object.defineProperty(Symbol, 'asyncIterator', {
+    value: Symbol.for('Symbol.asyncIterator'), configurable: true
+  });
+}
+
+// Promise.prototype.finally (ES2018, Safari 11.1) — monaco зовёт при резолве
+// айтема саджеста (suggest.js) и в cancelable-промисах (async.js: codelens,
+// формат, gotoSymbol) → на движке уровня 11.0 TypeError при первом открытии
+// автодополнения. Наш код finally не использует, mocha путь UI-виджета не
+// покрывает (completion-тесты зовут провайдер напрямую).
+if (typeof (Promise.prototype as any).finally !== 'function') {
+  (Promise.prototype as any).finally = function (cb: any) {
+    return this.then(
+      function (v: any) { return Promise.resolve(cb()).then(function () { return v; }); },
+      function (e: any) { return Promise.resolve(cb()).then(function () { throw e; }); });
+  };
+}
+
+// Element.prototype.toggleAttribute (Safari 12) — quick input (палитра команд F1,
+// переход к строке Ctrl+G) зовёт toggleAttribute('readonly', …) при показе поля
+// ввода (quickInputBox.js) → TypeError, палитра не открывается.
+if (typeof Element !== 'undefined' && typeof (Element.prototype as any).toggleAttribute !== 'function') {
+  (Element.prototype as any).toggleAttribute = function (name: string, force?: boolean) {
+    if (this.hasAttribute(name)) {
+      if (force) return true;
+      this.removeAttribute(name);
+      return false;
+    }
+    if (force === false) return false;
+    this.setAttribute(name, '');
+    return true;
+  };
+}
+
+// AggregateError (ES2021, Safari 14) — monaco кидает его при ≥2 ошибках в dispose
+// (lifecycle.js); без полифила ReferenceError МАСКИРУЕТ исходные ошибки при отладке.
+if (typeof (_self as any).AggregateError !== 'function') {
+  (_self as any).AggregateError = function AggregateError(errors: any, message?: string) {
+    var e: any = new Error(message);
+    e.name = 'AggregateError';
+    e.errors = Array.prototype.slice.call(errors || []);
+    return e;
+  };
+}
+
+// User Timing (performance.mark/measure) — monaco замеряет inputLatency на КАЖДЫЙ
+// кейстрок (textAreaInput). В Safari 11 API есть; стабы — страховка под другие
+// версии WebKit 1С (8.3.14–8.3.2x). getEntriesByName обязан отдавать элемент с
+// duration: monaco читает getEntriesByName(...)[0].duration без проверки.
+(function () {
+  var perf: any = _self.performance;
+  if (!perf) { perf = _self.performance = {}; }
+  if (typeof perf.now !== 'function') {
+    var t0 = Date.now();
+    perf.now = function () { return Date.now() - t0; };
+  }
+  ['mark', 'measure', 'clearMarks', 'clearMeasures'].forEach(function (m) {
+    if (typeof perf[m] !== 'function') perf[m] = function () {};
+  });
+  if (typeof perf.getEntriesByName !== 'function') {
+    perf.getEntriesByName = function () { return [{ duration: 0, startTime: 0 }]; };
+  }
+})();
+
+// Blob.prototype.arrayBuffer (Safari 14) — monaco читает файл при drop в текст
+// (dnd.js); dropIntoEditor у нас выключен — чистая страховка через FileReader.
+if (typeof Blob !== 'undefined' && typeof (Blob.prototype as any).arrayBuffer !== 'function') {
+  (Blob.prototype as any).arrayBuffer = function () {
+    var blob = this;
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(r.result); };
+      r.onerror = function () { reject(r.error); };
+      r.readAsArrayBuffer(blob);
+    });
+  };
+}
+
+// Pointer Events (Safari 13) — движок 1С их лишён, а monaco 0.52.2 строит на них
+// ВЕСЬ drag-интерактив: GlobalPointerMoveMonitor (выделение текста мышью, d&d
+// текста — mouseHandler.js), скроллбары и стрелки (стартуют прямо с 'pointerdown'
+// — abstractScrollbar.js/scrollbarArrow.js), минимап (minimap.js), overview ruler
+// диффа. Симптом в 1С: клики работают (они mousedown-овые), но любой drag мёртв,
+// а скроллбар/минимап мертвы целиком — их первичное событие не приходит вовсе.
+// Транслируем mouse → pointer на стадии capture document (порядок как в живых
+// браузерах: pointer* строго ПЕРЕД парным mouse*):
+//   mousedown → pointerdown, mousemove → pointermove, mouseup → pointerup.
+// Чего НЕ делаем намеренно:
+//  - setPointerCapture не эмулируем: единственный вызов —
+//    GlobalPointerMoveMonitor.startMonitoring — обёрнут в try/catch и при
+//    исключении слушает window, куда синтетика всплывает сама;
+//  - window.PointerEvent не определяем: BrowserFeatures.pointerEvents должен
+//    остаться false (десктоп → MouseHandler), конструктор никто не зовёт;
+//  - pointerleave/pointercancel не синтезируем: их потребитель
+//    (EditorPointerEventFactory) живёт только в PointerEventHandler (iOS).
+// По спеке preventDefault() на pointerdown подавляет compat-mousedown — зеркалим:
+// минимап/слайдер зовут его безусловно и рассчитывают, что mousedown не придёт
+// (иначе двойная обработка + увод фокуса из textarea редактора).
+(function () {
+  if (typeof _self.PointerEvent !== 'undefined') return; // современный движок — не вмешиваемся
+  if (typeof document === 'undefined' || typeof MouseEvent === 'undefined') return;
+
+  // MouseEvent.buttons (Safari 11.1) — GlobalPointerMoveMonitor сверяет e.buttons
+  // каждого pointermove с initialButtons и при расхождении обрывает drag. Если
+  // движок buttons не знает — ведём битовую маску сами через прототипный геттер:
+  // и оригиналы, и синтетика читают ОДИН источник, расхождение исключено.
+  var buttonsState = 0;
+  var BUTTON_BIT: any = { 0: 1, 1: 4, 2: 2 }; // e.button → бит e.buttons
+  if (!('buttons' in MouseEvent.prototype)) {
+    try {
+      Object.defineProperty(MouseEvent.prototype, 'buttons', {
+        get: function () { return buttonsState; }, configurable: true
+      });
+    } catch (e) { /* ignore */ }
+  }
+  _self.addEventListener('blur', function () { buttonsState = 0; }, false);
+
+  function synthPointer(type: string, src: any) {
+    var ev: any;
+    try {
+      ev = new MouseEvent(type, {
+        bubbles: true, cancelable: true, view: src.view || _self, detail: src.detail,
+        screenX: src.screenX, screenY: src.screenY, clientX: src.clientX, clientY: src.clientY,
+        ctrlKey: src.ctrlKey, altKey: src.altKey, shiftKey: src.shiftKey, metaKey: src.metaKey,
+        button: src.button, buttons: src.buttons, relatedTarget: null
+      } as any);
+    } catch (err) { // на случай движка без конструктора MouseEvent
+      ev = document.createEvent('MouseEvents');
+      ev.initMouseEvent(type, true, true, src.view || _self, src.detail,
+        src.screenX, src.screenY, src.clientX, src.clientY,
+        src.ctrlKey, src.altKey, src.shiftKey, src.metaKey, src.button, null);
+    }
+    // minimap/scrollbarArrow получают СЫРОЕ событие (addStandardDisposableListener
+    // не оборачивает pointerdown) и читают pointerId/buttons/offsetY/pageY —
+    // копируем недостающее own-свойствами (offsetX синтетики движок не считает).
+    function def(k: string, v: any) {
+      try { Object.defineProperty(ev, k, { value: v, configurable: true }); } catch (e) { /* ignore */ }
+    }
+    def('pointerId', 1); def('pointerType', 'mouse'); def('isPrimary', true);
+    def('offsetX', src.offsetX); def('offsetY', src.offsetY);
+    def('pageX', src.pageX); def('pageY', src.pageY);
+    return ev;
+  }
+
+  function translate(mouseType: string, pointerType: string, mirrorCancel: boolean) {
+    document.addEventListener(mouseType, function (src: any) {
+      if (mouseType === 'mousedown') buttonsState |= (BUTTON_BIT[src.button] || 0);
+      else if (mouseType === 'mouseup') buttonsState &= ~(BUTTON_BIT[src.button] || 0);
+      var target = src.target && src.target.dispatchEvent ? src.target : document;
+      var ev = synthPointer(pointerType, src);
+      target.dispatchEvent(ev);
+      if (mirrorCancel && ev.defaultPrevented) {
+        src.preventDefault();
+        if (src.stopImmediatePropagation) src.stopImmediatePropagation();
+        else src.stopPropagation();
+      }
+    }, true);
+  }
+  translate('mousedown', 'pointerdown', true);
+  translate('mousemove', 'pointermove', false);
+  translate('mouseup', 'pointerup', false);
+})();
