@@ -147,6 +147,12 @@ export class VanessaEditor implements IVanessaEditor {
       invisibleCharacters: false,
       nonBasicASCII: false,
     },
+    // 0.52.2 включил sticky scroll по умолчанию — новый виджет поверх кода,
+    // которого не было на 0.30. Держим прежний UX.
+    stickyScroll: { enabled: false },
+    // Drop файлов извне в текст: путь читает dataTransfer.items/Blob.arrayBuffer
+    // без guard'ов (Safari 11.1/14) — в поле 1С не нужен, выкл.
+    dropIntoEditor: { enabled: false },
   };
 
   constructor(

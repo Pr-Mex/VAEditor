@@ -57,6 +57,10 @@ export class VanessaDiffEditor implements IVanessaEditor {
         invisibleCharacters: false,
         nonBasicASCII: false,
       },
+      // Как в vanessa-editor.ts: sticky scroll 0.52.2 включён по умолчанию —
+      // держим прежний UX; drop извне в поле 1С не нужен (неогороженные API).
+      stickyScroll: { enabled: false },
+      dropIntoEditor: { enabled: false },
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
