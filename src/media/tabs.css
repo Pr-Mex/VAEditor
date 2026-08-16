@@ -186,9 +186,12 @@ a[data-href] {
     text-overflow: ellipsis
 }
 
-#VanessaEditorContainer>div.monaco-diff-editor {
-    position: absolute !important;
-    height: 100%;
+div.vanessa-diff-editor {
+    position: relative !important;
+}
+
+div.vanessa-diff-editor>div.monaco-diff-editor {
+    width: 100%;
 }
 
 div.vanessa-editor {
