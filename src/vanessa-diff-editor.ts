@@ -1,10 +1,13 @@
 import * as monaco from "monaco-editor";
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorType } from "./common";
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaTabs } from "./vanessa-tabs";
+
+const $ = dom.$;
 
 export class VanessaDiffEditor implements IVanessaEditor {
 
@@ -14,6 +17,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
   // теперь через методы самого редактора (goToDiff/getLineChanges) — см. ниже.
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
+  private _domNode: HTMLElement;
 
   public static createStandalone(
     original: string = "",
@@ -40,8 +44,16 @@ export class VanessaDiffEditor implements IVanessaEditor {
   }
 
   constructor(model: monaco.editor.IDiffEditorModel, readOnly: boolean = false) {
-    let node = document.getElementById("VanessaEditorContainer");
-    this.editor = monaco.editor.createDiffEditor(node, {
+    // 0.52.2: новый DiffEditorWidget монтирует свой корень прямо в переданный
+    // элемент, а getContainerDomNode() возвращает сам переданный элемент —
+    // не собственный div, как в 0.30. Если создавать виджет в общем
+    // #VanessaEditorContainer, то domNode() == общий контейнер, и
+    // hideEditor при закрытии diff-вкладки прячет ВСЕ редакторы (белое поле).
+    // Поэтому diff живёт в собственной обёртке — как VanessaEditor/VanessaViwer.
+    const container = document.getElementById("VanessaEditorContainer");
+    this._domNode = $("div", { class: "vanessa-diff-editor" });
+    container.appendChild(this._domNode);
+    this.editor = monaco.editor.createDiffEditor(this._domNode, {
       contextmenu: false,
       originalEditable: false,
       scrollBeyondLastLine: false,
@@ -79,6 +91,8 @@ export class VanessaDiffEditor implements IVanessaEditor {
     this.editor.dispose();
     disposeModel(original);
     disposeModel(modified);
+    if (this._domNode) this._domNode.remove();
+    this._domNode = null;
   }
 
   public resetModel() {
@@ -117,9 +131,7 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
   }
 
-  // 0.52.2: приватного _containerDomElement больше нет (новый DiffEditorWidget
-  // хранит контейнер в _domElement) — используем публичный getContainerDomNode().
-  public domNode = () => this.editor.getContainerDomNode();
+  public domNode = () => this._domNode;
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
