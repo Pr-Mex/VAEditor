@@ -159,7 +159,8 @@ class VanessaTabItem {
       tabDomElement = tabDomElement.nextElementSibling;
     }
     this.domNode.classList.add(className);
-    this.domNode.scrollIntoView();
+    this.owner.hideTabList();
+    this.owner.revealTab(this.domNode);
     const index = this.owner.tabStack.indexOf(this);
     if (index >= 0) this.owner.tabStack.splice(index, 1);
     this.owner.tabStack.push(this);
@@ -180,6 +181,7 @@ class VanessaTabItem {
     try { this.owner.hideEditor(this.editor) } catch (e) { console.error(e) }
     try { if (this.onChangeHandler) this.onChangeHandler.dispose() } catch (e) { console.error(e) }
     try { if (this.owner.tabStack.length == 0) this.owner.disposeHidden() } catch (e) { console.error(e) }
+    this.owner.hideTabList();
     this.domNode.remove();
     this.editor = null;
     this.owner = null;
@@ -298,6 +300,10 @@ export class VanessaTabs {
   private static standaloneInstance: VanessaTabs;
   public domContainer: HTMLElement;
   public domTabPanel: HTMLElement;
+  public domListButton: HTMLElement;
+  private domTabList: HTMLElement = null;
+  /** Сколько пикселей соседней вкладки оставлять видимыми при докрутке к выбранной. */
+  public static revealPeek = 40;
   public tabStack: Array<VanessaTabItem> = [];
   private editorOptions: monaco.editor.IEditorOptions = { glyphMargin: true };
   private hiddenEditors: Array<IVanessaEditor> = [];
@@ -325,12 +331,20 @@ export class VanessaTabs {
     this.domContainer.classList.remove("vanessa-hidden");
     this.domTabPanel = $("div.vanessa-tab-panel");
     this.domContainer.appendChild(this.domTabPanel);
+    this.domListButton = $("div.vanessa-tab-list-button", { title: "Open tabs" });
+    this.domContainer.appendChild(this.domListButton);
+    this.domListButton.addEventListener("click", this.onListButtonClick, false);
+    // старый WebKit 1С не знает события wheel — шлёт устаревший mousewheel
+    const wheel = "onwheel" in this.domTabPanel ? "wheel" : "mousewheel";
+    this.domTabPanel.addEventListener(wheel, this.onTabPanelWheel, false);
   }
 
   public dispose() {
     if (VanessaTabs.standaloneInstance === this) VanessaTabs.standaloneInstance = null;
     while (this.tabStack.length) this.tabStack.pop().dispose();
+    this.hideTabList();
     this.domContainer.classList.add("vanessa-hidden");
+    this.domListButton.remove();
     this.domTabPanel.remove();
     this.disposeHidden();
   }
@@ -482,6 +496,119 @@ export class VanessaTabs {
     return this.open(editor, title, url, 0, newTab);
   }
 
+  /**
+   * Докрутить полосу к вкладке: она видна целиком плюс кусочек соседней (revealPeek).
+   * scrollIntoView() не годится — WebKit 1С частично видимую вкладку не докручивает.
+   */
+  public revealTab(node: HTMLElement) {
+    const panel = this.domTabPanel;
+    const width = panel.clientWidth;
+    if (!width || node.parentElement !== panel) return;
+    const left = node.offsetLeft;
+    const right = left + node.offsetWidth;
+    // кусочек не больше половины свободного места полосы
+    const peek = Math.max(0, Math.min(VanessaTabs.revealPeek, (width - node.offsetWidth) / 2));
+    const peekLeft = node.previousElementSibling ? peek : 0;
+    const peekRight = node.nextElementSibling ? peek : 0;
+    const view = panel.scrollLeft;
+    if (left - peekLeft < view) {
+      // крайняя — строго к краю: при дробном масштабе доля пикселя иначе не докрутится
+      panel.scrollLeft = node.previousElementSibling ? left - peekLeft : 0;
+    } else if (right + peekRight > view + width) {
+      if (node.offsetWidth > width) panel.scrollLeft = left; // шире полосы — показываем начало
+      else panel.scrollLeft = node.nextElementSibling ? right + peekRight - width : panel.scrollWidth; // последняя — до конца
+    }
+  }
+
+  private onTabPanelWheel = (event: any) => {
+    const panel = this.domTabPanel;
+    const max = panel.scrollWidth - panel.clientWidth;
+    if (max <= 0) return;
+    let delta: number;
+    if (typeof event.deltaY === "number") {
+      delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      if (event.deltaMode === 1) delta *= 20; // DOM_DELTA_LINE
+      else if (event.deltaMode === 2) delta *= panel.clientWidth; // DOM_DELTA_PAGE
+    } else {
+      delta = -(event.wheelDeltaX || event.wheelDelta || 0); // mousewheel
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    if (delta) panel.scrollLeft = Math.max(0, Math.min(max, panel.scrollLeft + delta));
+  }
+
+  private onListButtonClick = (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.domTabList) this.hideTabList();
+    else this.showTabList();
+  }
+
+  private onDocumentMouseDown = (event: MouseEvent) => {
+    const target = event.target as Node;
+    if (this.domTabList && this.domTabList.contains(target)) return;
+    if (this.domListButton.contains(target)) return; // кнопка сама переключает список
+    this.hideTabList();
+  }
+
+  public showTabList = () => {
+    this.hideTabList();
+    if (this.tabStack.length === 0) return;
+    const current = this.current;
+    const list = $("div.vanessa-tab-list");
+    let active: HTMLElement = null;
+    Array.prototype.forEach.call(this.domTabPanel.children, (node: HTMLElement) => {
+      const tab = this.findTab((t: VanessaTabItem) => t.dom === node);
+      if (!tab) return;
+      const title = $("span.vanessa-tab-list-title");
+      title.textContent = tab.title;
+      const item = $("div.vanessa-tab-list-item", { title: tab.title }, title);
+      if (tab.modified) item.classList.add("vanessa-tab-list-modified");
+      if (tab === current) {
+        item.classList.add("vanessa-tab-list-current");
+        active = item;
+      }
+      item.addEventListener("click", (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.hideTabList();
+        tab.select();
+      }, false);
+      list.appendChild(item);
+    });
+    document.body.appendChild(list);
+    const rect = this.domListButton.getBoundingClientRect();
+    list.style.top = rect.bottom + "px";
+    list.style.right = Math.max(0, window.innerWidth - rect.right) + "px";
+    list.style.maxHeight = Math.max(60, window.innerHeight - rect.bottom - 8) + "px";
+    // полоса прокрутки отнимает ширину у пунктов — компенсируем, иначе названия обрезаются;
+    // запас 2px: offsetWidth/clientWidth целые, при дробном масштабе ширина полосы занижена
+    const scrollbar = list.offsetWidth - list.clientWidth - 2 * list.clientLeft;
+    if (scrollbar > 0) {
+      const outer = list.getBoundingClientRect().width;
+      list.style.width = Math.ceil(outer - 2 * list.clientLeft + scrollbar) + 2 + "px";
+    }
+    if (active) list.scrollTop = active.offsetTop - (list.clientHeight - active.offsetHeight) / 2;
+    this.domTabList = list;
+    this.domListButton.classList.add("vanessa-tab-list-open");
+    document.addEventListener("mousedown", this.onDocumentMouseDown, true);
+    window.addEventListener("blur", this.hideTabList, false);
+    window.addEventListener("resize", this.hideTabList, false);
+  }
+
+  public hideTabList = (): boolean => {
+    if (!this.domTabList) return false;
+    document.removeEventListener("mousedown", this.onDocumentMouseDown, true);
+    window.removeEventListener("blur", this.hideTabList, false);
+    window.removeEventListener("resize", this.hideTabList, false);
+    this.domTabList.remove();
+    this.domTabList = null;
+    this.domListButton.classList.remove("vanessa-tab-list-open");
+    return true;
+  }
+
+  public get isTabListVisible(): boolean { return !!this.domTabList; }
+
   public onPageNext = (forward: boolean) => {
     const count = this.tabStack.length;
     if (count === 0) return;
@@ -505,6 +632,7 @@ export class VanessaTabs {
   }
 
   public onEscapePress() {
+    if (this.hideTabList()) return;
     const tab = this.current;
     if (tab) tab.onEscapePress();
   }

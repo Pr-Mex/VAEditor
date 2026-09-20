@@ -374,6 +374,12 @@ declare global {
     close(): void;
     /** Кол-во открытых вкладок. */
     count(): number;
+    /** Показать список открытых вкладок. */
+    showTabList(): void;
+    /** Скрыть список открытых вкладок; `true` — если он был открыт. */
+    hideTabList(): boolean;
+    /** Открыт ли список вкладок. */
+    readonly isTabListVisible: boolean;
     /** Вкладка по индексу. */
     tab(index: number): any;
     /** Выбрать вкладку по индексу. */
