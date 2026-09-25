@@ -94,6 +94,92 @@ a[data-href] {
     padding: 0;
 }
 
+.vanessa-tab-list-button {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8em;
+    margin: 0;
+    padding: 0;
+    font-family: "codicon";
+    font-size: 1.2em;
+    color: #4b4b4b;
+    background-color: #f2f2f2;
+    border-width: 0 0 0 1px;
+    border-style: solid;
+    border-color: #a0a0a0;
+    cursor: pointer;
+}
+
+.vanessa-tab-list-button:before {
+    content: "\eab4";
+}
+
+.vanessa-tab-list-button:hover,
+.vanessa-tab-list-button.vanessa-tab-list-open {
+    background-color: #e0e0e0;
+}
+
+.vanessa-tab-list {
+    position: fixed;
+    z-index: 1000;
+    min-width: 200px;
+    max-width: 90%;
+    margin: 0;
+    padding: 2px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #a0a0a0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+    user-select: none;
+}
+
+.vanessa-tab-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.vanessa-tab-list::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 100, 100, .4);
+}
+
+.vanessa-tab-list::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 100, 100, .7);
+}
+
+.vanessa-tab-list-item {
+    display: flex;
+    align-items: center;
+    padding: 3px 12px 3px 8px;
+    border-width: 0 0 0 2px;
+    border-style: solid;
+    border-color: transparent;
+    line-height: 1.2em;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.vanessa-tab-list-item:hover {
+    background-color: #e8e8e8;
+}
+
+.vanessa-tab-list-current {
+    border-color: #009646;
+    background-color: #f2f2f2;
+}
+
+.vanessa-tab-list-title {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vanessa-tab-list-modified .vanessa-tab-list-title:after {
+    content: " \25CF";
+}
+
 .vanessa-tab-item {
     margin: 0 0 0 -1px;
     padding: 0 5px;

@@ -45,6 +45,11 @@ export function patchWebKit1C() {
             // до createVanessaTabs (или в одиночном редакторе) tabs нет —
             // без guard'а Escape давал TypeError в keydown-обработчике
             if (tabs) {
+              // неперехваченный Escape платформа 1С обрабатывает сама — закрывает форму
+              if (tabs.isTabListVisible) {
+                tabs.hideTabList()
+                return dummy(e)
+              }
               tabs.onEscapePress()
               return false
             }
