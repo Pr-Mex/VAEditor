@@ -259,7 +259,7 @@ div.vanessa-inner::-webkit-scrollbar-thumb:hover {}
 body[data-interface="85"] {
     color: var(--colorText80, #333338);
     background-color: var(--colorAdditional, #ffffff);
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: Roboto, "Segoe UI", Arial, sans-serif;
     font-size: 11pt;
 }
 

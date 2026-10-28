@@ -140,7 +140,7 @@ body[data-interface="85"] div.welcome,
 body[data-interface="85"] .welcome h3,
 body[data-interface="85"] .welcome li a,
 body[data-interface="85"] .welcome li span.path {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: Roboto, "Segoe UI", Arial, sans-serif;
 }
 
 body[data-interface="85"] .vanessa-markdown a,
