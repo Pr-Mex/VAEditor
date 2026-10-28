@@ -3,6 +3,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls')
+const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
 
 module.exports = (env, argv) => {
   return {
@@ -22,7 +23,6 @@ module.exports = (env, argv) => {
     output: {
       globalObject: 'self',
       filename: '[name].js',
-      chunkFilename: 'app.worker.js',
       path: path.resolve(__dirname, 'dist'),
       clean: true
     },
@@ -102,8 +102,11 @@ module.exports = (env, argv) => {
         resource.resource = nls
       }),
       new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 3
+        // Один вход = один чанк. Асинхронные чанки грузятся отдельными файлами
+        // по file:// и в WebView2 блокируются, поэтому их быть не должно.
+        maxChunks: 2
       }),
+      new InlineChunksPlugin(),
       new HtmlWebpackPlugin({
         filename: 'index.html',
         title: 'VAEditor',
