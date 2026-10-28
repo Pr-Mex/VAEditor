@@ -4,6 +4,7 @@ const path = require('path')
 const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls')
 const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
+const RuntimeCompatPlugin = require('./tools/plugins/checkRuntimeCompat')
 
 module.exports = (env, argv) => {
   return {
@@ -111,6 +112,7 @@ module.exports = (env, argv) => {
         maxChunks: 2
       }),
       new InlineChunksPlugin(),
+      new RuntimeCompatPlugin(),
       new HtmlWebpackPlugin({
         filename: 'index.html',
         title: 'VAEditor',
@@ -129,6 +131,9 @@ module.exports = (env, argv) => {
       minimize: argv.mode === 'production',
       minimizer: [
         new TerserPlugin({
+          // app.js.LICENSE.txt в поставке не нужен: страница самодостаточна,
+          // а лишний файл рядом с ней только путает.
+          extractComments: false,
           terserOptions: {
             // Встроенный WebKit в 1С не понимает ES2020: иначе terser генерирует
             // `a ?? b` из `null==a?b:a` и раскавычивает ключ U+2118 (`℘:"wp"`).

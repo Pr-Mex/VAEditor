@@ -97,11 +97,22 @@ class InlineChunksPlugin {
               if (!file.endsWith('.js')) notInlined.push(file)
             }
           }
-          if (!notInlined.length) return
-          const message = 'Асинхронные чанки нельзя встроить в страницу: ' + notInlined.join(', ') +
-            '. Их подгрузка по file:// в WebView2 заблокирована.'
-          if (compiler.options.mode === 'production') throw new Error(message)
-          compilation.warnings.push(new Error(message))
+          if (notInlined.length) {
+            const message = 'Асинхронные чанки нельзя встроить в страницу: ' + notInlined.join(', ') +
+              '. Их подгрузка по file:// в WebView2 заблокирована.'
+            if (compiler.options.mode === 'production') throw new Error(message)
+            compilation.warnings.push(new Error(message))
+          }
+
+          // Содержимое всех чанков уже внутри страницы, отдельные файлы в
+          // поставке не нужны: иначе dist выглядит так, будто внешние ресурсы
+          // всё ещё грузятся, и их легко случайно положить в архив.
+          if (compiler.options.mode !== 'production') return
+          for (const chunk of compilation.chunks) {
+            for (const file of chunk.files) {
+              if (/\.(js|css)$/.test(file)) compilation.deleteAsset(file)
+            }
+          }
         }
       )
     })
