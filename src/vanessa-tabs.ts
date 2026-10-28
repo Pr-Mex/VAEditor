@@ -595,7 +595,7 @@ export class VanessaTabs {
       right: c2.left,
       bottom: c2.top,
       height: c2.top + c2.lineHeight - c1.top,
-      width: c2.left + c2.left,
+      width: c2.left - c1.left,
       windowWidth: c1.windowWidth,
       windowHeight: c1.windowHeight,
     };
