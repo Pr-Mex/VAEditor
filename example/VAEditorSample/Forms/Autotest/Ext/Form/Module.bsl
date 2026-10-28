@@ -31,7 +31,7 @@ Procedure VanessaEditorURLDocumentComplete(Item)
 
 	AppveyorURL = Undefined;
 	SysInfo = New SystemInfo;
-	If LaunchParameter = "autotest" Then
+	If StrStartsWith(LaunchParameter, "autotest") Then
 		If SysInfo.PlatformType = PlatformType.Windows_x86_64
 			Or SysInfo.PlatformType = PlatformType.Windows_x86 Then
 			WScriptShell = New COMОбъект("WScript.Shell");
@@ -46,7 +46,7 @@ EndProcedure
 &AtClient
 Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
-	If LaunchParameter = "autotest" And EventData.Element.id = "AutotestResult" Then
+	If StrStartsWith(LaunchParameter, "autotest") And EventData.Element.id = "AutotestResult" Then
 		Result = Items.VanessaEditor.Document.defaultView.mochaResults;
 		If Result.failures = 0 Then
 			TextWriter = New TextWriter(CurrentPath + "success.txt");

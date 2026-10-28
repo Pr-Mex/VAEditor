@@ -49,18 +49,20 @@ after_build:
   - appveyor PushArtifact example.log
   - appveyor PushArtifact VAEditor.zip
   - appveyor PushArtifact VAEditorSample.epf
-  # Клиент 1С может зависнуть навсегда (предупреждение безопасности, диалог,
-  # упавший скрипт в поле HTML), поэтому ждём результат с таймаутом.
+  # Обработку открывает сама тестовая конфигурация с выключенными
+  # предупреждениями защиты от опасных действий, поэтому /Execute не нужен.
+  # Клиент — толстый: форму внешней обработки можно получить только в нём.
+  # Ждём результат с таймаутом: клиент может зависнуть (диалог, упавший скрипт).
   - ps: |
       $root = $env:APPVEYOR_BUILD_FOLDER
       $success = Join-Path $root 'success.txt'
-      $client = Join-Path $root 'bin\1cv8ct.exe'
+      $client = Join-Path $root 'bin\1cv8t.exe'
       $epf = Join-Path $root 'VAEditorSample.epf'
       $db = Join-Path $root 'database'
       $timeout = 300
       if (Test-Path $success) { Remove-Item -Force $success }
-      Write-Host "> 1cv8ct ENTERPRISE /Execute $epf /C autotest (timeout ${timeout}s)"
-      Start-Process -FilePath $client -ArgumentList @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', 'autotest') | Out-Null
+      Write-Host "> 1cv8t ENTERPRISE /F $db /C autotest;$epf (timeout ${timeout}s)"
+      Start-Process -FilePath $client -ArgumentList @('ENTERPRISE', '/LRU', "/F$db", '/C', "autotest;$epf") | Out-Null
       $deadline = (Get-Date).AddSeconds($timeout)
       while ((Get-Date) -lt $deadline -and -not (Test-Path $success)) { Start-Sleep -Seconds 2 }
       if (-not (Test-Path $success)) {
