@@ -48,11 +48,9 @@ import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { language as gherkin } from './languages/turbo-gherkin/configuration';
 import { initPage } from "./common";
 import { applyUiEnvironment } from "./ui-interface";
+import { applyEditorVersion } from "./version";
 
-// Версия сборки нужна обработке, встраивающей редактор: по ней видно, какой
-// шаблон распакован и совпадает ли он с ожидаемым.
-window.VAEditorVersion = __VA_EDITOR_VERSION__;
-
+applyEditorVersion();
 applyUiEnvironment();
 initErrorReporting();
 initPage();
