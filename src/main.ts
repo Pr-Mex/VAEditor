@@ -25,6 +25,7 @@ import "./media/tabs";
 import "./media/welcome";
 import { setLocaleData } from 'monaco-editor-nls';
 import { patchWebKit1C } from "./1c-webkit-patch";
+import { initErrorReporting } from "./error-reporting";
 
 let reg = new RegExp('[?&]localeCode=([^&#]*)', 'i');
 let queryString = reg.exec(window.location.search);
@@ -47,6 +48,7 @@ import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { language as gherkin } from './languages/turbo-gherkin/configuration';
 import { initPage } from "./common";
 
+initErrorReporting();
 initPage();
 
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
