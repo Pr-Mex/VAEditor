@@ -7,11 +7,14 @@ const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
 const RuntimeCompatPlugin = require('./tools/plugins/checkRuntimeCompat')
 
 module.exports = (env, argv) => {
+  // test.html нужен только автотестам и демо-режиму. Обычная сборка редактора
+  // собирает один вход: второй бандл — это ещё столько же времени и мегабайт.
+  const withTest = Boolean(env && env.test)
+  const entry = { app: './src/main' }
+  if (withTest) entry.test = './test/autotest.js'
+
   return {
-    entry: {
-      app: './src/main',
-      test: './test/autotest.js'
-    },
+    entry,
     resolve: {
       extensions: ['.ts', '.js', '.css'],
       fallback: {
@@ -109,7 +112,7 @@ module.exports = (env, argv) => {
       new webpack.optimize.LimitChunkCountPlugin({
         // Один вход = один чанк. Асинхронные чанки грузятся отдельными файлами
         // по file:// и в WebView2 блокируются, поэтому их быть не должно.
-        maxChunks: 2
+        maxChunks: Object.keys(entry).length
       }),
       new InlineChunksPlugin(),
       new RuntimeCompatPlugin(),
@@ -120,13 +123,21 @@ module.exports = (env, argv) => {
         chunks:['app'],
         template: path.resolve(__dirname, 'template.html')
       }),
-      new HtmlWebpackPlugin({
+      ...(withTest ? [new HtmlWebpackPlugin({
         filename: 'test.html',
         title: 'VAEditor',
         cache: false,
         template: path.resolve(__dirname, 'template.html')
-      }),
+      })] : []),
     ],
+    // mocha ищет тесты через require с выражением — это норма для него, но шум
+    // в выводе мешает замечать настоящие предупреждения.
+    ignoreWarnings: [
+      { module: /[\\/]node_modules[\\/]mocha[\\/]/, message: /Critical dependency/ }
+    ],
+    // Всё встраивается в HTML, поэтому предупреждение про размер ассета
+    // бессмысленно: страница по определению больше 244 КБ.
+    performance: { hints: false },
     optimization: {
       minimize: argv.mode === 'production',
       minimizer: [
