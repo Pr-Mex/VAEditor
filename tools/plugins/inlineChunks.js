@@ -44,6 +44,20 @@ class InlineChunksPlugin {
             : { tagName: 'style', voidTag: false, meta: { plugin: 'InlineChunksPlugin' }, innerHTML: source }
         }
 
+        // Встроенный скрипт в <head> исполнился бы до появления document.body,
+        // а бандл на старте обращается к document.body (initPage). Поэтому
+        // встроенные скрипты переносим в конец <body> — туда, где тег стоял
+        // с атрибутом defer.
+        const movedToBody = []
+        const inlineOrMove = (tag) => {
+          const result = inline(tag)
+          if (result !== tag && result.tagName === 'script') {
+            movedToBody.push(result)
+            return undefined
+          }
+          return result
+        }
+
         // Асинхронные чанки (ленивые import() из monaco) исполняем в странице
         // до основного бандла: чанк кладёт свои модули в chunkLoadingGlobal,
         // рантайм webpack при старте проигрывает очередь и помечает чанк
@@ -64,8 +78,9 @@ class InlineChunksPlugin {
           }
         }
 
-        data.headTags = [...lazyTags, ...data.headTags.map(inline)]
-        data.bodyTags = data.bodyTags.map(inline)
+        const compact = (tags) => tags.map(inlineOrMove).filter(Boolean)
+        data.headTags = [...lazyTags, ...compact(data.headTags)]
+        data.bodyTags = [...compact(data.bodyTags), ...movedToBody]
         return data
       })
 
