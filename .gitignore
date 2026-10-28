@@ -5,3 +5,6 @@ fileversion
 Template.bin
 /debug.log
 example/success.txt
+/database
+/database-*
+*.log
