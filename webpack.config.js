@@ -23,6 +23,10 @@ module.exports = (env, argv) => {
     output: {
       globalObject: 'self',
       filename: '[name].js',
+      // Все ресурсы встроены в страницу, внешних запросов нет. Автоопределение
+      // publicPath по <script src> в такой сборке невозможно и падает с ошибкой
+      // "Automatic publicPath is not supported in this browser".
+      publicPath: '',
       path: path.resolve(__dirname, 'dist'),
       clean: true
     },
