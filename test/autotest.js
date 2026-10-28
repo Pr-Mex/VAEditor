@@ -1,3 +1,6 @@
+// Страница автотестов — та же страница редактора: разметку, провайдер и
+// публичный API создаёт src/main. Без этого импорта test.html остаётся пустым.
+import '../src/main'
 import mocha from 'mocha'
 import '../node_modules/mocha/mocha.css'
 import * as demo from './demo/editor-demo'
