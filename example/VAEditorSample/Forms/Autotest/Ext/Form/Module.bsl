@@ -8,30 +8,12 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	DataObject = FormAttributeToValue("Object");
 	ExtractTemplate(DataObject, TempDirectory, "VAEditor");
 	ExtractTemplate(DataObject, TempDirectory, "AutoTest");
-	VanessaEditorURL = TempDirectory + "/test.html?interface=" + PlatformInterfaceCode();
+	VanessaEditorURL = TempDirectory + "/test.html";
 
 	DataDile = New File(DataObject.UsedFileName);
 	CurrentPath = DataDile.Path;
 
 EndProcedure
-
-// Вариант интерфейса платформы: по нему редактор выбирает оформление (Такси или 8.5).
-// Сравнение по XML-представлению перечисления: значение Version8_5 появилось только
-// в 8.5, а обработка собирается платформой постарше, где такого имени ещё нет.
-&AtServer
-Function PlatformInterfaceCode()
-
-	Result = "taxi";
-	Try
-		If XMLString(ClientApplication.CurrentInterfaceVariant()) = "Version8_5" Then
-			Result = "85";
-		EndIf;
-	Except
-		// Платформа не сообщает вариант интерфейса — остаётся оформление Такси.
-	EndTry;
-	Return Result;
-
-EndFunction
 
 &AtServer
 Procedure ExtractTemplate(DataObject, Directory, TemplateName)

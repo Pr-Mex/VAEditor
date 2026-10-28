@@ -58,10 +58,12 @@ initPage();
 import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 StaticServices.standaloneThemeService.get().registerEditorContainer(document.body);
 
+// configurable: свойства переопределяются повторно, если страницу инициализируют
+// дважды (например, в test.html оказались чанки обоих входов).
 Object.defineProperties(window, {
-  VanessaTabs: { get: () => VanessaTabs.getStandalone() },
-  VanessaEditor: { get: () => VanessaEditor.getStandalone() },
-  VanessaDiffEditor: { get: () => VanessaDiffEditor.getStandalone() },
+  VanessaTabs: { configurable: true, get: () => VanessaTabs.getStandalone() },
+  VanessaEditor: { configurable: true, get: () => VanessaEditor.getStandalone() },
+  VanessaDiffEditor: { configurable: true, get: () => VanessaDiffEditor.getStandalone() },
 });
 
 window["VanessaGherkinProvider"] = new VanessaGherkinProvider(localeCode);

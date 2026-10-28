@@ -154,6 +154,9 @@ module.exports = (env, argv) => {
         filename: 'test.html',
         title: 'VAEditor',
         cache: false,
+        // Без фильтра сюда попадут чанки обоих входов: src/main исполнится
+        // дважды, а он определяет неконфигурируемые свойства на window.
+        chunks: ['test'],
         template: path.resolve(__dirname, 'template.html')
       })] : []),
     ],
