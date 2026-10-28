@@ -49,6 +49,10 @@ import { language as gherkin } from './languages/turbo-gherkin/configuration';
 import { initPage } from "./common";
 import { applyPlatformInterface } from "./ui-interface";
 
+// Версия сборки нужна обработке, встраивающей редактор: по ней видно, какой
+// шаблон распакован и совпадает ли он с ожидаемым.
+window.VAEditorVersion = __VA_EDITOR_VERSION__;
+
 applyPlatformInterface();
 initErrorReporting();
 initPage();

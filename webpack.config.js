@@ -5,6 +5,27 @@ const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls')
 const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
 const RuntimeCompatPlugin = require('./tools/plugins/checkRuntimeCompat')
+const EmitVersionPlugin = require('./tools/plugins/emitVersion')
+
+const packageVersion = require('./package.json').version
+
+// Полная версия сборки. В CI version.json перезаписывается перед сборкой и
+// содержит ещё и номер сборки — он и нужен как ключ кеша у потребителя шаблона.
+// Локальный version.json может быть устаревшим, поэтому берём его, только если
+// он продолжает версию из package.json.
+function editorVersion () {
+  try {
+    const full = require('./version.json')
+    if (full && typeof full.version === 'string' && full.version.startsWith(packageVersion)) {
+      return full.version
+    }
+  } catch (error) {
+    // version.json появляется только после сборки в CI.
+  }
+  return packageVersion
+}
+
+const version = editorVersion()
 
 module.exports = (env, argv) => {
   // test.html нужен только автотестам и демо-режиму. Обычная сборка редактора
@@ -114,6 +135,12 @@ module.exports = (env, argv) => {
         // по file:// и в WebView2 блокируются, поэтому их быть не должно.
         maxChunks: Object.keys(entry).length
       }),
+      // Версия сборки попадает и в страницу (window.VAEditorVersion), и в
+      // dist/version.json — его читает обработка, встраивающая редактор.
+      new webpack.DefinePlugin({
+        __VA_EDITOR_VERSION__: JSON.stringify(version)
+      }),
+      new EmitVersionPlugin(version),
       new InlineChunksPlugin(),
       new RuntimeCompatPlugin(),
       new HtmlWebpackPlugin({
