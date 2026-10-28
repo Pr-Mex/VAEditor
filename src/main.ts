@@ -28,11 +28,16 @@ import { patchWebKit1C } from "./1c-webkit-patch";
 
 let reg = new RegExp('[?&]localeCode=([^&#]*)', 'i');
 let queryString = reg.exec(window.location.search);
-let localeCode = queryString ? queryString[1] : 'en';
+// 1С передаёт код языка интерфейса: ru, ru-RU, en и т.п.
+let localeCode = (queryString ? decodeURIComponent(queryString[1]) : 'en').toLowerCase().split(/[-_]/)[0];
 console.log('Current locale is: ' + localeCode);
-if (localeCode !== 'en') {
-  const localeData = require('monaco-editor-nls/locale/' + localeCode + '.json');
-  setLocaleData(localeData);
+
+// Локали Monaco весят по ~0.5 МБ, а используется всегда ровно одна. Поэтому
+// список языков задан явно: require с переменной в пути заставляет webpack
+// включить в бандл все 20 локалей пакета (~9 МБ в странице). Языка нет в
+// списке — Monaco остаётся на английском.
+if (localeCode === 'ru') {
+  setLocaleData(require('monaco-editor-nls/locale/ru.json'));
 }
 
 import { VanessaTabs } from "./vanessa-tabs";
