@@ -13,12 +13,59 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* Палитра редактора. Значения по умолчанию — историческое оформление «Такси»,
+   ниже переопределяются для интерфейса «Версия 8.5» и для тёмной темы.
+   Основа для 8.5 (ИТС, «Новый интерфейс 1С:Предприятия 8.5»): светло-серый фон,
+   жёлтый «маяк» у текущей закладки, синий фокус, скруглённые углы, крупнее шрифт. */
+body {
+    --va-font-family: Almarai, Arial, sans-serif;
+    --va-font-size: 10pt;
+    --va-text: #4b4b4b;
+    --va-surface: #fff;
+    --va-panel: #f2f2f2;
+    --va-border: #a0a0a0;
+    --va-panel-border: rgba(0, 0, 0, .4);
+    --va-accent: #009646;
+    --va-accent-size: 2px;
+    --va-tab-border-width: 0 1px;
+    --va-tab-padding: 0 5px;
+    --va-tabs-height: 2em;
+    --va-tab-radius: 0;
+    --va-link: rgb(0, 106, 177);
+    --va-heading: #666;
+    --va-doc-font-family: Calibri, Arial, sans-serif;
+}
+
+body[data-interface="85"] {
+    --va-font-family: "Segoe UI", Arial, sans-serif;
+    --va-font-size: 11pt;
+    --va-text: #303030;
+    --va-panel: #f5f5f5;
+    --va-border: #e3e3e3;
+    --va-panel-border: transparent;
+    --va-accent: #ffd83d;
+    --va-accent-size: 3px;
+    --va-tab-border-width: 0;
+    --va-tab-padding: 0 10px;
+    --va-tabs-height: 2.4em;
+    --va-tab-radius: 6px 6px 0 0;
+    --va-doc-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body[data-theme="vs-dark"] {
+    --va-text: #d4d4d4;
+    --va-surface: #1e1e1e;
+    --va-panel: #252526;
+    --va-border: #3c3c3c;
+    --va-panel-border: #3c3c3c;
+}
+
 body {
     display: flex;
-    color: #4b4b4b;
-    background-color: #fff;
-    font-family: Almarai, Arial, sans-serif;
-    font-size: 10pt;
+    color: var(--va-text);
+    background-color: var(--va-surface);
+    font-family: var(--va-font-family);
+    font-size: var(--va-font-size);
     cursor: default;
     overflow: hidden;
     position: absolute;
@@ -72,20 +119,20 @@ a[data-href] {
 
 #VanessaTabsContainer {
     display: flex;
-    flex: 0 0 2em;
-    fill: #4b4b4b;
+    flex: 0 0 var(--va-tabs-height);
+    fill: var(--va-text);
     z-index: 0;
     overflow: hidden;
     border-width: 0px 0px 1px;
     margin: 0;
     padding: 0;
     border-style: solid;
-    border-color: rgba(0, 0, 0, .4);
+    border-color: var(--va-panel-border);
     user-select: none
 }
 
 .vanessa-tab-panel {
-    background-color: #f2f2f2;
+    background-color: var(--va-panel);
     position: relative;
     overflow: hidden;
     flex: 1 1 100%;
@@ -96,15 +143,16 @@ a[data-href] {
 
 .vanessa-tab-item {
     margin: 0 0 0 -1px;
-    padding: 0 5px;
+    padding: var(--va-tab-padding);
     display: inherit;
     flex: 1 1 auto;
     align-items: center;
-    border-width: 0 1px;
+    border-width: var(--va-tab-border-width);
     border-style: solid;
-    border-color: #a0a0a0;
-    color: #333;
-    background-color: #f2f2f2;
+    border-color: var(--va-border);
+    border-radius: var(--va-tab-radius);
+    color: var(--va-text);
+    background-color: var(--va-panel);
     position: relative;
     line-height: 1.2em;
     z-index: 0;
@@ -121,7 +169,7 @@ a[data-href] {
 }
 
 .vanessa-tab-close {
-    fill: #4b4b4b;
+    fill: var(--va-text);
     display: inline-flex;
     flex: 0 0 auto;
     justify-content: center;
@@ -148,17 +196,17 @@ a[data-href] {
 }
 
 .vanessa-tab-select .vanessa-tab-item {
-    background-color: #fff
+    background-color: var(--va-surface)
 }
 
 .vanessa-tab-select .vanessa-tab-item:before {
     content: '';
-    background: #009646;
+    background: var(--va-accent);
     position: absolute
 }
 
 .vanessa-tab-select .vanessa-tab-item:before {
-    height: 2px;
+    height: var(--va-accent-size);
     right: 3px;
     bottom: 2px;
     left: 3px

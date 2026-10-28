@@ -615,9 +615,28 @@ Procedure VanessaEditorLoad(TemplateBinaryData)
 	For each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
 	EndDo;
-	VanessaEditorURL = TempFileName + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
+	VanessaEditorURL = TempFileName + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2)
+		+ "&interface=" + PlatformInterfaceCode() + "#";
 
 EndProcedure
+
+// Вариант интерфейса платформы: по нему редактор выбирает оформление (Такси или 8.5).
+// Сравнение по XML-представлению перечисления: значение Version8_5 появилось только
+// в 8.5, а обработка собирается платформой постарше, где такого имени ещё нет.
+&AtServer
+Function PlatformInterfaceCode()
+
+	Result = "taxi";
+	Try
+		If XMLString(ClientApplication.CurrentInterfaceVariant()) = "Version8_5" Then
+			Result = "85";
+		EndIf;
+	Except
+		// Платформа не сообщает вариант интерфейса — остаётся оформление Такси.
+	EndTry;
+	Return Result;
+
+EndFunction
 
 #EndRegion
 

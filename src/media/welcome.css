@@ -1,5 +1,5 @@
 .vanessa-markdown {
-  font-family: Calibri, Arial, sans-serif;
+  font-family: var(--va-doc-font-family);
   font-size: 1rem;
   margin: 0;
 }
@@ -9,9 +9,9 @@
 }
 
 .vanessa-markdown a {
-  color: rgb(0, 106, 177);
-  text-decoration-color: rgb(0, 106, 177);
-  font-family: Calibri, Arial, sans-serif;
+  color: var(--va-link);
+  text-decoration-color: var(--va-link);
+  font-family: var(--va-doc-font-family);
   text-decoration: none;
 }
 
@@ -26,36 +26,36 @@
 }
 
 div.welcome {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--va-doc-font-family);
   margin: 2em;
   user-select: none;
 }
 
 .welcome .codicon {
-  color: rgb(0, 106, 177) !important;
+  color: var(--va-link) !important;
   margin-right: 0.5em;
 }
 
 .welcome h1 {
-  color: #666666;
+  color: var(--va-heading);
   font-size: 2em;
   font-weight: normal;
   margin: 0 0 0.2em 0;
 }
 
 .welcome h2 {
-  color: #666666;
+  color: var(--va-heading);
   font-size: 1.5em;
   font-weight: normal;
   margin: 0.2em 0 0.2em 0;
 }
 
 .welcome h3 {
-  font-family: Calibri, Arial, sans-serif;
+  font-family: var(--va-doc-font-family);
   margin: 1em 0 0 0;
   font-size: 1.5em;
   font-weight: lighter;
-  color: #666666;
+  color: var(--va-heading);
 }
 
 .welcome .welcome-item {
@@ -74,9 +74,9 @@ div.welcome {
 }
 
 .welcome li a {
-  color: rgb(0, 106, 177);
-  text-decoration-color: rgb(0, 106, 177);
-  font-family: Calibri, Arial, sans-serif;
+  color: var(--va-link);
+  text-decoration-color: var(--va-link);
+  font-family: var(--va-doc-font-family);
   vertical-align: middle;
   text-decoration: none;
   font-size: 1rem;
@@ -92,8 +92,8 @@ div.welcome {
 }
 
 .welcome li span.path {
-  color: #666666;
-  font-family: Calibri, Arial, sans-serif;
+  color: var(--va-heading);
+  font-family: var(--va-doc-font-family);
   vertical-align: middle;
   padding-left: 1rem;
   text-decoration: none;

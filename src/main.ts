@@ -47,7 +47,9 @@ import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { language as gherkin } from './languages/turbo-gherkin/configuration';
 import { initPage } from "./common";
+import { applyPlatformInterface } from "./ui-interface";
 
+applyPlatformInterface();
 initErrorReporting();
 initPage();
 
