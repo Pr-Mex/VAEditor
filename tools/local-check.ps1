@@ -17,24 +17,41 @@ if (-not $Root) {
 #
 # Запуск (из корня репозитория):
 #   powershell -ExecutionPolicy Bypass -File tools\local-check.ps1 "C:\Program Files (x86)\1cv8t\8.3.27.2342\bin"
+#   powershell -ExecutionPolicy Bypass -File tools\local-check.ps1 "C:\Program Files\1cv8\8.5.4.1878\bin"
+#
+# Аргумент — каталог bin платформы или путь к её exe. Имена файлов различаются
+# между «учебной» поставкой (1cv8t.exe / 1cv8ct.exe) и обычной установкой
+# (1cv8.exe / 1cv8c.exe), поэтому exe ищутся по списку.
 #
 # Зачем нужен: единственная проверка, которая реально ловит проблемы загрузки
 # страницы в поле HTML 1С (file://, порядок исполнения скриптов, синтаксис,
 # который не понимает встроенный WebKit).
 #
-# Важно: 1cv8t.exe возвращает управление раньше, чем движок завершит работу,
+# Важно: клиент возвращает управление раньше, чем движок завершит работу,
 # поэтому ждём не код возврата, а результат (каталог базы, epf, success.txt)
 # и завершения процессов 1С.
 
 $ErrorActionPreference = 'Stop'
 
-$designer = Join-Path $PlatformBin '1cv8t.exe'
-$client = Join-Path $PlatformBin '1cv8ct.exe'
-$procNames = @('1cv8t', '1cv8ct', '1cv8p32', '1cv8p64')
-
-foreach ($exe in @($designer, $client)) {
-    if (-not (Test-Path $exe)) { throw "Not found: $exe" }
+if (Test-Path $PlatformBin -PathType Leaf) {
+    $binDir = Split-Path -Parent $PlatformBin
+} else {
+    $binDir = $PlatformBin
 }
+
+function Resolve-1CExe([string]$dir, [string[]]$names, [string]$what) {
+    foreach ($name in $names) {
+        $path = Join-Path $dir $name
+        if (Test-Path $path) { return $path }
+    }
+    throw ($what + ' not found in ' + $dir + ' (looked for: ' + ($names -join ', ') + ')')
+}
+
+# Конфигуратор: в обычной установке это толстый клиент 1cv8.exe.
+$designer = Resolve-1CExe $binDir @('1cv8t.exe', '1cv8.exe') 'Designer'
+# Клиент для ENTERPRISE: тонкий, если есть, иначе толстый.
+$client = Resolve-1CExe $binDir @('1cv8ct.exe', '1cv8c.exe', '1cv8.exe') 'Client'
+$procNames = @('1cv8t', '1cv8ct', '1cv8', '1cv8c', '1cv8p32', '1cv8p64')
 
 function Wait-1CIdle([int]$seconds) {
     $deadline = (Get-Date).AddSeconds($seconds)
