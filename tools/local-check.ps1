@@ -1,8 +1,16 @@
 param(
     [Parameter(Mandatory = $true)][string]$PlatformBin,
-    [string]$Root = (Split-Path $PSScriptRoot -Parent),
+    [string]$Root = '',
     [int]$TestTimeoutSeconds = 300
 )
+
+# Корень проекта считаем в теле скрипта: в блоке param() $PSScriptRoot может быть
+# ещё не заполнен (в частности при запуске через powershell -File относительным путём).
+if (-not $Root) {
+    $scriptDir = $PSScriptRoot
+    if (-not $scriptDir) { $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition }
+    $Root = Split-Path $scriptDir -Parent
+}
 
 # Локальный прогон того же сценария, что выполняет AppVeyor:
 # сборка фронта -> макеты из dist -> чистая база -> epf -> автотест.
