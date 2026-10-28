@@ -38,8 +38,15 @@ foreach ($exe in @($designer, $client)) {
 
 function Wait-1CIdle([int]$seconds) {
     $deadline = (Get-Date).AddSeconds($seconds)
+    $lastReport = Get-Date
     while ((Get-Date) -lt $deadline) {
-        if (-not (Get-Process -Name $procNames -ErrorAction SilentlyContinue)) { return $true }
+        $alive = Get-Process -Name $procNames -ErrorAction SilentlyContinue
+        if (-not $alive) { return $true }
+        if (((Get-Date) - $lastReport).TotalSeconds -ge 5) {
+            $lastReport = Get-Date
+            $names = ($alive | ForEach-Object { $_.ProcessName + ' pid=' + $_.Id }) -join ', '
+            Write-Host ('  still running: ' + $names)
+        }
         Start-Sleep -Milliseconds 500
     }
     return $false
@@ -61,12 +68,14 @@ function Stop-1C {
     }
 }
 
-function Invoke-1C([string]$exe, [string[]]$arguments) {
+function Invoke-1C([string]$exe, [string[]]$arguments, [int]$idleTimeoutSeconds = 60) {
     Write-Host ('> ' + (Split-Path $exe -Leaf) + ' ' + ($arguments -join ' '))
     $out = & $exe @arguments 2>&1
     Write-Host ('exit=' + $LASTEXITCODE)
     if ($out) { $out | ForEach-Object { Write-Host ('  ' + $_) } }
-    if (-not (Wait-1CIdle 300)) { Write-Host '  warning: 1C processes are still running' }
+    if (-not (Wait-1CIdle $idleTimeoutSeconds)) {
+        Write-Host '  warning: 1C processes are still running (probably a dialog window is open)'
+    }
 }
 
 # Шаблон макета 1С — это zip с html внутри; Compress-Archive умеет только .zip,
