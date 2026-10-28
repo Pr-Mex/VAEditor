@@ -36,6 +36,13 @@ build_script:
 
 after_build:
   - mkdir database
+  # Защита от опасных действий не даёт запустить внешнюю обработку: клиент ждёт
+  # нажатия «Да» в диалоге и в CI висит до таймаута. Файл настроек платформы
+  # лежит в conf рядом с каталогом bin.
+  - ps: |
+      $conf = Join-Path $env:APPVEYOR_BUILD_FOLDER 'conf'
+      New-Item -ItemType Directory -Force -Path $conf | Out-Null
+      Set-Content -Path (Join-Path $conf 'conf.cfg') -Value 'DisableUnsafeActionProtection=.*' -Encoding ASCII
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log

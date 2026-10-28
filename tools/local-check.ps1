@@ -53,6 +53,25 @@ $designer = Resolve-1CExe $binDir @('1cv8t.exe', '1cv8.exe') 'Designer'
 $client = Resolve-1CExe $binDir @('1cv8ct.exe', '1cv8c.exe', '1cv8.exe') 'Client'
 $procNames = @('1cv8t', '1cv8ct', '1cv8', '1cv8c', '1cv8p32', '1cv8p64')
 
+# Защита от опасных действий спрашивает «Да/Нет» перед запуском внешней обработки,
+# а в неинтерактивном прогоне клиент просто висит на этом диалоге. Параметр
+# отключает вопрос для всего экземпляра платформы (conf.cfg рядом с каталогом bin).
+# Запись в Program Files может потребовать прав администратора — тогда остаётся
+# подтвердить диалог руками.
+$confFile = Join-Path (Join-Path (Split-Path -Parent $binDir) 'conf') 'conf.cfg'
+$protectionDisabled = (Test-Path $confFile) -and
+    (Select-String -Path $confFile -SimpleMatch 'DisableUnsafeActionProtection' -Quiet)
+if (-not $protectionDisabled) {
+    try {
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $confFile) | Out-Null
+        Add-Content -Path $confFile -Value 'DisableUnsafeActionProtection=.*' -Encoding ASCII
+        Write-Host ('conf.cfg: защита от опасных действий отключена (' + $confFile + ')')
+    } catch {
+        Write-Host ('warning: не удалось записать ' + $confFile)
+        Write-Host '         диалог безопасности придётся подтвердить вручную'
+    }
+}
+
 function Wait-1CIdle([int]$seconds) {
     $deadline = (Get-Date).AddSeconds($seconds)
     $lastReport = Get-Date
