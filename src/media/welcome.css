@@ -1,5 +1,5 @@
 .vanessa-markdown {
-  font-family: var(--va-doc-font-family);
+  font-family: Calibri, Arial, sans-serif;
   font-size: 1rem;
   margin: 0;
 }
@@ -9,9 +9,9 @@
 }
 
 .vanessa-markdown a {
-  color: var(--va-link);
-  text-decoration-color: var(--va-link);
-  font-family: var(--va-doc-font-family);
+  color: rgb(0, 106, 177);
+  text-decoration-color: rgb(0, 106, 177);
+  font-family: Calibri, Arial, sans-serif;
   text-decoration: none;
 }
 
@@ -26,36 +26,36 @@
 }
 
 div.welcome {
-  font-family: var(--va-doc-font-family);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 2em;
   user-select: none;
 }
 
 .welcome .codicon {
-  color: var(--va-link) !important;
+  color: rgb(0, 106, 177) !important;
   margin-right: 0.5em;
 }
 
 .welcome h1 {
-  color: var(--va-heading);
+  color: #666666;
   font-size: 2em;
   font-weight: normal;
   margin: 0 0 0.2em 0;
 }
 
 .welcome h2 {
-  color: var(--va-heading);
+  color: #666666;
   font-size: 1.5em;
   font-weight: normal;
   margin: 0.2em 0 0.2em 0;
 }
 
 .welcome h3 {
-  font-family: var(--va-doc-font-family);
+  font-family: Calibri, Arial, sans-serif;
   margin: 1em 0 0 0;
   font-size: 1.5em;
   font-weight: lighter;
-  color: var(--va-heading);
+  color: #666666;
 }
 
 .welcome .welcome-item {
@@ -74,9 +74,9 @@ div.welcome {
 }
 
 .welcome li a {
-  color: var(--va-link);
-  text-decoration-color: var(--va-link);
-  font-family: var(--va-doc-font-family);
+  color: rgb(0, 106, 177);
+  text-decoration-color: rgb(0, 106, 177);
+  font-family: Calibri, Arial, sans-serif;
   vertical-align: middle;
   text-decoration: none;
   font-size: 1rem;
@@ -92,37 +92,70 @@ div.welcome {
 }
 
 .welcome li span.path {
-  color: var(--va-heading);
-  font-family: var(--va-doc-font-family);
+  color: #666666;
+  font-family: Calibri, Arial, sans-serif;
   vertical-align: middle;
   padding-left: 1rem;
   text-decoration: none;
   font-size: 1rem;
 }
 
-body[data-theme="vs-dark"] .vanessa-viewer {
+/* === Тёмная тема в «Такси»: включается вручную через EditorTheme. === */
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-viewer {
   background-color: rgb(30, 30, 30);
   color: rgb(212, 212, 212);
 }
 
-body[data-theme="vs-dark"] .welcome h1 {
+body[data-interface="taxi"][data-theme="vs-dark"] .welcome h1 {
   color: rgb(203, 203, 203);
 }
 
-body[data-theme="vs-dark"] .welcome h2 {
+body[data-interface="taxi"][data-theme="vs-dark"] .welcome h2 {
   color: rgb(120, 120, 120);
 }
 
-body[data-theme="vs-dark"] .welcome h3 {
+body[data-interface="taxi"][data-theme="vs-dark"] .welcome h3 {
   color: rgb(203, 203, 203);
 }
 
-body[data-theme="vs-dark"] .vanessa-viewer a {
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-viewer a {
   color: rgb(53, 115, 205);
   text-decoration-color: rgb(53, 115, 205);
 }
 
-body[data-theme="vs-dark"] .welcome .codicon {
+body[data-interface="taxi"][data-theme="vs-dark"] .welcome .codicon {
   color: rgb(53, 115, 205) !important;
   text-decoration-color: rgb(53, 115, 205);
+}
+
+/* === Интерфейс «Версия 8.5»: цвета из палитры платформы, поэтому светлая и
+   тёмная темы получаются сами (--color* у платформы разные для каждой темы). === */
+body[data-interface="85"] .vanessa-viewer {
+  background-color: var(--colorAdditional, #ffffff);
+  color: var(--colorText80, #333338);
+}
+
+body[data-interface="85"] .vanessa-markdown,
+body[data-interface="85"] div.welcome,
+body[data-interface="85"] .welcome h3,
+body[data-interface="85"] .welcome li a,
+body[data-interface="85"] .welcome li span.path {
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body[data-interface="85"] .vanessa-markdown a,
+body[data-interface="85"] .welcome li a {
+  color: var(--colorBlue60, #0063cf);
+  text-decoration-color: var(--colorBlue60, #0063cf);
+}
+
+body[data-interface="85"] .welcome .codicon {
+  color: var(--colorBlue60, #0063cf) !important;
+}
+
+body[data-interface="85"] .welcome h1,
+body[data-interface="85"] .welcome h2,
+body[data-interface="85"] .welcome h3,
+body[data-interface="85"] .welcome li span.path {
+  color: var(--colorText70, #4d4d54);
 }
