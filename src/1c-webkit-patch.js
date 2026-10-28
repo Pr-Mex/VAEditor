@@ -42,7 +42,7 @@ export function patchWebKit1C() {
       else {
         switch (e.keyCode) {
           case 27: {
-            tabs.onEscapePress()
+            if (tabs) tabs.onEscapePress()
             return false
           }
         }

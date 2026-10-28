@@ -74,6 +74,9 @@ export class SyntaxManager {
   }
 
   get errors(): number[] {
-    return monaco.editor.getModelMarkers({owner: "syntax"}).map( m => m.startLineNumber );
+    const model = this.editor.getModel();
+    if (!model) return [];
+    return monaco.editor.getModelMarkers({ owner: "syntax", resource: model.uri })
+      .map(m => m.startLineNumber);
   }
 }

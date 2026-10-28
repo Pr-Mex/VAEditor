@@ -70,7 +70,7 @@ window["VanessaGherkinProvider"] = new VanessaGherkinProvider(localeCode);
 window["createVanessaTabs"] = () => VanessaTabs.createStandalone();
 window["createVanessaEditor"] = (content?: string, language: string = gherkin.id) => VanessaEditor.createStandalone(content, language);
 window["createVanessaDiffEditor"] = (original?: string, modified?: string, language: string = gherkin.id) => VanessaDiffEditor.createStandalone(original, modified, language);
-window["disposeVanessaAll"] = () => { VanessaTabs.disposeStandalone(); VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone() };
+window["disposeVanessaAll"] = () => { VanessaTabs.disposeStandalone(); VanessaEditor.disposeStandalone(); VanessaDiffEditor.disposeStandalone() };
 window["disposeVanessaTabs"] = () => VanessaTabs.disposeStandalone();
 window["disposeVanessaEditor"] = () => VanessaEditor.disposeStandalone();
 window["disposeVanessaDiffEditor"] = () => VanessaDiffEditor.disposeStandalone();
