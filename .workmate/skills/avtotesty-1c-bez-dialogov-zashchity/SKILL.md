@@ -150,6 +150,11 @@ Consider using ${} to delimit the name.
   `/opt/1cv8t/conf/conf.cfg` (каталог установки, не версии), плюс дубли в
   `/opt/1cv8/conf/` и `~/.1cv8/1C/1cv8/conf/`. Нужен `sudo`.
   Параметр тот же, что на Windows: `DisableUnsafeActionProtection=.*`.
+  **На Linux этого недостаточно**: диалог всё равно появляется (проверено,
+  файл на месте по всем трём путям). Рабочее решение — подтверждать
+  клавиатурой: `xdotool key --clearmodifiers Return`, начиная с 30-й секунды
+  ожидания и только пока нет `client-started.txt` (иначе Enter уйдёт в окно
+  редактора). После подтверждения форма открывается за ~1.5 с.
 - **Xvfb поднимать один раз на job**:
   `pgrep -f 'Xvfb :99' > /dev/null || (Xvfb :99 -screen 0 1680x1050x24 -shmem &)`.
   Повторный запуск падает с «Server is already active for display 99».
