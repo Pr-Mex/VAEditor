@@ -33,14 +33,27 @@ jobs:
           cache: npm
 
       # Учебная поставка платформы 1С лежит отдельным репозиторием, архив под паролем.
+      # Токен checkout-а привязан к текущему репозиторию: с ним clone чужого
+      # публичного репозитория отваливается, поэтому extraheader снимаем.
+      # Блоки в скобках не используем: пароль из секрета может содержать скобку.
       - name: Fetch 1C platform
         shell: cmd
         env:
           KEY_1CV8T: ${{ secrets.KEY_1CV8T }}
         run: |
-          git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
+          git config --local --unset-all "http.https://github.com/.extraheader"
+          if "%KEY_1CV8T%"=="" echo ERROR: secret KEY_1CV8T is empty
+          if "%KEY_1CV8T%"=="" exit /b 1
+          git clone --branch=platform https://github.com/lintest/tools1c.git bin
+          if errorlevel 1 exit /b 1
+          if exist bin\tools1c.part01.rar goto have_archive
+          echo ERROR: platform archive not found, contents of bin:
+          dir /b bin
+          exit /b 1
+          :have_archive
           cd bin
-          "C:\Program Files\7-Zip\7z.exe" x tools1c.part01.rar -p%KEY_1CV8T% > nul
+          "C:\Program Files\7-Zip\7z.exe" x tools1c.part01.rar -p%KEY_1CV8T%
+          if errorlevel 1 exit /b 1
 
       - name: Fetch OneScript
         shell: cmd
