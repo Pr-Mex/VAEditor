@@ -1,8 +1,12 @@
-// Проверка, что в собранной странице нет синтаксиса новее ES2015.
+// Проверка, что в собранной странице нет синтаксиса, который встроенный
+// WebKit 1С (8.3.27) не разберёт.
 //
-// Зачем: webpack собирает с target es2015, а esbuild понижает ?. и class fields
-// из esbuild-сборки monaco — встроенный WebKit 1С (8.3.27) их не парсит, и тогда
-// падает не одна строка, а весь бандл. Проверка ловит это до запуска в 1С.
+// Почему не es2015: проверка на 2015 ругалась на код, который в 1С работает.
+// WebKit платформы принимает `2 ** 24` (ES2016, buffer-polyfill) и `\p{L}`
+// в unicode-регулярках (ES2018, monaco contextkey и marked) — страница с ними
+// открывается в 1С, автотесты проходят. А вот `?.`, `??` (ES2020) и class
+// fields (ES2022) роняют разбор всего бандла — их понижает esbuild-loader
+// для monaco, и именно их должна ловить проверка. Граница — между 2018 и 2020.
 //
 // dist содержит только html: скрипты встраиваются в страницу плагином
 // inlineChunks, отдельных .js нет. Поэтому блоки <script> без src вырезаются
@@ -23,7 +27,7 @@ const path = require('path')
 const root = path.resolve(__dirname, '..')
 const dist = path.join(root, 'dist')
 const pages = ['index.html', 'test.html']
-const version = 'es2015'
+const version = 'es2018'
 
 // package.json es-check наружу не отдаётся (в exports только "."), поэтому
 // require.resolve('es-check/package.json') на Node 20 падает — ищем корень
@@ -159,9 +163,6 @@ console.log('acorn: файлов ' + files.length + ', ошибок разбор
 if (latest.length) {
   report('Не удалось разобрать встроенные скрипты — проверьте вырезание <script> из html:', latest)
 }
-if (target.length) {
-  report('Синтаксис новее ' + version + ' — этот WebKit 1С не разберёт:', target)
-}
 
 // es-check ищет файлы через fast-glob: абсолютные виндовые пути она не берёт
 // (обратная косая черта — escape), поэтому запускаем из временного каталога
@@ -171,7 +172,13 @@ const result = spawnSync(process.execPath, [cli, version, ...names], { stdio: 'i
 
 cleanup()
 
+// Контекст находок печатается только когда es-check действительно упал:
+// иначе зелёный прогон сопровождался бы списком «этот WebKit не разберёт»,
+// хотя acorn строже рантайма (см. шапку файла).
 if (result.status === 0) {
   console.log('Синтаксис не новее ' + version + ': проверено ' + files.length + ' скриптов.')
+} else if (target.length) {
+  report('Синтаксис новее ' + version + ' — этот WebKit 1С не разберёт:', target)
 }
+
 process.exit(result.status === null ? 2 : result.status)
