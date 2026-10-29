@@ -77,7 +77,13 @@ class VanessaViewEditor {
 
 export class VanessaViwer implements IVanessaEditor {
   domNode(): HTMLElement { return this._domNode; }
-  dispose(): void { }
+  dispose(): void {
+    // вьюер живёт в одном HTML-поле 1С; справка/markdown-вкладки открываются
+    // многократно. Без удаления DOM-поддерево с click-листенером копится навсегда.
+    if (this._domNode) this._domNode.remove();
+    this._domNode = null;
+    this._domInner = null;
+  }
   focus = () => { };
   undo = () => { };
   redo = () => { };
@@ -107,18 +113,32 @@ export class VanessaViwer implements IVanessaEditor {
     node.appendChild(this._domNode);
   }
 
+  // renderMarkdown 0.52.2 всем ссылкам ставит href="" (реальный URL — в
+  // data-href). Клик по <a href=""> без preventDefault = переход на пустой
+  // href = ПЕРЕЗАГРУЗКА страницы WebView 1С — редактор умирает целиком.
+  // closest("a") вместо instanceof: target может быть вложенным элементом
+  // (<span> codicon, <strong> внутри ссылки) — раньше такой клик терялся.
+  private static findAnchor(event: MouseEvent): HTMLAnchorElement {
+    const target: any = event.target;
+    return target && target.closest ? target.closest("a") : null;
+  }
+
   private onMarkdownClick(event: MouseEvent) {
-    if (event.target instanceof HTMLAnchorElement) {
-      const data = event.target.dataset.href;
-      EventsManager.fireEvent(this, VanessaEditorEvent.ON_MARK_CLICK, data);
+    const anchor = VanessaViwer.findAnchor(event);
+    if (anchor) {
+      event.preventDefault();
+      const data = anchor.dataset.href;
+      if (data) EventsManager.fireEvent(this, VanessaEditorEvent.ON_MARK_CLICK, data);
     }
   }
 
   private onWelcomeClick(event: MouseEvent) {
-    if (event.target instanceof HTMLAnchorElement) {
-      const id = event.target.dataset.event;
-      const data = event.target.dataset.href;
-      EventsManager.fireEvent(this, id, data);
+    const anchor = VanessaViwer.findAnchor(event);
+    if (anchor) {
+      event.preventDefault();
+      const id = anchor.dataset.event;
+      const data = anchor.dataset.href;
+      if (id) EventsManager.fireEvent(this, id, data);
     }
   }
 

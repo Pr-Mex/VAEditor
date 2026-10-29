@@ -76,6 +76,13 @@ export class SubcodeWidget extends WidgetBase {
   public dispose(): void {
     this.runtime.editor.removeOverlayWidget(this.overlayWidget);
     this.overlayDom.remove();
+    // WebKit 1С: без явной очистки ViewZone и decoration они накапливаются
+    // при повторном рендере (напр. режим обучения дописывает текст диктора N раз)
+    // и добивают старый WebKit. Освобождаем их явно.
+    if (this.id) this.runtime.editor.changeViewZones(accessor => accessor.removeZone(this.id));
+    if (this.decoration) this.runtime.editor.deltaDecorations([this.decoration], []);
+    if (this.domNode) this.domNode.remove();
+    this.lines = [];
   }
 
   public set useDebugger(value: boolean) {

@@ -1,4 +1,5 @@
 import * as monaco from "monaco-editor";
+import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
 import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
@@ -6,13 +7,17 @@ import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, dispose
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaTabs } from "./vanessa-tabs";
 
+const $ = dom.$;
+
 export class VanessaDiffEditor implements IVanessaEditor {
 
   static editors: Array<VanessaDiffEditor> = [];
   private static standaloneInstance: VanessaDiffEditor;
-  public navigator: monaco.editor.IDiffNavigator;
+  // 0.45: IDiffNavigator/createDiffNavigator удалены из API. Навигация по диффам
+  // теперь через методы самого редактора (goToDiff/getLineChanges) — см. ниже.
   public editor: monaco.editor.IStandaloneDiffEditor;
   public eventsManager: EventsManager;
+  private _domNode: HTMLElement;
 
   public static createStandalone(
     original: string = "",
@@ -39,8 +44,16 @@ export class VanessaDiffEditor implements IVanessaEditor {
   }
 
   constructor(model: monaco.editor.IDiffEditorModel, readOnly: boolean = false) {
-    let node = document.getElementById("VanessaEditorContainer");
-    this.editor = monaco.editor.createDiffEditor(node, {
+    // 0.52.2: новый DiffEditorWidget монтирует свой корень прямо в переданный
+    // элемент, а getContainerDomNode() возвращает сам переданный элемент —
+    // не собственный div, как в 0.30. Если создавать виджет в общем
+    // #VanessaEditorContainer, то domNode() == общий контейнер, и
+    // hideEditor при закрытии diff-вкладки прячет ВСЕ редакторы (белое поле).
+    // Поэтому diff живёт в собственной обёртке — как VanessaEditor/VanessaViwer.
+    const container = document.getElementById("VanessaEditorContainer");
+    this._domNode = $("div", { class: "vanessa-diff-editor" });
+    container.appendChild(this._domNode);
+    this.editor = monaco.editor.createDiffEditor(this._domNode, {
       contextmenu: false,
       originalEditable: false,
       scrollBeyondLastLine: false,
@@ -48,10 +61,21 @@ export class VanessaDiffEditor implements IVanessaEditor {
       automaticLayout: true,
       readOnly: readOnly,
       useShadowDOM: false,
+      // В gherkin color-декорации не нужны — выкл (см. vanessa-editor.ts).
+      colorDecorators: false,
+      // Не подсвечивать «неоднозначные» лат/кир-двойники (шум в русском gherkin).
+      unicodeHighlight: {
+        ambiguousCharacters: false,
+        invisibleCharacters: false,
+        nonBasicASCII: false,
+      },
+      // Как в vanessa-editor.ts: sticky scroll 0.52.2 включён по умолчанию —
+      // держим прежний UX; drop извне в поле 1С не нужен (неогороженные API).
+      stickyScroll: { enabled: false },
+      dropIntoEditor: { enabled: false },
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
-    this.navigator = monaco.editor.createDiffNavigator(this.editor);
     VanessaDiffEditor.editors.push(this);
   }
 
@@ -64,10 +88,11 @@ export class VanessaDiffEditor implements IVanessaEditor {
     const original = oe ? oe.getModel() : null;
     const modified = me ? me.getModel() : null;
     this.eventsManager.dispose();
-    this.navigator.dispose();
     this.editor.dispose();
     disposeModel(original);
     disposeModel(modified);
+    if (this._domNode) this._domNode.remove();
+    this._domNode = null;
   }
 
   public resetModel() {
@@ -84,10 +109,16 @@ export class VanessaDiffEditor implements IVanessaEditor {
   };
 
   public setValue = (oldValue: string, oldFile: string, newValue: string, newFile: string) => {
+    const oe = this.editor.getOriginalEditor();
+    const me = this.editor.getModifiedEditor();
+    const oldOriginal = oe ? oe.getModel() : null;
+    const oldModified = me ? me.getModel() : null;
     this.editor.setModel({
       original: createModel(oldValue, oldFile),
       modified: createModel(newValue, newFile),
     });
+    disposeModel(oldOriginal);
+    disposeModel(oldModified);
   }
 
   public static findModel(model: monaco.editor.ITextModel): boolean {
@@ -100,17 +131,17 @@ export class VanessaDiffEditor implements IVanessaEditor {
     });
   }
 
-  //@ts-ignore
-  public domNode = () => this.editor._containerDomElement;
+  public domNode = () => this._domNode;
   public onFileSave = () => this.fireEvent(VanessaEditorEvent.PRESS_CTRL_S, this.getModel());
   public fireEvent = (event: any, arg: any = undefined) => this.eventsManager.fireEvent(event, arg);
   public setReadOnly = (arg: boolean) => this.editor.updateOptions({ readOnly: arg });
   public setSideBySide = (value: boolean) => this.editor.updateOptions({ renderSideBySide: value });
   public setTheme = (theme: string) => monaco.editor.setTheme(theme);
   public getModel = () => this.editor.getModifiedEditor().getModel();
-  public canNavigate = () => this.navigator.canNavigate() ? true : false;
-  public previous = () => this.navigator.previous();
-  public next = () => this.navigator.next();
+  // 0.45: навигация по диффам без IDiffNavigator.
+  public canNavigate = () => { const c = this.editor.getLineChanges(); return !!(c && c.length); };
+  public previous = () => this.editor.goToDiff('previous');
+  public next = () => this.editor.goToDiff('next');
   public focus() { this.editor.focus(); }
   public trigger = (source: string, handlerId: string, payload: any = undefined) => this.editor.trigger(source, handlerId, payload);
   public get type() { return VAEditorType.DiffEditor; }

@@ -15,6 +15,10 @@ const url = 'Браузер.feature';
 const title = 'Заголовок файла';
 
 describe('Управление редактором', function () {
+  // Первый сьют прогона: холодная инициализация monaco в WebKit 1С на медленных
+  // машинах не укладывается в дефолтные 2000 мс mocha — before-хук падает по
+  // таймауту и все 12 тестов сьюта скипаются.
+  this.timeout(15000);
   let eventsData: {name:string, data:any, editor:IVanessaEditor}[];
   let editor: VanessaEditor;
 

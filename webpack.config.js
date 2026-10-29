@@ -2,7 +2,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
-const nls = require.resolve('monaco-editor-nls')
+const nls = path.resolve(__dirname, 'src/nls/nls.js') // свой NLS-шим (заменяет monaco-editor-nls)
+const replaceStrings = require('./tools/loaders/replaceStrings') // counts + assertApplied (#10)
 const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
 const InlineWorkerSourcePlugin = require('./tools/plugins/inlineWorkerSource')
 const RuntimeCompatPlugin = require('./tools/plugins/checkRuntimeCompat')
@@ -49,6 +50,14 @@ module.exports = (env, argv) => {
     entry,
     resolve: {
       extensions: ['.ts', '.js', '.css'],
+      alias: {
+        // 0.52.2: поля "exports" в пакете нет (module → тот же esm-файл), алиас —
+        // инертная страховка. ОБЯЗАТЕЛЕН при апгрейде на 0.53+: там "exports"
+        // мапит require→min/vs/editor/editor.main.js (AMD, webpack не парсит), и
+        // bare `import * as monaco from "monaco-editor"` из нашего commonjs-TS
+        // тянул бы AMD-min. `$` — точное совпадение, deep-import не задет.
+        'monaco-editor$': path.resolve(__dirname, 'node_modules/monaco-editor/esm/vs/editor/editor.main.js')
+      },
       fallback: {
         util: require.resolve('util/'),
         stream: require.resolve('stream-browserify'),
@@ -80,24 +89,37 @@ module.exports = (env, argv) => {
       },
       rules: [
         {
-          test: /node_modules[\\/]monaco-editor-nls[\\/].+\.js$/,
-          loader: 'replace-strings',
-          options: {
-            replacements: [
-              { search: 'let CURRENT_LOCALE_DATA = null;', replace: 'var CURRENT_LOCALE_DATA = null;' }
-            ]
-          }
-        },
-        {
-          // Патчи monaco под совместимость с 1С runtime
+          // Патчи monaco под совместимость с 1С runtime + транспиляция в es2015.
+          // esbuild понижает ?. (ES2020) и class fields (ES2022) из esbuild-сборки
+          // monaco ≥0.31 — WebKit 1С их не парсит (SyntaxError всего бандла).
+          // Порядок use справа налево: replace-strings (строковый патч на сыром
+          // коде, до того как esbuild свернёт `2048 | 39` и срежет комментарии) →
+          // esbuild (финальная транспиляция). monaco-nls (enforce:pre) идёт раньше.
           test: /node_modules[\\/]monaco-editor[\\/]esm[\\/].+\.js$/,
-          loader: 'replace-strings',
-          options: {
-            replacements: [
-              { search: 'let __insane_func;', replace: 'var __insane_func;' },
-              { search: 'secondary: [2048 /* CtrlCmd */ | 39 /* KeyI */],', replace: 'secondary: null,' }
-            ]
-          }
+          use: [
+            {
+              loader: 'esbuild-loader',
+              options: { target: 'es2015' }
+            },
+            {
+              loader: 'replace-strings',
+              options: {
+                replacements: [
+                  // Формат комментариев KeyMod./KeyCode.-квалифицированный — литерал
+                  // дословно совпадает в 0.52.2 (suggestController.js ×3, Windows-ветки)
+                  // и 0.55 (#10). mac-ветки (хвост `] }` → в dist "secondary":[2087])
+                  // намеренно НЕ патчим — в 1С/Windows mac-набор не активируется.
+                  { search: 'secondary: [2048 /* KeyMod.CtrlCmd */ | 39 /* KeyCode.KeyI */],', replace: 'secondary: null,' },
+                  // RegExp-флаг 'd' (hasIndices, Safari 15) → "Invalid flags" в WebKit 1С.
+                  // 0.52.2: findSectionHeaders.js — top-level
+                  // new RegExp('\\bMARK:\\s*(.*)$', 'd') бросает ПРИ ЗАГРУЗКЕ модуля →
+                  // мёртв весь бандл. Срезаем флаг. Глобальную обёртку RegExp не
+                  // делаем — ломает именованные группы (?<name>) в 1С.
+                  { search: "(.*)$', 'd'", replace: "(.*)$', ''" }
+                ]
+              }
+            }
+          ]
         },
         {
           test: /\.js$/,
@@ -131,6 +153,15 @@ module.exports = (env, argv) => {
         }]
     },
     plugins: [
+      // #10: валим сборку, если строковый патч monaco не наложился (дрейф версии)
+      {
+        apply(compiler) {
+          compiler.hooks.afterEmit.tapAsync('AssertMonacoPatches', (compilation, cb) => {
+            try { replaceStrings.assertApplied(); cb(); }
+            catch (e) { cb(e); }
+          });
+        },
+      },
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser'

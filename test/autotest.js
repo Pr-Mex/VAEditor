@@ -1,3 +1,5 @@
+import '../src/polyfills' // ПЕРВЫМ: queueMicrotask/ResizeObserver до загрузки monaco
+
 // Страница автотестов — та же страница редактора: разметку, провайдер и
 // публичный API создаёт src/main. Без этого импорта test.html остаётся пустым.
 import '../src/main'

@@ -27,10 +27,11 @@ self.MonacoEnvironment = {
   }
 };
 
+import "./polyfills"; // ПЕРВЫМ: queueMicrotask/ResizeObserver до загрузки monaco
 import "./media/debug";
 import "./media/tabs";
 import "./media/welcome";
-import { setLocaleData } from 'monaco-editor-nls';
+import { setLocaleData } from './nls/nls';
 import { patchWebKit1C } from "./1c-webkit-patch";
 import { initErrorReporting } from "./error-reporting";
 
@@ -39,13 +40,17 @@ let queryString = reg.exec(window.location.search);
 // 1С передаёт код языка интерфейса: ru, ru-RU, en и т.п.
 let localeCode = (queryString ? decodeURIComponent(queryString[1]) : 'en').toLowerCase().split(/[-_]/)[0];
 console.log('Current locale is: ' + localeCode);
-
-// Локали Monaco весят по ~0.5 МБ, а используется всегда ровно одна. Поэтому
-// список языков задан явно: require с переменной в пути заставляет webpack
-// включить в бандл все 20 локалей пакета (~9 МБ в странице). Языка нет в
-// списке — Monaco остаётся на английском.
-if (localeCode === 'ru') {
-  setLocaleData(require('monaco-editor-nls/locale/ru.json'));
+// Локали Monaco весят по ~0.5 МБ каждая, поэтому вендорим только нужные в
+// src/nls/locale: require с переменной в пути собирает контекст лишь по этим
+// файлам, а не по всем локалям пакета.
+if (localeCode !== 'en') {
+  // Отсутствие вендоренной локали — не ошибка (фолбэк на английский).
+  try {
+    const localeData = require('./nls/locale/' + localeCode + '.json');
+    setLocaleData(localeData);
+  } catch (e) {
+    console.warn('VAEditor: нет вендоренной локали "' + localeCode + '", использую английский.');
+  }
 }
 
 import { VanessaTabs } from "./vanessa-tabs";
@@ -62,8 +67,9 @@ applyUiEnvironment();
 initErrorReporting();
 initPage();
 
-import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
-StaticServices.standaloneThemeService.get().registerEditorContainer(document.body);
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+import { IStandaloneThemeService } from 'monaco-editor/esm/vs/editor/standalone/common/standaloneTheme';
+StandaloneServices.get(IStandaloneThemeService).registerEditorContainer(document.body);
 
 // configurable: свойства переопределяются повторно, если страницу инициализируют
 // дважды (например, в test.html оказались чанки обоих входов).
