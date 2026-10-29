@@ -15,8 +15,10 @@ if (-not $Root) {
     $Root = Split-Path $scriptDir -Parent
 }
 
-# Локальный прогон того же сценария, что выполняет AppVeyor:
-# сборка фронта -> макеты из dist -> чистая база -> epf -> автотест.
+# Локальный прогон того же сценария, что выполняет CI (GitHub Actions,
+# .github/workflows/build.yml): сборка фронта -> макеты из dist -> чистая база
+# -> epf -> автотест. В CI автотест идёт в headless-браузере, здесь — в WebView
+# платформы: только так проверяются file://, старый WebKit и blob-воркеры.
 #
 # Запуск (из корня репозитория):
 #   powershell -ExecutionPolicy Bypass -File tools\local-check.ps1 "C:\Program Files (x86)\1cv8t\8.3.27.2342\bin"
