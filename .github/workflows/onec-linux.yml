@@ -88,16 +88,19 @@ jobs:
 
       - name: Установка
         run: |
-          debs=$(find ~/1c/dist -name '*.deb' | sort)
-          if [ -n "$debs" ]; then
-            echo "deb-пакетов: $(echo "$debs" | wc -l)"
-            sudo dpkg -i $debs || sudo apt-get -f install -y
-          else
-            echo 'deb нет'
+          run=$(ls ~/1c/dist/*.run 2>/dev/null | head -1)
+          if [ -z "$run" ]; then
+            echo '::error::установщик .run не найден'
+            exit 1
           fi
-          echo '--- /opt/1cv8 ---'
-          ls -la /opt/1cv8 2>/dev/null || true
+          echo "установщик: $run"
+          chmod +x "$run"
+          echo "::notice::help: $("$run" --help 2>&1 | head -25 | tr '\n' ' ')"
+          echo "::notice::components: $("$run" --list-components 2>&1 | head -20 | tr '\n' ' ')"
+          sudo "$run" --mode unattended --enable-components client_full,client_thin 2>&1 | tail -25 || true
           echo "::notice::opt: $(ls /opt/1cv8 2>/dev/null | tr '\n' ' ' || echo нет)"
+          echo "::notice::версии: $(ls /opt/1cv8/x86_64 2>/dev/null | tr '\n' ' ' || echo нет)"
+          echo "::notice::бины: $(find /opt/1cv8 -maxdepth 3 -name '1cv8*' -type f 2>/dev/null | head -10 | tr '\n' ' ')"
 
       - name: Xvfb и запуск клиента
         run: |
