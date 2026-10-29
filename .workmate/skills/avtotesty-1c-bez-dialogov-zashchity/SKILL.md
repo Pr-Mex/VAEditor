@@ -71,6 +71,37 @@ description: Как запускать автотесты VAEditor в 1С, чт�
 (пишет всё, что попадает в host, — `Write-Host`, вывод npm и 1cv8), а в `check.cmd`
 перенаправление убрано. Прогресс виден сразу и параллельно копится в лог.
 
+## Падение билда AppVeyor: как читать
+
+`status: failed` сам по себе ничего не говорит — смотреть надо лог job'а.
+
+```
+/api/projects/<account>/<slug>                        # последний билд, его jobId
+/api/projects/<account>/<slug>/build/<version>        # jobId, testsCount, artifactsCount
+/api/buildjobs/<jobId>/log                            # полный лог шага
+/api/buildjobs/<jobId>/tests                          # отчёт mocha, если тесты шли
+/api/buildjobs/<jobId>/artifacts                      # что реально залилось
+```
+
+Первым делом сравнить `artifactsCount` и наличие `success.txt`/меток: если их нет,
+тесты **не запускались**, и искать надо не в 1С и не в бандле, а в самом YAML.
+
+### ps-блок падает целиком из-за одной строки
+
+PowerShell-блок в `appveyor.yml` сначала разбирается целиком, и одна синтаксическая
+ошибка отменяет весь блок: до 1С дело не доходит, а билд падает уже в `on_failure`.
+
+Реальный случай: `Write-Host "--- $name: нет ---"` → `$name:` PowerShell читает как
+переменную области видимости:
+
+```
+Variable reference is not valid. ':' was not followed by a valid variable name character.
+Consider using ${} to delimit the name.
+```
+
+Лечится `${name}:`. Признак именно этой ошибки: в логе нет строки `> 1cv8ct ENTERPRISE ...`,
+`testsCount=0`, артефактов-меток нет, а билд «падал» минуты.
+
 ## Грабли
 
 - Признак успеха прогона — файл `success.txt` в корне проекта, а не код возврата клиента.

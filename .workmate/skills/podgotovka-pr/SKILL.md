@@ -34,6 +34,32 @@ git merge-base --is-ancestor origin/master develop
 5. Прогнать проверку (`npm run test:headless`, `check.cmd`).
 6. `git push origin develop` — после этого PR мержабелен.
 
+## Хотфикс в master, когда develop уже смержен
+
+Если билд `master` красный, а фикс — одна-две строки, ждать следующего PR незачем:
+
+```
+git checkout master && git pull --ff-only origin master
+git cherry-pick <sha из develop>
+git push origin master
+git checkout develop && git merge origin/master
+```
+
+Плюс: правится то, что реально сломано, без разбора конфликтов по всему PR.
+
+Дальше свести ветки. Если `git merge origin/master` падает (`Merge failed: Failed`,
+бывает на больших деревьях), проверить фактические вершины через `git rev-parse`
+(`log origin/master` в JGit врёт), и если `master` — это снимок той же работы,
+записать слияние, не меняя дерево:
+
+```
+git merge -s ours origin/master -m "Merge master into develop: master уже содержится в develop"
+```
+
+`-s ours` ставит `master` в предки `develop`, и следующий PR идёт fast-forward'ом
+без конфликтов. Применять только когда diff `origin/master develop` — это ровно
+то, что уже есть в `develop` (иначе молча потеряются чужие правки).
+
 ## Грабли
 
 - **Не переписывать историю ветки, по которой открыт PR.** Force-push меняет базу,
