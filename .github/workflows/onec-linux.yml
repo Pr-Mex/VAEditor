@@ -37,18 +37,28 @@ jobs:
       - name: Скачать и распаковать
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          set -euo pipefail
           mkdir -p ~/1c/dist
           cd ~/1c/dist
           base=https://raw.githubusercontent.com/lintest/tools1c/platform-linux
           for i in $(seq -w 1 17); do
-            curl -fsSL -O "$base/linux1c.7z.0$i"
+            curl -fsSL -O "$base/linux1c.7z.0$i" || echo "curl failed on $i"
           done
           ls -la
-          7z x -y linux1c.7z.001 > /dev/null
-          rm -f linux1c.7z.*
+          echo "--- место на диске ---"
+          df -h /
+          echo "--- 7z version ---"
+          7z | head -3
+          echo "--- листинг архива ---"
+          7z l linux1c.7z.001 2>&1 | tail -40
+          echo "--- распаковка ---"
+          7z x -y linux1c.7z.001 2>&1 | tail -40
+          echo "7z exit=$?"
+          echo "--- после распаковки ---"
+          du -sh ~/1c/dist
+          df -h /
 
       - name: Что внутри
+        if: always()
         run: |
           echo '--- каталоги (2 уровня) ---'
           find ~/1c/dist -maxdepth 2 -type d | head -40
