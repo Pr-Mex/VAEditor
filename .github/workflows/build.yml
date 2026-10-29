@@ -129,42 +129,13 @@ jobs:
           bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
           bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
 
-      # Клиент 1С может зависнуть навсегда (предупреждение безопасности, диалог,
-      # упавший скрипт в поле HTML), поэтому ждём результат с таймаутом.
-      # Клиент тонкий: внешняя обработка исполняется на сервере, где подтверждать
-      # «Разрешить открывать файл?» некому.
+      # Клиент 1С на хостинговом раннере не запускается: там нет интерактивной
+      # сессии, а клиенту нужно окно и WebView. Поэтому тесты гоняем в headless
+      # Edge через DevTools Protocol — тот же отчёт mocha, но секунды вместо
+      # минут и без 1С. Проверка в WebView платформы остаётся за check.cmd:
+      # старый WebKit 8.3.27 и file:// headless-браузер не воспроизводит.
       - name: Run autotest
-        id: autotest
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          $root = $env:GITHUB_WORKSPACE
-          $success = Join-Path $root 'success.txt'
-          $client = Join-Path $root 'bin\1cv8ct.exe'
-          $epf = Join-Path $root 'VAEditorSample.epf'
-          $db = Join-Path $root 'database'
-          $timeout = 120
-          $markers = @('client-started.txt', 'page-loaded.txt', 'autotest-result.txt')
-          foreach ($name in @('success.txt') + $markers) {
-            $stale = Join-Path $root $name
-            if (Test-Path $stale) { Remove-Item -Force $stale }
-          }
-          Write-Host "> 1cv8ct ENTERPRISE /Execute $epf /C autotest (timeout ${timeout}s)"
-          Start-Process -FilePath $client -ArgumentList @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', 'autotest')
-          $deadline = (Get-Date).AddSeconds($timeout)
-          while ((Get-Date) -lt $deadline -and -not (Test-Path $success)) { Start-Sleep -Seconds 2 }
-          Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
-          # Метки формы автотеста: client-started — форма открылась, page-loaded —
-          # страница догрузилась, autotest-result — тесты досчитали. По ним видно,
-          # на каком шаге клиент встал, когда success.txt не появился.
-          foreach ($name in $markers) {
-            $path = Join-Path $root $name
-            if (Test-Path $path) { Write-Host "--- ${name} ---"; Get-Content $path } else { Write-Host "--- ${name}: нет ---" }
-          }
-          if (-not (Test-Path $success)) {
-            throw "autotest did not finish in ${timeout}s: success.txt not created"
-          }
-          Write-Host 'autotest passed: success.txt created'
+        run: node tools/run-headless-tests.js
 
       - name: Upload artifacts
         if: always()
@@ -176,10 +147,6 @@ jobs:
             VAEditor.zip
             VAEditorSample.epf
             example.log
-            autotest-result.txt
-            client-started.txt
-            page-loaded.txt
-            storage-probe.txt
 
       - name: Draft release
         if: github.ref == 'refs/heads/master' && success()
