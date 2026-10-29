@@ -7,6 +7,7 @@
 	"scripts": {
 		"demo": "webpack serve --progress --mode development --env test --open test.html?demo",
 		"test": "webpack serve --progress --mode development --env test --open test.html?test",
+		"test:headless": "webpack --mode production --env test && node tools/run-headless-tests.js",
 		"build": "webpack --progress --mode production",
 		"build:test": "webpack --progress --mode production --env test",
 		"buildci": "webpack --mode production --env test",
@@ -62,7 +63,8 @@
 		"util": "^0.12.5",
 		"webpack": "^5.99.0",
 		"webpack-cli": "^7.0.2",
-		"webpack-dev-server": "^5.2.0"
+		"webpack-dev-server": "^5.2.0",
+		"ws": "^8.18.0"
 	},
 	"engines": {
 		"node": ">=18.0.0"

@@ -1,22 +1,29 @@
+import { workerUrl, workerDelivery } from './worker-source'
+
+// Воркеры Monaco — отдельные входы webpack, встроенные в страницу как base64
+// (tools/plugins/inlineWorkerSource.js). Отдельных js-файлов в поставке нет:
+// встроенный WebKit 1С по file:// их не загружает, а blob-url-loader с
+// compile-loader в этой сборке результат не отдавал.
+const WORKER_ASSETS: { [label: string]: string } = {
+  css: 'css-worker.js',
+  json: 'json-worker.js',
+  html: 'html-worker.js',
+  editor: 'editor-worker.js'
+}
+
 //@ts-ignore
 self.MonacoEnvironment = {
 	globalAPI: true,
-  getWorkerUrl: function (moduleId: string, label: string): string {
-    switch (label)
-    {
-      case 'css':
-        // tslint:disable-next-line: max-line-length
-        return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/language/css/css.worker");
-      case 'json':
-        // tslint:disable-next-line: max-line-length
-        return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/language/json/json.worker");
-      case 'html':
-        // tslint:disable-next-line: max-line-length
-        return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/language/html/html.worker");
-      default:
-        // tslint:disable-next-line: max-line-length
-        return require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!monaco-editor/esm/vs/editor/editor.worker");
-      }
+  // getWorker, а не getWorkerUrl: при пустом URL Monaco делает
+  // new Worker(''), пустой путь резолвится в саму страницу и WebView2 пишет в
+  // консоль "Unsafe attempt to load URL file:///...index.html" — то есть
+  // пытается загрузить file://-ресурс. Поэтому воркер создаём сами и бросаем
+  // понятную ошибку, если исходник в страницу не попал.
+  getWorker: function (moduleId: string, label: string): Worker {
+    const asset = WORKER_ASSETS[label] || WORKER_ASSETS.editor
+    const url = workerUrl(asset, workerDelivery())
+    if (!url) throw new Error('исходник воркера ' + asset + ' не встроен в страницу (window.__VAWorkerSources)')
+    return new Worker(url)
   }
 };
 

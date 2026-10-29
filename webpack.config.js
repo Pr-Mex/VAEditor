@@ -4,6 +4,7 @@ const path = require('path')
 const webpack = require('webpack')
 const nls = require.resolve('monaco-editor-nls')
 const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
+const InlineWorkerSourcePlugin = require('./tools/plugins/inlineWorkerSource')
 const RuntimeCompatPlugin = require('./tools/plugins/checkRuntimeCompat')
 const EmitVersionPlugin = require('./tools/plugins/emitVersion')
 
@@ -31,7 +32,17 @@ module.exports = (env, argv) => {
   // test.html нужен только автотестам и демо-режиму. Обычная сборка редактора
   // собирает один вход: второй бандл — это ещё столько же времени и мегабайт.
   const withTest = Boolean(env && env.test)
-  const entry = { app: './src/main' }
+  // Все воркеры собираются отдельными входами и вкладываются в страницу как
+  // base64 (InlineWorkerSourcePlugin): встроенный WebKit 1С открывает страницу
+  // по file:// и соседние js-файлы не загружает.
+  const workerEntry = {
+    'gherkin-worker': './src/languages/turbo-gherkin/worker.js',
+    'editor-worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+    'css-worker': 'monaco-editor/esm/vs/language/css/css.worker.js',
+    'json-worker': 'monaco-editor/esm/vs/language/json/json.worker.js',
+    'html-worker': 'monaco-editor/esm/vs/language/html/html.worker.js'
+  }
+  const entry = { app: './src/main', ...workerEntry }
   if (withTest) entry.test = './test/autotest.js'
 
   return {
@@ -57,8 +68,6 @@ module.exports = (env, argv) => {
     },
     resolveLoader: {
       alias: {
-        'blob-url-loader': require.resolve('./tools/loaders/blobUrl'),
-        'compile-loader': require.resolve('./tools/loaders/compile'),
         'monaco-nls': require.resolve('./tools/loaders/monacoNls'),
         'replace-strings': require.resolve('./tools/loaders/replaceStrings')
       }
@@ -147,18 +156,24 @@ module.exports = (env, argv) => {
         filename: 'index.html',
         title: 'VAEditor',
         cache: false,
-        chunks:['app'],
+        chunks: ['app'],
         template: path.resolve(__dirname, 'template.html')
       }),
-      ...(withTest ? [new HtmlWebpackPlugin({
-        filename: 'test.html',
-        title: 'VAEditor',
-        cache: false,
-        // Без фильтра сюда попадут чанки обоих входов: src/main исполнится
-        // дважды, а он определяет неконфигурируемые свойства на window.
-        chunks: ['test'],
-        template: path.resolve(__dirname, 'template.html')
-      })] : []),
+      ...(withTest
+        ? [new HtmlWebpackPlugin({
+            filename: 'test.html',
+            title: 'VAEditor',
+            cache: false,
+            // Без фильтра сюда попадут чанки обоих входов: src/main исполнится
+            // дважды, а он определяет неконфигурируемые свойства на window.
+            chunks: ['test'],
+            template: path.resolve(__dirname, 'template.html')
+          })]
+        : []),
+      // Последним: страницы уже собраны, остаётся вложить в них исходники
+      // воркеров — по file:// WebKit 1С соседние файлы не отдаёт.
+      new InlineWorkerSourcePlugin(Object.keys(workerEntry).map(name => name + '.js'),
+        withTest ? ['index.html', 'test.html'] : ['index.html']),
     ],
     // mocha ищет тесты через require с выражением — это норма для него, но шум
     // в выводе мешает замечать настоящие предупреждения.

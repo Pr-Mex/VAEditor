@@ -6,7 +6,8 @@
 // блокируется с сообщением "Unsafe attempt to load URL ... 'file:' URLs are
 // treated as unique security origins".
 //
-// После инлайна итоговый index.html не тянет ни одного внешнего файла.
+// После инлайна итоговый index.html не тянет ни одного внешнего файла:
+// бандлы воркеров тоже лежат в странице как base64 (InlineWorkerSourcePlugin).
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
@@ -27,6 +28,13 @@ function escapeInline (source) {
 class InlineChunksPlugin {
   apply (compiler) {
     compiler.hooks.compilation.tap('InlineChunksPlugin', (compilation) => {
+      // Дочерние компиляции (compile-loader собирает в них воркеры) наследуют
+      // этот tap через Compiler.createChildCompiler. У них нет ни страниц, ни
+      // задачи инлайна, а в production ниже удаляются .js-ассеты чанков —
+      // то есть дочерняя компиляция вычищала собственный результат, и
+      // runAsChild отдавал пустоту.
+      if (compilation.compiler.isChild && compilation.compiler.isChild()) return
+
       HtmlWebpackPlugin.getHooks(compilation).alterAssetTagGroups.tap('InlineChunksPlugin', (data) => {
         const inline = (tag) => {
           const attributes = tag.attributes || {}
@@ -107,6 +115,8 @@ class InlineChunksPlugin {
           // Содержимое всех чанков уже внутри страницы, отдельные файлы в
           // поставке не нужны: иначе dist выглядит так, будто внешние ресурсы
           // всё ещё грузятся, и их легко случайно положить в архив.
+          // Воркеры к этому моменту вложены в страницу как base64
+          // (InlineWorkerSourcePlugin, стадия OPTIMIZE_INLINE идёт раньше).
           if (compiler.options.mode !== 'production') return
           for (const chunk of compilation.chunks) {
             for (const file of chunk.files) {

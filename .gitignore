@@ -13,3 +13,5 @@ autotest-result.txt
 tools/.agent-command.txt
 tools/.agent-running.txt
 tools/.agent-log.txt
+/success.txt
+tools/.agent-log*.txt

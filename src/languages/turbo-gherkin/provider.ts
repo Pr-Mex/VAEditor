@@ -3,28 +3,175 @@ import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/s
 import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs/editor/common/modes';
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
+import { process } from './worker';
 import { language, GherkinLanguage } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
 import { ActionManager } from '../../actions';
 import { VACodeError, VAQuickAction } from './quickfix';
+import { workerUrl, setWorkerDelivery } from '../../worker-source';
 
-const blob = require("blob-url-loader?type=application/javascript!compile-loader?target=worker&emit=false!/src/languages/turbo-gherkin/worker.js");
-const worker = new Worker(blob);
+// Воркер встраивается в страницу как base64 (InlineWorkerSourcePlugin):
+// отдельный файл рядом со страницей встроенный WebKit/WebView2 по file://
+// не загружает. Из встроенной строки собираются blob- и data-URL.
+const WORKER_ASSET = 'gherkin-worker.js';
+
+type WorkerMode = 'blob' | 'data' | 'none';
+
+function workerUrlFor(mode: WorkerMode): string {
+  return workerUrl(WORKER_ASSET, mode);
+}
+
+function nextWorkerMode(mode: WorkerMode): WorkerMode {
+  if (mode === 'blob') return 'data';
+  return 'none';
+}
+
 let workerMessageId = 0;
 const messageMap = new Map<number, any>();
 
-worker.onmessage = function (e) {
-  const msg = e.data;
-  const promise = msg.id && messageMap.get(msg.id);
-  if (promise) {
-    messageMap.delete(msg.id);
-    if (msg.success)
-      promise.resolve(msg.data);
-    else
-      promise.reject(msg.data);
+// Воркер может оказаться недоступен любым способом: политика WebView может
+// запретить и blob, и data. Тогда запросы провайдера повисли бы навсегда,
+// поэтому держим копию сообщений и переигрываем их в главном потоке — логика
+// в worker.ts чистая функция и от окружения воркера не зависит. Это аварийный
+// режим: он теряет многопоточность.
+const WORKER_TIMEOUT = 3000;
+// Первый ответ ждём короче: если воркер мёртв, нельзя съедать весь таймаут
+// теста (в mocha по умолчанию 2 с).
+const PROBE_TIMEOUT = 800;
+let workerAnswered = false;
+let workerAlive = true;
+let workerMode: WorkerMode = 'blob';
+let worker: Worker = null;
+const replay: WorkerMessage[] = [];
+
+// Диагностика для отчёта: нужно понять, воркер вообще стартовал или молчит.
+export const workerDiagnostics: string[] = [];
+(window as any).VAWorkerDiagnostics = workerDiagnostics;
+
+function flushPending() {
+  const pending = Array.from(messageMap.entries());
+  messageMap.clear();
+  pending.forEach(([, item]) => {
+    try { item.resolve(runLocally(item.message)); }
+    catch (e) { item.reject(e); }
+  });
+}
+
+// Повторная отправка в новый воркер: сначала состояние моделей, потом
+// запросы, которые всё ещё ждут ответа.
+function resend() {
+  replay.forEach(message => worker.postMessage(message));
+  messageMap.forEach(item => worker.postMessage(item.message));
+}
+
+// Переход на следующий способ доставки. Ложь — способы кончились, остаётся
+// главный поток.
+function switchWorker(from: WorkerMode): boolean {
+  const next = nextWorkerMode(from);
+  if (next === 'none') return false;
+  const target = startWorker(next);
+  if (!target) return switchWorker(next);
+  workerDiagnostics.push('воркер (' + from + ') недоступен — пробую ' + next);
+  worker = target;
+  workerMode = next;
+  // Monaco создаёт свои воркеры лениво: сообщаем ему проверенный способ.
+  setWorkerDelivery(next);
+  resend();
+  return true;
+}
+
+function onWorkerFailure(mode: WorkerMode, text: string) {
+  workerDiagnostics.push('worker.onerror (' + mode + '): ' + text);
+  if (switchWorker(mode)) return;
+  workerAlive = false;
+  workerMode = 'none';
+  flushPending();
+}
+
+function attach(target: Worker, mode: WorkerMode) {
+  target.onmessage = function (e) {
+    workerAnswered = true;
+    const msg = e.data;
+    const promise = msg.id && messageMap.get(msg.id);
+    if (promise) {
+      messageMap.delete(msg.id);
+      if (msg.success) {
+        promise.resolve(msg.data);
+      } else {
+        // Ошибку воркера видно только здесь: тест, у которого промис
+        // отклонён без catch, просто висит до таймаута mocha.
+        workerDiagnostics.push('воркер вернул ошибку: ' + String(msg.data).slice(0, 500));
+        promise.reject(msg.data);
+      }
+    }
+  };
+  target.onerror = function (e: ErrorEvent) {
+    // Пустое сообщение — типичный признак запрета загрузки скрипта, поэтому
+    // печатаем и место: оно отличает «исходника нет в странице» от «политика
+    // не пустила».
+    const place = e && e.filename ? ' ' + e.filename + ':' + e.lineno + ':' + e.colno : '';
+    onWorkerFailure(mode, ((e && e.message) || 'без текста') + place);
+  };
+}
+
+function startWorker(mode: WorkerMode): Worker {
+  try {
+    const url = workerUrlFor(mode);
+    if (!url) throw new Error('исходник воркера не встроен в страницу (window.__VAWorkerSources)');
+    const target = new Worker(url);
+    attach(target, mode);
+    return target;
+  } catch (e) {
+    workerDiagnostics.push('воркер (' + mode + ') не создан: ' + ((e && e.message) || e));
+    return null;
   }
+}
+
+worker = startWorker('blob');
+if (!worker && !switchWorker('blob')) {
+  workerAlive = false;
+  workerMode = 'none';
+}
+
+function isRequest(type: MessageType): boolean {
+  switch (type) {
+    case MessageType.GetCodeFolding:
+    case MessageType.GetCodeActions:
+    case MessageType.GetHiperlinks:
+    case MessageType.GetLineHover:
+    case MessageType.GetLinkData:
+    case MessageType.GetCompletions:
+    case MessageType.CheckSyntax:
+      return true;
+  }
+  return false;
+}
+
+function remember(message: WorkerMessage) {
+  if (isRequest(message.type)) return;
+  if (message.type === MessageType.UpdateModel) {
+    // От модели нужно только последнее состояние.
+    const index = replay.findIndex(m => m.type === MessageType.UpdateModel && m.uri === message.uri);
+    if (index >= 0) replay.splice(index, 1);
+  }
+  replay.push(message);
+}
+
+function send(message: WorkerMessage) {
+  remember(message);
+  if (workerAlive) worker.postMessage(message);
+  else process(message);
+}
+
+function runLocally<T>(message: WorkerMessage): T {
+  const pending = replay.splice(0, replay.length);
+  pending.forEach(m => process(m));
+  const result: any = process(message);
+  if (!result) return undefined;
+  if (!result.success) throw new Error('Gherkin: запрос вернул пустой результат');
+  return result.data as T;
 }
 
 function postMessage<T>(mod: monaco.editor.ITextModel, message: WorkerMessage)
@@ -34,7 +181,7 @@ function postMessage<T>(mod: monaco.editor.ITextModel, message: WorkerMessage)
     const versionId = model.getVersionId();
     if (model.workerVersionId !== versionId) {
       model.workerVersionId = versionId;
-      worker.postMessage({
+      send({
         type: MessageType.UpdateModel,
         content: model.getLinesContent(),
         tabSize: model.getOptions().tabSize,
@@ -43,17 +190,42 @@ function postMessage<T>(mod: monaco.editor.ITextModel, message: WorkerMessage)
       });
     }
   }
-  const id = message.id = ++workerMessageId;
-  function init(resolve, reject) {
-    messageMap.set(id, { resolve, reject });
+
+  if (!workerAlive) {
+    return new Promise<T>((resolve, reject) => {
+      try { resolve(runLocally<T>(message)); } catch (e) { reject(e); }
+    });
   }
-  const promise = new Promise<T>(init);
+
+  const id = message.id = ++workerMessageId;
+  const promise = new Promise<T>((resolve, reject) => {
+    messageMap.set(id, { resolve, reject, message });
+  });
   worker.postMessage(message);
+  armTimeout(id, workerMode);
   return promise;
 }
 
+// Молчание воркера — тоже сбой. Сначала пробуем другой способ доставки
+// (файл → blob), и только если он тоже молчит, уходим в главный поток.
+function armTimeout(id: number, mode: WorkerMode) {
+  const timeout = workerAnswered ? WORKER_TIMEOUT : PROBE_TIMEOUT;
+  setTimeout(() => {
+    if (!messageMap.has(id)) return;
+    if (switchWorker(mode)) {
+      // Новому способу доставки даём собственное окно ожидания.
+      armTimeout(id, workerMode);
+      return;
+    }
+    workerDiagnostics.push('воркер (' + mode + ') не ответил за ' + timeout + ' мс');
+    workerAlive = false;
+    workerMode = 'none';
+    flushPending();
+  }, timeout);
+}
+
 export function clearWorkerCache(uri: monaco.Uri) {
-  worker.postMessage({ type: MessageType.DeleteModel, uri: uri.toString() });
+  send({ type: MessageType.DeleteModel, uri: uri.toString() });
 }
 
 export class VanessaGherkinProvider {
@@ -90,7 +262,7 @@ export class VanessaGherkinProvider {
   public get matcher() { return this._matcher; }
 
   public setKeywords = (arg: string): void => {
-    worker.postMessage({ type: MessageType.SetKeywords, data: arg });
+    send({ type: MessageType.SetKeywords, data: arg });
     this._matcher = new KeywordMatcher(arg);
     this.matcher.setKeypairs(this.keypairs);
     this.matcher.setMetatags(this.metatags);
@@ -99,7 +271,7 @@ export class VanessaGherkinProvider {
   }
 
   public setDirectives = (arg: string): void => {
-    worker.postMessage({ type: MessageType.SetDirectives, data: arg });
+    send({ type: MessageType.SetDirectives, data: arg });
     this._directives = JSON.parse(arg) as ISpprDirect;
     this.matcher?.setDirectives(this.directives);
   }
@@ -111,7 +283,7 @@ export class VanessaGherkinProvider {
       this.keypairs[key.toLowerCase()] = data[key].map((w: string) => w.toLowerCase())
     );
     this.matcher?.setKeypairs(this.keypairs);
-    worker.postMessage({ type: MessageType.SetKeypairs, data: this.keypairs });
+    send({ type: MessageType.SetKeypairs, data: this.keypairs });
   }
 
   public setMetatags = (arg: string): void => {
@@ -120,33 +292,33 @@ export class VanessaGherkinProvider {
     list.forEach((w: string) => this._metatags.push(w));
     this.matcher?.setMetatags(this.metatags);
     this.initTokenizer();
-    worker.postMessage({ type: MessageType.SetMetatags, data: this.metatags });
+    send({ type: MessageType.SetMetatags, data: this.metatags });
   }
 
   public setSPPR = (arg: boolean): void => {
-    worker.postMessage({ type: MessageType.SetSPPR, sppr: arg });
+    send({ type: MessageType.SetSPPR, sppr: arg });
     this._sppr = arg;
     this.matcher?.setSPPR(arg);
   }
 
   public setMessages = (arg: string): void => {
-    worker.postMessage({ type: MessageType.SetMessages, data: arg });
+    send({ type: MessageType.SetMessages, data: arg });
   }
 
   public setImports = (arg: string): void => {
-    worker.postMessage({ type: MessageType.SetImports, data: arg });
+    send({ type: MessageType.SetImports, data: arg });
   }
 
   public setElements = (values: string, clear: boolean = false): void => {
-    worker.postMessage({ type: MessageType.SetElements, values, clear });
+    send({ type: MessageType.SetElements, values, clear });
   }
 
   public setVariables = (values: string, clear: boolean = false): void => {
-    worker.postMessage({ type: MessageType.SetVariables, values, clear });
+    send({ type: MessageType.SetVariables, values, clear });
   }
 
   public setStepList = (list: string, clear: boolean = false): void => {
-    worker.postMessage({ type: MessageType.SetSteplist, list, clear });
+    send({ type: MessageType.SetSteplist, list, clear });
     VanessaEditor.checkAllSyntax();
   }
 

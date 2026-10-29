@@ -139,7 +139,7 @@ export type WorkerMessage =
   | { id?: number, type: MessageType.SetVariables, values: string, clear: boolean }
   | { id?: number, type: MessageType.SetDirectives, data: any }
   | { id?: number, type: MessageType.SetImports, data: any }
-  | { id?: number, type: MessageType.UpdateModel, versionId: number, uri: string }
+  | { id?: number, type: MessageType.UpdateModel, versionId: number, uri: string, content: string[], tabSize: number }
   | { id?: number, type: MessageType.DeleteModel, uri: string }
   | { id?: number, type: MessageType.GetCodeActions, versionId: number, uri: string, errors: VACodeError[] }
   | { id?: number, type: MessageType.GetCodeFolding, versionId: number, uri: string }
