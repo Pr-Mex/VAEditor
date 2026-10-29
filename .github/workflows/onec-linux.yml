@@ -171,13 +171,12 @@ jobs:
       # это /opt/1cv8t/conf/conf.cfg, нужен sudo.
       - name: conf.cfg
         run: |
-          cfg='SystemLanguage=System
-DisableUnsafeActionProtection=.*'
           # Точный путь, откуда платформа читает conf.cfg на Linux, зависит от
           # поставки — пишем во все три кандидата, лишнее не мешает.
           for dir in /opt/1cv8t/conf /opt/1cv8/conf "$HOME/.1cv8/1C/1cv8/conf"; do
             sudo mkdir -p "$dir"
-            printf '%s\n' "$cfg" | sudo tee "$dir/conf.cfg" > /dev/null
+            { echo 'SystemLanguage=System'; echo 'DisableUnsafeActionProtection=.*'; } \
+              | sudo tee "$dir/conf.cfg" > /dev/null
             echo "::notice::$dir/conf.cfg: $(sudo cat "$dir/conf.cfg" | tr '\n' ' ')"
           done
 
