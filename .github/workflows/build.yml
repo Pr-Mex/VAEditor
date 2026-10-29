@@ -126,8 +126,14 @@ jobs:
         run: |
           if not exist database mkdir database
           bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
+          if errorlevel 1 echo ERROR: CREATEINFOBASE failed
+          if errorlevel 1 exit /b 1
           bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
+          if errorlevel 1 echo ERROR: LoadConfigFromFiles failed
+          if errorlevel 1 exit /b 1
           bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
+          if errorlevel 1 echo ERROR: LoadExternalDataProcessorOrReportFromFiles failed
+          if errorlevel 1 exit /b 1
 
       # Клиент 1С на хостинговом раннере не запускается: там нет интерактивной
       # сессии, а клиенту нужно окно и WebView. Поэтому тесты гоняем в headless
