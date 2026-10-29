@@ -36,6 +36,14 @@ if (-not $Root) {
 
 $ErrorActionPreference = 'Stop'
 
+# 1cv8.exe пишет /Out-лог в системной ANSI-кодировке (cp1251 на русской Windows),
+# а не в UTF-8. При чтении по умолчанию кириллица превращается в знаки вопроса —
+# поэтому логи платформы читаем с явной кодировкой.
+function Read-1CLog([string]$Path) {
+    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    return [System.Text.Encoding]::GetEncoding(1251).GetString($bytes)
+}
+
 if (Test-Path $PlatformBin -PathType Leaf) {
     $binDir = Split-Path -Parent $PlatformBin
 } else {
@@ -146,7 +154,7 @@ if (Test-Path $log3) { Remove-Item -Force $log3 }
 Invoke-1C $designer @('CREATEINFOBASE', "File=$db")
 if (-not (Wait-Path $db 60)) { throw 'CREATEINFOBASE failed: base directory not created' }
 Invoke-1C $designer @('DESIGNER', "/F$db", '/LoadConfigFromFiles', (Join-Path $Root 'config'), '/UpdateDBCfg', '/DisableStartupDialogs', '/DisableStartupMessages', '/Out', $log3)
-if (Test-Path $log3) { Write-Host '--- step3.log ---'; Get-Content $log3; Write-Host '--- end ---' }
+if (Test-Path $log3) { Write-Host '--- step3.log ---'; Write-Host (Read-1CLog $log3); Write-Host '--- end ---' }
 
 Write-Host '=== 4. Build epf ==='
 $epf = Join-Path $Root 'VAEditorSample.epf'
@@ -154,7 +162,7 @@ $log = Join-Path $Root 'example.log'
 if (Test-Path $epf) { Remove-Item -Force $epf }
 if (Test-Path $log) { Remove-Item -Force $log }
 Invoke-1C $designer @('DESIGNER', "/F$db", '/LoadExternalDataProcessorOrReportFromFiles', (Join-Path $Root 'example\VAEditorSample.xml'), $epf, '/DisableStartupDialogs', '/DisableStartupMessages', '/Out', $log)
-if (Test-Path $log) { Write-Host '--- example.log ---'; Get-Content $log; Write-Host '--- end ---' }
+if (Test-Path $log) { Write-Host '--- example.log ---'; Write-Host (Read-1CLog $log); Write-Host '--- end ---' }
 if (-not (Wait-Path $epf 120)) { throw 'epf build failed: file not created' }
 
 Write-Host ("=== 5. Run autotest (timeout " + $TestTimeoutSeconds + "s) ===")
