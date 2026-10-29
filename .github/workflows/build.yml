@@ -25,7 +25,8 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 60
+    # Билд занимает ~3 минуты; лишний час только маскирует зависание.
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
