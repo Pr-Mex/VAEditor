@@ -60,6 +60,24 @@ git merge -s ours origin/master -m "Merge master into develop: master уже с�
 без конфликтов. Применять только когда diff `origin/master develop` — это ровно
 то, что уже есть в `develop` (иначе молча потеряются чужие правки).
 
+## Чеки PR
+
+В PR работают два обязательных workflow: `frontend` (`linux.yml` — `standard`,
+`check:es`, сборка) и `build`/`platform` (`build.yml` и `onec-linux.yml`).
+Первый падает чаще всего и мгновенно — за секунду.
+
+Типовое падение `Check code style`:
+
+```
+tools/check-es-level.js:56:16: Missing space before function parentheses.
+webpack.config.js:228:65: Unexpected trailing comma.
+```
+
+`standard` требует пробел перед скобками в объявлениях функций
+(`function isCode (text)`), а не только в вызовах, и не терпит висячую запятую
+после последнего аргумента многострочного вызова. Лечится `npx standard --fix`,
+но перед пушем полезно прогнать `npm run codestyle` — ошибки видны сразу.
+
 ## Грабли
 
 - **Не переписывать историю ветки, по которой открыт PR.** Force-push меняет базу,
