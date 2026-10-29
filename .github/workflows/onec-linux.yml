@@ -133,7 +133,7 @@ jobs:
             echo '::error::1cv8t не найден'
             exit 1
           fi
-          "$bin" --version 2>&1 | head -3 || true
+          timeout 60 "$bin" --version 2>&1 | head -3 || true
           echo "::notice::ldd: $(ldd "$bin" 2>&1 | grep -c 'not found') not found"
           echo "::notice::ldd-list: $(ldd "$bin" 2>&1 | grep 'not found' | head -8 | tr '\n' ' ')"
           set +e
