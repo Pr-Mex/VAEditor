@@ -35,12 +35,11 @@ set "LAUNCH=%~1"
 if not "%~1"=="" goto launch_ready
 set "LAUNCH=autotest"
 :launch_ready
-
-pwsh -NoProfile -ExecutionPolicy Bypass -File "tools\local-check.ps1" "!PLATFORM!" -Launch "!LAUNCH!" > "tools\.agent-log.txt" 2>&1
-
+echo Running: !LAUNCH! on !PLATFORM!
+echo Live log is duplicated to tools\.agent-log.txt
 echo.
-echo === tail of tools\.agent-log.txt ===
-pwsh -NoProfile -Command "Get-Content 'tools\.agent-log.txt' -Encoding UTF8 -Tail 45"
+
+pwsh -NoProfile -ExecutionPolicy Bypass -File "tools\local-check.ps1" "!PLATFORM!" -Launch "!LAUNCH!"
 
 if exist "autotest-result.txt" (
     echo.
