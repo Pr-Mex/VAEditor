@@ -27,15 +27,26 @@ jobs:
             libasound2t64 libxslt1.1 libxfixes3 libxcursor1 libxrandr2 \
             libcups2t64 libpango-1.0-0 libcairo2
 
+      - name: Resolve platform version
+        id: platform
+        run: |
+          git config --local --unset-all "http.https://github.com/.extraheader" || true
+          sha=$(git ls-remote https://github.com/lintest/tools1c.git refs/heads/platform-linux | cut -f1)
+          if [ -z "$sha" ]; then echo 'ERROR: cannot resolve platform-linux'; exit 1; fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "::notice::platform-linux sha=$sha"
+
       - name: Кэш платформы
         id: cache
         uses: actions/cache@v4
         with:
           path: ~/1c
-          key: onec-linux-platform-v2
+          key: p1c-linux-${{ steps.platform.outputs.sha }}
 
       - name: Скачать и распаковать
         if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          KEY_1CV8T: ${{ secrets.KEY_1CV8T }}
         run: |
           mkdir -p ~/1c/dist
           cd ~/1c/dist
@@ -44,19 +55,20 @@ jobs:
             curl -fsSL -O "$base/linux1c.7z.0$i" || echo "curl failed on $i"
           done
           ls -la
-          echo "--- место на диске ---"
           df -h /
-          echo "--- 7z ---"
-          7z | head -3 || echo '7z не запускается'
-          echo "::notice::7z: $(7z | head -2 | tr '\n' ' ' || echo нет)"
-          echo "--- листинг архива ---"
-          7z l linux1c.7z.001 2>&1 | tail -20
-          echo "::notice::list rc=$? / $(7z l linux1c.7z.001 2>&1 | head -12 | tr '\n' ' ')"
-          echo "--- распаковка ---"
-          7z x -y linux1c.7z.001 2>&1 | tail -20
-          echo "::notice::extract rc=$? / $(ls ~/1c/dist | head -5 | tr '\n' ' ')"
-          rm -f linux1c.7z.*
-          du -sh ~/1c/dist
+          # Архив учебной поставки зашифрован: 7z спрашивает пароль и без него
+          # не отдаёт ни одного файла. Пробуем без пароля, затем с секретом —
+          # так же, как это делает build.yml на Windows.
+          if 7z x -y linux1c.7z.001 > extract.log 2>&1; then
+            echo '::notice::распаковано без пароля'
+          else
+            echo '::notice::без пароля не вышло, пробую KEY_1CV8T'
+            7z x -y -p"$KEY_1CV8T" linux1c.7z.001 > extract.log 2>&1 || true
+          fi
+          tail -15 extract.log
+          echo "::notice::верхний уровень: $(ls | grep -v 'linux1c.7z' | head -10 | tr '\n' ' ')"
+          echo "::notice::размер: $(du -sh . | cut -f1)"
+          rm -f linux1c.7z.* extract.log
 
       - name: Что внутри
         if: always()
