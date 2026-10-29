@@ -15,3 +15,7 @@ tools/.agent-running.txt
 tools/.agent-log.txt
 /success.txt
 tools/.agent-log*.txt
+storage-probe.txt
+/.workmate
+/HANDOVER.md
+/tools/agent-run.ps1
