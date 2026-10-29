@@ -1,0 +1,159 @@
+name: build
+
+# Перенос appveyor.yml. Сборка, epf и артефакты — рабочие шаги.
+# Шаг автотеста помечен continue-on-error: на хостинговом раннере нет
+# гарантированной интерактивной сессии, а клиенту 1С нужно окно.
+# Первый прогон покажет, запускается ли он; после проверки флаг снимается.
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - ci/github-actions
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      # Учебная поставка платформы 1С лежит отдельным репозиторием, архив под паролем.
+      - name: Fetch 1C platform
+        shell: cmd
+        env:
+          KEY_1CV8T: ${{ secrets.KEY_1CV8T }}
+        run: |
+          git clone -q --branch=platform https://github.com/lintest/tools1c.git bin
+          cd bin
+          "C:\Program Files\7-Zip\7z.exe" x tools1c.part01.rar -p%KEY_1CV8T% > nul
+
+      - name: Fetch OneScript
+        shell: cmd
+        run: |
+          git clone -q --branch=oscript.w64 https://github.com/lintest/tools1c.git oscript
+          cd oscript
+          "C:\Program Files\7-Zip\7z.exe" x *.zip > nul
+
+      # Версия сборки: версия из package.json плюс номер прогона, как было в AppVeyor.
+      - name: Set build version
+        id: version
+        shell: pwsh
+        run: |
+          $package = Get-Content -Raw -Path package.json | ConvertFrom-Json
+          $package.version = "$($package.version).${{ github.run_number }}"
+          $package | ConvertTo-Json | Out-File -Encoding UTF8 version.json
+          "version=$($package.version)" >> $env:GITHUB_OUTPUT
+          Write-Host "build version: $($package.version)"
+
+      - name: Install dependencies
+        run: npm -q --no-progress ci
+
+      - name: Build frontend
+        run: npm run buildci
+
+      # index.html самодостаточен: скрипты встроены внутрь страницы,
+      # внешние файлы в поставку не нужны.
+      - name: Pack artifacts
+        shell: cmd
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" a VAEditor.zip %CD%\dist\index.html
+          chcp 65001 > nul & .\oscript\bin\oscript .\tools\onescript\ZipTemplates.os
+
+      # Защита от опасных действий не даёт запустить внешнюю обработку: клиент ждёт
+      # нажатия «Да» и висит до таймаута. Файл настроек ищется рядом с исполняемым
+      # файлом (bin), поэтому кладём его и туда, и в conf — раскладки поставок разные.
+      - name: Configure 1C protection
+        shell: pwsh
+        run: |
+          $value = 'DisableUnsafeActionProtection=.*'
+          foreach ($dir in @('conf', 'bin')) {
+            New-Item -ItemType Directory -Force -Path $dir | Out-Null
+            Set-Content -Path (Join-Path $dir 'conf.cfg') -Value $value -Encoding ASCII
+          }
+
+      - name: Build epf
+        shell: cmd
+        run: |
+          if not exist database mkdir database
+          bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
+          bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
+          bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
+
+      # Клиент 1С может зависнуть навсегда (предупреждение безопасности, диалог,
+      # упавший скрипт в поле HTML), поэтому ждём результат с таймаутом.
+      # Клиент тонкий: внешняя обработка исполняется на сервере, где подтверждать
+      # «Разрешить открывать файл?» некому.
+      - name: Run autotest
+        id: autotest
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $root = $env:GITHUB_WORKSPACE
+          $success = Join-Path $root 'success.txt'
+          $client = Join-Path $root 'bin\1cv8ct.exe'
+          $epf = Join-Path $root 'VAEditorSample.epf'
+          $db = Join-Path $root 'database'
+          $timeout = 120
+          $markers = @('client-started.txt', 'page-loaded.txt', 'autotest-result.txt')
+          foreach ($name in @('success.txt') + $markers) {
+            $stale = Join-Path $root $name
+            if (Test-Path $stale) { Remove-Item -Force $stale }
+          }
+          Write-Host "> 1cv8ct ENTERPRISE /Execute $epf /C autotest (timeout ${timeout}s)"
+          Start-Process -FilePath $client -ArgumentList @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', 'autotest')
+          $deadline = (Get-Date).AddSeconds($timeout)
+          while ((Get-Date) -lt $deadline -and -not (Test-Path $success)) { Start-Sleep -Seconds 2 }
+          Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
+          # Метки формы автотеста: client-started — форма открылась, page-loaded —
+          # страница догрузилась, autotest-result — тесты досчитали. По ним видно,
+          # на каком шаге клиент встал, когда success.txt не появился.
+          foreach ($name in $markers) {
+            $path = Join-Path $root $name
+            if (Test-Path $path) { Write-Host "--- ${name} ---"; Get-Content $path } else { Write-Host "--- ${name}: нет ---" }
+          }
+          if (-not (Test-Path $success)) {
+            throw "autotest did not finish in ${timeout}s: success.txt not created"
+          }
+          Write-Host 'autotest passed: success.txt created'
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vaeditor-${{ steps.version.outputs.version }}
+          if-no-files-found: warn
+          path: |
+            VAEditor.zip
+            VAEditorSample.epf
+            example.log
+            autotest-result.txt
+            client-started.txt
+            page-loaded.txt
+            storage-probe.txt
+
+      - name: Draft release
+        if: github.ref == 'refs/heads/master' && success()
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+          draft: true
+          prerelease: true
+          files: |
+            VAEditor.zip
+            VAEditorSample.epf
