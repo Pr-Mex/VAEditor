@@ -10,6 +10,14 @@
 
 const webpack = require('webpack')
 
+// WebKit платформы 1С 8.3.27 не знает globalThis, а собранный бандл воркера
+// (webpack-рантайм и код monaco) к нему обращается. В странице это имя
+// подставляет полифил, а воркер — отдельный бандл, и полифила в нём нет:
+// воркер падал с "Can't find variable: globalThis", а снаружи это выглядело
+// как молча упавший тест автотеста. Строка идемпотентна: там, где globalThis
+// уже есть, она присваивает его же.
+const GLOBAL_THIS_SHIM = 'var globalThis = self;\n'
+
 class InlineWorkerSourcePlugin {
   constructor (workerAssets, pages) {
     this.workerAssets = workerAssets
@@ -35,7 +43,9 @@ class InlineWorkerSourcePlugin {
               missing.push(name)
               continue
             }
-            sources[name] = Buffer.from(worker.source.source()).toString('base64')
+            const source = worker.source.source()
+            const text = Buffer.isBuffer(source) ? source.toString() : String(source)
+            sources[name] = Buffer.from(GLOBAL_THIS_SHIM + text).toString('base64')
           }
           if (missing.length) {
             compilation.errors.push(new Error(

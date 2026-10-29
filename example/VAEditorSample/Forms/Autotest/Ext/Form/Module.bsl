@@ -3,16 +3,11 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
 	// Параметр запуска доступен только в клиентском контексте: на сервере
 	// обращение к нему — ошибка "Переменная не определена (ПараметрЗапуска)".
-	// Поэтому здесь всегда готовится страница автотестов, а режим пробы
-	// временного хранилища включается в OnOpen (см. ниже).
-	TempDirectory = GetTempFileName();
-	DeleteFiles(TempDirectory);
-	CreateDirectory(TempDirectory);
-
+	// Поэтому здесь всегда готовятся макеты, а страница автотестов
+	// распаковывается на клиенте (см. LoadTestPage).
 	DataObject = FormAttributeToValue("Object");
-	ExtractTemplate(DataObject, TempDirectory, "VAEditor");
-	ExtractTemplate(DataObject, TempDirectory, "AutoTest");
-	VanessaEditorURL = TempDirectory + "/test.html";
+	EditorTemplateURL = PutToTempStorage(DataObject.GetTemplate("VAEditor"));
+	AutoTestTemplateURL = PutToTempStorage(DataObject.GetTemplate("AutoTest"));
 
 	DataDile = New File(DataObject.UsedFileName);
 	CurrentPath = DataDile.Path;
@@ -24,7 +19,25 @@ Procedure OnOpen(Cancel)
 
 	If StrStartsWith(ПараметрЗапуска, "probestorage") Then
 		PrepareProbeStorage();
+		Return;
 	EndIf;
+
+	If StrStartsWith(ПараметрЗапуска, "autotest") Then
+		WriteMarker("client-started.txt");
+	EndIf;
+
+	LoadTestPage();
+
+EndProcedure
+
+&AtClient
+Procedure WriteMarker(FileName)
+
+	// Метка для CI: по ней видно, дошёл ли клиент до формы и загрузилась ли
+	// страница, когда автотест не прислал результат.
+	TextWriter = New TextWriter(CurrentPath + FileName, TextEncoding.UTF8);
+	TextWriter.WriteLine(CurrentUniversalDateInMilliseconds());
+	TextWriter.Close();
 
 EndProcedure
 
@@ -41,16 +54,34 @@ Procedure PrepareProbeStorage()
 
 EndProcedure
 
-&AtServer
-Procedure ExtractTemplate(DataObject, Directory, TemplateName)
+&AtClient
+Procedure LoadTestPage()
 
-	BinaryData = DataObject.GetTemplate(TemplateName);
+	// Распаковка на клиенте: каталог, распакованный на сервере, клиентскому
+	// браузеру недоступен, а работа с файлами на сервере может быть запрещена.
+	Directory = ExtractTemplates(GetFromTempStorage(EditorTemplateURL));
+	ExtractTemplates(GetFromTempStorage(AutoTestTemplateURL), Directory);
+	VanessaEditorURL = Directory + "/test.html";
+
+EndProcedure
+
+&AtClient
+Function ExtractTemplates(BinaryData, Directory = "")
+
+	If IsBlankString(Directory) Then
+		Directory = GetTempFileName();
+		DeleteFiles(Directory);
+		CreateDirectory(Directory);
+	EndIf;
+
 	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
-	For each ZipFileEntry In ZipFileReader.Items Do
+	For Each ZipFileEntry In ZipFileReader.Items Do
 		ZipFileReader.Extract(ZipFileEntry, Directory, ZIPRestoreFilePathsMode.Restore);
 	EndDo;
 
-EndProcedure
+	Return Directory;
+
+EndFunction
 
 &AtServer
 Procedure PrepareProbePage(TempDirectory)
@@ -132,6 +163,10 @@ Procedure VanessaEditorURLDocumentComplete(Item)
 	If StrStartsWith(ПараметрЗапуска, "probestorage") Then
 		// Страница пробы сама сигналит о конце: тестовый раннер здесь не нужен.
 		Return;
+	EndIf;
+
+	If StrStartsWith(ПараметрЗапуска, "autotest") Then
+		WriteMarker("page-loaded.txt");
 	EndIf;
 
 	Items.VanessaEditor.Document.defaultView.VanessaAutotest(AppveyorURL);

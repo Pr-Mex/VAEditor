@@ -16,5 +16,7 @@ tools/.agent-log.txt
 /success.txt
 tools/.agent-log*.txt
 storage-probe.txt
+/client-started.txt
+/page-loaded.txt
 /HANDOVER.md
 /tools/agent-run.ps1

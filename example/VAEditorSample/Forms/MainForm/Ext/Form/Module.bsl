@@ -6,9 +6,14 @@ Var KeyCodeMap;
 &AtServer
 Procedure OnCreateAtServer(Cancel, StandardProcessing)
 
+	// Макеты отдаём на клиент адресами во временном хранилище: распаковка идёт
+	// на клиенте (см. LoadEditor). В клиент-серверном варианте каталог,
+	// распакованный на сервере, клиентскому браузеру недоступен, а работа
+	// с файлами на сервере может быть запрещена настройками.
 	DataObject = FormAttributeToValue("Object");
-	KeywordsURL = PutToTempStorage(DataObject.GetTemplate("Keywords"), UUID);
-	VanessaEditorLoad(DataObject.GetTemplate("VAEditor"));
+	EditorTemplateURL = PutToTempStorage(DataObject.GetTemplate("VAEditor"));
+	StepListTemplateURL = PutToTempStorage(DataObject.GetTemplate("StepList"));
+	KeywordsTemplateURL = PutToTempStorage(DataObject.GetTemplate("Keywords"));
 
 	ErrorCode = New UUID;
 	ErrorText = "Runtime error info";
@@ -25,6 +30,7 @@ EndProcedure
 &AtClient
 Procedure OnOpen(Cancel)
 	KeyCodeMap = GetKeyCodeMap();
+	LoadEditor();
 EndProcedure
 
 &AtClient
@@ -604,20 +610,54 @@ EndProcedure
 
 #Region Public
 
-&AtServer
-Procedure VanessaEditorLoad(TemplateBinaryData)
+&AtClient
+Procedure LoadEditor()
 
-	TempFileName = GetTempFileName();
-	DeleteFiles(TempFileName);
-	CreateDirectory(TempFileName);
+	If Not ValueIsFilled(EditorTemplateURL) Then
+		Return;
+	EndIf;
 
-	ZipFileReader = New ZipFileReader(TemplateBinaryData.OpenStreamForRead());
-	For each ZipFileEntry In ZipFileReader.Items Do
-		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-	EndDo;
-	VanessaEditorURL = TempFileName + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
+	EditorDirectory = ExtractTemplates(GetFromTempStorage(EditorTemplateURL));
+	VanessaEditorURL = EditorDirectory + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 
 EndProcedure
+
+&AtClient
+Function ExtractTemplates(BinaryData)
+
+	Directory = GetTempFileName();
+	DeleteFiles(Directory);
+	CreateDirectory(Directory);
+
+	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
+	For Each ZipFileEntry In ZipFileReader.Items Do
+		ZipFileReader.Extract(ZipFileEntry, Directory, ZIPRestoreFilePathsMode.Restore);
+	EndDo;
+
+	Return Directory;
+
+EndFunction
+
+&AtClient
+Function TemplateText(BinaryData, EntryBaseName = "")
+
+	// EntryBaseName = "" — берётся первый файл архива.
+	Directory = ExtractTemplates(BinaryData);
+	Result = "";
+	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
+	For Each ZipFileEntry In ZipFileReader.Items Do
+		If EntryBaseName = "" Or ZipFileEntry.BaseName = EntryBaseName Then
+			TextReader = New TextReader(Directory + "/" + ZipFileEntry.FullName, TextEncoding.UTF8);
+			Result = TextReader.Read();
+			TextReader.Close();
+			Break;
+		EndIf;
+	EndDo;
+	DeleteFiles(Directory);
+
+	Return Result;
+
+EndFunction
 
 #EndRegion
 
@@ -668,20 +708,7 @@ EndProcedure
 &AtClient
 Function GetKeywords(Language = "")
 
-	TempFileName = GetTempFileName();
-	DeleteFiles(TempFileName);
-	CreateDirectory(TempFileName);
-
-	TemplateBinaryData = GetFromTempStorage(KeywordsURL);
-	ZipFileReader = New ZipFileReader(TemplateBinaryData.OpenStreamForRead());
-	For each ZipFileEntry In ZipFileReader.Items Do
-		ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-		BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
-		TextReader = New TextReader(BinaryData.OpenStreamForRead(), TextEncoding.UTF8);
-		JsonText = TextReader.Read();
-	EndDo;
-	DeleteFiles(TempFileName);
-
+	JsonText = TemplateText(GetFromTempStorage(KeywordsTemplateURL));
 
 	JsonData = JsonLoad(JsonText, True);
 	Keyrords = New Map;
@@ -752,27 +779,10 @@ Function GetDirectives()
 
 EndFunction
 
-&AtServer
-Function VanessaStepList(language)
+&AtClient
+Function VanessaStepList(Language)
 
-	Var Result;
-	TempFileName = GetTempFileName();
-	DeleteFiles(TempFileName);
-	CreateDirectory(TempFileName);
-
-	BinaryData = FormAttributeToValue("Object").GetTemplate("StepList");
-	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
-	For each ZipFileEntry In ZipFileReader.Items Do
-		If ZipFileEntry.BaseName = language Then
-			ZipFileReader.Extract(ZipFileEntry, TempFileName, ZIPRestoreFilePathsMode.Restore);
-			BinaryData = New BinaryData(TempFileName + GetPathSeparator() + ZipFileEntry.FullName);
-			TextReader = New TextReader(BinaryData.OpenStreamForRead(), TextEncoding.UTF8);
-			Result = TextReader.Read();
-		EndIf;
-	EndDo;
-	DeleteFiles(TempFileName);
-
-	Return Result;
+	Return TemplateText(GetFromTempStorage(StepListTemplateURL), Language);
 
 EndFunction
 

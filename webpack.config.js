@@ -36,12 +36,16 @@ module.exports = (env, argv) => {
   // Все воркеры собираются отдельными входами и вкладываются в страницу как
   // base64 (InlineWorkerSourcePlugin): встроенный WebKit 1С открывает страницу
   // по file:// и соседние js-файлы не загружает.
+  // Первым в каждом входе идёт src/polyfills.ts: воркер — отдельный бандл,
+  // полифилы страницы в него не попадают, а движок 1С лишён globalThis,
+  // queueMicrotask и прочего, что код monaco зовёт при загрузке.
+  const workerPolyfills = './src/polyfills.ts'
   const workerEntry = {
-    'gherkin-worker': './src/languages/turbo-gherkin/worker.js',
-    'editor-worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
-    'css-worker': 'monaco-editor/esm/vs/language/css/css.worker.js',
-    'json-worker': 'monaco-editor/esm/vs/language/json/json.worker.js',
-    'html-worker': 'monaco-editor/esm/vs/language/html/html.worker.js'
+    'gherkin-worker': [workerPolyfills, './src/languages/turbo-gherkin/worker.js'],
+    'editor-worker': [workerPolyfills, 'monaco-editor/esm/vs/editor/editor.worker.js'],
+    'css-worker': [workerPolyfills, 'monaco-editor/esm/vs/language/css/css.worker.js'],
+    'json-worker': [workerPolyfills, 'monaco-editor/esm/vs/language/json/json.worker.js'],
+    'html-worker': [workerPolyfills, 'monaco-editor/esm/vs/language/html/html.worker.js']
   }
   const entry = { app: './src/main', ...workerEntry }
   if (withTest) entry.test = './test/autotest.js'

@@ -38,11 +38,15 @@ after_build:
   - mkdir database
   # Защита от опасных действий не даёт запустить внешнюю обработку: клиент ждёт
   # нажатия «Да» в диалоге и в CI висит до таймаута. Файл настроек платформы
-  # лежит в conf рядом с каталогом bin.
+  # ищется рядом с исполняемым файлом (bin), поэтому кладём его и туда, и в conf
+  # рядом с каталогом bin — раскладки поставок различаются.
   - ps: |
-      $conf = Join-Path $env:APPVEYOR_BUILD_FOLDER 'conf'
-      New-Item -ItemType Directory -Force -Path $conf | Out-Null
-      Set-Content -Path (Join-Path $conf 'conf.cfg') -Value 'DisableUnsafeActionProtection=.*' -Encoding ASCII
+      $root = $env:APPVEYOR_BUILD_FOLDER
+      $value = 'DisableUnsafeActionProtection=.*'
+      foreach ($dir in @((Join-Path $root 'conf'), (Join-Path $root 'bin'))) {
+        New-Item -ItemType Directory -Force -Path $dir | Out-Null
+        Set-Content -Path (Join-Path $dir 'conf.cfg') -Value $value -Encoding ASCII
+      }
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
   - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
@@ -59,14 +63,25 @@ after_build:
       $client = Join-Path $root 'bin\1cv8ct.exe'
       $epf = Join-Path $root 'VAEditorSample.epf'
       $db = Join-Path $root 'database'
-      $timeout = 300
-      if (Test-Path $success) { Remove-Item -Force $success }
+      $timeout = 120
+      $markers = @('client-started.txt', 'page-loaded.txt', 'autotest-result.txt')
+      foreach ($name in @('success.txt') + $markers) {
+        $stale = Join-Path $root $name
+        if (Test-Path $stale) { Remove-Item -Force $stale }
+      }
       Write-Host "> 1cv8ct ENTERPRISE /Execute $epf /C autotest (timeout ${timeout}s)"
       Start-Process -FilePath $client -ArgumentList @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', 'autotest') | Out-Null
       $deadline = (Get-Date).AddSeconds($timeout)
       while ((Get-Date) -lt $deadline -and -not (Test-Path $success)) { Start-Sleep -Seconds 2 }
+      Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
+      # Метки формы автотеста: client-started — форма открылась, page-loaded —
+      # страница догрузилась, autotest-result — тесты досчитали. По ним видно,
+      # на каком шаге клиент встал, когда success.txt не появился.
+      foreach ($name in $markers) {
+        $path = Join-Path $root $name
+        if (Test-Path $path) { Write-Host "--- $name ---"; Get-Content $path } else { Write-Host "--- $name: нет ---" }
+      }
       if (-not (Test-Path $success)) {
-        Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
         throw "autotest did not finish in ${timeout}s: success.txt not created"
       }
       Write-Host 'autotest passed: success.txt created'
@@ -74,6 +89,11 @@ after_build:
 on_failure:
   - ps: Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
   - appveyor PushArtifact example.log
+  # Диагностика зависшего автотеста: видно, дошёл ли клиент до формы и страницы.
+  - ps: |
+      foreach ($name in @('client-started.txt', 'page-loaded.txt', 'autotest-result.txt')) {
+        if (Test-Path $name) { appveyor PushArtifact $name }
+      }
 
 artifacts:
   - path: AutoTest.zip
