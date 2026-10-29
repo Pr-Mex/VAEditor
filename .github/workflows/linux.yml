@@ -31,11 +31,10 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      # Стиль JS-части. Пока не блокирует: в src/nls/nls.js,
-      # src/1c-webkit-patch.js и test/autotest.js остались var и точки
-      # с запятой. Флаг снимется после чистки этих файлов.
+      # Стиль JS-части (standard). Legacy-файлы, которые писались под старый
+      # WebKit и не переводятся на const/let без риска, исключены в
+      # package.json → standard.ignore.
       - name: Check code style
-        continue-on-error: true
         run: npm run codestyle
 
       - name: Build frontend
