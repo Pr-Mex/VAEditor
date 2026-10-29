@@ -66,9 +66,11 @@ if (!files.length) {
   process.exit(2)
 }
 
-// fast-glob (внутри es-check) считает обратную косую черту escape-символом,
-// поэтому виндовые пути передаём через прямые слэши.
-const result = spawnSync(process.execPath, [cli, version, ...files.map(f => f.replace(/\\/g, '/'))], { stdio: 'inherit' })
+// es-check ищет файлы через fast-glob: абсолютные виндовые пути она не берёт
+// (обратная косая черта — escape), поэтому запускаем из временного каталога
+// и передаём только имена файлов.
+const names = files.map(f => path.basename(f))
+const result = spawnSync(process.execPath, [cli, version, ...names], { stdio: 'inherit', cwd: dir })
 try {
   fs.rmSync(dir, { recursive: true, force: true })
 } catch (error) {
