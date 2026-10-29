@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            p7zip-full xvfb \
+            p7zip-full xvfb x11-utils xdotool \
             libwebkit2gtk-4.0-37 libjavascriptcoregtk-4.0-18 libsoup2.4-1 \
             libglu1-mesa libgtk-3-0 libxtst6 libxrender1 libxi6 libglib2.0-0 \
             libnss3 libxext6 libsm6 libice6 libfreetype6 libfontconfig1 \
@@ -228,6 +228,15 @@ jobs:
           for i in $(seq 1 600); do
             if [ -f success.txt ] || [ -f autotest-result.txt ]; then break; fi
             kill -0 "$pid" 2>/dev/null || break
+            # conf.cfg снимает защиту от опасных действий не всегда: если форма
+            # не открылась за 30 с, подтверждаем диалог клавиатурой — в
+            # неинтерактивном прогоне нажать «Да» больше некому. Жмём только
+            # пока нет метки, иначе Enter уйдёт в окно редактора.
+            if [ "$i" -ge 30 ] && [ "$i" -le 120 ] && [ $((i % 10)) -eq 0 ] \
+               && [ ! -f client-started.txt ]; then
+              echo "::notice::подтверждаю диалог на ${i}-й секунде"
+              xdotool key --clearmodifiers Return 2>/dev/null || true
+            fi
             sleep 1
           done
           kill "$pid" 2>/dev/null || true
@@ -256,4 +265,3 @@ jobs:
             echo '::error::автотест не дошёл до конца'
             exit 1
           fi
-          if-no-files-found: ignore
