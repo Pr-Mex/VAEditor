@@ -115,13 +115,12 @@ jobs:
           echo "::notice::opt1cv8: $(ls -R /opt/1cv8 2>/dev/null | head -20 | tr '\n' ' ' || echo нет)"
           echo "::notice::бины: $(find /opt /usr -maxdepth 5 -name '1cv8*' -type f 2>/dev/null | head -10 | tr '\n' ' ')"
 
-      - name: Xvfb и запуск клиента
+      - name: База
         timeout-minutes: 10
         run: |
           Xvfb :99 -screen 0 1680x1050x24 -shmem &
           sleep 2
           export DISPLAY=:99
-          xdpyinfo | head -3
           # Учебная поставка ставится в /opt/1cv8t (не /opt/1cv8) и называет
           # файлы с суффиксом t: 1cv8t — конфигуратор и толстый клиент,
           # 1cv8ct — тонкий клиент.
@@ -133,11 +132,10 @@ jobs:
             echo '::error::1cv8t не найден'
             exit 1
           fi
-          timeout 60 "$bin" --version 2>&1 | head -3 || true
-          echo "::notice::ldd: $(ldd "$bin" 2>&1 | grep -c 'not found') not found"
-          echo "::notice::ldd-list: $(ldd "$bin" 2>&1 | grep 'not found' | head -8 | tr '\n' ' ')"
+          # -k обязателен: клиент 1С обрабатывает SIGTERM и без добивания
+          # висит до таймаута шага. Именно на этом вставал «--version».
           set +e
-          out=$(timeout 180 "$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1)
+          out=$(timeout -k 10 180 "$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1)
           rc=$?
           set -e
           echo "$out" | head -20
@@ -190,14 +188,14 @@ jobs:
           db=$HOME/1c/base
           rm -f /tmp/load.log /tmp/epf.log VAEditorSample.epf
           set +e
-          timeout 420 "$bin" DESIGNER "/F$db" \
+          timeout -k 10 420 "$bin" DESIGNER "/F$db" \
             /LoadConfigFromFiles "$GITHUB_WORKSPACE/config" /UpdateDBCfg \
             /DisableStartupDialogs /DisableStartupMessages /Out /tmp/load.log
           rc=$?
           set -e
           echo "::notice::LoadConfigFromFiles rc=$rc лог: $(tail -3 /tmp/load.log 2>/dev/null | tr '\n' ' ')"
           set +e
-          timeout 420 "$bin" DESIGNER "/F$db" \
+          timeout -k 10 420 "$bin" DESIGNER "/F$db" \
             /LoadExternalDataProcessorOrReportFromFiles \
             "$GITHUB_WORKSPACE/example/VAEditorSample.xml" "$GITHUB_WORKSPACE/VAEditorSample.epf" \
             /DisableStartupDialogs /DisableStartupMessages /Out /tmp/epf.log
@@ -218,7 +216,7 @@ jobs:
           client=$(ls /opt/1cv8t/x86_64/*/1cv8ct | head -1)
           db=$HOME/1c/base
           rm -f success.txt autotest-result.txt client-started.txt page-loaded.txt VAEditorSample.epf.error.txt
-          timeout 900 "$client" ENTERPRISE /LRU "/F$db" \
+          timeout -k 10 900 "$client" ENTERPRISE /LRU "/F$db" \
             "/Execute$GITHUB_WORKSPACE/VAEditorSample.epf" /C autotest \
             > /tmp/client.log 2>&1 &
           pid=$!
