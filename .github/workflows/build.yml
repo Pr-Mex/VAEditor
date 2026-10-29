@@ -32,7 +32,9 @@ jobs:
           node-version: '20'
           cache: npm
 
-      # Учебная поставка платформы 1С лежит отдельным репозиторием, архив под паролем.
+      # Платформа 1С лежит отдельным репозиторием lintest/tools1c, ветка
+      # platform-8.3.27: четыре тома win1c.7z.001..004. Прежняя ветка platform
+      # (13 томов RAR) шифрована, и пароль из секрета к ней не подходит.
       # Токен checkout-а привязан к текущему репозиторию: с ним clone чужого
       # публичного репозитория отваливается, поэтому extraheader снимаем.
       # Блоки в скобках не используем: пароль из секрета может содержать скобку.
@@ -43,31 +45,37 @@ jobs:
         run: |
           echo === 1/5 unset checkout token
           git config --local --unset-all "http.https://github.com/.extraheader"
-          echo === 2/5 check secret
-          if "%KEY_1CV8T%"=="" echo ERROR: secret KEY_1CV8T is empty
-          if "%KEY_1CV8T%"=="" exit /b 1
-          rem Лишний пробел или перевод строки при вставке дают ровно тот же
-          rem "Wrong password" от 7z, что и опечатка. Проверяем до распаковки.
-          if not "%KEY_1CV8T: =%"=="%KEY_1CV8T%" echo WARNING: secret contains spaces
-          if not "%KEY_1CV8T: =%"=="%KEY_1CV8T%" exit /b 1
-          echo === 3/5 clone platform repo
-          git clone --branch=platform https://github.com/lintest/tools1c.git bin
+          echo === 2/5 clone platform-8.3.27
+          git clone --branch=platform-8.3.27 https://github.com/lintest/tools1c.git p1c-src
           if errorlevel 1 echo ERROR: git clone failed
           if errorlevel 1 exit /b 1
-          echo === 3b/5 pull LFS objects if any
-          cd bin
-          git lfs pull
-          if errorlevel 1 echo note: git lfs pull failed or lfs is not installed
-          cd ..
-          echo === 4/5 list archive parts with sizes
-          dir bin\*.rar
-          if not exist bin\tools1c.part01.rar echo ERROR: tools1c.part01.rar not found
-          if not exist bin\tools1c.part01.rar exit /b 1
-          echo === 5/5 extract with 7z
-          cd bin
-          "C:\Program Files\7-Zip\7z.exe" x tools1c.part01.rar -p%KEY_1CV8T%
-          if errorlevel 1 echo ERROR: 7z failed, wrong password or missing volumes
+          dir p1c-src
+          echo === 3/5 extract 7z volumes
+          mkdir p1c
+          "C:\Program Files\7-Zip\7z.exe" x p1c-src\win1c.7z.001 -op1c
+          if not errorlevel 1 goto extracted
+          rem Архив может быть под паролем — тогда повторяем с секретом.
+          echo note: extraction failed, retrying with KEY_1CV8T
+          "C:\Program Files\7-Zip\7z.exe" x p1c-src\win1c.7z.001 -p%KEY_1CV8T% -op1c
+          if errorlevel 1 echo ERROR: 7z failed
           if errorlevel 1 exit /b 1
+          :extracted
+          echo === 4/5 locate platform executables
+          for /f "delims=" %%F in ('dir /s /b p1c\1cv8t.exe 2^>nul') do set "EXEDIR=%%~dpF"
+          if not defined EXEDIR for /f "delims=" %%F in ('dir /s /b p1c\1cv8.exe 2^>nul') do set "EXEDIR=%%~dpF"
+          if not defined EXEDIR echo ERROR: platform executables not found in archive
+          if not defined EXEDIR exit /b 1
+          echo platform folder: %EXEDIR%
+          echo === 5/5 copy platform to bin
+          mkdir bin
+          xcopy "%EXEDIR%*" bin\ /E /I /Y /Q
+          rem Учебная поставка (1cv8t) и полная (1cv8) называют файлы по-разному,
+          rem а последующие шаги ждут 1cv8t.exe и 1cv8ct.exe. Делаем алиасы.
+          if exist bin\1cv8.exe if not exist bin\1cv8t.exe copy /y bin\1cv8.exe bin\1cv8t.exe > nul
+          if exist bin\1cv8c.exe if not exist bin\1cv8ct.exe copy /y bin\1cv8c.exe bin\1cv8ct.exe > nul
+          if not exist bin\1cv8t.exe echo ERROR: 1cv8t.exe not found after copy
+          if not exist bin\1cv8t.exe exit /b 1
+          dir /b bin\*.exe
 
       - name: Fetch OneScript
         shell: cmd
