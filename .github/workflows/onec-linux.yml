@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            p7zip-full xvfb x11-utils \
+            p7zip-full xvfb x11-utils x11-apps xdotool imagemagick \
             libwebkit2gtk-4.0-37 libjavascriptcoregtk-4.0-18 libsoup2.4-1 \
             libglu1-mesa libgtk-3-0 libxtst6 libxrender1 libxi6 libglib2.0-0 \
             libnss3 libxext6 libsm6 libice6 libfreetype6 libfontconfig1 \
@@ -171,11 +171,15 @@ jobs:
       # это /opt/1cv8t/conf/conf.cfg, нужен sudo.
       - name: conf.cfg
         run: |
-          sudo mkdir -p /opt/1cv8t/conf
-          printf 'SystemLanguage=System\nDisableUnsafeActionProtection=.*\n' \
-            | sudo tee /opt/1cv8t/conf/conf.cfg > /dev/null
-          sudo ls -la /opt/1cv8t/conf/
-          sudo cat /opt/1cv8t/conf/conf.cfg
+          cfg='SystemLanguage=System
+DisableUnsafeActionProtection=.*'
+          # Точный путь, откуда платформа читает conf.cfg на Linux, зависит от
+          # поставки — пишем во все три кандидата, лишнее не мешает.
+          for dir in /opt/1cv8t/conf /opt/1cv8/conf "$HOME/.1cv8/1C/1cv8/conf"; do
+            sudo mkdir -p "$dir"
+            printf '%s\n' "$cfg" | sudo tee "$dir/conf.cfg" > /dev/null
+            echo "::notice::$dir/conf.cfg: $(sudo cat "$dir/conf.cfg" | tr '\n' ' ')"
+          done
 
       - name: Конфигурация и epf
         timeout-minutes: 15
@@ -224,6 +228,13 @@ jobs:
           for i in $(seq 1 600); do
             if [ -f success.txt ] || [ -f autotest-result.txt ]; then break; fi
             kill -0 "$pid" 2>/dev/null || break
+            # Через минуту без метки «форма открылась» почти наверняка висит
+            # диалог: фиксируем его имя и пробуем подтвердить — в
+            # неинтерактивном прогоне нажать «Да» больше некому.
+            if [ "$i" -eq 60 ] && [ ! -f client-started.txt ]; then
+              echo "::notice::активное окно: $(xdotool getactivewindow getwindowname 2>/dev/null)"
+              xdotool key --clearmodifiers Return 2>/dev/null || true
+            fi
             sleep 1
           done
           # Снимок окон делаем ДО убийства клиента: если прогон встал на диалоге
@@ -232,6 +243,9 @@ jobs:
           echo '--- окна X ---'
           xwininfo -root -tree 2>/dev/null | head -40 || true
           echo "::notice::окна: $(xwininfo -root -tree 2>/dev/null | grep -o '"[^"]*"' | head -12 | tr '\n' ' ')"
+          # Текст диалога читается только глазами — прикладываем скриншот.
+          import -display :99 -window root "$GITHUB_WORKSPACE/screen.png" 2>/dev/null \
+            && echo '::notice::скриншот: screen.png' || true
           kill "$pid" 2>/dev/null || true
           pkill -f 1cv8 || true
           echo '--- вывод клиента ---'
@@ -257,3 +271,11 @@ jobs:
             echo '::error::автотест не дошёл до конца'
             exit 1
           fi
+
+      - name: Скриншот экрана
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screen
+          path: screen.png
+          if-no-files-found: ignore
