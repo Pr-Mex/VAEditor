@@ -3,9 +3,10 @@ name: build-linux
 # Фронтенд собирается и проверяется на ubuntu — это секунды вместо минут.
 # Сборка epf и прогон в WebKit 1С остаются в build.yml на Windows: клиенту
 # 1С на Linux нужен Xvfb, дистрибутив платформы и лицензия.
+# Быстрый чек для PR: фронтенд собирается и проверяется на ubuntu за ~1,5
+# минуты. Сборка epf и прогон в WebKit 1С остаются в build.yml на Windows:
+# клиенту 1С на Linux нужен Xvfb, дистрибутив платформы и лицензия.
 on:
-  push:
-    branches: [linux-ci]
   pull_request:
   workflow_dispatch:
 
