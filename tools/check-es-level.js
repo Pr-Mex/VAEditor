@@ -53,7 +53,7 @@ const files = []
 // внутри кода (шаблон, строка), наивный разбор режет скрипт, и проверка ругается
 // на обрыв вместо реальной находки. Перебираем закрывающие теги и берём первый,
 // при котором тело разбирается как JS.
-function isCode(text) {
+function isCode (text) {
   try {
     acorn.parse(text, { ecmaVersion: 'latest' })
     return true
@@ -62,7 +62,7 @@ function isCode(text) {
   }
 }
 
-function scriptBodies(html) {
+function scriptBodies (html) {
   const bodies = []
   const open = /<script\b(?![^>]*\ssrc=)[^>]*>/gi
   const close = /<\/script>/gi
@@ -116,7 +116,7 @@ if (!files.length) {
 // Место находки и её окружение. Сама es-check печатает только
 // «Unexpected token (7:14962)», а в минифицированной строке по такому адресу
 // ничего не найти.
-function parseError(file, ecmaVersion) {
+function parseError (file, ecmaVersion) {
   const code = fs.readFileSync(file, 'utf8')
   try {
     acorn.parse(code, { ecmaVersion })
@@ -130,7 +130,7 @@ function parseError(file, ecmaVersion) {
   }
 }
 
-function report(title, found) {
+function report (title, found) {
   console.error(title)
   for (const item of found) {
     console.error('  ' + path.basename(item.file) + ':' + item.error.line + ':' + item.error.column)
@@ -138,7 +138,7 @@ function report(title, found) {
   }
 }
 
-function cleanup() {
+function cleanup () {
   try {
     fs.rmSync(dir, { recursive: true, force: true })
   } catch (error) {

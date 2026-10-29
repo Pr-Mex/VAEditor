@@ -225,7 +225,7 @@ module.exports = (env, argv) => {
       // Последним: страницы уже собраны, остаётся вложить в них исходники
       // воркеров — по file:// WebKit 1С соседние файлы не отдаёт.
       new InlineWorkerSourcePlugin(Object.keys(workerEntry).map(name => name + '.js'),
-        withTest ? ['index.html', 'test.html'] : ['index.html']),
+        withTest ? ['index.html', 'test.html'] : ['index.html'])
     ],
     // mocha ищет тесты через require с выражением — это норма для него, но шум
     // в выводе мешает замечать настоящие предупреждения.
