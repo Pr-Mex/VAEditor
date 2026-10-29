@@ -145,3 +145,97 @@ jobs:
           echo "::notice::вывод: $(echo "$out" | head -5 | tr '\n' ' ')"
           echo "::notice::лог: $(head -5 /tmp/create.log 2>/dev/null | tr '\n' ' ')"
           echo "::notice::база: $(ls -la "$HOME/1c/base" 2>/dev/null | head -5 | tr '\n' ' ' || echo нет)"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Сборка фронтенда
+        run: |
+          npm ci
+          npm run build:test
+          ls -la dist | head -10
+
+      # Макет 1С — это zip, внутри которого лежит html. Локально то же самое
+      # делает tools/local-check.ps1 через Compress-Archive.
+      - name: Макеты
+        run: |
+          va=example/VAEditorSample/Templates/VAEditor/Ext
+          at=example/VAEditorSample/Templates/AutoTest/Ext
+          mkdir -p "$va" "$at"
+          (cd dist && zip -q -X "$GITHUB_WORKSPACE/$va/Template.bin" index.html)
+          (cd dist && zip -q -X "$GITHUB_WORKSPACE/$at/Template.bin" test.html)
+          ls -la "$va" "$at"
+
+      # Диалог «Разрешить открывать данный файл?» в неинтерактивном прогоне
+      # подтверждать некому: скрипт ждёт success.txt до таймаута и падает.
+      # Снимаем защиту через conf.cfg уровня установки (не версии) — на Linux
+      # это /opt/1cv8t/conf/conf.cfg, нужен sudo.
+      - name: conf.cfg
+        run: |
+          sudo mkdir -p /opt/1cv8t/conf
+          printf 'SystemLanguage=System\nDisableUnsafeActionProtection=.*\n' \
+            | sudo tee /opt/1cv8t/conf/conf.cfg > /dev/null
+          sudo cat /opt/1cv8t/conf/conf.cfg
+
+      - name: Конфигурация и epf
+        timeout-minutes: 15
+        run: |
+          Xvfb :99 -screen 0 1680x1050x24 -shmem &
+          sleep 2
+          export DISPLAY=:99
+          bin=$(ls /opt/1cv8t/x86_64/*/1cv8t | head -1)
+          db=$HOME/1c/base
+          rm -f /tmp/load.log /tmp/epf.log VAEditorSample.epf
+          set +e
+          timeout 420 "$bin" DESIGNER "/F$db" \
+            /LoadConfigFromFiles "$GITHUB_WORKSPACE/config" /UpdateDBCfg \
+            /DisableStartupDialogs /DisableStartupMessages /Out /tmp/load.log
+          rc=$?
+          set -e
+          echo "::notice::LoadConfigFromFiles rc=$rc лог: $(tail -3 /tmp/load.log 2>/dev/null | tr '\n' ' ')"
+          set +e
+          timeout 420 "$bin" DESIGNER "/F$db" \
+            /LoadExternalDataProcessorOrReportFromFiles \
+            "$GITHUB_WORKSPACE/example/VAEditorSample.xml" "$GITHUB_WORKSPACE/VAEditorSample.epf" \
+            /DisableStartupDialogs /DisableStartupMessages /Out /tmp/epf.log
+          rc=$?
+          set -e
+          echo "::notice::epf rc=$rc файл: $(ls -la VAEditorSample.epf 2>/dev/null | awk '{print $5}' || echo нет) лог: $(tail -3 /tmp/epf.log 2>/dev/null | tr '\n' ' ')"
+          pkill -f 1cv8 || true
+
+      # Тонкий клиент исполняет внешнюю обработку на сервере, где некому
+      # подтверждать «Разрешить открывать файл?», поэтому диалог защиты
+      # не появляется и прогон идёт сам (см. tools/local-check.ps1).
+      - name: Автотест в WebView 1С
+        timeout-minutes: 20
+        run: |
+          Xvfb :99 -screen 0 1680x1050x24 -shmem &
+          sleep 2
+          export DISPLAY=:99
+          client=$(ls /opt/1cv8t/x86_64/*/1cv8ct | head -1)
+          db=$HOME/1c/base
+          rm -f success.txt autotest-result.txt VAEditorSample.epf.error.txt
+          timeout 900 "$client" ENTERPRISE /LRU "/F$db" \
+            "/Execute$GITHUB_WORKSPACE/VAEditorSample.epf" /C autotest \
+            > /tmp/client.log 2>&1 &
+          pid=$!
+          for i in $(seq 1 600); do
+            if [ -f success.txt ] || [ -f autotest-result.txt ]; then break; fi
+            kill -0 "$pid" 2>/dev/null || break
+            sleep 1
+          done
+          kill "$pid" 2>/dev/null || true
+          pkill -f 1cv8 || true
+          echo '--- вывод клиента ---'
+          tail -20 /tmp/client.log 2>/dev/null || true
+          if [ -f autotest-result.txt ]; then
+            echo '--- autotest-result.txt ---'
+            cat autotest-result.txt
+          fi
+          if [ -f success.txt ]; then
+            echo '::notice::автотест в WebView 1С пройден'
+          else
+            echo '::error::автотест не дошёл до конца'
+            exit 1
+          fi
