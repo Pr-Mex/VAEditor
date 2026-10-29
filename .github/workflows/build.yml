@@ -33,24 +33,40 @@ jobs:
           cache: npm
 
       # Платформа 1С лежит отдельным репозиторием lintest/tools1c, ветка
-      # platform-8.3.27: четыре тома win1c.7z.001..004. Прежняя ветка platform
-      # (13 томов RAR) шифрована, и пароль из секрета к ней не подходит.
-      # Токен checkout-а привязан к текущему репозиторию: с ним clone чужого
-      # публичного репозитория отваливается, поэтому extraheader снимаем.
-      # Блоки в скобках не используем: пароль из секрета может содержать скобку.
+      # platform-8.3.27: четыре тома win1c.7z.001..004 (без пароля).
+      # Кэш привязан к SHA ветки: платформа меняется редко, а клон и распаковка
+      # 363 МБ на каждом прогоне — лишние полминуты.
+      # Токен checkout-а привязан к текущему репозиторию: с ним обращения к чужому
+      # публичному репозиторию отваливаются, поэтому extraheader снимаем.
+      - name: Resolve platform version
+        id: platform
+        shell: cmd
+        run: |
+          git config --local --unset-all "http.https://github.com/.extraheader"
+          for /f "tokens=1" %%H in ('git ls-remote https://github.com/lintest/tools1c.git refs/heads/platform-8.3.27') do set "SHA=%%H"
+          if "%SHA%"=="" echo ERROR: cannot resolve platform-8.3.27
+          if "%SHA%"=="" exit /b 1
+          echo sha=%SHA%>>%GITHUB_OUTPUT%
+
+      - name: Restore 1C platform
+        id: platform-cache
+        uses: actions/cache@v4
+        with:
+          path: bin
+          key: p1c-${{ steps.platform.outputs.sha }}
+
       - name: Fetch 1C platform
+        if: steps.platform-cache.outputs.cache-hit != 'true'
         shell: cmd
         env:
           KEY_1CV8T: ${{ secrets.KEY_1CV8T }}
         run: |
-          echo === 1/5 unset checkout token
           git config --local --unset-all "http.https://github.com/.extraheader"
-          echo === 2/5 clone platform-8.3.27
+          echo === 1/4 clone platform-8.3.27
           git clone --branch=platform-8.3.27 https://github.com/lintest/tools1c.git p1c-src
           if errorlevel 1 echo ERROR: git clone failed
           if errorlevel 1 exit /b 1
-          dir p1c-src
-          echo === 3/5 extract 7z volumes
+          echo === 2/4 extract 7z volumes
           mkdir p1c
           "C:\Program Files\7-Zip\7z.exe" x p1c-src\win1c.7z.001 -op1c
           if not errorlevel 1 goto extracted
@@ -60,13 +76,13 @@ jobs:
           if errorlevel 1 echo ERROR: 7z failed
           if errorlevel 1 exit /b 1
           :extracted
-          echo === 4/5 locate platform executables
+          echo === 3/4 locate platform executables
           for /f "delims=" %%F in ('dir /s /b p1c\1cv8t.exe 2^>nul') do set "EXEDIR=%%~dpF"
           if not defined EXEDIR for /f "delims=" %%F in ('dir /s /b p1c\1cv8.exe 2^>nul') do set "EXEDIR=%%~dpF"
           if not defined EXEDIR echo ERROR: platform executables not found in archive
           if not defined EXEDIR exit /b 1
           echo platform folder: %EXEDIR%
-          echo === 5/5 copy platform to bin
+          echo === 4/4 copy platform to bin
           mkdir bin
           xcopy "%EXEDIR%*" bin\ /E /I /Y /Q
           rem Учебная поставка (1cv8t) и полная (1cv8) называют файлы по-разному,
