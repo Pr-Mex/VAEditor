@@ -16,6 +16,8 @@ chcp 65001 >nul
 rem Platform folder is looked up under C:\Program Files\1cv8: among the
 rem installed versions the last one found wins, and the subfolder holding
 rem 1cv8.exe is taken (names are not assumed).
+rem Educational builds (1cv8t) live in a separate tree, have no 1cv8.exe and
+rem are therefore looked up separately by 1cv8t.exe.
 rem Delayed expansion (!PLATFORM!) is used below on purpose: a path like
 rem "Program Files (x86)" contains a closing bracket, and inside a block
 rem in brackets cmd would end the block early ("was unexpected at this time").
@@ -26,10 +28,15 @@ for /d %%D in ("C:\Program Files\1cv8\*") do (
         if exist "%%~fB\1cv8.exe" set "PLATFORM=%%~fB"
     )
 )
+for /d %%D in ("C:\Program Files (x86)\1cv8t\*") do (
+    for /d %%B in ("%%~fD\bin*") do (
+        if exist "%%~fB\1cv8t.exe" set "PLATFORM=%%~fB"
+    )
+)
 
 :platform_ready
 if not defined PLATFORM goto no_platform
-if not exist "!PLATFORM!\1cv8.exe" goto bad_platform
+if not exist "!PLATFORM!\1cv8.exe" if not exist "!PLATFORM!\1cv8t.exe" goto bad_platform
 
 set "LAUNCH=%~1"
 if not "%~1"=="" goto launch_ready
@@ -51,6 +58,12 @@ if exist "storage-probe.txt" (
     echo.
     echo === storage-probe.txt ===
     pwsh -NoProfile -Command "Get-Content 'storage-probe.txt' -Encoding UTF8"
+)
+
+if exist "env-probe.txt" (
+    echo.
+    echo === env-probe.txt ===
+    pwsh -NoProfile -Command "Get-Content 'env-probe.txt' -Encoding UTF8"
 )
 
 echo.

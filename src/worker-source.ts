@@ -26,16 +26,23 @@ export function hasWorkerSource(name: string): boolean {
 }
 
 // Текст воркера. base64 — это UTF-8 в бинарной строке (в коде воркера есть
-// кириллица), поэтому binary -> UTF-8 декодируется вручную.
+// кириллица), поэтому binary -> UTF-8 декодируется вручную. TextDecoder есть
+// и в WebKit 8.3.27, и в 8.5 — проверено режимом probeenv в local-check.ps1;
+// escape() остаётся запасным путём для сборок без TextDecoder.
 export function workerSource(name: string): string {
-  const base64 = sources()[name];
-  if (!base64) return '';
-  const binary = atob(base64);
-  try {
-    return decodeURIComponent(escape(binary));
-  } catch (e) {
-    return binary;
+  const base64 = sources()[name]
+  if (!base64) return ''
+  const binary = atob(base64)
+  if (typeof TextDecoder === 'undefined') {
+    try {
+      return decodeURIComponent(escape(binary))
+    } catch (e) {
+      return binary
+    }
   }
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+  return new TextDecoder('utf-8').decode(bytes)
 }
 
 export function workerBlobUrl(name: string): string {
