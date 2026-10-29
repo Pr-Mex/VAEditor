@@ -97,13 +97,19 @@ jobs:
           chmod +x "$run"
           echo "::notice::help: $("$run" --help 2>&1 | head -60 | tr '\n' ' ')"
           echo "::notice::version: $("$run" --version 2>&1 | head -3 | tr '\n' ' ')"
-          # Опции --enable-components в этой сборке нет: список компонентов
-          # зашит в установщик, поэтому ставим всё, что он предлагает.
-          sudo "$run" --mode unattended --unattendedmodeui none --debugtrace /tmp/install.log 2>&1 | tail -25 || true
-          echo "::notice::log: $(tail -8 /tmp/install.log 2>/dev/null | tr '\n' ' ')"
-          echo "::notice::opt: $(ls /opt/1cv8 2>/dev/null | tr '\n' ' ' || echo нет)"
-          echo "::notice::версии: $(ls /opt/1cv8/x86_64 2>/dev/null | tr '\n' ' ' || echo нет)"
-          echo "::notice::бины: $(find /opt/1cv8 -maxdepth 3 -name '1cv8*' -type f 2>/dev/null | head -10 | tr '\n' ' ')"
+          # По умолчанию установщик ставит client_full,ws,langs,en,ru.
+          set +e
+          out=$(sudo "$run" --mode unattended --unattendedmodeui none \
+                  --enable-components client_full,ws,ru --debuglevel 4 2>&1)
+          rc=$?
+          set -e
+          echo "$out" | tail -40
+          echo "::notice::rc=$rc"
+          echo "::notice::out: $(echo "$out" | tail -12 | tr '\n' ' ')"
+          echo "::notice::df: $(df -h / | tail -1)"
+          echo "::notice::opt: $(ls /opt 2>/dev/null | tr '\n' ' ' || echo нет)"
+          echo "::notice::opt1cv8: $(ls -R /opt/1cv8 2>/dev/null | head -20 | tr '\n' ' ' || echo нет)"
+          echo "::notice::бины: $(find /opt /usr -maxdepth 5 -name '1cv8*' -type f 2>/dev/null | head -10 | tr '\n' ' ')"
 
       - name: Xvfb и запуск клиента
         run: |
