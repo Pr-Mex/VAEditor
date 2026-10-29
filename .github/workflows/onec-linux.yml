@@ -174,7 +174,7 @@ jobs:
           # Точный путь, откуда платформа читает conf.cfg на Linux, зависит от
           # поставки — пишем во все кандидаты, лишнее не мешает. ИТС для Linux
           # указывает /opt/1cv8/conf/conf.cfg (freshex1, 10.5).
-          for dir in /opt/1cv8t/conf /opt/1cv8/conf "$HOME/.1cv8/1C/1cv8/conf"; do
+          for dir in /opt/1cv8t/conf /opt/1cv8/conf "$HOME/.1cv8/1C/1cv8/conf" /opt/1cv8t/x86_64/*/conf; do
             sudo mkdir -p "$dir"
             { echo 'SystemLanguage=System'; echo 'DisableUnsafeActionProtection=.*'; } \
               | sudo tee "$dir/conf.cfg" > /dev/null
