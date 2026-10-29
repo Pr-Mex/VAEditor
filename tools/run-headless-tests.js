@@ -31,15 +31,22 @@ if (!fs.existsSync(page)) {
   process.exit(2)
 }
 
+// Браузер: сначала явная настройка (CHROME_PATH), затем стандартные места
+// Windows, затем пути Linux — на ubuntu-раннере Edge нет.
 const browsers = [
+  process.env.CHROME_PATH,
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
-  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'
-]
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/google-chrome',
+  '/usr/bin/google-chrome-stable'
+].filter(Boolean)
 const browser = browsers.find(file => fs.existsSync(file))
 if (!browser) {
-  console.error('Не найден Edge или Chrome в стандартных путях.')
+  console.error('Не найден Edge или Chrome. Задайте путь через CHROME_PATH.')
   process.exit(2)
 }
 
@@ -54,6 +61,8 @@ const args = [
   '--no-first-run',
   '--no-default-browser-check',
   '--disable-extensions',
+  // В контейнере CI (ubuntu) Chrome без этого не стартует: нет user namespace.
+  ...(process.platform === 'linux' ? ['--no-sandbox'] : []),
   '--remote-debugging-port=0',
   '--user-data-dir=' + profile,
   url

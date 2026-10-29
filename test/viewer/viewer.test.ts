@@ -8,7 +8,25 @@ const tabs = window.VanessaTabs as VanessaTabs;
 // Клик без preventDefault = переход на пустой href = перезагрузка страницы
 // WebView 1С — редактор умирает целиком. Тесты фиксируют и контракт рендера,
 // и перехват клика (в т.ч. по вложенному в ссылку элементу).
+// Ждём появления элемента, а не фиксированные 100 мс: на ubuntu-раннере
+// headless Chrome рендерит вкладку позже, и хук падал по таймауту mocha (2 с),
+// не дойдя до проверок.
+function waitFor(check: () => boolean, what: string, timeout = 10000): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const started = Date.now();
+    const tick = () => {
+      if (check()) return resolve();
+      if (Date.now() - started > timeout) {
+        return reject(new Error('Не дождались: ' + what + ' за ' + timeout + ' мс'));
+      }
+      setTimeout(tick, 50);
+    };
+    tick();
+  });
+}
+
 describe('Markdown-вьюер: клики по ссылкам', function () {
+  this.timeout(15000);
   let eventsData: { name: string, data: any }[];
   function bodyOnClickHandler(ev: Event) {
     if (ev instanceof CustomEvent && !Number.isInteger(ev.detail)) {
@@ -17,11 +35,18 @@ describe('Markdown-вьюер: клики по ссылкам', function () {
   }
   const markdown = '# Урок\n\n[простая ссылка](Глава01/Урок02.md)\n\n[**жирная** ссылка](Глава02/Урок01.md)\n';
 
-  before((done) => {
+  before(async () => {
     document.body.addEventListener('click', bodyOnClickHandler);
     eventsData = [];
     tabs.view('', 'Тест вьюера', 'test-viewer.md', markdown);
-    setTimeout(done, 100);
+    await waitFor(
+      () => document.querySelectorAll('.vanessa-markdown a').length >= 2,
+      'две ссылки в отрендеренном markdown'
+    );
+    await waitFor(
+      () => document.querySelector('.vanessa-markdown a strong') !== null,
+      'вложенный <strong> внутри ссылки'
+    );
   });
   after(() => {
     document.body.removeEventListener('click', bodyOnClickHandler);
