@@ -66,7 +66,9 @@ if (!files.length) {
   process.exit(2)
 }
 
-const result = spawnSync(process.execPath, [cli, version, ...files], { stdio: 'inherit' })
+// fast-glob (внутри es-check) считает обратную косую черту escape-символом,
+// поэтому виндовые пути передаём через прямые слэши.
+const result = spawnSync(process.execPath, [cli, version, ...files.map(f => f.replace(/\\/g, '/'))], { stdio: 'inherit' })
 try {
   fs.rmSync(dir, { recursive: true, force: true })
 } catch (error) {
