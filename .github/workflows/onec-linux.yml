@@ -171,21 +171,22 @@ jobs:
       # это /opt/1cv8t/conf/conf.cfg, нужен sudo.
       - name: conf.cfg
         run: |
-          # Точный путь, откуда платформа читает conf.cfg на Linux, зависит от
-          # поставки — пишем во все кандидаты, лишнее не мешает. ИТС для Linux
-          # указывает /opt/1cv8/conf/conf.cfg (freshex1, 10.5).
-          for dir in /opt/1cv8t/conf /opt/1cv8/conf "$HOME/.1cv8/1C/1cv8/conf" /opt/1cv8t/x86_64/*/conf; do
+          # ИТС для Linux указывает /opt/1cv8/conf/conf.cfg (freshex1, 10.5);
+          # у учебной поставки установка в /opt/1cv8t, поэтому пишем в оба
+          # каталога установки плюс в пользовательский.
+          for dir in /opt/1cv8t/conf /opt/1cv8/conf "$HOME/.1cv8/1C/1cv8/conf"; do
             sudo mkdir -p "$dir"
             { echo 'SystemLanguage=System'; echo 'DisableUnsafeActionProtection=.*'; } \
               | sudo tee "$dir/conf.cfg" > /dev/null
             echo "::notice::$dir/conf.cfg: $(sudo cat "$dir/conf.cfg" | tr '\n' ' ')"
           done
-          # Локальный conf.cfg рядом с версией перекрывает общий, если в нём
-          # нет ConfLocation. Показываем, что реально лежит в установке.
-          echo '--- все conf.cfg в установке ---'
-          sudo find /opt/1cv8t -name 'conf.cfg' 2>/dev/null || true
-          for f in $(sudo find /opt/1cv8t -name 'conf.cfg' 2>/dev/null); do
-            echo "::notice::$f: $(sudo cat "$f" | tr '\n' ' ')"
+          # Локальный conf.cfg каталога версии содержит ConfLocation=/opt/1cv8t/conf
+          # — перезаписывать его нельзя, только дописывать параметр.
+          for f in /opt/1cv8t/x86_64/*/conf/conf.cfg; do
+            [ -f "$f" ] || continue
+            sudo grep -q 'DisableUnsafeActionProtection' "$f" \
+              || echo 'DisableUnsafeActionProtection=.*' | sudo tee -a "$f" > /dev/null
+            echo "::notice::локальный $f: $(sudo cat "$f" | tr '\n' ' ')"
           done
 
       - name: Конфигурация и epf
