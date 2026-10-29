@@ -174,6 +174,7 @@ jobs:
           sudo mkdir -p /opt/1cv8t/conf
           printf 'SystemLanguage=System\nDisableUnsafeActionProtection=.*\n' \
             | sudo tee /opt/1cv8t/conf/conf.cfg > /dev/null
+          sudo ls -la /opt/1cv8t/conf/
           sudo cat /opt/1cv8t/conf/conf.cfg
 
       - name: Конфигурация и epf
@@ -225,6 +226,12 @@ jobs:
             kill -0 "$pid" 2>/dev/null || break
             sleep 1
           done
+          # Снимок окон делаем ДО убийства клиента: если прогон встал на диалоге
+          # («Разрешить открывать данный файл?» и подобные), его заголовок виден
+          # в X-сервере и попадает в лог шага.
+          echo '--- окна X ---'
+          xwininfo -root -tree 2>/dev/null | head -40 || true
+          echo "::notice::окна: $(xwininfo -root -tree 2>/dev/null | grep -o '"[^"]*"' | head -12 | tr '\n' ' ')"
           kill "$pid" 2>/dev/null || true
           pkill -f 1cv8 || true
           echo '--- вывод клиента ---'
