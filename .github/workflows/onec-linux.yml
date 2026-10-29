@@ -222,6 +222,7 @@ jobs:
           rm -f success.txt autotest-result.txt client-started.txt page-loaded.txt VAEditorSample.epf.error.txt
           timeout -k 10 900 "$client" ENTERPRISE /LRU "/F$db" \
             "/Execute$GITHUB_WORKSPACE/VAEditorSample.epf" /C autotest \
+            /Out /tmp/client-out.log \
             > /tmp/client.log 2>&1 &
           pid=$!
           for i in $(seq 1 600); do
@@ -243,8 +244,14 @@ jobs:
           xwininfo -root -tree 2>/dev/null | head -40 || true
           echo "::notice::окна: $(xwininfo -root -tree 2>/dev/null | grep -o '"[^"]*"' | head -12 | tr '\n' ' ')"
           # Текст диалога читается только глазами — прикладываем скриншот.
-          import -display :99 -window root "$GITHUB_WORKSPACE/screen.png" 2>/dev/null \
-            && echo '::notice::скриншот: screen.png' || true
+          # root-снимок часто выходит чёрным (дочерние окна рисуются напрямую),
+          # поэтому снимаем само окно диалога по id.
+          wid=$(xdotool search --name '^1С:Предприятие$' 2>/dev/null | head -1)
+          if [ -n "$wid" ]; then
+            import -display :99 -window "$wid" "$GITHUB_WORKSPACE/screen.png" 2>/dev/null \
+              && echo "::notice::скриншот окна $wid: screen.png" || true
+          fi
+          import -display :99 -window root "$GITHUB_WORKSPACE/screen-root.png" 2>/dev/null || true
           kill "$pid" 2>/dev/null || true
           pkill -f 1cv8 || true
           echo '--- вывод клиента ---'
@@ -260,6 +267,7 @@ jobs:
             fi
           done
           echo "::notice::лог клиента: $(tail -5 /tmp/client.log 2>/dev/null | tr '\n' ' ')"
+          echo "::notice::out клиента: $(tail -5 /tmp/client-out.log 2>/dev/null | tr '\n' ' ')"
           if [ -f autotest-result.txt ]; then
             echo '--- autotest-result.txt ---'
             cat autotest-result.txt
