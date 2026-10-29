@@ -77,9 +77,12 @@ after_build:
       # Метки формы автотеста: client-started — форма открылась, page-loaded —
       # страница догрузилась, autotest-result — тесты досчитали. По ним видно,
       # на каком шаге клиент встал, когда success.txt не появился.
+      # В строке ниже ${name} в фигурных скобках: "$name:" PowerShell читает как
+      # обращение к переменной области видимости и падает с ParseError, из-за
+      # чего не выполняется весь блок и автотест даже не запускается.
       foreach ($name in $markers) {
         $path = Join-Path $root $name
-        if (Test-Path $path) { Write-Host "--- $name ---"; Get-Content $path } else { Write-Host "--- $name: нет ---" }
+        if (Test-Path $path) { Write-Host "--- ${name} ---"; Get-Content $path } else { Write-Host "--- ${name}: нет ---" }
       }
       if (-not (Test-Path $success)) {
         throw "autotest did not finish in ${timeout}s: success.txt not created"
