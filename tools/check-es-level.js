@@ -32,7 +32,7 @@ const version = 'es2018'
 // package.json es-check наружу не отдаётся (в exports только "."), поэтому
 // require.resolve('es-check/package.json') на Node 20 падает — ищем корень
 // пакета от его точки входа.
-function packageRoot(entry) {
+function packageRoot (entry) {
   let dir = path.dirname(entry)
   for (;;) {
     if (fs.existsSync(path.join(dir, 'package.json'))) return dir

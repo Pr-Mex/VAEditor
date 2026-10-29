@@ -172,12 +172,16 @@ module.exports = (env, argv) => {
     plugins: [
       // #10: валим сборку, если строковый патч monaco не наложился (дрейф версии)
       {
-        apply(compiler) {
+        apply (compiler) {
           compiler.hooks.afterEmit.tapAsync('AssertMonacoPatches', (compilation, cb) => {
-            try { replaceStrings.assertApplied(); cb(); }
-            catch (e) { cb(e); }
-          });
-        },
+            try {
+              replaceStrings.assertApplied()
+              cb()
+            } catch (e) {
+              cb(e)
+            }
+          })
+        }
       },
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
