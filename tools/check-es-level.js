@@ -105,17 +105,25 @@ function cleanup() {
   }
 }
 
+// Разбор всегда печатается, даже если es-check потом пройдёт: иначе по логу
+// не понять, отработала ли диагностика.
+const latest = files
+  .map(file => ({ file, error: parseError(file, 'latest') }))
+  .filter(item => item.error)
+const target = files
+  .map(file => ({ file, error: parseError(file, 2015) }))
+  .filter(item => item.error)
+
+console.log('acorn: файлов ' + files.length + ', ошибок разбора: на последней версии ' + latest.length + ', на ' + version + ' ' + target.length)
+
 // Если страницу не разобрать даже как самый свежий JS, виноват не бандл, а
 // вырезание <script> из html: об этом надо сказать отдельно, иначе находка
 // выглядит как «в коде новый синтаксис».
-const broken = files
-  .map(file => ({ file, error: parseError(file, 'latest') }))
-  .filter(item => item.error)
-
-if (broken.length) {
-  report('Не удалось разобрать встроенные скрипты — проверьте вырезание <script> из html:', broken)
-  cleanup()
-  process.exit(2)
+if (latest.length) {
+  report('Не удалось разобрать встроенные скрипты — проверьте вырезание <script> из html:', latest)
+}
+if (target.length) {
+  report('Синтаксис новее ' + version + ' — этот WebKit 1С не разберёт:', target)
 }
 
 // es-check ищет файлы через fast-glob: абсолютные виндовые пути она не берёт
@@ -123,15 +131,6 @@ if (broken.length) {
 // и передаём только имена файлов.
 const names = files.map(f => path.basename(f))
 const result = spawnSync(process.execPath, [cli, version, ...names], { stdio: 'inherit', cwd: dir })
-
-if (result.status !== 0) {
-  const found = files
-    .map(file => ({ file, error: parseError(file, 2015) }))
-    .filter(item => item.error)
-  if (found.length) {
-    report('Синтаксис новее ' + version + ' — этот WebKit 1С не разберёт:', found)
-  }
-}
 
 cleanup()
 
