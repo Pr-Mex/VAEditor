@@ -181,7 +181,9 @@ jobs:
       - name: Конфигурация и epf
         timeout-minutes: 15
         run: |
-          Xvfb :99 -screen 0 1680x1050x24 -shmem &
+          # Дисплей поднимаем один раз на весь job: второй Xvfb на :99 падает
+          # с «Server is already active for display 99».
+          pgrep -f 'Xvfb :99' > /dev/null || (Xvfb :99 -screen 0 1680x1050x24 -shmem &)
           sleep 2
           export DISPLAY=:99
           bin=$(ls /opt/1cv8t/x86_64/*/1cv8t | head -1)
@@ -210,12 +212,12 @@ jobs:
       - name: Автотест в WebView 1С
         timeout-minutes: 20
         run: |
-          Xvfb :99 -screen 0 1680x1050x24 -shmem &
+          pgrep -f 'Xvfb :99' > /dev/null || (Xvfb :99 -screen 0 1680x1050x24 -shmem &)
           sleep 2
           export DISPLAY=:99
           client=$(ls /opt/1cv8t/x86_64/*/1cv8ct | head -1)
           db=$HOME/1c/base
-          rm -f success.txt autotest-result.txt VAEditorSample.epf.error.txt
+          rm -f success.txt autotest-result.txt client-started.txt page-loaded.txt VAEditorSample.epf.error.txt
           timeout 900 "$client" ENTERPRISE /LRU "/F$db" \
             "/Execute$GITHUB_WORKSPACE/VAEditorSample.epf" /C autotest \
             > /tmp/client.log 2>&1 &
@@ -228,7 +230,18 @@ jobs:
           kill "$pid" 2>/dev/null || true
           pkill -f 1cv8 || true
           echo '--- вывод клиента ---'
-          tail -20 /tmp/client.log 2>/dev/null || true
+          tail -40 /tmp/client.log 2>/dev/null || true
+          # Метки формы Autotest: client-started — форма открылась,
+          # page-loaded — сработал DocumentComplete, autotest-result — тесты
+          # досчитали. Где оборвалось, там и встали.
+          for mark in client-started.txt page-loaded.txt autotest-result.txt; do
+            if [ -f "$mark" ]; then
+              echo "::notice::$mark: $(head -5 "$mark" | tr '\n' ' ')"
+            else
+              echo "::notice::$mark: нет"
+            fi
+          done
+          echo "::notice::лог клиента: $(tail -5 /tmp/client.log 2>/dev/null | tr '\n' ' ')"
           if [ -f autotest-result.txt ]; then
             echo '--- autotest-result.txt ---'
             cat autotest-result.txt
