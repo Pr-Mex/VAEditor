@@ -66,10 +66,15 @@ jobs:
           find ~/1c/dist -maxdepth 4 \( -name '*.deb' -o -name '*.rpm' -o -name '*.run' \) | head -40
           echo '--- исполняемые 1c ---'
           find ~/1c/dist -maxdepth 6 -name '1cv8*' -type f | head -40
+          # Аннотации прогона читаются без токена, а лог шага — нет. Поэтому
+          # главное выносим в ::notice::, чтобы разбор не зависел от доступа к логам.
+          echo "::notice::верхний уровень: $(ls ~/1c/dist | tr '\n' ' ')"
+          echo "::notice::каталоги: $(find ~/1c/dist -maxdepth 2 -type d | head -12 | tr '\n' ' ')"
+          echo "::notice::бинарники: $(find ~/1c/dist -maxdepth 6 -name '1cv8*' -type f | head -12 | tr '\n' ' ')"
+          echo "::notice::размер: $(du -sh ~/1c/dist | cut -f1)"
 
       - name: Установка
         run: |
-          set -euo pipefail
           debs=$(find ~/1c/dist -name '*.deb' | sort)
           if [ -n "$debs" ]; then
             echo "deb-пакетов: $(echo "$debs" | wc -l)"
@@ -79,7 +84,7 @@ jobs:
           fi
           echo '--- /opt/1cv8 ---'
           ls -la /opt/1cv8 2>/dev/null || true
-          find /opt/1cv8 -maxdepth 3 -name '1cv8*' -type f 2>/dev/null | head -20 || true
+          echo "::notice::opt: $(ls /opt/1cv8 2>/dev/null | tr '\n' ' ' || echo нет)"
 
       - name: Xvfb и запуск клиента
         run: |
@@ -87,12 +92,21 @@ jobs:
           sleep 2
           export DISPLAY=:99
           xdpyinfo | head -3
-          bin=$(find /opt/1cv8 ~/1c/dist -name '1cv8' -type f -perm -u+x 2>/dev/null | head -1)
+          bin=$(find /opt/1cv8 ~/1c/dist -maxdepth 6 -type f -perm -u+x \
+                  \( -name '1cv8' -o -name '1cv8t' -o -name '1cv8c' -o -name '1cv8s' \) \
+                  2>/dev/null | head -1)
           echo "bin=${bin}"
+          echo "::notice::bin=${bin:-не найден}"
           if [ -n "$bin" ]; then
-            "$bin" --version || true
-            "$bin" CREATEINFOBASE "File=$HOME/1c/base" || true
-            ls -la "$HOME/1c/base" 2>/dev/null || echo 'база не создана'
+            "$bin" --version 2>&1 | head -3 || true
+            set +e
+            out=$("$bin" CREATEINFOBASE "File=$HOME/1c/base" 2>&1)
+            rc=$?
+            set -e
+            echo "$out" | head -20
+            echo "::notice::CREATEINFOBASE rc=${rc}"
+            echo "::notice::вывод: $(echo "$out" | head -5 | tr '\n' ' ')"
+            echo "::notice::база: $(ls "$HOME/1c/base" 2>/dev/null | tr '\n' ' ' || echo нет)"
           else
             echo 'бинарь не найден'
           fi
