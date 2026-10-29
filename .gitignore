@@ -15,7 +15,6 @@ tools/.agent-running.txt
 tools/.agent-log.txt
 /success.txt
 tools/.agent-log*.txt
-storage-probe.txt
 env-probe.txt
 /client-started.txt
 /page-loaded.txt

@@ -2,7 +2,7 @@
 rem One-click check: build, pack templates, fresh infobase, epf, autotest.
 rem Usage: check.cmd                - run tests on the default platform
 rem        check.cmd autotest "C:\Program Files\1cv8\<version>\bin"
-rem        check.cmd probestorage   - temp storage experiment
+rem        check.cmd probeenv      - WebKit capabilities experiment
 rem Keep this file ASCII-only: cmd.exe reads batch files in the OEM codepage,
 rem so any non-ASCII text here turns into garbage and breaks parsing.
 setlocal EnableExtensions EnableDelayedExpansion
@@ -52,12 +52,6 @@ if exist "autotest-result.txt" (
     echo.
     echo === autotest-result.txt ===
     pwsh -NoProfile -Command "Get-Content 'autotest-result.txt' -Encoding UTF8"
-)
-
-if exist "storage-probe.txt" (
-    echo.
-    echo === storage-probe.txt ===
-    pwsh -NoProfile -Command "Get-Content 'storage-probe.txt' -Encoding UTF8"
 )
 
 if exist "env-probe.txt" (

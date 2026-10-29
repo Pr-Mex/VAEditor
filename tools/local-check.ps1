@@ -3,7 +3,6 @@ param(
     [string]$Root = '',
     [int]$TestTimeoutSeconds = 300,
     # Параметр запуска обработки: autotest — прогон тестов,
-    # probestorage — натурный эксперимент с временным хранилищем.
     # probeenv — натурный эксперимент с возможностями WebKit (TextDecoder и пр.).
     [string]$Launch = 'autotest'
 )
@@ -194,14 +193,6 @@ while ((Get-Date) -lt $deadline) {
     # незачем ждать полный таймаут.
     if (-not (Get-Process -Name $procNames -ErrorAction SilentlyContinue)) { break }
     Start-Sleep -Milliseconds 500
-}
-
-# Отчёт натурного эксперимента с временным хранилищем (режим probestorage).
-$probe = Join-Path $Root 'storage-probe.txt'
-if (Test-Path $probe) {
-    Write-Host '--- storage-probe.txt ---'
-    Get-Content $probe -Encoding UTF8 | ForEach-Object { Write-Host ('  ' + $_) }
-    Write-Host '--- end ---'
 }
 
 # Отчёт натурного эксперимента с возможностями WebKit (режим probeenv).
