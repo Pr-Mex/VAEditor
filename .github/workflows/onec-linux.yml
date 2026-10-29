@@ -116,6 +116,7 @@ jobs:
           echo "::notice::бины: $(find /opt /usr -maxdepth 5 -name '1cv8*' -type f 2>/dev/null | head -10 | tr '\n' ' ')"
 
       - name: Xvfb и запуск клиента
+        timeout-minutes: 10
         run: |
           Xvfb :99 -screen 0 1680x1050x24 -shmem &
           sleep 2
@@ -136,7 +137,7 @@ jobs:
           echo "::notice::ldd: $(ldd "$bin" 2>&1 | grep -c 'not found') not found"
           echo "::notice::ldd-list: $(ldd "$bin" 2>&1 | grep 'not found' | head -8 | tr '\n' ' ')"
           set +e
-          out=$("$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1)
+          out=$(timeout 180 "$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1)
           rc=$?
           set -e
           echo "$out" | head -20
