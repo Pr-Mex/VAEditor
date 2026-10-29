@@ -36,12 +36,11 @@ if (-not $Root) {
 
 $ErrorActionPreference = 'Stop'
 
-# 1cv8.exe пишет /Out-лог в системной ANSI-кодировке (cp1251 на русской Windows),
-# а не в UTF-8. При чтении по умолчанию кириллица превращается в знаки вопроса —
-# поэтому логи платформы читаем с явной кодировкой.
+# 1cv8.exe пишет /Out-лог в UTF-8, но в консоль он попадает через перенаправление
+# в tools/.agent-log.txt, а кодировка перенаправления зависит от кодовой страницы
+# консоли (см. chcp в check.cmd). Читаем явно как UTF-8.
 function Read-1CLog([string]$Path) {
-    $bytes = [System.IO.File]::ReadAllBytes($Path)
-    return [System.Text.Encoding]::GetEncoding(1251).GetString($bytes)
+    return Get-Content $Path -Encoding UTF8 -Raw
 }
 
 if (Test-Path $PlatformBin -PathType Leaf) {
