@@ -8,3 +8,7 @@ example/success.txt
 /database
 /database-*
 *.log
+*.epf.error.txt
+tools/.agent-command.txt
+tools/.agent-running.txt
+tools/.agent-log.txt

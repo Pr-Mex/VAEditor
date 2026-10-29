@@ -159,10 +159,25 @@ if (Test-Path $success) { Remove-Item -Force $success }
 # Обработку открывает сама конфигурация (config/Ext/ManagedApplicationModule.bsl),
 # поэтому /Execute не используется: он и вызывал диалог защиты от опасных действий.
 $arguments = @('ENTERPRISE', '/LRU', "/F$db", '/C', "autotest;$epf")
+# Если обработка не открылась, модуль приложения пишет этот файл: без него клиент
+# просто висит без окон и прогон ждёт полный таймаут.
+$failure = "$epf.error.txt"
+if (Test-Path $failure) { Remove-Item -Force $failure }
 Start-Process -FilePath $client -ArgumentList $arguments | Out-Null
 
-if (Wait-Path $success $TestTimeoutSeconds) {
+$deadline = (Get-Date).AddSeconds($TestTimeoutSeconds)
+while ((Get-Date) -lt $deadline) {
+    if ((Test-Path $success) -or (Test-Path $failure)) { break }
+    Start-Sleep -Milliseconds 500
+}
+
+if (Test-Path $success) {
     Write-Host 'RESULT: success.txt created - autotest passed'
+} elseif (Test-Path $failure) {
+    Write-Host 'RESULT: обработка не открылась - автотест не запустился'
+    Get-Content $failure -Encoding UTF8 | ForEach-Object { Write-Host ('  ' + $_) }
+    Stop-1C
+    exit 1
 } else {
     Write-Host 'RESULT: success.txt NOT created - autotest did not finish'
     Stop-1C

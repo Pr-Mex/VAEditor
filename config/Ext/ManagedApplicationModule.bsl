@@ -19,33 +19,67 @@ Procedure BeforeStart(Cancel, StandardProcessing)
 	EndIf;
 	
 	// Главное окно ещё не создано, поэтому форму открываем следующим тактом.
-	ConnectWaitHandler("OpenAutotest", 1, True);
+	AttachIdleHandler("OpenAutotest", 1, True);
 	
 EndProcedure
 
+// Обработчик ожидания вызывается по имени — процедура должна быть экспортируемой.
 &AtClient
-Procedure OpenAutotest()
+Procedure OpenAutotest() Export
 	
-	DisconnectWaitHandler("OpenAutotest");
+	DetachIdleHandler("OpenAutotest");
 	
 	Path = AutotestProcessingPath();
 	If Not ValueIsFilled(Path) Then
-		Message("autotest: в параметре запуска не указан путь к внешней обработке");
+		ReportAutotestFailure("autotest: в параметре запуска не указан путь к внешней обработке");
 		Return;
 	EndIf;
 	
-	OpenAutotestProcessing(Path);
+	Try
+		Form = AutotestForm(Path);
+	Except
+		// Иначе клиент просто висит без окон, а прогон ждёт таймаут.
+		ReportAutotestFailure("autotest: не удалось открыть " + Path + " — " + ErrorDescription());
+		Return;
+	EndTry;
+	
+	If Form = Undefined Then
+		ReportAutotestFailure("autotest: форма Autotest не получена из " + Path);
+		Return;
+	EndIf;
+	
+	Form.Open();
 	
 EndProcedure
 
-&AtClient
-Procedure OpenAutotestProcessing(Path)
+// Форму берём прямо из файла: защита от опасных действий действует только до
+// конца текущего метода, поэтому загрузка обработки попадает в отключённый
+// интервал и диалог не показывается.
+&AtServer
+Function AutotestForm(Path)
+	
+	SetUnsafeActionProtectionDisabled(True);
+	Form = ExternalDataProcessors.GetForm(Path, "Autotest");
+	If Form <> Undefined Then
+		Return Form;
+	EndIf;
 	
 	Protection = New UnsafeOperationProtectionDescription;
 	Protection.UnsafeOperationWarnings = False;
 	
 	Processing = ExternalDataProcessors.Create(Path, False, Protection);
-	Processing.GetForm("Autotest").Open();
+	
+	Return Processing.GetForm("Autotest");
+	
+EndFunction
+
+&AtClient
+Procedure ReportAutotestFailure(Reason)
+	
+	Path = AutotestProcessingPath();
+	Report = New TextDocument;
+	Report.SetText(Reason);
+	Report.Write(Path + ".error.txt", "UTF-8");
 	
 EndProcedure
 
