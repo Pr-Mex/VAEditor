@@ -8,6 +8,11 @@ rem so any non-ASCII text here turns into garbage and breaks parsing.
 setlocal EnableExtensions EnableDelayedExpansion
 cd /d "%~dp0"
 
+rem Console codepage 65001 makes pwsh write its redirected output to
+rem tools\.agent-log.txt as UTF-8. Without it Cyrillic from 1C logs turns
+rem into question marks on the way through the redirect.
+chcp 65001 >nul
+
 rem Platform folder is looked up under C:\Program Files\1cv8: among the
 rem installed versions the last one found wins, and the subfolder holding
 rem 1cv8.exe is taken (names are not assumed).
@@ -30,12 +35,11 @@ set "LAUNCH=%~1"
 if not "%~1"=="" goto launch_ready
 set "LAUNCH=autotest"
 :launch_ready
-
-pwsh -NoProfile -ExecutionPolicy Bypass -File "tools\local-check.ps1" "!PLATFORM!" -Launch "!LAUNCH!" > "tools\.agent-log.txt" 2>&1
-
+echo Running: !LAUNCH! on !PLATFORM!
+echo Live log is duplicated to tools\.agent-log.txt
 echo.
-echo === tail of tools\.agent-log.txt ===
-pwsh -NoProfile -Command "Get-Content 'tools\.agent-log.txt' -Tail 45"
+
+pwsh -NoProfile -ExecutionPolicy Bypass -File "tools\local-check.ps1" "!PLATFORM!" -Launch "!LAUNCH!"
 
 if exist "autotest-result.txt" (
     echo.
