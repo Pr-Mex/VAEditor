@@ -1,0 +1,88 @@
+name: onec-linux
+
+# Эксперимент: запустить клиент 1С на ubuntu-раннере и прогнать в нём автотест.
+# Пока это разведка: скачать платформу, распаковать, посмотреть структуру и
+# проверить, что бинарь вообще стартует под Xvfb.
+
+on:
+  push:
+    branches: [onec-linux]
+  workflow_dispatch:
+
+jobs:
+  platform:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Зависимости
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            p7zip-full xvfb x11-utils \
+            libgtk-3-0t64 libxtst6 libxrender1 libxi6 libglib2.0-0t64 libnss3 \
+            libxext6 libsm6 libice6 libfreetype6 libfontconfig1 libdbus-1-3 \
+            libasound2t64 libxslt1.1 libxfixes3 libxcursor1 libxrandr2 \
+            libcups2t64 libpango-1.0-0 libcairo2
+
+      - name: Кэш платформы
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/1c
+          key: onec-linux-platform-v1
+
+      - name: Скачать и распаковать
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/1c/dist
+          cd ~/1c/dist
+          base=https://raw.githubusercontent.com/lintest/tools1c/platform-linux
+          for i in $(seq -w 1 17); do
+            curl -fsSL -O "$base/linux1c.7z.0$i"
+          done
+          ls -la
+          7z x -y linux1c.7z.001 > /dev/null
+          rm -f linux1c.7z.*
+
+      - name: Что внутри
+        run: |
+          echo '--- каталоги (2 уровня) ---'
+          find ~/1c/dist -maxdepth 2 -type d | head -40
+          echo '--- пакеты ---'
+          find ~/1c/dist -maxdepth 4 \( -name '*.deb' -o -name '*.rpm' -o -name '*.run' \) | head -40
+          echo '--- исполняемые 1c ---'
+          find ~/1c/dist -maxdepth 6 -name '1cv8*' -type f | head -40
+
+      - name: Установка
+        run: |
+          set -euo pipefail
+          debs=$(find ~/1c/dist -name '*.deb' | sort)
+          if [ -n "$debs" ]; then
+            echo "deb-пакетов: $(echo "$debs" | wc -l)"
+            sudo dpkg -i $debs || sudo apt-get -f install -y
+          else
+            echo 'deb нет'
+          fi
+          echo '--- /opt/1cv8 ---'
+          ls -la /opt/1cv8 2>/dev/null || true
+          find /opt/1cv8 -maxdepth 3 -name '1cv8*' -type f 2>/dev/null | head -20 || true
+
+      - name: Xvfb и запуск клиента
+        run: |
+          Xvfb :99 -screen 0 1680x1050x24 -shmem &
+          sleep 2
+          export DISPLAY=:99
+          xdpyinfo | head -3
+          bin=$(find /opt/1cv8 ~/1c/dist -name '1cv8' -type f -perm -u+x 2>/dev/null | head -1)
+          echo "bin=${bin}"
+          if [ -n "$bin" ]; then
+            "$bin" --version || true
+            "$bin" CREATEINFOBASE "File=$HOME/1c/base" || true
+            ls -la "$HOME/1c/base" 2>/dev/null || echo 'база не создана'
+          else
+            echo 'бинарь не найден'
+          fi
