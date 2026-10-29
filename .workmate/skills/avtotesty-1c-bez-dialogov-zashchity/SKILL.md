@@ -131,6 +131,45 @@ Consider using ${} to delimit the name.
 Лечится `${name}:`. Признак именно этой ошибки: в логе нет строки `> 1cv8ct ENTERPRISE ...`,
 артефактов-меток нет, а шаг «падал» минуты.
 
+## Прогон на Linux (GitHub Actions, ubuntu-22.04)
+
+Проверено: учебная 8.3.27.2342, автотест в WebView платформы проходит 51/51.
+
+- **Раннер — только `ubuntu-22.04`.** Бинарь собран под WebKitGTK 4.0
+  (`libwebkit2gtk-4.0-37`, `libjavascriptcoregtk-4.0-18`, `libsoup2.4-1`).
+  В 24.04 стоят 4.1 и libsoup3 — клиент не стартует. Проверять через `ldd`.
+- **Дистрибутив**: `lintest/tools1c@platform-linux`, 17 томов `linux1c.7z.0NN`
+  (~1.5 ГБ), архив зашифрован — пароль из секрета `KEY_1CV8T`.
+  Внутри `setup-training-8.3.27.2342-x86_64.run`; ставится unattended в
+  `/opt/1cv8t/x86_64/<версия>`, бинари `1cv8t` (конфигуратор/толстый)
+  и `1cv8ct` (тонкий). Лицензия не нужна.
+- **`timeout -k 10` обязателен на каждом вызове 1С.** Клиент обрабатывает
+  SIGTERM и без добивания висит до `timeout-minutes` шага. Именно так
+  «висел» `1cv8t --version` — диагностический вызов, который вообще не нужен.
+- **`conf.cfg`** (снять защиту от опасных действий): писать в
+  `/opt/1cv8t/conf/conf.cfg` (каталог установки, не версии), плюс дубли в
+  `/opt/1cv8/conf/` и `~/.1cv8/1C/1cv8/conf/`. Нужен `sudo`.
+  Параметр тот же, что на Windows: `DisableUnsafeActionProtection=.*`.
+- **Xvfb поднимать один раз на job**:
+  `pgrep -f 'Xvfb :99' > /dev/null || (Xvfb :99 -screen 0 1680x1050x24 -shmem &)`.
+  Повторный запуск падает с «Server is already active for display 99».
+- **Порядок шагов**: `npm run build:test` → макеты (zip `dist/index.html` и
+  `dist/test.html` в `example/VAEditorSample/Templates/*/Ext/Template.bin`) →
+  `CREATEINFOBASE` → `DESIGNER /LoadConfigFromFiles config /UpdateDBCfg` →
+  `DESIGNER /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml` →
+  `1cv8ct ENTERPRISE /LRU /F<база> /Execute<epf> /C autotest`.
+- **Признак успеха** — `success.txt`, как и на Windows. Промежуточные метки:
+  `client-started.txt` (форма открылась), `page-loaded.txt` (DocumentComplete),
+  `autotest-result.txt` (раннер дошёл до конца, `passes=/failures=`).
+  Без них шаг не отличить «не открылось» от «тесты встали».
+- **Диагностика зависания**: `xwininfo -root -tree` показывает заголовки окон —
+  по ним видно висящий диалог. Скриншот root-окна на Xvfb выходит **чёрным**;
+  снимать нужно конкретное окно по id (`xdotool search --name ...` → `import -window`).
+  Предупреждения `libsoup: database is locked` и `AT-SPI: ... ServiceUnknown` —
+  шум WebKitGTK, к делу не относятся.
+- `/Out <файл>` у клиента полезен: служебные сообщения платформы попадают
+  в файл, а не только в stdout.
+
 ## Грабли
 
 - Признак успеха прогона — файл `success.txt` в корне проекта, а не код возврата клиента.
