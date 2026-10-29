@@ -48,6 +48,11 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	If StrStartsWith(LaunchParameter, "autotest") And EventData.Element.id = "AutotestResult" Then
 		Result = Items.VanessaEditor.Document.defaultView.mochaResults;
+		// Отчёт пишем всегда: без него не понять, упали тесты или клик не дошёл.
+		TextWriter = New TextWriter(CurrentPath + "autotest-result.txt");
+		TextWriter.WriteLine("passes=" + Result.passes + " failures=" + Result.failures);
+		TextWriter.WriteLine(Items.VanessaEditor.Document.defaultView.mochaFailures);
+		TextWriter.Close();
 		If Result.failures = 0 Then
 			TextWriter = New TextWriter(CurrentPath + "success.txt");
 			TextWriter.WriteLine(CurrentUniversalDateInMilliseconds());

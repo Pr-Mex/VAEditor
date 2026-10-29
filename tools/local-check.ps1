@@ -49,16 +49,17 @@ function Resolve-1CExe([string]$dir, [string[]]$names, [string]$what) {
 
 # Конфигуратор: в обычной установке это толстый клиент 1cv8.exe.
 $designer = Resolve-1CExe $binDir @('1cv8t.exe', '1cv8.exe') 'Designer'
-# Клиент тоже толстый: форму внешней обработки можно получить только в нём
-# (ВнешняяОбработка.ПолучитьФорму недоступен в тонком клиенте), а именно так
-# тестовая конфигурация открывает обработку без предупреждения о защите.
-$client = Resolve-1CExe $binDir @('1cv8t.exe', '1cv8.exe') 'Client'
+# Клиент — тонкий. Это не косметика: внешняя обработка в тонком клиенте
+# исполняется на сервере, где некому подтверждать «Разрешить открывать файл?»,
+# поэтому защита от опасных действий не показывает диалог и прогон идёт сам.
+# В толстом клиенте тот же запуск встаёт на этом диалоге.
+$client = Resolve-1CExe $binDir @('1cv8ct.exe', '1cv8c.exe', '1cv8.exe') 'Client'
 $procNames = @('1cv8t', '1cv8ct', '1cv8', '1cv8c', '1cv8p32', '1cv8p64')
 
-# Защита от опасных действий спрашивает «Да/Нет» перед запуском внешней обработки,
-# а в неинтерактивном прогоне клиент висит на этом диалоге. Глобальный conf.cfg
-# платформы скрипт не правит: настройка касается всей установки. Если диалог
-# появился — его нужно подтвердить один раз.
+# Защита от опасных действий спрашивает «Да/Нет» перед запуском внешней
+# обработки, но только в толстом клиенте. Тонкий клиент исполняет обработку на
+# сервере, где подтверждать некому, — поэтому прогон идёт без диалога.
+# Глобальный conf.cfg платформы скрипт не правит: настройка касается всей установки.
 
 function Wait-1CIdle([int]$seconds) {
     $deadline = (Get-Date).AddSeconds($seconds)
@@ -156,18 +157,23 @@ if (-not (Wait-Path $epf 120)) { throw 'epf build failed: file not created' }
 Write-Host ("=== 5. Run autotest (timeout " + $TestTimeoutSeconds + "s) ===")
 $success = Join-Path $Root 'success.txt'
 if (Test-Path $success) { Remove-Item -Force $success }
-# Обработку открывает сама конфигурация (config/Ext/ManagedApplicationModule.bsl),
-# поэтому /Execute не используется: он и вызывал диалог защиты от опасных действий.
-$arguments = @('ENTERPRISE', '/LRU', "/F$db", '/C', "autotest;$epf")
-# Если обработка не открылась, модуль приложения пишет этот файл: без него клиент
-# просто висит без окон и прогон ждёт полный таймаут.
+# Обработку открывает платформа (/Execute), а модуль приложения успевает снять
+# предупреждения защиты от опасных действий у текущего пользователя базы.
+$arguments = @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', 'autotest')
+# Если обработка не открылась, клиент просто висит без окон и прогон ждёт полный
+# таймаут — поэтому ждём ещё и файл, который пишет модуль приложения при ошибке.
 $failure = "$epf.error.txt"
 if (Test-Path $failure) { Remove-Item -Force $failure }
 Start-Process -FilePath $client -ArgumentList $arguments | Out-Null
 
 $deadline = (Get-Date).AddSeconds($TestTimeoutSeconds)
+# Даём клиенту подняться, иначе «процессов нет» сработает сразу после старта.
+Start-Sleep -Seconds 2
 while ((Get-Date) -lt $deadline) {
     if ((Test-Path $success) -or (Test-Path $failure)) { break }
+    # Клиент закрылся (например, форма вызвала Exit), а success.txt не появился —
+    # незачем ждать полный таймаут.
+    if (-not (Get-Process -Name $procNames -ErrorAction SilentlyContinue)) { break }
     Start-Sleep -Milliseconds 500
 }
 
@@ -180,6 +186,13 @@ if (Test-Path $success) {
     exit 1
 } else {
     Write-Host 'RESULT: success.txt NOT created - autotest did not finish'
+    # Отчёт формы: сколько тестов прошло и сколько упало.
+    $report = Join-Path $Root 'autotest-result.txt'
+    if (Test-Path $report) {
+        Get-Content $report -Encoding UTF8 | ForEach-Object { Write-Host ('  ' + $_) }
+    } else {
+        Write-Host '  autotest-result.txt нет: страница не досигналила о конце прогона'
+    }
     Stop-1C
     exit 1
 }

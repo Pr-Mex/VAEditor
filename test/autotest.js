@@ -38,13 +38,19 @@ const autotest = (url) => {
   context.keys().forEach(context)
   var runner = mocha.run()
 
+  const failures = []
+  runner.on('fail', (test, err) => {
+    failures.push(test.fullTitle() + ' — ' + (err && err.message ? err.message : ''))
+    if (url) send(url + 'api/tests', test, err, 'Failed')
+  })
   if (url) {
     runner.on('pass', (test) => send(url + 'api/tests', test, {}, 'Passed'))
-    runner.on('fail', (test, err) => send(url + 'api/tests', test, err, 'Failed'))
   }
 
   runner.on('end', () => {
     window.mochaResults = runner.stats
+    // Строкой, а не массивом: из поля HTML в 1С так надёжнее.
+    window.mochaFailures = failures.join('\n')
     document.getElementById('VanessaContainer').classList.add('vanessa-hidden')
     const button = $('button.vanessa-hidden', { id: 'AutotestResult' })
     document.body.appendChild(button).click()

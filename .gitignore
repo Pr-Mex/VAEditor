@@ -9,6 +9,7 @@ example/success.txt
 /database-*
 *.log
 *.epf.error.txt
+autotest-result.txt
 tools/.agent-command.txt
 tools/.agent-running.txt
 tools/.agent-log.txt
