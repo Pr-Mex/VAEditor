@@ -126,6 +126,19 @@ module.exports = (env, argv) => {
           ]
         },
         {
+          // Buffer-polyfill (ProvidePlugin → npm `buffer`) содержит `2 ** 24`
+          // (ES2016) в readBigUInt64LE/BE. Terser с ecma 2015 его не понижает,
+          // а WebKit 1С на `**` роняет разбор всего бандла. esbuild заменяет
+          // на Math.pow(2, 24); сам `BigInt(...)` — обычный вызов функции,
+          // синтаксически это ES5 (в 1С не исполняется: defineBigIntMethod
+          // подменяет метод заглушкой).
+          test: /node_modules[\\/]buffer[\\/].+\.js$/,
+          use: {
+            loader: 'esbuild-loader',
+            options: { target: 'es2015' }
+          }
+        },
+        {
           test: /\.js$/,
           enforce: 'pre',
           include: /node_modules[\\/]monaco-editor[\\/]esm/,

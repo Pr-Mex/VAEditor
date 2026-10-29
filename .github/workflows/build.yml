@@ -1,0 +1,207 @@
+name: build
+
+# Сборка, epf, артефакты и автотесты в headless Edge. Прогон в WebView
+# платформы 1С остаётся локальным (check.cmd): на хостинговом раннере нет
+# интерактивной сессии, а клиенту нужно окно.
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - ci/github-actions
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Новый пуш в ту же ветку отменяет предыдущий прогон: держать несколько
+# одинаковых билдов одновременно незачем.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # Билд занимает ~3 минуты; лишний час только маскирует зависание.
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      # Платформа 1С лежит отдельным репозиторием lintest/tools1c, ветка
+      # platform-8.3.27: четыре тома win1c.7z.001..004 (без пароля).
+      # Кэш привязан к SHA ветки: платформа меняется редко, а клон и распаковка
+      # 363 МБ на каждом прогоне — лишние полминуты.
+      # Токен checkout-а привязан к текущему репозиторию: с ним обращения к чужому
+      # публичному репозиторию отваливаются, поэтому extraheader снимаем.
+      - name: Resolve platform version
+        id: platform
+        shell: cmd
+        run: |
+          git config --local --unset-all "http.https://github.com/.extraheader"
+          for /f "tokens=1" %%H in ('git ls-remote https://github.com/lintest/tools1c.git refs/heads/platform-8.3.27') do set "SHA=%%H"
+          if "%SHA%"=="" echo ERROR: cannot resolve platform-8.3.27
+          if "%SHA%"=="" exit /b 1
+          echo sha=%SHA%>>%GITHUB_OUTPUT%
+
+      - name: Restore 1C platform
+        id: platform-cache
+        uses: actions/cache@v4
+        with:
+          path: bin
+          key: p1c-${{ steps.platform.outputs.sha }}
+
+      - name: Fetch 1C platform
+        if: steps.platform-cache.outputs.cache-hit != 'true'
+        shell: cmd
+        env:
+          KEY_1CV8T: ${{ secrets.KEY_1CV8T }}
+        run: |
+          git config --local --unset-all "http.https://github.com/.extraheader"
+          echo === 1/4 clone platform-8.3.27
+          git clone --branch=platform-8.3.27 https://github.com/lintest/tools1c.git p1c-src
+          if errorlevel 1 echo ERROR: git clone failed
+          if errorlevel 1 exit /b 1
+          echo === 2/4 extract 7z volumes
+          mkdir p1c
+          "C:\Program Files\7-Zip\7z.exe" x p1c-src\win1c.7z.001 -op1c
+          if not errorlevel 1 goto extracted
+          rem Архив может быть под паролем — тогда повторяем с секретом.
+          echo note: extraction failed, retrying with KEY_1CV8T
+          "C:\Program Files\7-Zip\7z.exe" x p1c-src\win1c.7z.001 -p%KEY_1CV8T% -op1c
+          if errorlevel 1 echo ERROR: 7z failed
+          if errorlevel 1 exit /b 1
+          :extracted
+          echo === 3/4 locate platform executables
+          for /f "delims=" %%F in ('dir /s /b p1c\1cv8t.exe 2^>nul') do set "EXEDIR=%%~dpF"
+          if not defined EXEDIR for /f "delims=" %%F in ('dir /s /b p1c\1cv8.exe 2^>nul') do set "EXEDIR=%%~dpF"
+          if not defined EXEDIR echo ERROR: platform executables not found in archive
+          if not defined EXEDIR exit /b 1
+          echo platform folder: %EXEDIR%
+          echo === 4/4 copy platform to bin
+          mkdir bin
+          xcopy "%EXEDIR%*" bin\ /E /I /Y /Q
+          rem Учебная поставка (1cv8t) и полная (1cv8) называют файлы по-разному,
+          rem а последующие шаги ждут 1cv8t.exe и 1cv8ct.exe. Делаем алиасы.
+          if exist bin\1cv8.exe if not exist bin\1cv8t.exe copy /y bin\1cv8.exe bin\1cv8t.exe > nul
+          if exist bin\1cv8c.exe if not exist bin\1cv8ct.exe copy /y bin\1cv8c.exe bin\1cv8ct.exe > nul
+          if not exist bin\1cv8t.exe echo ERROR: 1cv8t.exe not found after copy
+          if not exist bin\1cv8t.exe exit /b 1
+          dir /b bin\*.exe
+
+      - name: Fetch OneScript
+        shell: cmd
+        run: |
+          git clone -q --branch=oscript.w64 https://github.com/lintest/tools1c.git oscript
+          cd oscript
+          "C:\Program Files\7-Zip\7z.exe" x *.zip > nul
+
+      # Версия сборки: версия из package.json плюс номер прогона, как было в AppVeyor.
+      - name: Set build version
+        id: version
+        shell: pwsh
+        run: |
+          $package = Get-Content -Raw -Path package.json | ConvertFrom-Json
+          $package.version = "$($package.version).${{ github.run_number }}"
+          $package | ConvertTo-Json | Out-File -Encoding UTF8 version.json
+          "version=$($package.version)" >> $env:GITHUB_OUTPUT
+          Write-Host "build version: $($package.version)"
+
+      - name: Install dependencies
+        run: npm -q --no-progress ci
+
+      # Стиль JS-части (standard). Раньше скрипт codestyle не запускался нигде.
+      # Пока не блокирует сборку: в src/nls/nls.js, src/1c-webkit-patch.js и
+      # test/autotest.js остались var и точки с запятой, а no-var и semi в
+      # standard — ошибки. Флаг снимается после чистки этих файлов.
+      - name: Check code style
+        continue-on-error: true
+        run: npm run codestyle
+
+      - name: Build frontend
+        run: npm run buildci
+
+      # Синтаксис новее ES2015 встроенный WebKit 1С не парсит — падает весь
+      # бандл, а не одна строка. Проверяем собранную страницу, а не исходники.
+      - name: Check ES level
+        run: npm run check:es
+
+      # index.html самодостаточен: скрипты встроены внутрь страницы,
+      # внешние файлы в поставку не нужны.
+      - name: Pack artifacts
+        shell: cmd
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" a VAEditor.zip %CD%\dist\index.html
+          chcp 65001 > nul & .\oscript\bin\oscript .\tools\onescript\ZipTemplates.os
+
+      # Защита от опасных действий не даёт запустить внешнюю обработку: клиент ждёт
+      # нажатия «Да» и висит до таймаута. Файл настроек ищется рядом с исполняемым
+      # файлом (bin), поэтому кладём его и туда, и в conf — раскладки поставок разные.
+      - name: Configure 1C protection
+        shell: pwsh
+        run: |
+          $value = 'DisableUnsafeActionProtection=.*'
+          foreach ($dir in @('conf', 'bin')) {
+            New-Item -ItemType Directory -Force -Path $dir | Out-Null
+            Set-Content -Path (Join-Path $dir 'conf.cfg') -Value $value -Encoding ASCII
+          }
+
+      - name: Build epf
+        shell: cmd
+        run: |
+          if not exist database mkdir database
+          bin\1cv8t.exe CREATEINFOBASE File=%CD%/database > createinfobase.log 2>&1
+          if errorlevel 1 echo ERROR: CREATEINFOBASE failed
+          if errorlevel 1 type createinfobase.log
+          if errorlevel 1 exit /b 1
+          bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages > loadconfig.log 2>&1
+          if errorlevel 1 echo ERROR: LoadConfigFromFiles failed
+          if errorlevel 1 type loadconfig.log
+          if errorlevel 1 exit /b 1
+          bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
+          if errorlevel 1 echo ERROR: LoadExternalDataProcessorOrReportFromFiles failed
+          if errorlevel 1 type example.log
+          if errorlevel 1 exit /b 1
+
+      # Клиент 1С на хостинговом раннере не запускается: там нет интерактивной
+      # сессии, а клиенту нужно окно и WebView. Поэтому тесты гоняем в headless
+      # Edge через DevTools Protocol — тот же отчёт mocha, но секунды вместо
+      # минут и без 1С. Проверка в WebView платформы остаётся за check.cmd:
+      # старый WebKit 8.3.27 и file:// headless-браузер не воспроизводит.
+      - name: Run autotest
+        run: node tools/run-headless-tests.js
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vaeditor-${{ steps.version.outputs.version }}
+          if-no-files-found: warn
+          path: |
+            VAEditor.zip
+            VAEditorSample.epf
+            example.log
+            createinfobase.log
+            loadconfig.log
+
+      - name: Draft release
+        if: github.ref == 'refs/heads/master' && success()
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+          draft: true
+          prerelease: true
+          files: |
+            VAEditor.zip
+            VAEditorSample.epf

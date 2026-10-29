@@ -11,20 +11,7 @@ import { initGherkinProvider } from './provider'
 
 const $ = dom.$
 
-const send = (url, test, err, status) => {
-  var xhr = new XMLHttpRequest()
-  xhr.open('POST', url, true)
-  xhr.setRequestHeader('Content-Type', 'application/json')
-  xhr.send(JSON.stringify({
-    outcome: status,
-    testName: test.title,
-    fileName: test.parent.title,
-    ErrorMessage: err.message,
-    durationMilliseconds: test.duration
-  }))
-}
-
-const autotest = (url) => {
+const autotest = () => {
   const domMain = $(
     'div.vanessa-hidden',
     { id: 'mocha-container' },
@@ -55,11 +42,7 @@ const autotest = (url) => {
 
   runner.on('fail', (test, err) => {
     failures.push(test.fullTitle() + ' — ' + (err && err.message ? err.message : ''))
-    if (url) send(url + 'api/tests', test, err, 'Failed')
   })
-  if (url) {
-    runner.on('pass', (test) => send(url + 'api/tests', test, {}, 'Passed'))
-  }
 
   runner.on('end', () => {
     window.mochaResults = runner.stats

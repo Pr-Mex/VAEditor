@@ -63,8 +63,27 @@ variable: globalThis`, а стек указывает на `blob:file:///...` �
 Правило: **новый полифил для страницы — проверить, нужен ли он воркерам**. Проверка
 только в браузере ничего не покажет: Chrome `globalThis` знает, движок 8.3.27 — нет.
 
-=======
->>>>>>> 78ba080d83d76f4d520cf4b2329951e3578238f1
+## Что умеет движок: проверять, а не угадывать
+
+Гадать по версии WebKit не нужно — есть режим `probeenv` в `tools/local-check.ps1`
+и `check.cmd`:
+
+```
+check.cmd probeenv "C:\Program Files (x86)\1cv8t\8.3.27.2342\bin"
+```
+
+Страница `probe-env.html` (её генерирует `PrepareProbeEnv` в форме `Autotest`)
+печатает в `env-probe.txt`: `userAgent`, наличие `TextDecoder`, `Uint8Array`,
+`escape`, `atob`, `Blob`, `Worker`, `URL.createObjectURL` и сверяет декодирование
+кириллицы двумя способами (`escape/decodeURIComponent` и `TextDecoder`).
+
+Проверено на 8.3.27.2342 (WOW64) и 8.5.4.1878: `TextDecoder` есть в обеих,
+результаты декодирования совпадают. Поэтому в `src/worker-source.ts` base64 → UTF-8
+разбирается через `TextDecoder`, а `escape()` оставлен запасным путём.
+
+Важно: проба идёт через форму `Autotest`, а не `MainForm` — см. `Initialize`,
+иначе `MainForm` падает на макетах `Keywords`/`StepList`, которых нет в репозитории.
+
 ## Проверка
 
 `dist/index.html` самодостаточен (скрипты и стили инлайном) — требование `file://`,

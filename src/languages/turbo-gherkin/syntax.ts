@@ -1,4 +1,5 @@
 import { getLineMaxColumn, getLineMinColumn, ISyntaxDecorations, IWorkerContext, IWorkerModel, VAImage, VAIndent, VAToken } from './common';
+import { getFoldingEnd } from './folding';
 import { VAStepLine } from './stepline';
 
 function groupDecoration(lineNumber: number, style: string = undefined): monaco.editor.IModelDeltaDecoration {
@@ -89,10 +90,12 @@ export function checkSyntax(
       }
       decorations.push(syntax.decoration);
     }
-    else if (token.folding) {
+    else {
+      const folding = getFoldingEnd(model, lineNumber);
+      if (folding <= lineNumber) continue;
       if (ctx.matcher.stepkey.else.test(line)) continue;
       if (ctx.matcher.stepkey.elseif.test(line)) continue;
-      groups.push({ lineNumber, folding: token.folding });
+      groups.push({ lineNumber, folding });
     }
   }
   groups.forEach(e => {

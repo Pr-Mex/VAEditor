@@ -3,7 +3,7 @@ param(
     [string]$Root = '',
     [int]$TestTimeoutSeconds = 300,
     # Параметр запуска обработки: autotest — прогон тестов,
-    # probestorage — натурный эксперимент с временным хранилищем.
+    # probeenv — натурный эксперимент с возможностями WebKit (TextDecoder и пр.).
     [string]$Launch = 'autotest'
 )
 
@@ -15,8 +15,10 @@ if (-not $Root) {
     $Root = Split-Path $scriptDir -Parent
 }
 
-# Локальный прогон того же сценария, что выполняет AppVeyor:
-# сборка фронта -> макеты из dist -> чистая база -> epf -> автотест.
+# Локальный прогон того же сценария, что выполняет CI (GitHub Actions,
+# .github/workflows/build.yml): сборка фронта -> макеты из dist -> чистая база
+# -> epf -> автотест. В CI автотест идёт в headless-браузере, здесь — в WebView
+# платформы: только так проверяются file://, старый WebKit и blob-воркеры.
 #
 # Запуск (из корня репозитория):
 #   powershell -ExecutionPolicy Bypass -File tools\local-check.ps1 "C:\Program Files (x86)\1cv8t\8.3.27.2342\bin"
@@ -132,11 +134,10 @@ function New-TemplateBin([string]$source, [string]$dest) {
 
 Set-Location $Root
 
-Write-Host '=== 0. Kill stray 1C processes ==='
+Write-Host '=== 0. Kill stray 1C processes and remove old databases ==='
 Stop-1C
 Start-Sleep -Seconds 2
 
-Write-Host '=== 0b. Remove old databases ==='
 Get-ChildItem -Path $Root -Directory -Filter 'database-*' -ErrorAction SilentlyContinue | ForEach-Object {
     try { Remove-Item -Recurse -Force $_.FullName } catch { Write-Host ("skip " + $_.Name) }
 }
@@ -183,65 +184,22 @@ $failure = "$epf.error.txt"
 if (Test-Path $failure) { Remove-Item -Force $failure }
 Start-Process -FilePath $client -ArgumentList $arguments | Out-Null
 
-# Предупреждение безопасности платформы: «Открывается "VAEditor Sample" из файла ...
-# Разрешить открывать данный файл?». В учебной платформе (8.3.27, CI) его снимает
-# conf.cfg рядом с bin, а установленная 8.5.5 этот файл игнорирует и спрашивает
-# в клиенте. Без ответа клиент висит до таймаута, поэтому подтверждаем «Да» через
-# UI Automation. Только для диалога именно про внешнюю обработку: иначе легко
-# нажать «Да» в чужом окне.
-Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes -ErrorAction SilentlyContinue
-
-function Approve-UnsafeActionDialog {
-    $invoke = [System.Windows.Automation.InvokePattern]::Pattern
-    $buttons = New-Object System.Windows.Automation.PropertyCondition(
-        [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
-        [System.Windows.Automation.ControlType]::Button)
-    $texts = New-Object System.Windows.Automation.PropertyCondition(
-        [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
-        [System.Windows.Automation.ControlType]::Text)
-
-    foreach ($process in (Get-Process -Name $procNames -ErrorAction SilentlyContinue)) {
-        if ($process.MainWindowHandle -eq 0) { continue }
-        try {
-            $root = [System.Windows.Automation.AutomationElement]::FromHandle($process.MainWindowHandle)
-            if (-not $root) { continue }
-            $header = $root.FindAll([System.Windows.Automation.TreeScope]::Descendants, $texts) |
-                ForEach-Object { $_.Current.Name } |
-                Where-Object { $_ -match 'Предупреждение безопасности|Security warning|безопасности' }
-            if (-not $header) { continue }
-        } catch { continue }
-
-        foreach ($button in $root.FindAll([System.Windows.Automation.TreeScope]::Descendants, $buttons)) {
-            $name = $button.Current.Name.Trim()
-            if ($name -notmatch '^(Да|Yes)$') { continue }
-            try {
-                $button.GetCurrentPattern($invoke).Invoke()
-                Write-Host 'предупреждение безопасности: нажато Да'
-                return $true
-            } catch { Write-Host 'не удалось нажать Да: ' + $_.Exception.Message }
-        }
-    }
-    return $false
-}
-
 $deadline = (Get-Date).AddSeconds($TestTimeoutSeconds)
 # Даём клиенту подняться, иначе «процессов нет» сработает сразу после старта.
 Start-Sleep -Seconds 2
-$approved = $false
 while ((Get-Date) -lt $deadline) {
     if ((Test-Path $success) -or (Test-Path $failure)) { break }
-    if (-not $approved) { $approved = Approve-UnsafeActionDialog }
     # Клиент закрылся (например, форма вызвала Exit), а success.txt не появился —
     # незачем ждать полный таймаут.
     if (-not (Get-Process -Name $procNames -ErrorAction SilentlyContinue)) { break }
     Start-Sleep -Milliseconds 500
 }
 
-# Отчёт натурного эксперимента с временным хранилищем (режим probestorage).
-$probe = Join-Path $Root 'storage-probe.txt'
-if (Test-Path $probe) {
-    Write-Host '--- storage-probe.txt ---'
-    Get-Content $probe -Encoding UTF8 | ForEach-Object { Write-Host ('  ' + $_) }
+# Отчёт натурного эксперимента с возможностями WebKit (режим probeenv).
+$envProbe = Join-Path $Root 'env-probe.txt'
+if (Test-Path $envProbe) {
+    Write-Host '--- env-probe.txt ---'
+    Get-Content $envProbe -Encoding UTF8 | ForEach-Object { Write-Host ('  ' + $_) }
     Write-Host '--- end ---'
 }
 

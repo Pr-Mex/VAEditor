@@ -15,11 +15,10 @@ tools/.agent-running.txt
 tools/.agent-log.txt
 /success.txt
 tools/.agent-log*.txt
-storage-probe.txt
-<<<<<<< HEAD
+env-probe.txt
 /client-started.txt
 /page-loaded.txt
-=======
->>>>>>> 78ba080d83d76f4d520cf4b2329951e3578238f1
 /HANDOVER.md
 /tools/agent-run.ps1
+/bin
+/oscript

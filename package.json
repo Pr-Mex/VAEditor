@@ -19,7 +19,8 @@
 		"decompile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\Decompile.os .\\example",
 		"decompile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/Decompile.os ./example",
 		"decompile:linux": "oscript ./tools/onescript/Decompile.os ./example",
-		"codestyle": "standard"
+		"codestyle": "standard",
+		"check:es": "node tools/check-es-level.js"
 	},
 	"keywords": [],
 	"author": "Pautov Leonid",
