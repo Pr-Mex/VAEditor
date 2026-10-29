@@ -503,7 +503,16 @@ declare global {
 
     /** Включить дебаггер-инфраструктуру для всех табов. */
     useVanessaDebugger(value: boolean): void;
+
+    /**
+     * Версия сборки редактора (например "1.4.0.123"). Её подставляет webpack
+     * при сборке; обработка сравнивает её с версией распакованного шаблона.
+     */
+    VAEditorVersion: string;
   }
+
+  /** Версия сборки, подставляется DefinePlugin (см. webpack.config.js). */
+  const __VA_EDITOR_VERSION__: string;
 }
 
 export {};

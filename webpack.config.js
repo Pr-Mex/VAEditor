@@ -4,13 +4,50 @@ const path = require('path')
 const webpack = require('webpack')
 const nls = path.resolve(__dirname, 'src/nls/nls.js') // свой NLS-шим (заменяет monaco-editor-nls)
 const replaceStrings = require('./tools/loaders/replaceStrings') // counts + assertApplied (#10)
+const InlineChunksPlugin = require('./tools/plugins/inlineChunks')
+const InlineWorkerSourcePlugin = require('./tools/plugins/inlineWorkerSource')
+const RuntimeCompatPlugin = require('./tools/plugins/checkRuntimeCompat')
+const EmitVersionPlugin = require('./tools/plugins/emitVersion')
+
+const packageVersion = require('./package.json').version
+
+// Полная версия сборки. В CI version.json перезаписывается перед сборкой и
+// содержит ещё и номер сборки — он и нужен как ключ кеша у потребителя шаблона.
+// Локальный version.json может быть устаревшим, поэтому берём его, только если
+// он продолжает версию из package.json.
+function editorVersion () {
+  try {
+    const full = require('./version.json')
+    if (full && typeof full.version === 'string' && full.version.startsWith(packageVersion)) {
+      return full.version
+    }
+  } catch (error) {
+    // version.json появляется только после сборки в CI.
+  }
+  return packageVersion
+}
+
+const version = editorVersion()
 
 module.exports = (env, argv) => {
+  // test.html нужен только автотестам и демо-режиму. Обычная сборка редактора
+  // собирает один вход: второй бандл — это ещё столько же времени и мегабайт.
+  const withTest = Boolean(env && env.test)
+  // Все воркеры собираются отдельными входами и вкладываются в страницу как
+  // base64 (InlineWorkerSourcePlugin): встроенный WebKit 1С открывает страницу
+  // по file:// и соседние js-файлы не загружает.
+  const workerEntry = {
+    'gherkin-worker': './src/languages/turbo-gherkin/worker.js',
+    'editor-worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+    'css-worker': 'monaco-editor/esm/vs/language/css/css.worker.js',
+    'json-worker': 'monaco-editor/esm/vs/language/json/json.worker.js',
+    'html-worker': 'monaco-editor/esm/vs/language/html/html.worker.js'
+  }
+  const entry = { app: './src/main', ...workerEntry }
+  if (withTest) entry.test = './test/autotest.js'
+
   return {
-    entry: {
-      app: './src/main',
-      test: './test/autotest.js'
-    },
+    entry,
     resolve: {
       extensions: ['.ts', '.js', '.css'],
       alias: {
@@ -31,14 +68,15 @@ module.exports = (env, argv) => {
     output: {
       globalObject: 'self',
       filename: '[name].js',
-      chunkFilename: 'app.worker.js',
+      // Все ресурсы встроены в страницу, внешних запросов нет. Автоопределение
+      // publicPath по <script src> в такой сборке невозможно и падает с ошибкой
+      // "Automatic publicPath is not supported in this browser".
+      publicPath: '',
       path: path.resolve(__dirname, 'dist'),
       clean: true
     },
     resolveLoader: {
       alias: {
-        'blob-url-loader': require.resolve('./tools/loaders/blobUrl'),
-        'compile-loader': require.resolve('./tools/loaders/compile'),
         'monaco-nls': require.resolve('./tools/loaders/monacoNls'),
         'replace-strings': require.resolve('./tools/loaders/replaceStrings')
       }
@@ -133,26 +171,56 @@ module.exports = (env, argv) => {
         resource.resource = nls
       }),
       new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 3
+        // Один вход = один чанк. Асинхронные чанки грузятся отдельными файлами
+        // по file:// и в WebView2 блокируются, поэтому их быть не должно.
+        maxChunks: Object.keys(entry).length
       }),
+      // Версия сборки попадает и в страницу (window.VAEditorVersion), и в
+      // dist/version.json — его читает обработка, встраивающая редактор.
+      new webpack.DefinePlugin({
+        __VA_EDITOR_VERSION__: JSON.stringify(version)
+      }),
+      new EmitVersionPlugin(version),
+      new InlineChunksPlugin(),
+      new RuntimeCompatPlugin(),
       new HtmlWebpackPlugin({
         filename: 'index.html',
         title: 'VAEditor',
         cache: false,
-        chunks:['app'],
+        chunks: ['app'],
         template: path.resolve(__dirname, 'template.html')
       }),
-      new HtmlWebpackPlugin({
-        filename: 'test.html',
-        title: 'VAEditor',
-        cache: false,
-        template: path.resolve(__dirname, 'template.html')
-      }),
+      ...(withTest
+        ? [new HtmlWebpackPlugin({
+            filename: 'test.html',
+            title: 'VAEditor',
+            cache: false,
+            // Без фильтра сюда попадут чанки обоих входов: src/main исполнится
+            // дважды, а он определяет неконфигурируемые свойства на window.
+            chunks: ['test'],
+            template: path.resolve(__dirname, 'template.html')
+          })]
+        : []),
+      // Последним: страницы уже собраны, остаётся вложить в них исходники
+      // воркеров — по file:// WebKit 1С соседние файлы не отдаёт.
+      new InlineWorkerSourcePlugin(Object.keys(workerEntry).map(name => name + '.js'),
+        withTest ? ['index.html', 'test.html'] : ['index.html']),
     ],
+    // mocha ищет тесты через require с выражением — это норма для него, но шум
+    // в выводе мешает замечать настоящие предупреждения.
+    ignoreWarnings: [
+      { module: /[\\/]node_modules[\\/]mocha[\\/]/, message: /Critical dependency/ }
+    ],
+    // Всё встраивается в HTML, поэтому предупреждение про размер ассета
+    // бессмысленно: страница по определению больше 244 КБ.
+    performance: { hints: false },
     optimization: {
       minimize: argv.mode === 'production',
       minimizer: [
         new TerserPlugin({
+          // app.js.LICENSE.txt в поставке не нужен: страница самодостаточна,
+          // а лишний файл рядом с ней только путает.
+          extractComments: false,
           terserOptions: {
             // Встроенный WebKit в 1С не понимает ES2020: иначе terser генерирует
             // `a ?? b` из `null==a?b:a` и раскавычивает ключ U+2118 (`℘:"wp"`).

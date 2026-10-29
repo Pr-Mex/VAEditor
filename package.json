@@ -1,15 +1,16 @@
 {
 	"name": "vanessa-automation-editor",
-	"version": "1.3.7",
+	"version": "1.4.0",
 	"description": "Vanessa Automation Editor",
 	"homepage": "https://github.com/Pr-Mex/VAEditor/",
 	"private": true,
 	"scripts": {
-		"demo": "webpack serve --progress --mode development --open test.html?demo",
-		"test": "webpack serve --progress --mode development --open test.html?test",
+		"demo": "webpack serve --progress --mode development --env test --open test.html?demo",
+		"test": "webpack serve --progress --mode development --env test --open test.html?test",
+		"test:headless": "webpack --mode production --env test && node tools/run-headless-tests.js",
 		"build": "webpack --progress --mode production",
-		"buildci": "webpack --mode production",
-		"escheck": "es-check es2019 dist/app.js dist/app.worker.js dist/test.js",
+		"build:test": "webpack --progress --mode production --env test",
+		"buildci": "webpack --mode production --env test",
 		"compile": "run-script-os",
 		"compile:win32": "chcp 65001 > nul & oscript .\\tools\\onescript\\ZipTemplates.os & oscript .\\tools\\onescript\\Compile.os .\\example",
 		"compile:darwin": "~/.local/share/ovm/current/bin/oscript ./tools/onescript/ZipTemplates.os & ~/.local/share/ovm/current/bin/oscript ./tools/onescript/Compile.os ./example",
@@ -64,7 +65,8 @@
 		"util": "^0.12.5",
 		"webpack": "^5.99.0",
 		"webpack-cli": "^7.0.2",
-		"webpack-dev-server": "^5.2.0"
+		"webpack-dev-server": "^5.2.0",
+		"ws": "^8.18.0"
 	},
 	"engines": {
 		"node": ">=18.0.0"

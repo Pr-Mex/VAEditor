@@ -13,6 +13,9 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* Базовая палитра — историческое оформление «Такси», значения литералами:
+   встроенный WebKit старых платформ не понимает CSS-переменные.
+   Интерфейс «Версия 8.5» переопределён ниже и берёт цвета у платформы. */
 body {
     display: flex;
     color: #4b4b4b;
@@ -337,3 +340,76 @@ div.vanessa-inner::-webkit-scrollbar-thumb:hover {}
 #mocha::-webkit-scrollbar-thumb {}
 
 #mocha::-webkit-scrollbar-thumb:hover {}
+
+/* === Интерфейс «Версия 8.5» ===
+   Цвета берутся из палитры платформы (стиль #PaletteColors, переменные --color*),
+   поэтому светлая и тёмная темы переключаются сами: набор значений у платформы
+   уже разный для themeLight и themeDark. */
+body[data-interface="85"] {
+    color: var(--colorText80, #333338);
+    background-color: var(--colorAdditional, #ffffff);
+    font-family: Roboto, "Segoe UI", Arial, sans-serif;
+    font-size: 11pt;
+}
+
+body[data-interface="85"] #VanessaTabsContainer {
+    flex-basis: 2.4em;
+    fill: var(--colorText60, #66666e);
+    border-bottom-width: 0;
+}
+
+body[data-interface="85"] .vanessa-tab-panel {
+    background-color: var(--colorBack10, #f2f2f2);
+}
+
+body[data-interface="85"] .vanessa-tab-item {
+    padding: 0 10px;
+    border-width: 0;
+    border-radius: 6px 6px 0 0;
+    color: var(--colorText80, #333338);
+    background-color: var(--colorBack10, #f2f2f2);
+}
+
+body[data-interface="85"] .vanessa-tab-close {
+    fill: var(--colorText60, #66666e);
+}
+
+body[data-interface="85"] .vanessa-tab-select .vanessa-tab-item {
+    background-color: var(--colorAdditional, #ffffff);
+}
+
+body[data-interface="85"] .vanessa-tab-select .vanessa-tab-item:before {
+    height: 3px;
+    background: var(--colorBrand150, #ffdd00);
+}
+
+/* === Тёмная тема в «Такси» ===
+   Платформа её не поддерживает: включается только вручную через EditorTheme.
+   Значения литералами, как и базовая палитра. */
+body[data-interface="taxi"][data-theme="vs-dark"] {
+    color: #d4d4d4;
+    background-color: #1e1e1e;
+}
+
+body[data-interface="taxi"][data-theme="vs-dark"] #VanessaTabsContainer {
+    fill: #d4d4d4;
+    border-color: #3c3c3c;
+}
+
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-tab-panel,
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-tab-item {
+    background-color: #252526;
+}
+
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-tab-item {
+    color: #d4d4d4;
+    border-color: #3c3c3c;
+}
+
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-tab-close {
+    fill: #d4d4d4;
+}
+
+body[data-interface="taxi"][data-theme="vs-dark"] .vanessa-tab-select .vanessa-tab-item {
+    background-color: #1e1e1e;
+}

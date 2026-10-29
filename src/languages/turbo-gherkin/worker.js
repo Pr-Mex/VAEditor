@@ -1,12 +1,20 @@
 const w = require('./worker')
+
+// Исключение внутри воркера видно только в его собственной консоли, а страница
+// при этом просто не получает ответа и висит до таймаута. Поэтому любую
+// ошибку обработки возвращаем вызывающей стороне как обычный ответ.
 self.onmessage = function (e) {
+  const msg = e.data
+  let res
   try {
-    const res = w.process(e.data);
-    if (res) postMessage(res)
-  } catch (err) {
-    // исключение в process() без перехвата → нет postMessage → промис в provider
-    // (messageMap) висит вечно и фича молча зависает. Возвращаем ошибку, чтобы
-    // провайдер сделал reject (только если сообщение ждало ответ — есть id).
-    if (e.data && e.data.id) postMessage({ id: e.data.id, success: false, data: String((err && err.stack) || err) })
+    res = w.process(msg)
+  } catch (error) {
+    postMessage({
+      id: msg && msg.id,
+      success: false,
+      data: 'воркер: ' + ((error && error.stack) || error)
+    })
+    return
   }
+  if (res) postMessage(res)
 }

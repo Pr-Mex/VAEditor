@@ -1,7 +1,4 @@
-interface ILangImpl {
-  conf: monaco.languages.LanguageConfiguration;
-  language: monaco.languages.IMonarchLanguage;
-}
+import { conf, language as monarchLanguage } from "./configuration";
 
 const language: monaco.languages.ILanguageExtensionPoint = {
   id: "bsl",
@@ -11,8 +8,6 @@ const language: monaco.languages.ILanguageExtensionPoint = {
 monaco.languages.register(language);
 
 monaco.languages.onLanguage(language.id, () => {
-  import("./configuration").then((module: ILangImpl) => {
-    monaco.languages.setLanguageConfiguration(language.id, module.conf);
-    monaco.languages.setMonarchTokensProvider(language.id, module.language);
-  });
+  monaco.languages.setLanguageConfiguration(language.id, conf);
+  monaco.languages.setMonarchTokensProvider(language.id, monarchLanguage);
 });

@@ -29,22 +29,51 @@ install:
 
 build_script:
   - npm run buildci
-  - npm run escheck
+  # index.html самодостаточен: скрипты встроены внутрь страницы,
+  # внешние файлы в поставку не нужны.
   - 7z a VAEditor.zip %CD%/dist/index.html
-  - 7z a VAEditor.zip %CD%/dist/app.worker.js
-  - 7z a VAEditor.zip %CD%/dist/app.js
   - chcp 65001 > nul & .\oscript\bin\oscript .\\tools\\onescript\\ZipTemplates.os
 
 after_build:
   - mkdir database
+  # Защита от опасных действий не даёт запустить внешнюю обработку: клиент ждёт
+  # нажатия «Да» в диалоге и в CI висит до таймаута. Файл настроек платформы
+  # лежит в conf рядом с каталогом bin.
+  - ps: |
+      $conf = Join-Path $env:APPVEYOR_BUILD_FOLDER 'conf'
+      New-Item -ItemType Directory -Force -Path $conf | Out-Null
+      Set-Content -Path (Join-Path $conf 'conf.cfg') -Value 'DisableUnsafeActionProtection=.*' -Encoding ASCII
   - bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
-  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg
-  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /Out example.log
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
+  - bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
   - appveyor PushArtifact example.log
   - appveyor PushArtifact VAEditor.zip
   - appveyor PushArtifact VAEditorSample.epf
-  - bin\1cv8ct.exe ENTERPRISE /LRU /F %CD%/database /Execute VAEditorSample.epf /C autotest
-  - ps: if (!(Test-Path success.txt)) { throw "Имеются ошибки" }
+  # Клиент 1С может зависнуть навсегда (предупреждение безопасности, диалог,
+  # упавший скрипт в поле HTML), поэтому ждём результат с таймаутом.
+  # Клиент тонкий: внешняя обработка в нём исполняется на сервере, где
+  # подтверждать «Разрешить открывать файл?» некому, и защита не мешает.
+  - ps: |
+      $root = $env:APPVEYOR_BUILD_FOLDER
+      $success = Join-Path $root 'success.txt'
+      $client = Join-Path $root 'bin\1cv8ct.exe'
+      $epf = Join-Path $root 'VAEditorSample.epf'
+      $db = Join-Path $root 'database'
+      $timeout = 300
+      if (Test-Path $success) { Remove-Item -Force $success }
+      Write-Host "> 1cv8ct ENTERPRISE /Execute $epf /C autotest (timeout ${timeout}s)"
+      Start-Process -FilePath $client -ArgumentList @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', 'autotest') | Out-Null
+      $deadline = (Get-Date).AddSeconds($timeout)
+      while ((Get-Date) -lt $deadline -and -not (Test-Path $success)) { Start-Sleep -Seconds 2 }
+      if (-not (Test-Path $success)) {
+        Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
+        throw "autotest did not finish in ${timeout}s: success.txt not created"
+      }
+      Write-Host 'autotest passed: success.txt created'
+
+on_failure:
+  - ps: Get-Process -Name '1cv8*' -ErrorAction SilentlyContinue | Stop-Process -Force
+  - appveyor PushArtifact example.log
 
 artifacts:
   - path: AutoTest.zip

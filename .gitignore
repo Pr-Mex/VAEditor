@@ -5,3 +5,16 @@ fileversion
 Template.bin
 /debug.log
 example/success.txt
+/database
+/database-*
+*.log
+*.epf.error.txt
+autotest-result.txt
+tools/.agent-command.txt
+tools/.agent-running.txt
+tools/.agent-log.txt
+/success.txt
+tools/.agent-log*.txt
+storage-probe.txt
+/HANDOVER.md
+/tools/agent-run.ps1

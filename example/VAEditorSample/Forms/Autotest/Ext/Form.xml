@@ -11,6 +11,7 @@
 	<AutoCommandBar name="FormCommandBar" id="-1"/>
 	<Events>
 		<Event name="OnCreateAtServer">OnCreateAtServer</Event>
+		<Event name="OnOpen">OnOpen</Event>
 	</Events>
 	<ChildItems>
 		<HTMLDocumentField name="VanessaEditor" id="1">

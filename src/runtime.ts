@@ -107,6 +107,9 @@ export class RuntimeManager {
 
   set breakpoints(breakpoints: IBreakpoint[]) {
     const widgetsBreakpoints: Record<string, IBreakpoint[]> = {};
+    // Отдельный список точек на строках: decorations строятся только по ним,
+    // поэтому индексы decorations и этого массива совпадают.
+    const lineBreakpoints: IBreakpoint[] = [];
     const decorations: monaco.editor.IModelDeltaDecoration[] = [];
     breakpoints.forEach(breakpoint => {
       if (breakpoint.codeWidget) {
@@ -114,13 +117,16 @@ export class RuntimeManager {
         if (ids == undefined) widgetsBreakpoints[breakpoint.codeWidget] = ids = [];
         ids.push(breakpoint);
       }
-      else decorations.push({
-        range: new monaco.Range(breakpoint.lineNumber, 1, breakpoint.lineNumber, 1),
-        options: {
-          stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-          glyphMarginClassName: breakpoint.enable ? "debug-breakpoint-glyph" : "debug-breakpoint-disabled-glyph"
-        }
-      });
+      else {
+        lineBreakpoints.push(breakpoint);
+        decorations.push({
+          range: new monaco.Range(breakpoint.lineNumber, 1, breakpoint.lineNumber, 1),
+          options: {
+            stickiness: monaco.editor.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+            glyphMarginClassName: breakpoint.enable ? "debug-breakpoint-glyph" : "debug-breakpoint-disabled-glyph"
+          }
+        });
+      }
     });
 
     this.checkBreakpointChangeDecorations = false;
@@ -131,7 +137,7 @@ export class RuntimeManager {
     this.breakpointDecorations = this.breakpointDecorationIds.map((id, index) => ({
       id: id,
       range: decorations[index].range,
-      enable: breakpoints[index].enable,
+      enable: lineBreakpoints[index].enable,
       verified: true
     }));
 
@@ -285,7 +291,7 @@ export class RuntimeManager {
         model.getLinesDecorations(line, line).forEach(d => {
           let i = this.stepDecorationIds.indexOf(d.id);
           if (i >= 0) {
-            this.stepDecorationIds.slice(i, 1);
+            this.stepDecorationIds.splice(i, 1);
             oldDecorations.push(d.id);
           }
         });
@@ -341,7 +347,7 @@ export class RuntimeManager {
         model.getLinesDecorations(line, line).forEach(d => {
           let i = this.lineDecorationIds.indexOf(d.id);
           if (i >= 0) {
-            this.lineDecorationIds.slice(i, 1);
+            this.lineDecorationIds.splice(i, 1);
             oldDecorations.push(d.id);
           }
         });
@@ -434,7 +440,7 @@ export class RuntimeManager {
       model.getLinesDecorations(lineNumber, lineNumber).forEach(d => {
         let i = this.stepDecorationIds.indexOf(d.id);
         if (i >= 0) {
-          this.stepDecorationIds.slice(i, 1);
+          this.stepDecorationIds.splice(i, 1);
           oldDecorations.push(d.id);
         }
       });
