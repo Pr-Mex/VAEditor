@@ -41,18 +41,23 @@ jobs:
         env:
           KEY_1CV8T: ${{ secrets.KEY_1CV8T }}
         run: |
+          echo === 1/5 unset checkout token
           git config --local --unset-all "http.https://github.com/.extraheader"
+          echo === 2/5 check secret
           if "%KEY_1CV8T%"=="" echo ERROR: secret KEY_1CV8T is empty
           if "%KEY_1CV8T%"=="" exit /b 1
+          echo === 3/5 clone platform repo
           git clone --branch=platform https://github.com/lintest/tools1c.git bin
+          if errorlevel 1 echo ERROR: git clone failed
           if errorlevel 1 exit /b 1
-          if exist bin\tools1c.part01.rar goto have_archive
-          echo ERROR: platform archive not found, contents of bin:
-          dir /b bin
-          exit /b 1
-          :have_archive
+          echo === 4/5 list archive parts
+          dir /b bin\*.rar
+          if not exist bin\tools1c.part01.rar echo ERROR: tools1c.part01.rar not found
+          if not exist bin\tools1c.part01.rar exit /b 1
+          echo === 5/5 extract with 7z
           cd bin
           "C:\Program Files\7-Zip\7z.exe" x tools1c.part01.rar -p%KEY_1CV8T%
+          if errorlevel 1 echo ERROR: 7z failed, wrong password or missing volumes
           if errorlevel 1 exit /b 1
 
       - name: Fetch OneScript
