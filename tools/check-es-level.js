@@ -23,9 +23,22 @@ const dist = path.join(root, 'dist')
 const pages = ['index.html', 'test.html']
 const version = 'es2015'
 
-const pkgPath = require.resolve('es-check/package.json')
-const pkg = require(pkgPath)
-const cli = path.join(path.dirname(pkgPath), Object.values(pkg.bin)[0])
+// package.json es-check наружу не отдаётся (в exports только "."), поэтому
+// require.resolve('es-check/package.json') на Node 20 падает — ищем корень
+// пакета от его точки входа.
+function packageRoot(entry) {
+  let dir = path.dirname(entry)
+  for (;;) {
+    if (fs.existsSync(path.join(dir, 'package.json'))) return dir
+    const parent = path.dirname(dir)
+    if (parent === dir) throw new Error('Не найден package.json пакета es-check')
+    dir = parent
+  }
+}
+
+const pkgRoot = packageRoot(require.resolve('es-check'))
+const pkg = JSON.parse(fs.readFileSync(path.join(pkgRoot, 'package.json'), 'utf8'))
+const cli = path.join(pkgRoot, Object.values(pkg.bin)[0])
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'va-escheck-'))
 const files = []
