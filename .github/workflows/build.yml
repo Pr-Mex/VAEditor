@@ -46,6 +46,10 @@ jobs:
           echo === 2/5 check secret
           if "%KEY_1CV8T%"=="" echo ERROR: secret KEY_1CV8T is empty
           if "%KEY_1CV8T%"=="" exit /b 1
+          rem Лишний пробел или перевод строки при вставке дают ровно тот же
+          rem "Wrong password" от 7z, что и опечатка. Проверяем до распаковки.
+          if not "%KEY_1CV8T: =%"=="%KEY_1CV8T%" echo WARNING: secret contains spaces
+          if not "%KEY_1CV8T: =%"=="%KEY_1CV8T%" exit /b 1
           echo === 3/5 clone platform repo
           git clone --branch=platform https://github.com/lintest/tools1c.git bin
           if errorlevel 1 echo ERROR: git clone failed
