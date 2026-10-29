@@ -129,11 +129,14 @@ jobs:
             exit 1
           fi
           "$bin" --version 2>&1 | head -3 || true
+          echo "::notice::ldd: $(ldd "$bin" 2>&1 | grep -c 'not found') not found"
+          echo "::notice::ldd-list: $(ldd "$bin" 2>&1 | grep 'not found' | head -8 | tr '\n' ' ')"
           set +e
-          "$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1 | head -20
+          out=$("$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1)
           rc=$?
           set -e
+          echo "$out" | head -20
           echo "::notice::CREATEINFOBASE rc=$rc"
-          cat /tmp/create.log 2>/dev/null | head -10
-          echo "::notice::лог: $(head -3 /tmp/create.log 2>/dev/null | tr '\n' ' ')"
-          echo "::notice::база: $(ls "$HOME/1c/base" 2>/dev/null | tr '\n' ' ' || echo нет)"
+          echo "::notice::вывод: $(echo "$out" | head -5 | tr '\n' ' ')"
+          echo "::notice::лог: $(head -5 /tmp/create.log 2>/dev/null | tr '\n' ' ')"
+          echo "::notice::база: $(ls -la "$HOME/1c/base" 2>/dev/null | head -5 | tr '\n' ' ' || echo нет)"
