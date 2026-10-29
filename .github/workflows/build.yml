@@ -131,6 +131,11 @@ jobs:
       - name: Build frontend
         run: npm run buildci
 
+      # Синтаксис новее ES2015 встроенный WebKit 1С не парсит — падает весь
+      # бандл, а не одна строка. Проверяем собранную страницу, а не исходники.
+      - name: Check ES level
+        run: npm run check:es
+
       # index.html самодостаточен: скрипты встроены внутрь страницы,
       # внешние файлы в поставку не нужны.
       - name: Pack artifacts
