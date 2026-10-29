@@ -50,8 +50,13 @@ jobs:
           git clone --branch=platform https://github.com/lintest/tools1c.git bin
           if errorlevel 1 echo ERROR: git clone failed
           if errorlevel 1 exit /b 1
-          echo === 4/5 list archive parts
-          dir /b bin\*.rar
+          echo === 3b/5 pull LFS objects if any
+          cd bin
+          git lfs pull
+          if errorlevel 1 echo note: git lfs pull failed or lfs is not installed
+          cd ..
+          echo === 4/5 list archive parts with sizes
+          dir bin\*.rar
           if not exist bin\tools1c.part01.rar echo ERROR: tools1c.part01.rar not found
           if not exist bin\tools1c.part01.rar exit /b 1
           echo === 5/5 extract with 7z
