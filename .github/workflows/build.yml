@@ -146,14 +146,17 @@ jobs:
         shell: cmd
         run: |
           if not exist database mkdir database
-          bin\1cv8t.exe CREATEINFOBASE File=%CD%/database
+          bin\1cv8t.exe CREATEINFOBASE File=%CD%/database > createinfobase.log 2>&1
           if errorlevel 1 echo ERROR: CREATEINFOBASE failed
+          if errorlevel 1 type createinfobase.log
           if errorlevel 1 exit /b 1
-          bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages
+          bin\1cv8t.exe DESIGNER /F %CD%/database /LoadConfigFromFiles %CD%/config /UpdateDBCfg /DisableStartupDialogs /DisableStartupMessages > loadconfig.log 2>&1
           if errorlevel 1 echo ERROR: LoadConfigFromFiles failed
+          if errorlevel 1 type loadconfig.log
           if errorlevel 1 exit /b 1
           bin\1cv8t.exe DESIGNER /F %CD%/database /LoadExternalDataProcessorOrReportFromFiles example/VAEditorSample.xml VAEditorSample.epf /DisableStartupDialogs /DisableStartupMessages /Out example.log
           if errorlevel 1 echo ERROR: LoadExternalDataProcessorOrReportFromFiles failed
+          if errorlevel 1 type example.log
           if errorlevel 1 exit /b 1
 
       # Клиент 1С на хостинговом раннере не запускается: там нет интерактивной
@@ -174,6 +177,8 @@ jobs:
             VAEditor.zip
             VAEditorSample.epf
             example.log
+            createinfobase.log
+            loadconfig.log
 
       - name: Draft release
         if: github.ref == 'refs/heads/master' && success()
