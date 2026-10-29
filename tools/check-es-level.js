@@ -45,6 +45,51 @@ const cli = path.join(pkgRoot, Object.values(pkg.bin)[0])
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'va-escheck-'))
 const files = []
 
+// Тело скрипта ищется не по первому </script>: если такая строка встречается
+// внутри кода (шаблон, строка), наивный разбор режет скрипт, и проверка ругается
+// на обрыв вместо реальной находки. Перебираем закрывающие теги и берём первый,
+// при котором тело разбирается как JS.
+function isCode(text) {
+  try {
+    acorn.parse(text, { ecmaVersion: 'latest' })
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
+function scriptBodies(html) {
+  const bodies = []
+  const open = /<script\b(?![^>]*\ssrc=)[^>]*>/gi
+  const close = /<\/script>/gi
+  let match
+  while ((match = open.exec(html)) !== null) {
+    const start = match.index + match[0].length
+    // Блоки с типом вроде application/json — это данные, а не код.
+    const type = match[0].match(/\btype\s*=\s*["']?([^"'\s>]+)/i)
+    if (type && !/^(module|text\/javascript|application\/javascript)$/i.test(type[1])) {
+      open.lastIndex = start
+      continue
+    }
+    let body = null
+    let end = start
+    let closing
+    close.lastIndex = start
+    while ((closing = close.exec(html)) !== null) {
+      const candidate = html.slice(start, closing.index)
+      end = closing.index + closing[0].length
+      if (isCode(candidate)) {
+        body = candidate
+        break
+      }
+    }
+    if (body === null) continue
+    open.lastIndex = end
+    if (body.trim()) bodies.push(body)
+  }
+  return bodies
+}
+
 for (const page of pages) {
   const file = path.join(dist, page)
   if (!fs.existsSync(file)) {
@@ -52,15 +97,7 @@ for (const page of pages) {
     process.exit(2)
   }
   const html = fs.readFileSync(file, 'utf8')
-  // Только встроенные скрипты: у внешних есть src, их текст здесь ни при чём.
-  const scripts = html.match(/<script\b(?![^>]*\ssrc=)[^>]*>[\s\S]*?<\/script>/gi) || []
-  scripts.forEach((block, index) => {
-    const open = block.match(/^<script\b[^>]*>/i)[0]
-    // Блоки с типом вроде application/json — это данные, а не код.
-    const type = open.match(/\btype\s*=\s*["']?([^"'\s>]+)/i)
-    if (type && !/^(module|text\/javascript|application\/javascript)$/i.test(type[1])) return
-    const body = block.slice(open.length).replace(/<\/script>$/i, '')
-    if (!body.trim()) return
+  scriptBodies(html).forEach((body, index) => {
     const target = path.join(dir, page.replace('.html', '') + '-' + index + '.js')
     fs.writeFileSync(target, body)
     files.push(target)
