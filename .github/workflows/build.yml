@@ -120,6 +120,11 @@ jobs:
       - name: Install dependencies
         run: npm -q --no-progress ci
 
+      # Стиль JS-части (standard). Раньше скрипт codestyle не запускался нигде:
+      # ни в CI, ни в check.cmd.
+      - name: Check code style
+        run: npm run codestyle
+
       - name: Build frontend
         run: npm run buildci
 
