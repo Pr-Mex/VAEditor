@@ -117,21 +117,23 @@ jobs:
           sleep 2
           export DISPLAY=:99
           xdpyinfo | head -3
-          bin=$(find /opt/1cv8 ~/1c/dist -maxdepth 6 -type f -perm -u+x \
-                  \( -name '1cv8' -o -name '1cv8t' -o -name '1cv8c' -o -name '1cv8s' \) \
-                  2>/dev/null | head -1)
-          echo "bin=${bin}"
-          echo "::notice::bin=${bin:-не найден}"
-          if [ -n "$bin" ]; then
-            "$bin" --version 2>&1 | head -3 || true
-            set +e
-            out=$("$bin" CREATEINFOBASE "File=$HOME/1c/base" 2>&1)
-            rc=$?
-            set -e
-            echo "$out" | head -20
-            echo "::notice::CREATEINFOBASE rc=${rc}"
-            echo "::notice::вывод: $(echo "$out" | head -5 | tr '\n' ' ')"
-            echo "::notice::база: $(ls "$HOME/1c/base" 2>/dev/null | tr '\n' ' ' || echo нет)"
-          else
-            echo 'бинарь не найден'
+          # Учебная поставка ставится в /opt/1cv8t (не /opt/1cv8) и называет
+          # файлы с суффиксом t: 1cv8t — конфигуратор и толстый клиент,
+          # 1cv8ct — тонкий клиент.
+          bin=$(ls /opt/1cv8t/x86_64/*/1cv8t 2>/dev/null | head -1)
+          client=$(ls /opt/1cv8t/x86_64/*/1cv8ct 2>/dev/null | head -1)
+          echo "bin=$bin client=$client"
+          echo "::notice::bin=$bin client=$client"
+          if [ -z "$bin" ]; then
+            echo '::error::1cv8t не найден'
+            exit 1
           fi
+          "$bin" --version 2>&1 | head -3 || true
+          set +e
+          "$bin" CREATEINFOBASE "File=$HOME/1c/base" /DisableStartupDialogs /DisableStartupMessages /Out /tmp/create.log 2>&1 | head -20
+          rc=$?
+          set -e
+          echo "::notice::CREATEINFOBASE rc=$rc"
+          cat /tmp/create.log 2>/dev/null | head -10
+          echo "::notice::лог: $(head -3 /tmp/create.log 2>/dev/null | tr '\n' ' ')"
+          echo "::notice::база: $(ls "$HOME/1c/base" 2>/dev/null | tr '\n' ' ' || echo нет)"
