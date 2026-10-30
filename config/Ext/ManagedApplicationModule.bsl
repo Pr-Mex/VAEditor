@@ -14,7 +14,7 @@ Procedure OnStart()
 
 EndProcedure
 
-&AtServerNoContext
+&AtServer
 Function TestForm(Val FilePath)
 
 	// Загрузка внешнего кода обычно вызывает диалог «Разрешить открывать данный
