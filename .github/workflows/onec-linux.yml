@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            p7zip-full xvfb x11-utils xdotool \
+            p7zip-full xvfb x11-utils \
             libwebkit2gtk-4.0-37 libjavascriptcoregtk-4.0-18 libsoup2.4-1 \
             libglu1-mesa libgtk-3-0 libxtst6 libxrender1 libxi6 libglib2.0-0 \
             libnss3 libxext6 libsm6 libice6 libfreetype6 libfontconfig1 \
