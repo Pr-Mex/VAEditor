@@ -22,9 +22,10 @@ Procedure OnOpen(Cancel)
 		Return;
 	EndIf;
 
-	If StrStartsWith(ПараметрЗапуска, "autotest") Then
-		WriteMarker("client-started.txt");
-	EndIf;
+	// Параметр запуска — путь к файлу обработки, поэтому режим определяется не
+	// по префиксу "autotest", а по самому факту автозапуска: форма открыта
+	// приложением, значит это прогон автотестов.
+	WriteMarker("client-started.txt");
 
 	LoadTestPage();
 
@@ -135,7 +136,10 @@ Procedure VanessaEditorURLDocumentComplete(Item)
 		Return;
 	EndIf;
 
-	If StrStartsWith(ПараметрЗапуска, "autotest") Then
+	// Параметр запуска — путь к файлу обработки, поэтому режим определяется не
+	// по префиксу "autotest", а по факту автозапуска: любой запуск, кроме
+	// отладочной пробы probeenv, считается прогоном автотестов.
+	If Not StrStartsWith(ПараметрЗапуска, "probeenv") Then
 		WriteMarker("page-loaded.txt");
 	EndIf;
 
@@ -159,7 +163,7 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 		Exit(False);
 	EndIf;
 
-	If StrStartsWith(ПараметрЗапуска, "autotest") And EventData.Element.id = "AutotestResult" Then
+	If Not StrStartsWith(ПараметрЗапуска, "probeenv") And EventData.Element.id = "AutotestResult" Then
 		Result = Items.VanessaEditor.Document.defaultView.mochaResults;
 		// Отчёт пишем всегда: без него не понять, упали тесты или клик не дошёл.
 		TextWriter = New TextWriter(CurrentPath + "autotest-result.txt");

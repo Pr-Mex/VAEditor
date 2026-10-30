@@ -69,6 +69,16 @@
 		"webpack-dev-server": "^5.2.0",
 		"ws": "^8.18.0"
 	},
+	"standard": {
+		"ignore": [
+			"src/1c-webkit-patch.js",
+			"src/languages/turbo-gherkin/worker.js",
+			"src/nls/nls.js",
+			"test/autotest.js",
+			"test/editor/key-emulator.js",
+			"tools/plugins/checkRuntimeCompat.js"
+		]
+	},
 	"engines": {
 		"node": ">=18.0.0"
 	}

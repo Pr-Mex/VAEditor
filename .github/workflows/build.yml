@@ -120,12 +120,10 @@ jobs:
       - name: Install dependencies
         run: npm -q --no-progress ci
 
-      # Стиль JS-части (standard). Раньше скрипт codestyle не запускался нигде.
-      # Пока не блокирует сборку: в src/nls/nls.js, src/1c-webkit-patch.js и
-      # test/autotest.js остались var и точки с запятой, а no-var и semi в
-      # standard — ошибки. Флаг снимается после чистки этих файлов.
+      # Стиль JS-части (standard). Legacy-файлы исключены в package.json →
+      # standard.ignore: они писались под старый WebKit и не переводятся на
+      # const/let без риска.
       - name: Check code style
-        continue-on-error: true
         run: npm run codestyle
 
       - name: Build frontend

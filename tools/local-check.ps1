@@ -80,22 +80,6 @@ $procNames = @('1cv8t', '1cv8ct', '1cv8', '1cv8c', '1cv8p32', '1cv8p64')
 # сервере, где подтверждать некому, — поэтому прогон идёт без диалога.
 # Глобальный conf.cfg платформы скрипт не правит: настройка касается всей установки.
 
-function Wait-1CIdle([int]$seconds) {
-    $deadline = (Get-Date).AddSeconds($seconds)
-    $lastReport = Get-Date
-    while ((Get-Date) -lt $deadline) {
-        $alive = Get-Process -Name $procNames -ErrorAction SilentlyContinue
-        if (-not $alive) { return $true }
-        if (((Get-Date) - $lastReport).TotalSeconds -ge 5) {
-            $lastReport = Get-Date
-            $names = ($alive | ForEach-Object { $_.ProcessName + ' pid=' + $_.Id }) -join ', '
-            Write-Host ('  still running: ' + $names)
-        }
-        Start-Sleep -Milliseconds 500
-    }
-    return $false
-}
-
 function Wait-Path([string]$path, [int]$seconds) {
     $deadline = (Get-Date).AddSeconds($seconds)
     while ((Get-Date) -lt $deadline) {
@@ -114,12 +98,16 @@ function Stop-1C {
 
 function Invoke-1C([string]$exe, [string[]]$arguments, [int]$idleTimeoutSeconds = 60) {
     Write-Host ('> ' + (Split-Path $exe -Leaf) + ' ' + ($arguments -join ' '))
-    $out = & $exe @arguments 2>&1
-    Write-Host ('exit=' + $LASTEXITCODE)
-    if ($out) { $out | ForEach-Object { Write-Host ('  ' + $_) } }
-    if (-not (Wait-1CIdle $idleTimeoutSeconds)) {
-        Write-Host '  warning: 1C processes are still running (probably a dialog window is open)'
+    # 1cv8t.exe — GUI-приложение: оператор & в PowerShell возвращает управление
+    # сразу, не дожидаясь завершения, и код возврата всегда 0. Ошибки платформы
+    # при этом теряются, а следующий шаг стартует на недогруженной базе. Ждём
+    # процесс явно и печатаем настоящий код возврата.
+    $process = Start-Process -FilePath $exe -ArgumentList $arguments -NoNewWindow -PassThru
+    if (-not $process.WaitForExit($idleTimeoutSeconds * 1000)) {
+        Write-Host '  warning: 1C process is still running (probably a dialog window is open)'
+        return
     }
+    Write-Host ('exit=' + $process.ExitCode)
 }
 
 # Шаблон макета 1С — это zip с html внутри; Compress-Archive умеет только .zip,
@@ -175,9 +163,16 @@ if (-not (Wait-Path $epf 120)) { throw 'epf build failed: file not created' }
 Write-Host ("=== 5. Run autotest (timeout " + $TestTimeoutSeconds + "s) ===")
 $success = Join-Path $Root 'success.txt'
 if (Test-Path $success) { Remove-Item -Force $success }
-# Обработку открывает платформа (/Execute), а модуль приложения успевает снять
-# предупреждения защиты от опасных действий у текущего пользователя базы.
-$arguments = @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', $Launch)
+# Обработку открывает модуль приложения: путь к epf передаётся в /C, а
+# ВнешниеОбработки.Создать вызывается с выключенным предупреждением об опасных
+# действиях, поэтому диалог «Разрешить открывать данный файл?» не появляется.
+# Режим probeenv оставлен на старом пути (/Execute): он отладочный и запускается
+# только локально, где защиту снимает conf.cfg.
+if ($Launch -eq 'autotest') {
+    $arguments = @('ENTERPRISE', '/LRU', "/F$db", "/C$epf", '/DisableStartupDialogs', '/DisableStartupMessages')
+} else {
+    $arguments = @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', $Launch)
+}
 # Если обработка не открылась, клиент просто висит без окон и прогон ждёт полный
 # таймаут — поэтому ждём ещё и файл, который пишет модуль приложения при ошибке.
 $failure = "$epf.error.txt"
