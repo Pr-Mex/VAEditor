@@ -22,9 +22,10 @@ Procedure OnOpen(Cancel)
 		Return;
 	EndIf;
 
-	If StrStartsWith(ПараметрЗапуска, "autotest") Then
-		WriteMarker("client-started.txt");
-	EndIf;
+	// Параметр запуска — путь к файлу обработки, поэтому режим определяется не
+	// по префиксу "autotest", а по самому факту автозапуска: форма открыта
+	// приложением, значит это прогон автотестов.
+	WriteMarker("client-started.txt");
 
 	LoadTestPage();
 

@@ -175,9 +175,16 @@ if (-not (Wait-Path $epf 120)) { throw 'epf build failed: file not created' }
 Write-Host ("=== 5. Run autotest (timeout " + $TestTimeoutSeconds + "s) ===")
 $success = Join-Path $Root 'success.txt'
 if (Test-Path $success) { Remove-Item -Force $success }
-# Обработку открывает платформа (/Execute), а модуль приложения успевает снять
-# предупреждения защиты от опасных действий у текущего пользователя базы.
-$arguments = @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', $Launch)
+# Обработку открывает модуль приложения: путь к epf передаётся в /C, а
+# ВнешниеОбработки.Создать вызывается с выключенным предупреждением об опасных
+# действиях, поэтому диалог «Разрешить открывать данный файл?» не появляется.
+# Режим probeenv оставлен на старом пути (/Execute): он отладочный и запускается
+# только локально, где защиту снимает conf.cfg.
+if ($Launch -eq 'autotest') {
+    $arguments = @('ENTERPRISE', '/LRU', "/F$db", "/C$epf", '/DisableStartupDialogs', '/DisableStartupMessages')
+} else {
+    $arguments = @('ENTERPRISE', '/LRU', "/F$db", "/Execute$epf", '/C', $Launch)
+}
 # Если обработка не открылась, клиент просто висит без окон и прогон ждёт полный
 # таймаут — поэтому ждём ещё и файл, который пишет модуль приложения при ошибке.
 $failure = "$epf.error.txt"
