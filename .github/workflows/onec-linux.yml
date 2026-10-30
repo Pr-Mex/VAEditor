@@ -6,7 +6,7 @@ name: onec-linux
 
 on:
   push:
-    branches: [onec-linux]
+    branches: [onec-linux, onec-no-execute]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            p7zip-full xvfb x11-utils xdotool \
+            p7zip-full xvfb x11-utils \
             libwebkit2gtk-4.0-37 libjavascriptcoregtk-4.0-18 libsoup2.4-1 \
             libglu1-mesa libgtk-3-0 libxtst6 libxrender1 libxi6 libglib2.0-0 \
             libnss3 libxext6 libsm6 libice6 libfreetype6 libfontconfig1 \
@@ -217,9 +217,10 @@ jobs:
           echo "::notice::epf rc=$rc файл: $(ls -la VAEditorSample.epf 2>/dev/null | awk '{print $5}' || echo нет) лог: $(tail -3 /tmp/epf.log 2>/dev/null | tr '\n' ' ')"
           pkill -f 1cv8 || true
 
-      # Тонкий клиент исполняет внешнюю обработку на сервере, где некому
-      # подтверждать «Разрешить открывать файл?», поэтому диалог защиты
-      # не появляется и прогон идёт сам (см. tools/local-check.ps1).
+      # Обработку загружает модуль приложения (config/Ext/ManagedApplicationModule.bsl)
+      # через ВнешниеОбработки.Создать с выключенным предупреждением об опасных
+      # действиях, поэтому диалог «Разрешить открывать данный файл?» не появляется
+      # и подтверждать его клавиатурой не нужно. Путь к epf передаётся в /C.
       - name: Автотест в WebView 1С
         timeout-minutes: 20
         run: |
@@ -230,24 +231,20 @@ jobs:
           db=$HOME/1c/base
           rm -f success.txt autotest-result.txt client-started.txt page-loaded.txt VAEditorSample.epf.error.txt
           timeout -k 10 900 "$client" ENTERPRISE /LRU "/F$db" \
-            "/Execute$GITHUB_WORKSPACE/VAEditorSample.epf" /C autotest \
+            "/C$GITHUB_WORKSPACE/VAEditorSample.epf" \
+            /DisableStartupDialogs /DisableStartupMessages \
             /Out /tmp/client-out.log \
             > /tmp/client.log 2>&1 &
           pid=$!
-          for i in $(seq 1 600); do
+          for i in $(seq 1 180); do
             if [ -f success.txt ] || [ -f autotest-result.txt ]; then break; fi
             kill -0 "$pid" 2>/dev/null || break
-            # conf.cfg снимает защиту от опасных действий не всегда: если форма
-            # не открылась за 30 с, подтверждаем диалог клавиатурой — в
-            # неинтерактивном прогоне нажать «Да» больше некому. Жмём только
-            # пока нет метки, иначе Enter уйдёт в окно редактора.
-            if [ "$i" -ge 30 ] && [ "$i" -le 120 ] && [ $((i % 10)) -eq 0 ] \
-               && [ ! -f client-started.txt ]; then
-              echo "::notice::подтверждаю диалог на ${i}-й секунде"
-              xdotool key --clearmodifiers Return 2>/dev/null || true
-            fi
             sleep 1
           done
+          if [ ! -f success.txt ] && [ ! -f autotest-result.txt ]; then
+            echo '--- окна X на момент зависания ---'
+            xwininfo -root -tree 2>/dev/null | head -40 || true
+          fi
           kill "$pid" 2>/dev/null || true
           pkill -f 1cv8 || true
           echo '--- вывод клиента ---'
