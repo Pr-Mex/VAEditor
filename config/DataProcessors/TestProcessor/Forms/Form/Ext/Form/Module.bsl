@@ -19,7 +19,15 @@ Function AttachProcessor(Val FilePath)
 	// BSLLS:UsingExternalCodeTools-off
 	Processor = ExternalDataProcessors.Create(FilePath, False, Protection);
 
-	Return Processor.GetForm();
+	// ПолучитьФорму — интерактивная операция: в серверном вызове без контекста
+	// формы она падает с «Интерактивные операции недоступны». Поэтому возвращаем
+	// имя основной формы обработки, а открывает её клиент.
+	ProcessorForm = Processor.Metadata().DefaultForm;
+	If ProcessorForm = Undefined Then
+		Raise "У внешней обработки не задана основная форма: " + FilePath;
+	EndIf;
+
+	Return "ExternalDataProcessor." + Processor.Metadata().Name + ".Form." + ProcessorForm.Name;
 
 EndFunction
 
