@@ -187,6 +187,7 @@
 		</Properties>
 		<ChildObjects>
 			<Language>Russian</Language>
+			<DataProcessor>TestProcessor</DataProcessor>
 		</ChildObjects>
 	</Configuration>
 </MetaDataObject>
