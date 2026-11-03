@@ -754,20 +754,20 @@
 											</Picture>
 											<ExtendedTooltip name="GroupStepsРасширеннаяПодсказка" id="211"/>
 											<ChildItems>
-												<Button name="LoadStepsAll" id="216">
+												<Button name="ЗагрузитьШагиВсе" id="216">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadStepsAll</CommandName>
-													<ExtendedTooltip name="LoadStepsAllРасширеннаяПодсказка" id="217"/>
+													<CommandName>Form.Command.ЗагрузитьШагиВсе</CommandName>
+													<ExtendedTooltip name="ЗагрузитьШагиВсеРасширеннаяПодсказка" id="217"/>
 												</Button>
-												<Button name="LoadStepsEn" id="212">
+												<Button name="ЗагрузитьШагиАнгл" id="212">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadStepsEn</CommandName>
-													<ExtendedTooltip name="LoadStepsEnРасширеннаяПодсказка" id="213"/>
+													<CommandName>Form.Command.ЗагрузитьШагиАнгл</CommandName>
+													<ExtendedTooltip name="ЗагрузитьШагиАнглРасширеннаяПодсказка" id="213"/>
 												</Button>
-												<Button name="LoadStepsRu" id="214">
+												<Button name="ЗагрузитьШагиРус" id="214">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadStepsRu</CommandName>
-													<ExtendedTooltip name="LoadStepsRuРасширеннаяПодсказка" id="215"/>
+													<CommandName>Form.Command.ЗагрузитьШагиРус</CommandName>
+													<ExtendedTooltip name="ЗагрузитьШагиРусРасширеннаяПодсказка" id="215"/>
 												</Button>
 											</ChildItems>
 										</Popup>
@@ -786,20 +786,20 @@
 											</ToolTip>
 											<ExtendedTooltip name="GroupKeywordsExtendedTooltip" id="328"/>
 											<ChildItems>
-												<Button name="LoadKeywordsAll" id="333">
+												<Button name="ЗагрузитьКлючевыеСловаВсе" id="333">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadKeywordsAll</CommandName>
-													<ExtendedTooltip name="LoadKeywordsAllExtendedTooltip" id="334"/>
+													<CommandName>Form.Command.ЗагрузитьКлючевыеСловаВсе</CommandName>
+													<ExtendedTooltip name="ЗагрузитьКлючевыеСловаВсеExtendedTooltip" id="334"/>
 												</Button>
-												<Button name="LoadKeywordsEn" id="329">
+												<Button name="ЗагрузитьКлючевыеСловаАнгл" id="329">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadKeywordsEn</CommandName>
-													<ExtendedTooltip name="LoadKeywordsEnExtendedTooltip" id="330"/>
+													<CommandName>Form.Command.ЗагрузитьКлючевыеСловаАнгл</CommandName>
+													<ExtendedTooltip name="ЗагрузитьКлючевыеСловаАнглExtendedTooltip" id="330"/>
 												</Button>
-												<Button name="LoadKeywordsRu" id="331">
+												<Button name="ЗагрузитьКлючевыеСловаРус" id="331">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadKeywordsRu</CommandName>
-													<ExtendedTooltip name="LoadKeywordsRuExtendedTooltip" id="332"/>
+													<CommandName>Form.Command.ЗагрузитьКлючевыеСловаРус</CommandName>
+													<ExtendedTooltip name="ЗагрузитьКлючевыеСловаРусExtendedTooltip" id="332"/>
 												</Button>
 											</ChildItems>
 										</Popup>
@@ -2714,7 +2714,7 @@
 			<Action>ДействиеРедактора</Action>
 			<Representation>Picture</Representation>
 		</Command>
-		<Command name="LoadStepsEn" id="11">
+		<Command name="ЗагрузитьШагиАнгл" id="11">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2727,9 +2727,9 @@
 					<v8:content>Загрузить шаги (en)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadStepsEn</Action>
+			<Action>ЗагрузитьШагиАнгл</Action>
 		</Command>
-		<Command name="LoadStepsRu" id="12">
+		<Command name="ЗагрузитьШагиРус" id="12">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2742,9 +2742,9 @@
 					<v8:content>Загрузить шаги (ru)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadStepsRu</Action>
+			<Action>ЗагрузитьШагиРус</Action>
 		</Command>
-		<Command name="LoadStepsAll" id="13">
+		<Command name="ЗагрузитьШагиВсе" id="13">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2757,7 +2757,7 @@
 					<v8:content>Загрузить шаги (все)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadStepsAll</Action>
+			<Action>ЗагрузитьШагиВсе</Action>
 		</Command>
 		<Command name="ПоказатьСообщение" id="14">
 			<Title>
@@ -3088,7 +3088,7 @@
 			</ToolTip>
 			<Action>ЗаменитьТекст</Action>
 		</Command>
-		<Command name="LoadKeywordsRu" id="33">
+		<Command name="ЗагрузитьКлючевыеСловаРус" id="33">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3101,9 +3101,9 @@
 					<v8:content>Загрузить ключевые слова (ru)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadKeywordsRu</Action>
+			<Action>ЗагрузитьКлючевыеСловаРус</Action>
 		</Command>
-		<Command name="LoadKeywordsEn" id="34">
+		<Command name="ЗагрузитьКлючевыеСловаАнгл" id="34">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3116,9 +3116,9 @@
 					<v8:content>Загрузить ключевые слова (en)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadKeywordsEn</Action>
+			<Action>ЗагрузитьКлючевыеСловаАнгл</Action>
 		</Command>
-		<Command name="LoadKeywordsAll" id="35">
+		<Command name="ЗагрузитьКлючевыеСловаВсе" id="35">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3131,7 +3131,7 @@
 					<v8:content>Загрузить ключевые слова (все)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadKeywordsAll</Action>
+			<Action>ЗагрузитьКлючевыеСловаВсе</Action>
 		</Command>
 		<Command name="ПолучитьВыделенныйТекст" id="4">
 			<Title>

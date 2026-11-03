@@ -198,7 +198,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadStepsAll(Command)
+Процедура ЗагрузитьШагиВсе(Command)
 
 	GherkinProvider().setStepList(VanessaStepList("en"), True);
 	GherkinProvider().setStepList(VanessaStepList("ru"), False);
@@ -206,31 +206,31 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadStepsEn(Command)
+Процедура ЗагрузитьШагиАнгл(Command)
 
 	GherkinProvider().setStepList(VanessaStepList("en"), True);
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadStepsRu(Command)
+Процедура ЗагрузитьШагиРус(Command)
 
 	GherkinProvider().setStepList(VanessaStepList("ru"), True);
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadKeywordsAll(Command)
+Процедура ЗагрузитьКлючевыеСловаВсе(Command)
 	GherkinProvider().setKeywords(GetKeywords());
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadKeywordsEn(Command)
+Процедура ЗагрузитьКлючевыеСловаАнгл(Command)
 	GherkinProvider().setKeywords(GetKeywords("en"));
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadKeywordsRu(Command)
+Процедура ЗагрузитьКлючевыеСловаРус(Command)
 	GherkinProvider().setKeywords(GetKeywords("ru"));
 КонецПроцедуры
 
@@ -855,7 +855,7 @@ Var KeyCodeMap;
 	Provider.setVariables(GetVariables());
 	Provider.setDirectives(GetDirectives());
 	Provider.setMessages(MessagesJSON);
-	LoadStepsAll(Undefined);
+	ЗагрузитьШагиВсе(Undefined);
 
 	Editor = DefaultView().createVanessaEditor("", "turbo-gherkin");
 	Editor.addCommands(GetCommands());
