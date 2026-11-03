@@ -2,7 +2,10 @@ import { XBSL_LANGUAGE_ID, conf, language as monarchLanguage } from "./configura
 
 const language: monaco.languages.ILanguageExtensionPoint = {
   id: XBSL_LANGUAGE_ID,
-  extensions: [".xbsl"],
+  // .sbsl — расширение скриптов «1С:Элемента» по документации ИТС
+  // («Файл скрипт.sbsl», «#требуется модуль.sbsl»). .xbsl оставлен рядом:
+  // этим расширением язык называют инструменты, и файлы с ним встречаются.
+  extensions: [".sbsl", ".xbsl"],
 };
 
 monaco.languages.register(language);

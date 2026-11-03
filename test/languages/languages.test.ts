@@ -93,8 +93,15 @@ describe('Подсветка xBSL', function () {
     monaco.languages.setMonarchTokensProvider(XBSL_LANGUAGE_ID, xbslLanguage);
   });
 
-  it('Язык зарегистрирован для .xbsl', () => {
+  it('Язык зарегистрирован для .sbsl и .xbsl', () => {
+    expect(extensionOf(XBSL_LANGUAGE_ID)).to.include('.sbsl');
     expect(extensionOf(XBSL_LANGUAGE_ID)).to.include('.xbsl');
+  });
+
+  it('Файл .sbsl открывается в отдельной вкладке с языком xbsl', () => {
+    const model = createModel('', 'скрипт.sbsl');
+    expect(model.getLanguageId()).to.equal(XBSL_LANGUAGE_ID);
+    model.dispose();
   });
 
   it('Файл .xbsl открывается в отдельной вкладке с языком xbsl', () => {
@@ -106,6 +113,7 @@ describe('Подсветка xBSL', function () {
   it('Ключевые слова языка пишутся строчными буквами', () => {
     expect(typeAt(XBSL_LANGUAGE_ID, 'метод Скрипт()', 1)).to.equal('keyword');
     expect(typeAt(XBSL_LANGUAGE_ID, 'пер МойВозраст: Число', 1)).to.equal('keyword');
+    expect(typeAt(XBSL_LANGUAGE_ID, 'исключение МояОшибка', 1)).to.equal('keyword');
   });
 
   it('Ключевое слово с прописной буквы — это не ключевое слово', () => {
@@ -125,9 +133,29 @@ describe('Подсветка xBSL', function () {
     expect(typeAt(XBSL_LANGUAGE_ID, 'Консоль.Записать("В " + День)', 18)).to.equal('string');
   });
 
+  it('Многострочная строка продолжается на следующих строках', () => {
+    const lines = monaco.editor.tokenize('знч Текст =\n"<note>\n<body>\n</note>"\nпер а = 1', XBSL_LANGUAGE_ID);
+    expect(rootType(lines[1][0].type)).to.equal('string');
+    expect(rootType(lines[2][0].type)).to.equal('string');
+    expect(rootType(lines[3][0].type)).to.equal('string');
+    expect(rootType(lines[4][0].type)).to.equal('keyword');
+  });
+
+  it('Интерполяция: короткая форма и выражение в фигурных скобках', () => {
+    const text = 'пер Площадь = "равна ${Длина * Ширина} м2"';
+    // Внутри ${...} подсвечивается код, а не строка.
+    expect(typeAt(XBSL_LANGUAGE_ID, text, 24)).to.equal('identifier');
+    expect(typeAt(XBSL_LANGUAGE_ID, text, 16)).to.equal('string');
+    expect(typeAt(XBSL_LANGUAGE_ID, 'пер С = "Скачано $Процент%"', 20)).to.equal('string');
+  });
+
+  it('Тернарная операция и настойчивая операция — операторы', () => {
+    expect(typeAt(XBSL_LANGUAGE_ID, 'х = а ? б : в', 5)).to.equal('operator');
+  });
+
   it('Аннотация и директива импорта', () => {
     expect(typeAt(XBSL_LANGUAGE_ID, '@Наименование', 1)).to.equal('annotation');
-    expect(typeAt(XBSL_LANGUAGE_ID, '#Использовать', 1)).to.equal('keyword');
+    expect(typeAt(XBSL_LANGUAGE_ID, '#требуется модуль.sbsl', 1)).to.equal('keyword');
   });
 
   it('Литерал Неопределено', () => {
