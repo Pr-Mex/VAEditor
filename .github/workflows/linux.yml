@@ -63,3 +63,13 @@ jobs:
           name: vaeditor-linux
           if-no-files-found: warn
           path: dist/index.html
+
+      # На падении нужна вся сборка, а не только страница: test.html,
+      # version.json и остатки чанков показывают, что именно собралось.
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vaeditor-linux-failure
+          if-no-files-found: ignore
+          path: dist/
