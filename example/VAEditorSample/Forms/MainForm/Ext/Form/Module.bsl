@@ -1,5 +1,5 @@
 ﻿&НаКлиенте
-Var KeyCodeMap;
+Перем KeyCodeMap;
 
 #Region FormEvents
 
@@ -15,12 +15,12 @@ Var KeyCodeMap;
 	StepListTemplateURL = PutToTempStorage(DataObject.GetTemplate("StepList"));
 	KeywordsTemplateURL = PutToTempStorage(DataObject.GetTemplate("Keywords"));
 
-	ErrorCode = New UUID;
+	ErrorCode = Новый UUID;
 	ErrorText = "Информация об ошибке выполнения";
 	MessageText = "Привет, мир!";
 	RuntimeStatus = "complete";
 	EditorTheme = "vs";
-	ShowMinimap = True;
+	ShowMinimap = Истина;
 	LineNumber = 1;
 	TabSize = 4;
 	Column = 1;
@@ -38,22 +38,22 @@ Var KeyCodeMap;
 
 	Breakpoints.Clear();
 	Problems.Clear();
-	VanessaEditor().decorateBreakpoints(JsonDump(New Array));
-	VanessaEditor().decorateProblems(JsonDump(New Array));
+	VanessaEditor().decorateBreakpoints(JsonDump(Новый Array));
+	VanessaEditor().decorateProblems(JsonDump(Новый Array));
 
-	Dialog = New FileDialog(FileDialogMode.Open);
-	If Dialog.Choose() Then
-		TextReader = New TextReader(Dialog.FullFileName, TextEncoding.UTF8);
+	Dialog = Новый FileDialog(FileDialogMode.Open);
+	Если Dialog.Choose() Тогда
+		TextReader = Новый TextReader(Dialog.FullFileName, TextEncoding.UTF8);
 		Text = TextReader.Read();
 		VanessaEditor().setContent(Text);
-	EndIf;
+	КонецЕсли;
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ПолучитьТекст(Command)
 
-	UserMessage = New UserMessage;
+	UserMessage = Новый UserMessage;
 	UserMessage.Text = VanessaEditor().getContent();
 	UserMessage.Message();
 
@@ -85,7 +85,7 @@ Var KeyCodeMap;
 Процедура ПолучитьПозицию(Command)
 
 	Arg = VanessaEditor().getPosition();
-	UserMessage = New UserMessage;
+	UserMessage = Новый UserMessage;
 	UserMessage.Text = "Позиция: "
 		+ "lineNumber = " + Format(Arg.lineNumber, "NG=") + ","
 		+ "codeWidget = " + Format(Arg.codeWidget, "NG=") + ","
@@ -97,7 +97,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ПолучитьСтроку(Command)
 
-	UserMessage = New UserMessage;
+	UserMessage = Новый UserMessage;
 	UserMessage.Text = VanessaEditor().getLineContent(lineNumber);
 	UserMessage.Message();
 
@@ -106,7 +106,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ПолучитьВыделенныйТекст(Command)
 
-	UserMessage = New UserMessage;
+	UserMessage = Новый UserMessage;
 	UserMessage.Text = VanessaEditor().getSelectedContent();
 	UserMessage.Message();
 
@@ -115,7 +115,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ПолучитьТекущийШаг(Command)
 
-	UserMessage = New UserMessage;
+	UserMessage = Новый UserMessage;
 	UserMessage.Text = "Текущий шаг: " + VanessaEditor().getRuntimeProgress("current");
 	UserMessage.Message();
 
@@ -124,7 +124,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ПолучитьПрогресс(Command)
 
-	UserMessage = New UserMessage;
+	UserMessage = Новый UserMessage;
 	UserMessage.Text = "Шаги " + RuntimeStatus + ": " + VanessaEditor().getRuntimeProgress(RuntimeStatus);
 	UserMessage.Message();
 
@@ -138,7 +138,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ЗаменитьТекст(Command)
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert("startLineNumber", LineNumber);
 	Map.Insert("startColumn", 1);
 	Map.Insert("endLineNumber", LineNumber);
@@ -159,7 +159,7 @@ Var KeyCodeMap;
 Процедура ДействияВыбор(Item, SelectedRow, Field, StandardProcessing)
 
 	Data = Items.Actions.CurrentData;
-	If Data = Undefined Then Return; EndIf;
+	Если Data = Неопределено Тогда Возврат; КонецЕсли;
 	VanessaEditor().editor.trigger("", Data.Id);
 
 КонецПроцедуры
@@ -171,7 +171,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ДействиеРедактора(Command)
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
 	Map.Insert("ClipboardCopy", "editor.action.clipboardCopyAction");
 	Map.Insert("ClipboardPaste", "editor.action.clipboardPasteAction");
@@ -200,22 +200,22 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ЗагрузитьШагиВсе(Command)
 
-	GherkinProvider().setStepList(VanessaStepList("en"), True);
-	GherkinProvider().setStepList(VanessaStepList("ru"), False);
+	GherkinProvider().setStepList(VanessaStepList("en"), Истина);
+	GherkinProvider().setStepList(VanessaStepList("ru"), Ложь);
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ЗагрузитьШагиАнгл(Command)
 
-	GherkinProvider().setStepList(VanessaStepList("en"), True);
+	GherkinProvider().setStepList(VanessaStepList("en"), Истина);
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ЗагрузитьШагиРус(Command)
 
-	GherkinProvider().setStepList(VanessaStepList("ru"), True);
+	GherkinProvider().setStepList(VanessaStepList("ru"), Истина);
 
 КонецПроцедуры
 
@@ -242,7 +242,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Функция GetKeyCodeMap()
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert(0, "Unknown");
 	Map.Insert(1, "Backspace");
 	Map.Insert(2, "Tab");
@@ -356,7 +356,7 @@ Var KeyCodeMap;
 	Map.Insert(110, "ABNT_C1");
 	Map.Insert(111, "ABNT_C2");
 	Map.Insert(112, "MAX_VALUE");
-	Return Map;
+	Возврат Map;
 
 КонецФункции
 
@@ -386,27 +386,27 @@ Var KeyCodeMap;
 
 	Breakpoints.Sort("codeWidget,lineNumber");
 
-	//Value = 0;
-	//For Each Row In Breakpoints Do
-	//	If Value = Row.Value Then
-	//		Cancel = True;
-	//		Return;
-	//	EndIf;
-	//	Value = Row.Value;
-	//EndDo;
+	//Значение = 0;
+	//Для Каждого Строка Из Breakpoints Цикл
+	//	Если Значение = Строка.Value Тогда
+	//		Cancel = Истина;
+	//		Возврат;
+	//	КонецЕсли;
+	//	Значение = Строка.Value;
+	//КонецЦикла;
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ТочкиОстановаПриАктивизацииСтроки(Item)
 
-	If Item.CurrentData = Undefined Then
-		Return;
-	EndIf;
+	Если Item.CurrentData = Неопределено Тогда
+		Возврат;
+	КонецЕсли;
 
-	If Item.CurrentData.codeWidget = 0 Then
+	Если Item.CurrentData.codeWidget = 0 Тогда
 		VanessaEditor().revealLine(Item.CurrentData.lineNumber);
-	EndIf;
+	КонецЕсли;
 
 КонецПроцедуры
 
@@ -416,25 +416,25 @@ Var KeyCodeMap;
 	BreakpointsPacket = JsonLoad(Json);
 
 	Breakpoints.Clear();
-	For Each Chunk In BreakpointsPacket Do
+	Для Каждого Chunk Из BreakpointsPacket Цикл
 		FillPropertyValues(Breakpoints.Add(), Chunk);
 	EndDo;
 
 	Breakpoints.Sort("codeWidget,lineNumber");
 
-	If EmulateBreakpointUpdateDelay Then
+	Если EmulateBreakpointUpdateDelay Тогда
 		Пауза();
-	EndIf;
+	КонецЕсли;
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ОформитьТочкиОстанова(Editor)
 
-	BreakpointsPacket = New Array;
+	BreakpointsPacket = Новый Array;
 
-	For Each Row In Breakpoints Do
-		Chunk = New Structure("lineNumber,codeWidget,enable");
+	Для Каждого Row Из Breakpoints Цикл
+		Chunk = Новый Structure("lineNumber,codeWidget,enable");
 		FillPropertyValues(Chunk, Row);
 		BreakpointsPacket.Add(Chunk);
 	EndDo;
@@ -457,10 +457,10 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ОформитьПроблемы()
 
-	ProblemsPacket = New Array;
+	ProblemsPacket = Новый Array;
 
-	For Each Row In Problems Do
-		Chunk = New Structure;
+	Для Каждого Row Из Problems Цикл
+		Chunk = Новый Structure;
 		Chunk.Insert("lineNumber", Row.LineNumber);
 		Chunk.Insert("severity", Row.Severity);
 		Chunk.Insert("message", Row.Message);
@@ -485,16 +485,16 @@ Var KeyCodeMap;
 
 &НаКлиенте
 Процедура УстановитьПрогресс(Command)
-	Map = New Map;
-	For Each Row In CompleteSteps Do
+	Map = Новый Map;
+	Для Каждого Row Из CompleteSteps Цикл
 		Steps = Map.Get(Row.codeWidget);
-		If Steps = Undefined Then
-			Steps = New Array;
+		Если Steps = Неопределено Тогда
+			Steps = Новый Array;
 			Map.Insert(Row.codeWidget, Steps);
-		EndIf;
+		КонецЕсли;
 		Steps.Add(Row.LineNumber);
 	EndDo;
-	For each KeyValue In Map Do
+	Для Каждого KeyValue Из Map Цикл
 		VanessaEditor().setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key, InlineView);
 	EndDo;
 КонецПроцедуры
@@ -509,23 +509,23 @@ Var KeyCodeMap;
 #Region Json
 
 &НаКлиенте
-Функция JsonLoad(Json, ReadToMap = False)
+Функция JsonLoad(Json, ReadToMap = Ложь)
 
-	JSONReader = New JSONReader;
+	JSONReader = Новый JSONReader;
 	JSONReader.SetString(Json);
 	Value = ReadJSON(JSONReader, ReadToMap);
 	JSONReader.Close();
-	Return Value;
+	Возврат Value;
 
 КонецФункции
 
 &НаКлиенте
 Функция JsonDump(Value)
 
-	JSONWriter = New JSONWriter;
+	JSONWriter = Новый JSONWriter;
 	JSONWriter.SetString();
 	WriteJSON(JSONWriter, Value);
-	Return JSONWriter.Close();
+	Возврат JSONWriter.Close();
 
 КонецФункции
 
@@ -535,7 +535,7 @@ Var KeyCodeMap;
 
 Процедура Пауза(Delay = 1)
 
-	RunApp("timeout " + Delay, , True);
+	RunApp("timeout " + Delay, , Истина);
 
 КонецПроцедуры
 
@@ -560,11 +560,11 @@ Var KeyCodeMap;
 Функция GetKeyInfo(Data)
 
 	res = "";
-	If Data.metaKey Then res = res + "Win+"; EndIf;
-	If Data.ctrlKey Then res = res + "Ctrl+"; EndIf;
-	If Data.altKey Then res = res + "Alt+"; EndIf;
-	If Data.shiftKey Then res = res + "Shift+"; EndIf;
-	Return res + KeyCodeMap[Data.keyCode] + " (" + Data.keyCode + ")";
+	Если Data.metaKey Тогда res = res + "Win+"; КонецЕсли;
+	Если Data.ctrlKey Тогда res = res + "Ctrl+"; КонецЕсли;
+	Если Data.altKey Тогда res = res + "Alt+"; КонецЕсли;
+	Если Data.shiftKey Тогда res = res + "Shift+"; КонецЕсли;
+	Возврат res + KeyCodeMap[Data.keyCode] + " (" + Data.keyCode + ")";
 
 КонецФункции
 
@@ -573,7 +573,7 @@ Var KeyCodeMap;
 
 	Text = VanessaEditor().getLineContent(lineNumber);
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert("filterText", Text);
 	Map.Insert("insertText", Text);
 	Map.Insert("sortText", Text);
@@ -581,36 +581,36 @@ Var KeyCodeMap;
 	Map.Insert("kind", 0);
 	Map.Insert("section", "Пользовательский шаг");
 
-	Array = New Array;
+	Array = Новый Array;
 	Array.Add(Map);
 
-	GherkinProvider().setStepList(JsonDump(Array), False);
+	GherkinProvider().setStepList(JsonDump(Array), Ложь);
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура РедакторVanessaПриПолученииСобытия(Editor, Event, Arg)
 
-	If Event = "UPDATE_BREAKPOINTS" Then
+	Если Event = "UPDATE_BREAKPOINTS" Тогда
 		ОбновитьТочкиОстанова(Arg);
 		ОформитьТочкиОстанова(Editor);
-	ElsIf Event = "F9" Then
+	ИначеЕсли Event = "F9" Тогда
 		ДобавитьВЖурналСобытий(Event, Arg);
 		Editor.toggleBreakpoint();
-	ElsIf Event = "CREATE_STEP" Then
+	ИначеЕсли Event = "CREATE_STEP" Тогда
 		ДобавитьВЖурналСобытий(Event, Arg);
 		СоздатьШаг(Editor, Arg);
-	ElsIf Event = "SHOW_STEP_IN_TREE" Then
+	ИначеЕсли Event = "SHOW_STEP_IN_TREE" Тогда
 		// Редактор прислал контекст шага под курсором: в демо показываем его
 		// текстом, в VA по нему раскрывается дерево библиотеки шагов.
 		ДобавитьВЖурналСобытий(Event, Arg);
 		ПоказатьПодсказку("Шаг под курсором: " + Arg);
-	ElsIf Event = "OPEN_STEP_AS_FEATURE" Then
+	ИначеЕсли Event = "OPEN_STEP_AS_FEATURE" Тогда
 		ДобавитьВЖурналСобытий(Event, Arg);
 		ПоказатьПодсказку("Открыть фичу шага: " + Arg);
-	Else
+	Иначе
 		ДобавитьВЖурналСобытий(Event, Arg);
-	EndIf;
+	КонецЕсли;
 
 КонецПроцедуры
 
@@ -621,9 +621,9 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ЗагрузитьРедактор()
 
-	If Not ValueIsFilled(EditorTemplateURL) Then
-		Return;
-	EndIf;
+	Если Не ValueIsFilled(EditorTemplateURL) Тогда
+		Возврат;
+	КонецЕсли;
 
 	EditorDirectory = ExtractTemplates(GetFromTempStorage(EditorTemplateURL));
 	VanessaEditorURL = EditorDirectory + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
@@ -637,12 +637,12 @@ Var KeyCodeMap;
 	DeleteFiles(Directory);
 	CreateDirectory(Directory);
 
-	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
-	For Each ZipFileEntry In ZipFileReader.Items Do
+	ZipFileReader = Новый ZipFileReader(BinaryData.OpenStreamForRead());
+	Для Каждого ZipFileEntry Из ZipFileReader.Items Цикл
 		ZipFileReader.Extract(ZipFileEntry, Directory, ZIPRestoreFilePathsMode.Restore);
 	EndDo;
 
-	Return Directory;
+	Возврат Directory;
 
 КонецФункции
 
@@ -652,18 +652,18 @@ Var KeyCodeMap;
 	// EntryBaseName = "" — берётся первый файл архива.
 	Directory = ExtractTemplates(BinaryData);
 	Result = "";
-	ZipFileReader = New ZipFileReader(BinaryData.OpenStreamForRead());
-	For Each ZipFileEntry In ZipFileReader.Items Do
-		If EntryBaseName = "" Or ZipFileEntry.BaseName = EntryBaseName Then
-			TextReader = New TextReader(Directory + "/" + ZipFileEntry.FullName, TextEncoding.UTF8);
+	ZipFileReader = Новый ZipFileReader(BinaryData.OpenStreamForRead());
+	Для Каждого ZipFileEntry Из ZipFileReader.Items Цикл
+		Если EntryBaseName = "" Или ZipFileEntry.BaseName = EntryBaseName Тогда
+			TextReader = Новый TextReader(Directory + "/" + ZipFileEntry.FullName, TextEncoding.UTF8);
 			Result = TextReader.Read();
 			TextReader.Close();
-			Break;
-		EndIf;
+			Прервать;
+		КонецЕсли;
 	EndDo;
 	DeleteFiles(Directory);
 
-	Return Result;
+	Возврат Result;
 
 КонецФункции
 
@@ -675,27 +675,27 @@ Var KeyCodeMap;
 Процедура РедакторVanessaПриНажатии(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
-	If Lower(Element.tagName) = "body" Then
+	Если Lower(Element.tagName) = "body" Тогда
 		StandardProcessing = false;
-		If EventData.Event.type <> "click" Then
-			Return;
-		EndIf;
+		Если EventData.Event.type <> "click" Тогда
+			Возврат;
+		КонецЕсли;
 		EventDataFor1C = EventData.Event.detail;
 
-		If EventDataFor1C = Undefined Или TypeOf(EventDataFor1C) = Type("Number") Then
-			Return;
-		EndIf;
+		Если EventDataFor1C = Неопределено Или TypeOf(EventDataFor1C) = Type("Number") Тогда
+			Возврат;
+		КонецЕсли;
 		EventType = EventDataFor1C.name; //Строка
 		Data = EventDataFor1C.data; // Неопределено, Строка, Произвольный
-		If Not ValueIsFilled(EventType) Then
-			Return;
-		EndIf;
+		Если Не ValueIsFilled(EventType) Тогда
+			Возврат;
+		КонецЕсли;
 		РедакторVanessaПриПолученииСобытия(EventDataFor1C.editor, EventType, Data);
-	ElsIf CharCode(Element.innerText, 1) = 60020 Then
+	ИначеЕсли CharCode(Element.innerText, 1) = 60020 Тогда
 		Message(Element.title);
-	ElsIf CharCode(Element.innerText, 1) = 60277 Then
+	ИначеЕсли CharCode(Element.innerText, 1) = 60277 Тогда
 		Message(Element.title);
-	EndIf;
+	КонецЕсли;
 
 КонецПроцедуры
 
@@ -703,10 +703,10 @@ Var KeyCodeMap;
 Процедура ЗаполнитьДействияРедактора(Editor)
 
 	TextJSON = Editor.getActions();
-	JSONReader = New JSONReader;
+	JSONReader = Новый JSONReader;
 	JSONReader.SetString(TextJSON);
 	ActionArray = ReadJSON(JSONReader);
-	For Each Action In ActionArray Do
+	Для Каждого Action Из ActionArray Цикл
 		FillPropertyValues(Actions.Add(), Action);
 	EndDo;
 	Actions.Sort("Id");
@@ -718,40 +718,40 @@ Var KeyCodeMap;
 
 	JsonText = TemplateText(GetFromTempStorage(KeywordsTemplateURL));
 
-	JsonData = JsonLoad(JsonText, True);
-	Keyrords = New Map;
-	If IsBlankString(Language) Then
+	JsonData = JsonLoad(JsonText, Истина);
+	Keyrords = Новый Map;
+	Если IsBlankString(Language) Тогда
 		Keyrords.Insert("en", JsonData.Get("en"));
 		Keyrords.Insert("ru", JsonData.Get("ru"));
-	Else
+	Иначе
 		Keyrords.Insert(Language, JsonData.Get(Language));
-	EndIf;
+	КонецЕсли;
 
-	Return JsonDump(Keyrords);
+	Возврат JsonDump(Keyrords);
 
 КонецФункции
 
 &НаКлиенте
 Функция GetElements()
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
 	Map.Insert("ИмяКнопки", "ФормаЗаписать");
 	Map.Insert("ИмяТаблицы", "Номенклатура");
 	Map.Insert("ИмяРеквизита", "Количество");
-	Return JsonDump(Map);
+	Возврат JsonDump(Map);
 
 КонецФункции
 
 &НаКлиенте
 Функция GetVariables()
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
 	Map.Insert("ИмяКнопки", "ФормаЗаписать");
 	Map.Insert("ИмяТаблицы", "Номенклатура");
 	Map.Insert("ИмяРеквизита", "Количество");
-	Return JsonDump(Map);
+	Возврат JsonDump(Map);
 
 КонецФункции
 
@@ -770,79 +770,79 @@ Var KeyCodeMap;
 	split = "
 	|";
 
-	Metatags = StrSplit(words, split, False);
+	Metatags = StrSplit(words, split, Ложь);
 
-	Return JsonDump(Metatags);
+	Возврат JsonDump(Metatags);
 
 КонецФункции
 
 &НаКлиенте
 Функция GetDirectives()
 
-	Map = New Map;
+	Map = Новый Map;
 	Map.Insert("if", StrSplit("Если,If", ","));
 	Map.Insert("elsif", StrSplit("ИначеЕсли,Иначе,ElseIf,Else", ","));
 	Map.Insert("endif", StrSplit("КонецЕсли,EndIf", ","));
-	Return JsonDump(Map);
+	Возврат JsonDump(Map);
 
 КонецФункции
 
 &НаКлиенте
 Функция VanessaStepList(Language)
 
-	Return TemplateText(GetFromTempStorage(StepListTemplateURL), Language);
+	Возврат TemplateText(GetFromTempStorage(StepListTemplateURL), Language);
 
 КонецФункции
 
 &НаКлиенте
 Функция GetCommands()
 
-	CmdList = New Array;
+	CmdList = Новый Array;
 
-	KeyMod = New Array;
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F5", "F5", KeyMod));
+	KeyMod = Новый Array;
+	CmdList.Add(Новый Structure("eventId,keyCode,keyMod", "F5", "F5", KeyMod));
 
-	KeyMod = New Array;
+	KeyMod = Новый Array;
 	KeyMod.Add("Alt");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Alt+F5", "F5", KeyMod));
+	CmdList.Add(Новый Structure("eventId,keyCode,keyMod", "Alt+F5", "F5", KeyMod));
 
-	KeyMod = New Array;
+	KeyMod = Новый Array;
 	KeyMod.Add("Shift");
 	KeyMod.Add("CtrlCmd");
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "Ctrl+Shift+F5", "F5", KeyMod));
+	CmdList.Add(Новый Structure("eventId,keyCode,keyMod", "Ctrl+Shift+F5", "F5", KeyMod));
 
-	KeyMod = New Array;
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F9", "F9", KeyMod));
+	KeyMod = Новый Array;
+	CmdList.Add(Новый Structure("eventId,keyCode,keyMod", "F9", "F9", KeyMod));
 
-	KeyMod = New Array;
-	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
+	KeyMod = Новый Array;
+	CmdList.Add(Новый Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
 
-	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Создать новый шаг!"));
-	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Игнорировать эту ошибку"));
+	CmdList.Add(Новый Structure("eventId, title", "CREATE_STEP", "Создать новый шаг!"));
+	CmdList.Add(Новый Structure("eventId, title", "IGNORE_ERROR", "Игнорировать эту ошибку"));
 
-	CmdList.Add(New Structure("eventId, errorLink", "ERROR_DATA", "Подробности"));
-	CmdList.Add(New Structure("eventId, errorLink", "ERROR_COPY", "Копировать ошибку"));
+	CmdList.Add(Новый Structure("eventId, errorLink", "ERROR_DATA", "Подробности"));
+	CmdList.Add(Новый Structure("eventId, errorLink", "ERROR_COPY", "Копировать ошибку"));
 
-	Return JsonDump(CmdList);
+	Возврат JsonDump(CmdList);
 
 КонецФункции
 
 &НаКлиенте
 Функция GetErrorLinks()
 
-	Links = New Array;
-	Links.Add(New Structure("id, title", "ERROR_DATA", "Подробности"));
-	Links.Add(New Structure("id, title", "ERROR_COPY", "Копировать ошибку"));
-	Return JsonDump(Links);
+	Links = Новый Array;
+	Links.Add(Новый Structure("id, title", "ERROR_DATA", "Подробности"));
+	Links.Add(Новый Structure("id, title", "ERROR_COPY", "Копировать ошибку"));
+	Возврат JsonDump(Links);
 
 КонецФункции
 
 &НаКлиенте
 Процедура РедакторVanessaЗавершениеДокумента(Item)
 
-	Var Provider, Editor;
+	Перем Provider, Editor;
 
-	MsgStructure = New Structure;
+	MsgStructure = Новый Structure;
 	MsgStructure.Insert("syntaxMsg", "Синтаксическая ошибка: шаг не найден");
 	MsgStructure.Insert("soundHint", "Текст звукового сигнала");
 	MessagesJSON = JsonDump(MsgStructure);
@@ -855,7 +855,7 @@ Var KeyCodeMap;
 	Provider.setVariables(GetVariables());
 	Provider.setDirectives(GetDirectives());
 	Provider.setMessages(MessagesJSON);
-	ЗагрузитьШагиВсе(Undefined);
+	ЗагрузитьШагиВсе(Неопределено);
 
 	Editor = DefaultView().createVanessaEditor("", "turbo-gherkin");
 	Editor.addCommands(GetCommands());
@@ -880,21 +880,21 @@ Var KeyCodeMap;
 &НаКлиенте
 Функция DefaultView()
 
-	Return Items.VanessaEditor.Document.defaultView;
+	Возврат Items.VanessaEditor.Document.defaultView;
 
 КонецФункции
 
 &НаКлиенте
 Функция VanessaEditor()
 
-	Return DefaultView().VanessaEditor;
+	Возврат DefaultView().VanessaEditor;
 
 КонецФункции
 
 &НаКлиенте
 Функция GherkinProvider()
 
-	Return DefaultView().VanessaGherkinProvider;
+	Возврат DefaultView().VanessaGherkinProvider;
 
 КонецФункции
 
@@ -939,7 +939,7 @@ Var KeyCodeMap;
 
 &НаКлиенте
 Процедура ЗапуститьПодсценарий(Command)
-	AttachIdleHandler("СледующийШагВыполнения", 1, False);
+	AttachIdleHandler("СледующийШагВыполнения", 1, Ложь);
 КонецПроцедуры
 
 &НаКлиенте
@@ -950,13 +950,13 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура СледующийШагВыполнения()
 	Pos = VanessaEditor().nextRuntimeProgress();
-	If Pos = Undefined Then
-		RuntimePosition = Undefined;
-		RuntimeCode = Undefined;
-	Else
+	Если Pos = Неопределено Тогда
+		RuntimePosition = Неопределено;
+		RuntimeCode = Неопределено;
+	Иначе
 		RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
 		RuntimeCode = VanessaEditor().getLineContent(Pos.lineNumber, Pos.codeWidget);
-	EndIf;
+	КонецЕсли;
 КонецПроцедуры
 
 &НаКлиенте
@@ -969,12 +969,12 @@ Var KeyCodeMap;
 &НаКлиенте
 Функция GetMarkdownText()
 
-	Try
-		TextDocument = New TextDocument;
+	Попытка
+		TextDocument = Новый TextDocument;
 		TextDocument.Read("C:\Cpp\VAEditor\README.md", TextEncoding.UTF8);
 		return TextDocument.GetText();
-	Except
-		return Undefined;
+	Исключение
+		return Неопределено;
 	EndTry;
 
 КонецФункции
@@ -1024,11 +1024,11 @@ Var KeyCodeMap;
 		|";
 
 	Language = "turbo-gherkin";
-	If EditorType = 0 Then
+	Если EditorType = 0 Тогда
 		View.disposeVanessaTabs();
 		View.disposeVanessaDiffEditor();
 		View.createVanessaEditor(text1, Language);
-	ElsIf EditorType = 3 Then
+	ИначеЕсли EditorType = 3 Тогда
 		View.disposeVanessaEditor();
 		View.disposeVanessaDiffEditor();
 		tabs = View.createVanessaTabs();
@@ -1037,17 +1037,17 @@ Var KeyCodeMap;
 		tabs.edit(text2, f, "2" + f, f, 0, false, true);
 		tabs.diff(text1, f, "1" + f, text2, f, "2" + f, f, 0, false, true);
 		MarkdownText = GetMarkdownText();
-		If Not IsBlankString(MarkdownText) Then
+		Если Не IsBlankString(MarkdownText) Тогда
 			f = "readme.md";
 			tabs.view(f, f, MarkdownText, true);
-		EndIf;
-	Else
+		КонецЕсли;
+	Иначе
 		SideBySide = 2;
 		View.disposeVanessaTabs();
 		View.disposeVanessaEditor();
 		DiffEditor = View.createVanessaDiffEditor(text1, text2, Language);
 		DiffEditor.setSideBySide(EditorType = SideBySide);
-	EndIf;
+	КонецЕсли;
 
 КонецПроцедуры
 
