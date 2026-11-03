@@ -1070,19 +1070,19 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура NormalizeIndentation(Command)
+Процедура ВыровнятьОтступы(Command)
 	VanessaEditor().normalizeIndentation();
 КонецПроцедуры
 
 &НаКлиенте
-Процедура Whitespaces(Команда)
+Процедура Пробелы(Команда)
 
 	Элементы.VanessaEditor.Документ.defaultView.VanessaTabs.renderWhitespace = "boundary";
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура Autotest(Command)
+Процедура Автотест(Command)
 
 	Position = StrFind(FormName, ".", SearchDirection.FromEnd);
 	OpenForm(Left(FormName, Position) + "Autotest");

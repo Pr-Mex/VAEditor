@@ -2,11 +2,11 @@
 <Form xmlns="http://v8.1c.ru/8.3/xcf/logform" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:dcscor="http://v8.1c.ru/8.1/data-composition-system/core" xmlns:dcsset="http://v8.1c.ru/8.1/data-composition-system/settings" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4">
 	<AutoCommandBar name="FormCommandBar" id="-1">
 		<ChildItems>
-			<Button name="FormAutotest" id="412">
+			<Button name="FormАвтотест" id="412">
 				<Type>CommandBarButton</Type>
 				<DefaultButton>true</DefaultButton>
-				<CommandName>Form.Command.Autotest</CommandName>
-				<ExtendedTooltip name="FormAutotestExtendedTooltip" id="413"/>
+				<CommandName>Form.Command.Автотест</CommandName>
+				<ExtendedTooltip name="FormАвтотестExtendedTooltip" id="413"/>
 			</Button>
 			<ButtonGroup name="ГруппаДемонстрация" id="600">
 				<Title>
@@ -589,10 +589,10 @@
 														<Event name="OnChange">InsertSpacesOnChange</Event>
 													</Events>
 												</CheckBoxField>
-												<Button name="NormalizeIndentation" id="410">
+												<Button name="ВыровнятьОтступы" id="410">
 													<Type>UsualButton</Type>
-													<CommandName>Form.Command.NormalizeIndentation</CommandName>
-													<ExtendedTooltip name="NormalizeIndentationExtendedTooltip" id="411"/>
+													<CommandName>Form.Command.ВыровнятьОтступы</CommandName>
+													<ExtendedTooltip name="ВыровнятьОтступыExtendedTooltip" id="411"/>
 												</Button>
 											</ChildItems>
 										</UsualGroup>
@@ -3254,7 +3254,7 @@
 			<Action>ОстановитьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="NormalizeIndentation" id="41">
+		<Command name="ВыровнятьОтступы" id="41">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3267,9 +3267,9 @@
 					<v8:content>Выровнять отступы</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>NormalizeIndentation</Action>
+			<Action>ВыровнятьОтступы</Action>
 		</Command>
-		<Command name="Autotest" id="42">
+		<Command name="Автотест" id="42">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3282,7 +3282,7 @@
 					<v8:content>Автотест</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>Autotest</Action>
+			<Action>Автотест</Action>
 		</Command>
 		<Command name="ФорматироватьДокумент" id="43">
 			<Title>
