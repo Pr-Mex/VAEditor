@@ -37,6 +37,12 @@ for /d %%D in ("C:\Program Files (x86)\1cv8t\*") do (
 :platform_ready
 if not defined PLATFORM goto no_platform
 if not exist "!PLATFORM!\1cv8.exe" if not exist "!PLATFORM!\1cv8t.exe" goto bad_platform
+rem CI runs the pinned educational build 8.3.27 (see .github/workflows/build.yml).
+rem A different local version is allowed on purpose: the 8.5 crash is a separate
+rem investigation, and blocking the run would hide that work. But the difference
+rem has to be visible, otherwise a red local run is compared with a green CI run.
+set "EXPECTED_PLATFORM=8.3.27"
+echo !PLATFORM! | findstr /C:"!EXPECTED_PLATFORM!" >nul || echo WARNING: platform is not the pinned !EXPECTED_PLATFORM! - CI runs that one, local results may differ.
 
 set "LAUNCH=%~1"
 if not "%~1"=="" goto launch_ready
