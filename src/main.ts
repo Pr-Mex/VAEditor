@@ -64,11 +64,11 @@ import { language as gherkin } from './languages/turbo-gherkin/configuration';
 import "./languages/bsl/contribution";
 import "./languages/xbsl/contribution";
 import { initPage } from "./common";
-import { applyUiEnvironment } from "./ui-interface";
+import { watchUiEnvironment } from "./ui-interface";
 import { applyEditorVersion } from "./version";
 
 applyEditorVersion();
-applyUiEnvironment();
+watchUiEnvironment();
 initErrorReporting();
 initPage();
 

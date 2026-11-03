@@ -20,6 +20,9 @@
 	MessageText = "Привет, мир!";
 	RuntimeStatus = "complete";
 	EditorTheme = "vs";
+	// Демо открывается во вкладках: это основной режим редактора, отдельное
+	// окно включается переключателем «Тип редактора».
+	EditorType = 3;
 	ShowMinimap = Истина;
 	LineNumber = 1;
 	TabSize = 4;
@@ -62,14 +65,21 @@
 &НаКлиенте
 Процедура ТолькоЧтениеПриИзменении(Item)
 
-	VanessaEditor().setReadOnly(ReadOnlyMode);
+	НастройкиРедактора().setReadOnly(ReadOnlyMode);
 
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ТемаРедактораПриИзменении(Item)
 
-	VanessaEditor().setTheme(EditorTheme);
+	// Тема хранится в StyleManager и общая для страницы, поэтому в режиме
+	// вкладок её принимает VanessaTabs: отдельного VanessaEditor там нет.
+	Представление = DefaultView();
+	Если Представление.VanessaEditor = Неопределено Тогда
+		Представление.VanessaTabs.theme = EditorTheme;
+	Иначе
+		Представление.VanessaEditor.setTheme(EditorTheme);
+	КонецЕсли;
 
 КонецПроцедуры
 
@@ -625,10 +635,30 @@
 		Возврат;
 	КонецЕсли;
 
-	EditorDirectory = ExtractTemplates(GetFromTempStorage(EditorTemplateURL));
+	EditorDirectory = ExtractTemplates(ДанныеМакета(EditorTemplateURL, "VAEditor"));
 	VanessaEditorURL = EditorDirectory + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 
 КонецПроцедуры
+
+&НаКлиенте
+Функция ДанныеМакета(АдресМакета, ИмяМакета)
+
+	// Макет уходит на клиент адресом во временном хранилище. Если в собранной
+	// обработке макет пустой, во временном хранилище оказывается Неопределено
+	// или пустые двоичные данные, и платформа падает на OpenStreamForRead
+	// без пояснений. Проверяем заранее, чтобы сообщение называло макет.
+	Данные = GetFromTempStorage(АдресМакета);
+	Если ТипЗнч(Данные) <> Тип("ДвоичныеДанные") Тогда
+		ВызватьИсключение "Макет """ + ИмяМакета + """: ожидались двоичные данные, получено "
+			+ ТипЗнч(Данные) + ". Пересоберите обработку: npm run compile.";
+	КонецЕсли;
+	Если Данные.Размер() = 0 Тогда
+		ВызватьИсключение "Макет """ + ИмяМакета + """: двоичные данные пусты. Пересоберите макет: npm run compile.";
+	КонецЕсли;
+
+	Возврат Данные;
+
+КонецФункции
 
 &НаКлиенте
 Функция ExtractTemplates(BinaryData)
@@ -716,7 +746,7 @@
 &НаКлиенте
 Функция GetKeywords(Language = "")
 
-	JsonText = TemplateText(GetFromTempStorage(KeywordsTemplateURL));
+	JsonText = TemplateText(ДанныеМакета(KeywordsTemplateURL, "Keywords"));
 
 	JsonData = JsonLoad(JsonText, Истина);
 	Keyrords = Новый Map;
@@ -790,7 +820,7 @@
 &НаКлиенте
 Функция VanessaStepList(Language)
 
-	Возврат TemplateText(GetFromTempStorage(StepListTemplateURL), Language);
+	Возврат TemplateText(ДанныеМакета(StepListTemplateURL, "StepList"), Language);
 
 КонецФункции
 
@@ -857,7 +887,24 @@
 	Provider.setMessages(MessagesJSON);
 	ЗагрузитьШагиВсе(Неопределено);
 
-	Editor = DefaultView().createVanessaEditor("", "turbo-gherkin");
+	// Вид создаётся тем же кодом, что и переключатель «Тип редактора», — так
+	// при открытии обработки сразу видны вкладки (EditorType = 3).
+	ТипРедактораПриИзменении(Неопределено);
+
+	// Активной оставляем вкладку с кодом: последняя может быть просмотрщиком
+	// markdown, а команды демо ставятся редактору кода.
+	Представление = DefaultView();
+	Если Представление.VanessaTabs <> Неопределено Тогда
+		Вкладки = Представление.VanessaTabs;
+		Для Индекс = 0 По Вкладки.count() - 1 Цикл
+			Если Вкладки.tab(Индекс).isCodeEditor Тогда
+				Вкладки.select(Индекс);
+				Прервать;
+			КонецЕсли;
+		КонецЦикла;
+	КонецЕсли;
+
+	Editor = VanessaEditor();
 	Editor.addCommands(GetCommands());
 	ЗаполнитьДействияРедактора(Editor);
 
@@ -887,7 +934,29 @@
 &НаКлиенте
 Функция VanessaEditor()
 
-	Возврат DefaultView().VanessaEditor;
+	// В режиме вкладок отдельного редактора нет — возвращаем редактор активной
+	// вкладки: у него тот же публичный API, поэтому команды демо работают в
+	// обоих режимах без ветвлений.
+	Представление = DefaultView();
+	Если Представление.VanessaEditor = Неопределено Тогда
+		Возврат Представление.VanessaTabs.editor;
+	КонецЕсли;
+
+	Возврат Представление.VanessaEditor;
+
+КонецФункции
+
+&НаКлиенте
+Функция НастройкиРедактора()
+
+	// В режиме вкладок отдельного VanessaEditor нет: общие настройки
+	// (таб, пробелы, отступы, режим чтения) принимает VanessaTabs.
+	Представление = DefaultView();
+	Если Представление.VanessaEditor = Неопределено Тогда
+		Возврат Представление.VanessaTabs;
+	КонецЕсли;
+
+	Возврат Представление.VanessaEditor;
 
 КонецФункции
 
@@ -1061,17 +1130,17 @@
 
 &НаКлиенте
 Процедура РазмерТабуляцииПриИзменении(Item)
-	VanessaEditor().setTabSize(TabSize);
+	НастройкиРедактора().setTabSize(TabSize);
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ВставлятьПробелыПриИзменении(Item)
-	VanessaEditor().setInsertSpaces(InsertSpaces);
+	НастройкиРедактора().setInsertSpaces(InsertSpaces);
 КонецПроцедуры
 
 &НаКлиенте
 Процедура ВыровнятьОтступы(Command)
-	VanessaEditor().normalizeIndentation();
+	НастройкиРедактора().normalizeIndentation();
 КонецПроцедуры
 
 &НаКлиенте

@@ -14,7 +14,7 @@ import { KeywordMatcher } from './matcher';
 import { ActionManager } from '../../actions';
 import { VACodeError, VAQuickAction } from './quickfix';
 import { workerUrl, setWorkerDelivery } from '../../worker-source';
-import { BSL_THEME, BSL_THEME_ID, CANONICAL_1C_THEME, CANONICAL_1C_THEME_ID, XBSL_THEME, XBSL_THEME_ID } from '../../themes';
+import { BSL_THEME, BSL_THEME_ID, CANONICAL_1C_THEME, CANONICAL_1C_THEME_ID, PLATFORM_85_THEME, PLATFORM_85_THEME_ID, TAXI_THEME, TAXI_THEME_ID, XBSL_THEME, XBSL_THEME_ID } from '../../themes';
 
 // Воркер встраивается в страницу как base64 (InlineWorkerSourcePlugin):
 // отдельный файл рядом со страницей встроенный WebKit/WebView2 по file://
@@ -356,6 +356,9 @@ export class VanessaGherkinProvider {
     // Конфигуратора, см. src/themes.ts.
     monaco.editor.defineTheme(BSL_THEME_ID, BSL_THEME);
     monaco.editor.defineTheme(XBSL_THEME_ID, XBSL_THEME);
+    // Оформление под интерфейс формы: «Такси» и «Версия 8.5» (см. src/themes.ts).
+    monaco.editor.defineTheme(TAXI_THEME_ID, TAXI_THEME);
+    monaco.editor.defineTheme(PLATFORM_85_THEME_ID, PLATFORM_85_THEME);
   }
 
   public provideCodeActions(model: monaco.editor.ITextModel

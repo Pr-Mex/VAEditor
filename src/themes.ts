@@ -107,3 +107,39 @@ export const XBSL_THEME: monaco.editor.IStandaloneThemeData = {
     'editorIndentGuide.activeBackground': '#939393',
   },
 };
+
+// Оформление «как в интерфейсе платформы». Подсветка синтаксиса та же, что в
+// теме '1c' (её и ждут в форме 1С), но цвет обычного текста и фона берётся у
+// оболочки, чтобы редактор не выглядел вставленным из другой программы.
+// Значения — из src/media/tabs.css: базовая палитра «Такси» (цвет текста
+// #4b4b4b, фон #ffffff) и палитра «Версия 8.5» (--colorText80 #333338,
+// --colorAdditional #ffffff, --colorBack10 #f2f2f2, --colorText60 #66666e).
+export const TAXI_THEME_ID = 'taxi';
+
+export const TAXI_THEME: monaco.editor.IStandaloneThemeData = {
+  base: 'vs',
+  inherit: true,
+  rules: CANONICAL_1C_THEME.rules.slice(),
+  colors: {
+    'editor.background': '#ffffff',
+    'editor.foreground': '#4b4b4b',
+    'editorIndentGuide.background': '#ecebec',
+    'editorIndentGuide.activeBackground': '#e0e0e0',
+  },
+};
+
+export const PLATFORM_85_THEME_ID = '85';
+
+export const PLATFORM_85_THEME: monaco.editor.IStandaloneThemeData = {
+  base: 'vs',
+  inherit: true,
+  rules: CANONICAL_1C_THEME.rules.slice(),
+  colors: {
+    'editor.background': '#ffffff',
+    'editor.foreground': '#333338',
+    'editorLineNumber.foreground': '#66666e',
+    'editor.lineHighlightBackground': '#f2f2f2',
+    'editorIndentGuide.background': '#e8e8e8',
+    'editorIndentGuide.activeBackground': '#c9c9c9',
+  },
+};

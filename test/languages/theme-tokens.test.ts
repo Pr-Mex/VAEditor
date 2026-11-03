@@ -1,7 +1,7 @@
 import { vs, vs_dark, hc_black, hc_light } from 'monaco-editor/esm/vs/editor/standalone/common/themes.js';
 import { BSL_LANGUAGE_ID, language as bslLanguage } from '../../src/languages/bsl/configuration';
 import { XBSL_LANGUAGE_ID, language as xbslLanguage } from '../../src/languages/xbsl/configuration';
-import { BSL_THEME, CANONICAL_1C_THEME, XBSL_THEME } from '../../src/themes';
+import { BSL_THEME, CANONICAL_1C_THEME, PLATFORM_85_THEME, TAXI_THEME, XBSL_THEME } from '../../src/themes';
 let expect = require('chai').expect;
 
 // Цвет токена задаёт тема, а не грамматика: Monarch отдаёт имя токена
@@ -144,6 +144,25 @@ describe('Цвета токенов берутся из встроенных т�
     expect(ruleForeground(rules, 'comment')).to.equal('008000');
     expect(ruleForeground(rules, 'string')).to.equal('000000');
     expect(ruleForeground(rules, 'number')).to.equal('000000');
+  });
+
+  it('Тема taxi: подсветка 1c на цветах интерфейса «Такси»', () => {
+    // Цвет обычного текста и фон — из базовой палитры «Такси»
+    // (src/media/tabs.css), подсветка синтаксиса — каноническая, как в '1c'.
+    expect(TAXI_THEME.base).to.equal('vs');
+    expect(TAXI_THEME.colors['editor.foreground']).to.equal('#4b4b4b');
+    expect(TAXI_THEME.colors['editor.background']).to.equal('#ffffff');
+    expect(ruleForeground(TAXI_THEME.rules, 'keyword')).to.equal('FF0000');
+    expect(ruleForeground(TAXI_THEME.rules, 'number')).to.equal('0000FF');
+  });
+
+  it('Тема 85: подсветка 1c на цветах интерфейса «Версия 8.5»', () => {
+    // --colorText80, --colorText60 и --colorBack10 из палитры платформы 8.5.
+    expect(PLATFORM_85_THEME.base).to.equal('vs');
+    expect(PLATFORM_85_THEME.colors['editor.foreground']).to.equal('#333338');
+    expect(PLATFORM_85_THEME.colors['editorLineNumber.foreground']).to.equal('#66666e');
+    expect(PLATFORM_85_THEME.colors['editor.lineHighlightBackground']).to.equal('#f2f2f2');
+    expect(ruleForeground(PLATFORM_85_THEME.rules, 'keyword')).to.equal('FF0000');
   });
 
   it('BSL: директивы & и # отдаются как annotation', () => {

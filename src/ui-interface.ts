@@ -68,9 +68,57 @@ export function detectPlatformTheme(): PlatformTheme {
   return DEFAULT_THEME;
 }
 
+let appliedInterface = '';
+let appliedTheme = '';
+let watching = false;
+
 // Ставит на body атрибуты, по которым css выбирает оформление, и переключает
 // тему Monaco. Вызывать после появления body, до создания редактора.
 export function applyUiEnvironment(): void {
-  document.body.setAttribute('data-interface', detectPlatformInterface());
-  StyleManager.theme = detectPlatformTheme();
+  if (!document.body) return;
+  const platformInterface = detectPlatformInterface();
+  const theme = detectPlatformTheme();
+  // Повторный вызов с теми же значениями ничего не делает: refresh() висит на
+  // MutationObserver, а setTheme сам правит <style> в head — без этой проверки
+  // получился бы бесконечный цикл наблюдателя.
+  if (platformInterface === appliedInterface
+    && theme === appliedTheme
+    && document.body.getAttribute('data-interface') === platformInterface) {
+    return;
+  }
+  appliedInterface = platformInterface;
+  appliedTheme = theme;
+  document.body.setAttribute('data-interface', platformInterface);
+  StyleManager.applyPlatformTheme(theme);
+}
+
+// Платформа вставляет палитру (#PaletteColors) и классы themeLight/themeDark
+// уже после загрузки страницы, поэтому одного замера при старте мало — в форме
+// 8.5 редактор оставался светлым. Пересчитываем при изменении документа, при
+// смене темы пользователем и несколько раз в первые секунды на случай, если
+// WebKit не умеет MutationObserver.
+export function watchUiEnvironment(): void {
+  applyUiEnvironment();
+  if (watching) return;
+  watching = true;
+
+  const refresh = () => applyUiEnvironment();
+
+  if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(refresh);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+    if (document.body) observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style'] });
+  }
+
+  window.addEventListener('load', refresh);
+  window.addEventListener('resize', refresh);
+  [50, 200, 500].forEach(delay => setTimeout(refresh, delay));
+  // Палитра может появиться позже, чем сработают таймеры выше (в 8.5 стиль
+  // приходит от платформы асинхронно), поэтому минуту подстраховываемся
+  // опросом. После этого хватает наблюдателя и смены темы пользователем.
+  let attempts = 0;
+  const timer = setInterval(() => {
+    refresh();
+    if (++attempts >= 60) clearInterval(timer);
+  }, 1000);
 }

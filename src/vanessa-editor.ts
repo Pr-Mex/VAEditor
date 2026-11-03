@@ -15,7 +15,7 @@ const $ = dom.$;
 export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
-  public setTheme = (arg: string) => StyleManager.theme = arg;
+  public setTheme = (arg: string) => { StyleManager.themePinned = true; StyleManager.theme = arg; };
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); const old = this.editor.getModel(); this.editor.setModel(createModel(value, filename)); disposeModel(old); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }

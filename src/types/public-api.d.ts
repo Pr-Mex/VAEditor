@@ -412,6 +412,16 @@ declare global {
     nextDiff(): void;
     /** Тема (`vs`, `vs-dark` и т.д.). */
     theme: string;
+    /** Размер табуляции — применяется ко всем вкладкам. */
+    setTabSize(arg: number): void;
+    /** Использовать пробелы вместо табов — все вкладки. */
+    setInsertSpaces(arg: boolean): void;
+    /** Автоопределение отступов — все вкладки. */
+    setDetectIndentation(arg: boolean): void;
+    /** Только для чтения — все вкладки. */
+    setReadOnly(arg: boolean): void;
+    /** Нормализовать отступы — все вкладки. */
+    normalizeIndentation(): void;
     /** Версия VAEditor. */
     readonly version: string;
     /** Опции редактора (Monaco IEditorOptions) как JSON-строка. */

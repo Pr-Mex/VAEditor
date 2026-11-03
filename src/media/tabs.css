@@ -353,34 +353,115 @@ body[data-interface="85"] {
 }
 
 body[data-interface="85"] #VanessaTabsContainer {
-    flex-basis: 2.4em;
+    flex-basis: 2.6em;
     fill: var(--colorText60, #66666e);
     border-bottom-width: 0;
+    background-color: var(--colorBack10, #f2f2f2);
 }
 
+/* Вкладки 8.5: полоса серая (--colorBack10), активная вкладка — цвета фона
+   (--colorAdditional), поэтому она сливается с содержимым; слева у неё жёлтая
+   полоса (--colorBrand150). Соседние вкладки разделены тонкой линией. */
 body[data-interface="85"] .vanessa-tab-panel {
     background-color: var(--colorBack10, #f2f2f2);
 }
 
+body[data-interface="85"] .vanessa-tab-box {
+    position: relative;
+}
+
+body[data-interface="85"] .vanessa-tab-box + .vanessa-tab-box:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: var(--colorText60, #66666e);
+    opacity: .35;
+    z-index: 2;
+}
+
 body[data-interface="85"] .vanessa-tab-item {
-    padding: 0 10px;
+    margin: 0 2px 0 0;
+    padding: 0 12px;
     border-width: 0;
     border-radius: 6px 6px 0 0;
-    color: var(--colorText80, #333338);
-    background-color: var(--colorBack10, #f2f2f2);
+    color: var(--colorText60, #66666e);
+    background-color: transparent;
+    transition: width .1s, background-color .1s;
+}
+
+/* Наведение — вкладка «приподнимается» до цвета фона, но без жёлтой полосы
+   и без усиления цвета текста. */
+body[data-interface="85"] .vanessa-tab-box:hover .vanessa-tab-item {
+    background-color: var(--colorAdditional, #ffffff);
 }
 
 body[data-interface="85"] .vanessa-tab-close {
     fill: var(--colorText60, #66666e);
 }
 
-body[data-interface="85"] .vanessa-tab-select .vanessa-tab-item {
+/* Кнопка списка вкладок — часть той же плоской полосы, без рамки. */
+body[data-interface="85"] .vanessa-tab-list-button {
+    color: var(--colorText60, #66666e);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+body[data-interface="85"] .vanessa-tab-list-button:hover,
+body[data-interface="85"] .vanessa-tab-list-button.vanessa-tab-list-open {
     background-color: var(--colorAdditional, #ffffff);
 }
 
+body[data-interface="85"] .vanessa-tab-select .vanessa-tab-item {
+    color: var(--colorText80, #333338);
+    background-color: var(--colorAdditional, #ffffff);
+}
+
+/* Жёлтая полоса активной вкладки: слева, по центру, со скруглением.
+   top/bottom 0 и margin auto центрируют её без transform — его нет в
+   старом WebKit. */
 body[data-interface="85"] .vanessa-tab-select .vanessa-tab-item:before {
-    height: 3px;
+    content: '';
+    position: absolute;
+    left: 0;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    width: 3px;
+    height: 1.1em;
+    border-radius: 2px;
     background: var(--colorBrand150, #ffdd00);
+}
+
+/* Выпадающий список вкладок (кнопка «...»): всплывающая панель цвета фона,
+   пункты подсвечиваются серым, текущая вкладка отмечена жёлтой полосой. */
+body[data-interface="85"] .vanessa-tab-list {
+    padding: 4px 0;
+    color: var(--colorText80, #333338);
+    background-color: var(--colorAdditional, #ffffff);
+    border: 1px solid var(--colorBack10, #f2f2f2);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+}
+
+body[data-interface="85"] .vanessa-tab-list-item {
+    padding: 6px 14px 6px 12px;
+    border-width: 0 0 0 3px;
+    border-style: solid;
+    border-color: transparent;
+    color: var(--colorText80, #333338);
+}
+
+body[data-interface="85"] .vanessa-tab-list-item:hover {
+    background-color: var(--colorBack10, #f2f2f2);
+}
+
+body[data-interface="85"] .vanessa-tab-list-current {
+    border-color: var(--colorBrand150, #ffdd00);
+    background-color: var(--colorBack10, #f2f2f2);
 }
 
 /* === Тёмная тема в «Такси» ===
