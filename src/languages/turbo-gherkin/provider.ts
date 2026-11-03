@@ -14,6 +14,7 @@ import { KeywordMatcher } from './matcher';
 import { ActionManager } from '../../actions';
 import { VACodeError, VAQuickAction } from './quickfix';
 import { workerUrl, setWorkerDelivery } from '../../worker-source';
+import { CANONICAL_1C_THEME, CANONICAL_1C_THEME_ID } from '../../themes';
 
 // Воркер встраивается в страницу как base64 (InlineWorkerSourcePlugin):
 // отдельный файл рядом со страницей встроенный WebKit/WebView2 по file://
@@ -349,27 +350,7 @@ export class VanessaGherkinProvider {
   public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
 
   private createTheme1C() {
-    monaco.editor.defineTheme('1c', {
-      base: 'vs',
-      inherit: true,
-      rules: [
-        { token: '', foreground: '000000' },
-        { token: 'invalid', foreground: 'ff3333' },
-        { token: 'variable', foreground: '5c6773' },
-        { token: 'constant', foreground: 'f08c36' },
-        { token: 'comment', foreground: '007f00' },
-        { token: 'number', foreground: '0000ff' },
-        { token: 'tag', foreground: 'e7c547' },
-        { token: 'string', foreground: '963200' },
-        { token: 'keyword', foreground: 'ff0000' },
-      ],
-      colors: {
-        'editor.background': '#ffffff',
-        'editor.foreground': '#5c6773',
-        'editorIndentGuide.background': '#ecebec',
-        'editorIndentGuide.activeBackground': '#e0e0e0',
-      },
-    });
+    monaco.editor.defineTheme(CANONICAL_1C_THEME_ID, CANONICAL_1C_THEME);
   }
 
   public provideCodeActions(model: monaco.editor.ITextModel

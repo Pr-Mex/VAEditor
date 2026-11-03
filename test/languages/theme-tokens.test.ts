@@ -1,6 +1,7 @@
 import { vs, vs_dark, hc_black, hc_light } from 'monaco-editor/esm/vs/editor/standalone/common/themes.js';
 import { BSL_LANGUAGE_ID, language as bslLanguage } from '../../src/languages/bsl/configuration';
 import { XBSL_LANGUAGE_ID, language as xbslLanguage } from '../../src/languages/xbsl/configuration';
+import { CANONICAL_1C_THEME } from '../../src/themes';
 let expect = require('chai').expect;
 
 // Цвет токена задаёт тема, а не грамматика: Monarch отдаёт имя токена
@@ -85,6 +86,29 @@ describe('Цвета токенов берутся из встроенных т�
       });
       // Идентификатор цветом текста: правила для него в теме быть не должно.
       expect(ruleForeground(rules, 'identifier')).to.equal('');
+    });
+  });
+
+
+  it('Тема 1c задаёт каноническую палитру встроенного языка', () => {
+    // Цвета Конфигуратора и EDT: ключевые слова красные, числа синие, строки
+    // тёмно-коричневые, комментарии зелёные. Токены те же, что у BSL и xBSL,
+    // поэтому палитра применяется к обоим языкам без отдельных правил.
+    const rules = CANONICAL_1C_THEME.rules;
+    expect(ruleForeground(rules, 'keyword')).to.equal('FF0000');
+    expect(ruleForeground(rules, 'number')).to.equal('0000FF');
+    expect(ruleForeground(rules, 'string')).to.equal('963200');
+    expect(ruleForeground(rules, 'comment')).to.equal('007F00');
+  });
+
+  it('Тема 1c наследует встроенную, поэтому остальные наши токены тоже получают цвет', () => {
+    expect(CANONICAL_1C_THEME.base).to.equal('vs');
+    expect(CANONICAL_1C_THEME.inherit).to.equal(true);
+    // Всё, для чего правила нет (delimiter, regexp, type), берётся из 'vs'.
+    COLORED.forEach(token => {
+      const defined = ruleForeground(CANONICAL_1C_THEME.rules, token) !== '';
+      const inherited = themeCovers(vs.rules, token);
+      expect(defined || inherited, 'токен без цвета в теме 1c: ' + token).to.equal(true);
     });
   });
 
