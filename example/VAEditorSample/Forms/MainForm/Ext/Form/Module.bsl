@@ -7,7 +7,7 @@ Var KeyCodeMap;
 Процедура OnCreateAtServer(Cancel, StandardProcessing)
 
 	// Макеты отдаём на клиент адресами во временном хранилище: распаковка идёт
-	// на клиенте (см. LoadEditor). В клиент-серверном варианте каталог,
+	// на клиенте (см. ЗагрузитьРедактор). В клиент-серверном варианте каталог,
 	// распакованный на сервере, клиентскому браузеру недоступен, а работа
 	// с файлами на сервере может быть запрещена настройками.
 	DataObject = FormAttributeToValue("Object");
@@ -30,11 +30,11 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура OnOpen(Cancel)
 	KeyCodeMap = GetKeyCodeMap();
-	LoadEditor();
+	ЗагрузитьРедактор();
 КонецПроцедуры
 
 &НаКлиенте
-Процедура LoadFile(Command)
+Процедура ЗагрузитьФайл(Command)
 
 	Breakpoints.Clear();
 	Problems.Clear();
@@ -51,7 +51,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура GetValue(Command)
+Процедура ПолучитьТекст(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor().getContent();
@@ -82,7 +82,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура GetPosition(Command)
+Процедура ПолучитьПозицию(Command)
 
 	Arg = VanessaEditor().getPosition();
 	UserMessage = New UserMessage;
@@ -95,7 +95,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура GetLineContent(Command)
+Процедура ПолучитьСтроку(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor().getLineContent(lineNumber);
@@ -104,7 +104,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура GetSelectedContent(Command)
+Процедура ПолучитьВыделенныйТекст(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor().getSelectedContent();
@@ -113,7 +113,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура GetCurrentStep(Command)
+Процедура ПолучитьТекущийШаг(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = "Current step: " + VanessaEditor().getRuntimeProgress("current");
@@ -122,7 +122,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура GetProgress(Command)
+Процедура ПолучитьПрогресс(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = "Steps " + RuntimeStatus + ": " + VanessaEditor().getRuntimeProgress(RuntimeStatus);
@@ -377,7 +377,7 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура BreakpointsOnChange(Item)
 
-	DecorateBreakpoints(VanessaEditor());
+	ОформитьТочкиОстанова(VanessaEditor());
 
 КонецПроцедуры
 
@@ -411,7 +411,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура UpdateBreakpoints(Json)
+Процедура ОбновитьТочкиОстанова(Json)
 
 	BreakpointsPacket = JsonLoad(Json);
 
@@ -423,13 +423,13 @@ Var KeyCodeMap;
 	Breakpoints.Sort("codeWidget,lineNumber");
 
 	If EmulateBreakpointUpdateDelay Then
-		Sleep();
+		Пауза();
 	EndIf;
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура DecorateBreakpoints(Editor)
+Процедура ОформитьТочкиОстанова(Editor)
 
 	BreakpointsPacket = New Array;
 
@@ -450,12 +450,12 @@ Var KeyCodeMap;
 &НаКлиенте
 Процедура ProblemsOnChange(Item)
 
-	DecorateProblems();
+	ОформитьПроблемы();
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура DecorateProblems()
+Процедура ОформитьПроблемы()
 
 	ProblemsPacket = New Array;
 
@@ -533,7 +533,7 @@ Var KeyCodeMap;
 
 #Region Utils
 
-Процедура Sleep(Delay = 1)
+Процедура Пауза(Delay = 1)
 
 	RunApp("timeout " + Delay, , True);
 
@@ -546,7 +546,7 @@ Var KeyCodeMap;
 #Region Public
 
 &НаКлиенте
-Процедура AppendEventLog(Event, Data)
+Процедура ДобавитьВЖурналСобытий(Event, Data)
 
 	EventRecord = EventLog.Insert(0);
 	EventRecord.Date = CurrentDate();
@@ -569,7 +569,7 @@ Var KeyCodeMap;
 КонецФункции
 
 &НаКлиенте
-Процедура CreateStep(Editor, lineNumber)
+Процедура СоздатьШаг(Editor, lineNumber)
 
 	Text = VanessaEditor().getLineContent(lineNumber);
 
@@ -592,24 +592,24 @@ Var KeyCodeMap;
 Процедура VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 
 	If Event = "UPDATE_BREAKPOINTS" Then
-		UpdateBreakpoints(Arg);
-		DecorateBreakpoints(Editor);
+		ОбновитьТочкиОстанова(Arg);
+		ОформитьТочкиОстанова(Editor);
 	ElsIf Event = "F9" Then
-		AppendEventLog(Event, Arg);
+		ДобавитьВЖурналСобытий(Event, Arg);
 		Editor.toggleBreakpoint();
 	ElsIf Event = "CREATE_STEP" Then
-		AppendEventLog(Event, Arg);
-		CreateStep(Editor, Arg);
+		ДобавитьВЖурналСобытий(Event, Arg);
+		СоздатьШаг(Editor, Arg);
 	ElsIf Event = "SHOW_STEP_IN_TREE" Then
 		// Редактор прислал контекст шага под курсором: в демо показываем его
 		// текстом, в VA по нему раскрывается дерево библиотеки шагов.
-		AppendEventLog(Event, Arg);
+		ДобавитьВЖурналСобытий(Event, Arg);
 		ПоказатьПодсказку("Шаг под курсором: " + Arg);
 	ElsIf Event = "OPEN_STEP_AS_FEATURE" Then
-		AppendEventLog(Event, Arg);
+		ДобавитьВЖурналСобытий(Event, Arg);
 		ПоказатьПодсказку("Открыть фичу шага: " + Arg);
 	Else
-		AppendEventLog(Event, Arg);
+		ДобавитьВЖурналСобытий(Event, Arg);
 	EndIf;
 
 КонецПроцедуры
@@ -619,7 +619,7 @@ Var KeyCodeMap;
 #Region Public
 
 &НаКлиенте
-Процедура LoadEditor()
+Процедура ЗагрузитьРедактор()
 
 	If Not ValueIsFilled(EditorTemplateURL) Then
 		Return;
@@ -700,7 +700,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура FillEditorActions(Editor)
+Процедура ЗаполнитьДействияРедактора(Editor)
 
 	TextJSON = Editor.getActions();
 	JSONReader = New JSONReader;
@@ -859,7 +859,7 @@ Var KeyCodeMap;
 
 	Editor = DefaultView().createVanessaEditor("", "turbo-gherkin");
 	Editor.addCommands(GetCommands());
-	FillEditorActions(Editor);
+	ЗаполнитьДействияРедактора(Editor);
 
 	УсловныеОператоры = Новый Соответствие;
 	МассивСлов = Новый Массив;
@@ -939,16 +939,16 @@ Var KeyCodeMap;
 
 &НаКлиенте
 Процедура RunSubcode(Command)
-	AttachIdleHandler("NextRuntimeStep", 1, False);
+	AttachIdleHandler("СледующийШагВыполнения", 1, False);
 КонецПроцедуры
 
 &НаКлиенте
 Процедура StopSubcode(Command)
-	DetachIdleHandler("NextRuntimeStep");
+	DetachIdleHandler("СледующийШагВыполнения");
 КонецПроцедуры
 
 &НаКлиенте
-Процедура NextRuntimeStep()
+Процедура СледующийШагВыполнения()
 	Pos = VanessaEditor().nextRuntimeProgress();
 	If Pos = Undefined Then
 		RuntimePosition = Undefined;

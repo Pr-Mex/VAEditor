@@ -67,15 +67,15 @@
 				<Representation>Compact</Representation>
 				<ExtendedTooltip name="FormGroupFileExtendedTooltip" id="193"/>
 				<ChildItems>
-					<Button name="LoadFile" id="6">
+					<Button name="ЗагрузитьФайл" id="6">
 						<Type>CommandBarButton</Type>
-						<CommandName>Form.Command.LoadFile</CommandName>
-						<ExtendedTooltip name="LoadFileExtendedTooltip" id="7"/>
+						<CommandName>Form.Command.ЗагрузитьФайл</CommandName>
+						<ExtendedTooltip name="ЗагрузитьФайлExtendedTooltip" id="7"/>
 					</Button>
-					<Button name="GetValue" id="8">
+					<Button name="ПолучитьТекст" id="8">
 						<Type>CommandBarButton</Type>
-						<CommandName>Form.Command.GetValue</CommandName>
-						<ExtendedTooltip name="GetValueExtendedTooltip" id="9"/>
+						<CommandName>Form.Command.ПолучитьТекст</CommandName>
+						<ExtendedTooltip name="ПолучитьТекстExtendedTooltip" id="9"/>
 					</Button>
 				</ChildItems>
 			</ButtonGroup>
@@ -667,20 +667,20 @@
 											<Representation>Compact</Representation>
 											<ExtendedTooltip name="GroupPositionButtonsExtendedTooltip" id="228"/>
 											<ChildItems>
-												<Button name="GetPosition" id="188">
+												<Button name="ПолучитьПозицию" id="188">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetPosition</CommandName>
-													<ExtendedTooltip name="GetPositionExtendedTooltip" id="189"/>
+													<CommandName>Form.Command.ПолучитьПозицию</CommandName>
+													<ExtendedTooltip name="ПолучитьПозициюExtendedTooltip" id="189"/>
 												</Button>
-												<Button name="GetLineContent" id="190">
+												<Button name="ПолучитьСтроку" id="190">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetLineContent</CommandName>
-													<ExtendedTooltip name="GetLineContentExtendedTooltip" id="191"/>
+													<CommandName>Form.Command.ПолучитьСтроку</CommandName>
+													<ExtendedTooltip name="ПолучитьСтрокуExtendedTooltip" id="191"/>
 												</Button>
-												<Button name="GetSelectedContent" id="338">
+												<Button name="ПолучитьВыделенныйТекст" id="338">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetSelectedContent</CommandName>
-													<ExtendedTooltip name="GetSelectedContentExtendedTooltip" id="339"/>
+													<CommandName>Form.Command.ПолучитьВыделенныйТекст</CommandName>
+													<ExtendedTooltip name="ПолучитьВыделенныйТекстExtendedTooltip" id="339"/>
 												</Button>
 											</ChildItems>
 										</ButtonGroup>
@@ -888,10 +888,10 @@
 											</Title>
 											<ExtendedTooltip name="CurrentStepBarExtendedTooltip" id="151"/>
 											<ChildItems>
-												<Button name="GetCurrentStep" id="340">
+												<Button name="ПолучитьТекущийШаг" id="340">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetCurrentStep</CommandName>
-													<ExtendedTooltip name="GetCurrentStepExtendedTooltip" id="341"/>
+													<CommandName>Form.Command.ПолучитьТекущийШаг</CommandName>
+													<ExtendedTooltip name="ПолучитьТекущийШагExtendedTooltip" id="341"/>
 												</Button>
 											</ChildItems>
 										</CommandBar>
@@ -1057,16 +1057,16 @@
 														</Title>
 														<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
 													</Button>
-													<Button name="CompleteStepsGetProgress" id="344">
+													<Button name="CompleteStepsПолучитьПрогресс" id="344">
 														<Type>CommandBarButton</Type>
-														<CommandName>Form.Command.GetProgress</CommandName>
+														<CommandName>Form.Command.ПолучитьПрогресс</CommandName>
 														<Title>
 															<v8:item>
 																<v8:lang>ru</v8:lang>
 																<v8:content>Получить</v8:content>
 															</v8:item>
 														</Title>
-														<ExtendedTooltip name="CompleteStepsGetProgressExtendedTooltip" id="345"/>
+														<ExtendedTooltip name="CompleteStepsПолучитьПрогрессExtendedTooltip" id="345"/>
 													</Button>
 												</ChildItems>
 											</ButtonGroup>
@@ -2540,7 +2540,7 @@
 		</Attribute>
 	</Attributes>
 	<Commands>
-		<Command name="LoadFile" id="2">
+		<Command name="ЗагрузитьФайл" id="2">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
@@ -2562,10 +2562,10 @@
 				<xr:Ref>StdPicture.OpenFile</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>LoadFile</Action>
+			<Action>ЗагрузитьФайл</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="GetValue" id="3">
+		<Command name="ПолучитьТекст" id="3">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
@@ -2586,7 +2586,7 @@
 				<xr:Ref>StdPicture.RestoreValues</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>GetValue</Action>
+			<Action>ПолучитьТекст</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="SetProgress" id="1">
@@ -2637,7 +2637,7 @@
 			<Action>CleanRuntimeProgress</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="GetPosition" id="7">
+		<Command name="ПолучитьПозицию" id="7">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2654,10 +2654,10 @@
 				<xr:Ref>StdPicture.Next</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>GetPosition</Action>
+			<Action>ПолучитьПозицию</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="GetLineContent" id="8">
+		<Command name="ПолучитьСтроку" id="8">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2670,7 +2670,7 @@
 					<v8:content>Получить строку</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetLineContent</Action>
+			<Action>ПолучитьСтроку</Action>
 		</Command>
 		<Command name="EditUndo" id="9">
 			<Title>
@@ -3133,7 +3133,7 @@
 			</ToolTip>
 			<Action>LoadKeywordsAll</Action>
 		</Command>
-		<Command name="GetSelectedContent" id="4">
+		<Command name="ПолучитьВыделенныйТекст" id="4">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3146,9 +3146,9 @@
 					<v8:content>Получить выделенный текст</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetSelectedContent</Action>
+			<Action>ПолучитьВыделенныйТекст</Action>
 		</Command>
-		<Command name="GetCurrentStep" id="5">
+		<Command name="ПолучитьТекущийШаг" id="5">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3161,9 +3161,9 @@
 					<v8:content>Получить текущий шаг</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetCurrentStep</Action>
+			<Action>ПолучитьТекущийШаг</Action>
 		</Command>
-		<Command name="GetProgress" id="36">
+		<Command name="ПолучитьПрогресс" id="36">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3176,7 +3176,7 @@
 					<v8:content>Получить прогресс</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetProgress</Action>
+			<Action>ПолучитьПрогресс</Action>
 		</Command>
 		<Command name="ShowError" id="37">
 			<Title>
