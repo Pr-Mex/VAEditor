@@ -1,7 +1,7 @@
 import { vs, vs_dark, hc_black, hc_light } from 'monaco-editor/esm/vs/editor/standalone/common/themes.js';
 import { BSL_LANGUAGE_ID, language as bslLanguage } from '../../src/languages/bsl/configuration';
 import { XBSL_LANGUAGE_ID, language as xbslLanguage } from '../../src/languages/xbsl/configuration';
-import { CANONICAL_1C_THEME } from '../../src/themes';
+import { CANONICAL_1C_THEME, XBSL_THEME } from '../../src/themes';
 let expect = require('chai').expect;
 
 // Цвет токена задаёт тема, а не грамматика: Monarch отдаёт имя токена
@@ -24,7 +24,9 @@ const COLORED = ['comment', 'keyword', 'number', 'string', 'regexp', 'delimiter'
 
 // Токены, которые по стандарту Monaco остаются цветом текста: правил для
 // идентификаторов и операторов в темах нет, это не ошибка грамматики.
-const DEFAULT_COLORED = ['', 'identifier', 'operator'];
+// function/variable/annotation встроенные темы тоже не красят — цвета для них
+// задаёт только тема xBSL (см. src/themes.ts).
+const DEFAULT_COLORED = ['', 'identifier', 'operator', 'function', 'variable', 'annotation'];
 
 function rootType(type: string): string {
   return (type || '').split('.')[0];
@@ -113,11 +115,44 @@ describe('Цвета токенов берутся из встроенных т�
   });
 
 
-  it('xBSL: аннотация идёт как keyword, пространство имён — как type', () => {
+  it('xBSL: аннотация идёт как annotation, пространство имён — как type', () => {
     const roots = tokenRoots(XBSL_LANGUAGE_ID,
       '@Глобально\nметод Тест()\nзнч с: Стд::Строка\n// комментарий\nзнч н = 1\nзнч т = "текст"');
-    expect(roots).to.include('keyword');
+    expect(roots).to.include('annotation');
     expect(roots).to.include('type');
+  });
+
+  it('xBSL: имя метода, параметр и его тип получают свои токены', () => {
+    const roots = tokenRoots(XBSL_LANGUAGE_ID,
+      'метод Обработать(Изображение: ДвоичныйОбъект.Ссылка): ДвоичныйОбъект.Ссылка\nзнч с = 1');
+    expect(roots).to.include('function');
+    expect(roots).to.include('variable');
+    expect(roots).to.include('type');
+  });
+
+  it('Тема xbsl задаёт палитру 1С:Элемент', () => {
+    // Цвета из примеров языка: ключевые слова синие, аннотации фиолетовые,
+    // типы бирюзовые, методы коричневые, переменные тёмно-синие.
+    const rules = XBSL_THEME.rules;
+    expect(ruleForeground(rules, 'keyword')).to.equal('0000FF');
+    expect(ruleForeground(rules, 'annotation')).to.equal('AF00DB');
+    expect(ruleForeground(rules, 'type')).to.equal('267F99');
+    expect(ruleForeground(rules, 'function')).to.equal('795E26');
+    expect(ruleForeground(rules, 'variable')).to.equal('001080');
+    expect(ruleForeground(rules, 'number')).to.equal('098658');
+    expect(ruleForeground(rules, 'string')).to.equal('A31515');
+    expect(ruleForeground(rules, 'comment')).to.equal('008000');
+  });
+
+  it('Тема xbsl покрывает все токены грамматики xBSL', () => {
+    const roots = tokenRoots(XBSL_LANGUAGE_ID,
+      '// комментарий\n@Глобально\nметод Тест(а: Строка)\nзнч с: Стд::Строка\nзнч н = 1.5\nзнч т = "текст"\nзнч р = \'\\\\d+\'\nзнч х = а ? 1 : 2');
+    roots.forEach(root => {
+      const defined = ruleForeground(XBSL_THEME.rules, root) !== '';
+      const inherited = themeCovers(vs.rules, root);
+      expect(defined || inherited || DEFAULT_COLORED.indexOf(root) >= 0,
+        'токен без цвета в теме xbsl: ' + root).to.equal(true);
+    });
   });
 
   it('xBSL: посторонних токенов нет', () => {

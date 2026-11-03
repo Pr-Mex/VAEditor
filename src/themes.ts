@@ -35,3 +35,37 @@ export const CANONICAL_1C_THEME: monaco.editor.IStandaloneThemeData = {
     'editorIndentGuide.activeBackground': '#e0e0e0',
   },
 };
+
+// Палитра «1С:Элемент» (xBSL) — та, что видна в документации и примерах языка:
+// ключевые слова синие, аннотации фиолетовые, типы бирюзовые, методы
+// коричневые, переменные тёмно-синие. Это палитра VS Light+, а не палитра
+// Конфигуратора, поэтому она вынесена в отдельную тему: у BSL остаётся '1c'.
+//
+// Токены function/variable/annotation встроенные темы Monaco не красят —
+// именно поэтому для xBSL нужна своя тема, иначе имена методов, параметров и
+// аннотации остались бы цветом обычного текста.
+export const XBSL_THEME_ID = 'xbsl';
+
+export const XBSL_THEME: monaco.editor.IStandaloneThemeData = {
+  base: 'vs',
+  inherit: true,
+  rules: [
+    { token: '', foreground: '000000' },
+    { token: 'comment', foreground: '008000' },
+    { token: 'keyword', foreground: '0000ff' },
+    { token: 'annotation', foreground: 'af00db' },
+    { token: 'type', foreground: '267f99' },
+    { token: 'function', foreground: '795e26' },
+    { token: 'variable', foreground: '001080' },
+    { token: 'string', foreground: 'a31515' },
+    { token: 'string.escape', foreground: 'ee0000' },
+    { token: 'number', foreground: '098658' },
+    { token: 'regexp', foreground: '811f3f' },
+  ],
+  colors: {
+    'editor.background': '#ffffff',
+    'editor.foreground': '#000000',
+    'editorIndentGuide.background': '#d3d3d3',
+    'editorIndentGuide.activeBackground': '#939393',
+  },
+};

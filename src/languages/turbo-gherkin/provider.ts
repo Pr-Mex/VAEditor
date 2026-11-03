@@ -14,7 +14,7 @@ import { KeywordMatcher } from './matcher';
 import { ActionManager } from '../../actions';
 import { VACodeError, VAQuickAction } from './quickfix';
 import { workerUrl, setWorkerDelivery } from '../../worker-source';
-import { CANONICAL_1C_THEME, CANONICAL_1C_THEME_ID } from '../../themes';
+import { CANONICAL_1C_THEME, CANONICAL_1C_THEME_ID, XBSL_THEME, XBSL_THEME_ID } from '../../themes';
 
 // Воркер встраивается в страницу как base64 (InlineWorkerSourcePlugin):
 // отдельный файл рядом со страницей встроенный WebKit/WebView2 по file://
@@ -351,6 +351,9 @@ export class VanessaGherkinProvider {
 
   private createTheme1C() {
     monaco.editor.defineTheme(CANONICAL_1C_THEME_ID, CANONICAL_1C_THEME);
+    // Палитра xBSL (1С:Элемент): отдельная тема, потому что её цвета отличаются
+    // от палитры Конфигуратора — см. src/themes.ts.
+    monaco.editor.defineTheme(XBSL_THEME_ID, XBSL_THEME);
   }
 
   public provideCodeActions(model: monaco.editor.ITextModel

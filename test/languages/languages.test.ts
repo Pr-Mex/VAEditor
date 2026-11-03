@@ -154,8 +154,10 @@ describe('Подсветка xBSL', function () {
     expect(typeAt(XBSL_LANGUAGE_ID, 'х = а!.б', 6)).to.equal('operator');
   });
 
-  it('Аннотация и директива импорта — keyword, как директивы в BSL', () => {
-    expect(typeAt(XBSL_LANGUAGE_ID, '@Наименование', 1)).to.equal('keyword');
+  it('Аннотация — отдельный токен, директива импорта — keyword', () => {
+    // Аннотация не keyword: в 1С:Элемент у неё свой цвет, и тема xBSL задаёт
+    // его отдельным правилом.
+    expect(typeAt(XBSL_LANGUAGE_ID, '@Наименование', 1)).to.equal('annotation');
     expect(typeAt(XBSL_LANGUAGE_ID, '#требуется модуль.sbsl', 1)).to.equal('keyword');
   });
 
