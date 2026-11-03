@@ -16,9 +16,9 @@ export const conf: LanguageConfiguration = {
     blockComment: ["/*", "*/"],
   },
   brackets: [
-    { open: "{", close: "}", token: "delimiter.curly" },
-    { open: "[", close: "]", token: "delimiter.square" },
-    { open: "(", close: ")", token: "delimiter.parenthesis" },
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
   ],
   autoClosingPairs: [
     { open: "\"", close: "\"", notIn: ["string"] },
