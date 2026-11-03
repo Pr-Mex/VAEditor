@@ -78,8 +78,10 @@ describe('Подсветка BSL', function () {
   });
 
   it('Директива компиляции и препроцессора', () => {
-    expect(typeAt(BSL_LANGUAGE_ID, '&НаСервере', 1)).to.equal('keyword');
-    expect(typeAt(BSL_LANGUAGE_ID, '#Если Сервер Тогда', 1)).to.equal('keyword');
+    // Директивы — отдельный токен annotation: в теме bsl у них свой цвет
+    // (коричневый), отличный от ключевых слов.
+    expect(typeAt(BSL_LANGUAGE_ID, '&НаСервере', 1)).to.equal('annotation');
+    expect(typeAt(BSL_LANGUAGE_ID, '#Если Сервер Тогда', 1)).to.equal('annotation');
   });
 
   it('Число', () => {
@@ -120,8 +122,9 @@ describe('Подсветка xBSL', function () {
     expect(typeAt(XBSL_LANGUAGE_ID, 'Если Счетчик', 1)).to.equal('identifier');
   });
 
-  it('Имя переменной после объявления — идентификатор', () => {
-    expect(typeAt(XBSL_LANGUAGE_ID, 'пер МойВозраст: Число', 5)).to.equal('identifier');
+  it('Имя переменной после объявления — переменная', () => {
+    // Не identifier: тема xbsl красит переменные отдельным цветом.
+    expect(typeAt(XBSL_LANGUAGE_ID, 'пер МойВозраст: Число', 5)).to.equal('variable');
   });
 
   it('Пространство имён стандартной библиотеки', () => {
