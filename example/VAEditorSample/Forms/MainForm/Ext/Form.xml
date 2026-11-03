@@ -8,6 +8,49 @@
 				<CommandName>Form.Command.Autotest</CommandName>
 				<ExtendedTooltip name="FormAutotestExtendedTooltip" id="413"/>
 			</Button>
+			<ButtonGroup name="ГруппаДемонстрация" id="600">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Демонстрация возможностей</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Демонстрация возможностей редактора</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="ГруппаДемонстрацияExtendedTooltip" id="601"/>
+				<ChildItems>
+					<Button name="КнопкаФорматироватьДокумент" id="602">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ФорматироватьДокумент</CommandName>
+						<ExtendedTooltip name="КнопкаФорматироватьДокументExtendedTooltip" id="603"/>
+					</Button>
+					<Button name="КнопкаСимволКомментария" id="604">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ПереключитьСимволКомментария</CommandName>
+						<ExtendedTooltip name="КнопкаСимволКомментарияExtendedTooltip" id="605"/>
+					</Button>
+					<Button name="КнопкаПоказатьШагВДереве" id="606">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ПоказатьШагВДереве</CommandName>
+						<ExtendedTooltip name="КнопкаПоказатьШагВДеревеExtendedTooltip" id="607"/>
+					</Button>
+					<Button name="КнопкаОткрытьШагКакФичу" id="608">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ОткрытьШагКакФичу</CommandName>
+						<ExtendedTooltip name="КнопкаОткрытьШагКакФичуExtendedTooltip" id="609"/>
+					</Button>
+					<Button name="КнопкаПоказатьЯзыки" id="610">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ПоказатьЯзыки</CommandName>
+						<ExtendedTooltip name="КнопкаПоказатьЯзыкиExtendedTooltip" id="611"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
 			<ButtonGroup name="FormGroupFile" id="192">
 				<Title>
 					<v8:item>
@@ -397,6 +440,19 @@
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">vs-dark</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>1С: как в Конфигураторе</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">1c</Value>
 											</xr:Value>
 										</xr:Item>
 										<xr:Item>
@@ -3227,6 +3283,86 @@
 				</v8:item>
 			</ToolTip>
 			<Action>Autotest</Action>
+		</Command>
+		<Command name="ФорматироватьДокумент" id="43">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Форматировать документ</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Выровнять таблицы и отступы фичи (Shift+Alt+F)</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ФорматироватьДокумент</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ПереключитьСимволКомментария" id="44">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Символ комментария</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Переключить символ комментария строки: # или //</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ПереключитьСимволКомментария</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ПоказатьШагВДереве" id="45">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Шаг в дереве</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Отправить в 1С шаг под курсором (событие SHOW_STEP_IN_TREE)</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ПоказатьШагВДереве</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ОткрытьШагКакФичу" id="46">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Шаг как фича</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Запросить открытие фичи-источника шага (событие OPEN_STEP_AS_FEATURE)</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ОткрытьШагКакФичу</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ПоказатьЯзыки" id="47">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Языки: Gherkin, BSL, xBSL</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Открыть вкладки с подсветкой трёх языков и diff по BSL</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ПоказатьЯзыки</Action>
+			<Representation>TextPicture</Representation>
 		</Command>
 	</Commands>
 </Form>
