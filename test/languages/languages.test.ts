@@ -150,7 +150,8 @@ describe('Подсветка xBSL', function () {
   });
 
   it('Тернарная операция и настойчивая операция — операторы', () => {
-    expect(typeAt(XBSL_LANGUAGE_ID, 'х = а ? б : в', 5)).to.equal('operator');
+    expect(typeAt(XBSL_LANGUAGE_ID, 'х = а ? б : в', 7)).to.equal('operator');
+    expect(typeAt(XBSL_LANGUAGE_ID, 'х = а!.б', 6)).to.equal('operator');
   });
 
   it('Аннотация и директива импорта — keyword, как директивы в BSL', () => {
