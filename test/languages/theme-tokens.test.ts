@@ -41,6 +41,24 @@ function tokenRoots(languageId: string, text: string): string[] {
   return roots;
 }
 
+// ИТС описывает цвета встроенного языка качественно, без палитры
+// (its-pub1celementarno-13): синим выделены обязательные слова, чёрным —
+// известные среде имена, бордовым — литералы, дальше «слова могут быть даже
+// зелёные и фиолетовые». Точных значений в документации нет, поэтому сверяем
+// смысл: ключевое слово — синее, строка — бордовая, комментарий — зелёный,
+// идентификатор — цветом текста (правила в теме нет). Значения ниже взяты из
+// встроенных тем Monaco; если Monaco сменит палитру, тест упадёт, и решение
+// о новом цвете принимается осознанно, а не молча.
+const CANONICAL: { [theme: string]: { [token: string]: string } } = {
+  'vs': { keyword: '0000FF', string: 'A31515', comment: '008000', number: '098658', type: '008080' },
+  'vs-dark': { keyword: '569CD6', string: 'CE9178', comment: '608B4E', number: 'B5CEA8', type: '3DC9B0' },
+};
+
+function ruleForeground(rules: any[], token: string): string {
+  const rule = rules.filter(item => item.token === token)[0];
+  return rule && rule.foreground ? String(rule.foreground).toUpperCase() : '';
+}
+
 describe('Цвета токенов берутся из встроенных тем', function () {
 
   before(() => {
@@ -57,6 +75,19 @@ describe('Цвета токенов берутся из встроенных т�
       });
     });
   });
+
+  it('Смысл цветов совпадает с описанием в ИТС: ключевые слова синие, литералы бордовые, комментарии зелёные', () => {
+    Object.keys(CANONICAL).forEach(themeName => {
+      const rules = BUILTIN_THEMES[themeName].rules;
+      const expected = CANONICAL[themeName];
+      Object.keys(expected).forEach(token => {
+        expect(ruleForeground(rules, token), themeName + ': цвет токена ' + token).to.equal(expected[token]);
+      });
+      // Идентификатор цветом текста: правила для него в теме быть не должно.
+      expect(ruleForeground(rules, 'identifier')).to.equal('');
+    });
+  });
+
 
   it('xBSL: аннотация идёт как keyword, пространство имён — как type', () => {
     const roots = tokenRoots(XBSL_LANGUAGE_ID,
