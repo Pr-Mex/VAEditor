@@ -156,7 +156,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
+Процедура ДействияВыбор(Item, SelectedRow, Field, StandardProcessing)
 
 	Data = Items.Actions.CurrentData;
 	If Data = Undefined Then Return; EndIf;
@@ -361,7 +361,7 @@ Var KeyCodeMap;
 КонецФункции
 
 &НаКлиенте
-Процедура TraceKeyboardOnChange(Item)
+Процедура ТрассировкаКлавиатурыПриИзменении(Item)
 	VanessaEditor().traceKeyboard = TraceKeyboard;
 КонецПроцедуры
 
@@ -375,14 +375,14 @@ Var KeyCodeMap;
 #Region Breakpoints
 
 &НаКлиенте
-Процедура BreakpointsOnChange(Item)
+Процедура ТочкиОстановаПриИзменении(Item)
 
 	ОформитьТочкиОстанова(VanessaEditor());
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
+Процедура ТочкиОстановаПередОкончаниемРедактирования(Item, NewRow, CancelEdit, Cancel)
 
 	Breakpoints.Sort("codeWidget,lineNumber");
 
@@ -398,7 +398,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура BreakpointsOnActivateRow(Item)
+Процедура ТочкиОстановаПриАктивизацииСтроки(Item)
 
 	If Item.CurrentData = Undefined Then
 		Return;
@@ -448,7 +448,7 @@ Var KeyCodeMap;
 #Region Problems
 
 &НаКлиенте
-Процедура ProblemsOnChange(Item)
+Процедура ПроблемыПриИзменении(Item)
 
 	ОформитьПроблемы();
 
@@ -478,7 +478,7 @@ Var KeyCodeMap;
 #Region RuntimeProgress
 
 &НаКлиенте
-Процедура CurrentStepOnChange(Item)
+Процедура ТекущийШагПриИзменении(Item)
 	VanessaEditor().setCurrentProgress(CurrentStep);
 	VanessaEditor().revealLine(CurrentStep);
 КонецПроцедуры
@@ -589,7 +589,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
+Процедура РедакторVanessaПриПолученииСобытия(Editor, Event, Arg)
 
 	If Event = "UPDATE_BREAKPOINTS" Then
 		ОбновитьТочкиОстанова(Arg);
@@ -672,7 +672,7 @@ Var KeyCodeMap;
 #Region Private
 
 &НаКлиенте
-Процедура VanessaEditorOnClick(Item, EventData, StandardProcessing)
+Процедура РедакторVanessaПриНажатии(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
 	If Lower(Element.tagName) = "body" Then
@@ -690,7 +690,7 @@ Var KeyCodeMap;
 		If Not ValueIsFilled(EventType) Then
 			Return;
 		EndIf;
-		VanessaEditorOnReceiveEventHandler(EventDataFor1C.editor, EventType, Data);
+		РедакторVanessaПриПолученииСобытия(EventDataFor1C.editor, EventType, Data);
 	ElsIf CharCode(Element.innerText, 1) = 60020 Then
 		Message(Element.title);
 	ElsIf CharCode(Element.innerText, 1) = 60277 Then
@@ -838,7 +838,7 @@ Var KeyCodeMap;
 КонецФункции
 
 &НаКлиенте
-Процедура VanessaEditorDocumentComplete(Item)
+Процедура РедакторVanessaЗавершениеДокумента(Item)
 
 	Var Provider, Editor;
 
@@ -960,7 +960,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ShowMinimapOnChange(Item)
+Процедура МиниКартаПриИзменении(Item)
 
 	Элементы.VanessaEditor.Документ.defaultView.VanessaTabs.showMinimap = ShowMinimap;
 
@@ -980,7 +980,7 @@ Var KeyCodeMap;
 КонецФункции
 
 &НаКлиенте
-Процедура EditorTypeOnChange(Item)
+Процедура ТипРедактораПриИзменении(Item)
 
 	View = DefaultView();
 
@@ -1053,19 +1053,19 @@ Var KeyCodeMap;
 
 #EndRegion
 &НаКлиенте
-Процедура UseDebuggerOnChange(Элемент)
+Процедура ИспользоватьОтладчикПриИзменении(Элемент)
 
 	DefaultView().useVanessaDebugger(useDebugger);
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура TabSizeOnChange(Item)
+Процедура РазмерТабуляцииПриИзменении(Item)
 	VanessaEditor().setTabSize(TabSize);
 КонецПроцедуры
 
 &НаКлиенте
-Процедура InsertSpacesOnChange(Item)
+Процедура ВставлятьПробелыПриИзменении(Item)
 	VanessaEditor().setInsertSpaces(InsertSpaces);
 КонецПроцедуры
 

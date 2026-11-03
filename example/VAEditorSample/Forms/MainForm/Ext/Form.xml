@@ -298,8 +298,8 @@
 							<ContextMenu name="VanessaEditorContextMenu" id="2"/>
 							<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
 							<Events>
-								<Event name="DocumentComplete">VanessaEditorDocumentComplete</Event>
-								<Event name="OnClick">VanessaEditorOnClick</Event>
+								<Event name="DocumentComplete">РедакторVanessaЗавершениеДокумента</Event>
+								<Event name="OnClick">РедакторVanessaПриНажатии</Event>
 							</Events>
 						</HTMLDocumentField>
 					</ChildItems>
@@ -395,7 +395,7 @@
 									<ContextMenu name="EditorTypeКонтекстноеМеню" id="398"/>
 									<ExtendedTooltip name="EditorTypeРасширеннаяПодсказка" id="399"/>
 									<Events>
-										<Event name="OnChange">EditorTypeOnChange</Event>
+										<Event name="OnChange">ТипРедактораПриИзменении</Event>
 									</Events>
 								</RadioButtonField>
 								<InputField name="EditorTheme" id="159">
@@ -576,7 +576,7 @@
 													<ContextMenu name="TabSizeContextMenu" id="405"/>
 													<ExtendedTooltip name="TabSizeExtendedTooltip" id="406"/>
 													<Events>
-														<Event name="OnChange">TabSizeOnChange</Event>
+														<Event name="OnChange">РазмерТабуляцииПриИзменении</Event>
 													</Events>
 												</InputField>
 												<CheckBoxField name="InsertSpaces" id="407">
@@ -586,7 +586,7 @@
 													<ContextMenu name="InsertSpacesContextMenu" id="408"/>
 													<ExtendedTooltip name="InsertSpacesExtendedTooltip" id="409"/>
 													<Events>
-														<Event name="OnChange">InsertSpacesOnChange</Event>
+														<Event name="OnChange">ВставлятьПробелыПриИзменении</Event>
 													</Events>
 												</CheckBoxField>
 												<Button name="ВыровнятьОтступы" id="410">
@@ -812,7 +812,7 @@
 									<ContextMenu name="ShowMinimapContextMenu" id="392"/>
 									<ExtendedTooltip name="ShowMinimapExtendedTooltip" id="393"/>
 									<Events>
-										<Event name="OnChange">ShowMinimapOnChange</Event>
+										<Event name="OnChange">МиниКартаПриИзменении</Event>
 									</Events>
 								</CheckBoxField>
 								<CheckBoxField name="UseDebugger" id="394">
@@ -822,7 +822,7 @@
 									<ContextMenu name="UseDebuggerКонтекстноеМеню" id="395"/>
 									<ExtendedTooltip name="UseDebuggerРасширеннаяПодсказка" id="396"/>
 									<Events>
-										<Event name="OnChange">UseDebuggerOnChange</Event>
+										<Event name="OnChange">ИспользоватьОтладчикПриИзменении</Event>
 									</Events>
 								</CheckBoxField>
 							</ChildItems>
@@ -876,7 +876,7 @@
 											<ContextMenu name="CurrentStepContextMenu" id="144"/>
 											<ExtendedTooltip name="CurrentStepExtendedTooltip" id="145"/>
 											<Events>
-												<Event name="OnChange">CurrentStepOnChange</Event>
+												<Event name="OnChange">ТекущийШагПриИзменении</Event>
 											</Events>
 										</InputField>
 										<CommandBar name="CurrentStepBar" id="150">
@@ -1372,9 +1372,9 @@
 										<ExtendedTooltip name="BreakpointsSearchControlExtendedTooltip" id="30"/>
 									</SearchControlAddition>
 									<Events>
-										<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
-										<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
-										<Event name="OnChange">BreakpointsOnChange</Event>
+										<Event name="BeforeEditEnd">ТочкиОстановаПередОкончаниемРедактирования</Event>
+										<Event name="OnActivateRow">ТочкиОстановаПриАктивизацииСтроки</Event>
+										<Event name="OnChange">ТочкиОстановаПриИзменении</Event>
 									</Events>
 									<ChildItems>
 										<CheckBoxField name="BreakpointsEnable" id="385">
@@ -1511,7 +1511,7 @@
 										<ExtendedTooltip name="ProblemsSearchControlExtendedTooltip" id="68"/>
 									</SearchControlAddition>
 									<Events>
-										<Event name="OnChange">ProblemsOnChange</Event>
+										<Event name="OnChange">ПроблемыПриИзменении</Event>
 									</Events>
 									<ChildItems>
 										<ColumnGroup name="ProblemsGroupNumbewr" id="202">
@@ -1718,7 +1718,7 @@
 										<ExtendedTooltip name="ActionsSearchControlExtendedTooltip" id="274"/>
 									</SearchControlAddition>
 									<Events>
-										<Event name="Selection">ActionsSelection</Event>
+										<Event name="Selection">ДействияВыбор</Event>
 									</Events>
 									<ChildItems>
 										<InputField name="Actionsid" id="275">
@@ -1759,7 +1759,7 @@
 									<ContextMenu name="TraceKeyboardContextMenu" id="230"/>
 									<ExtendedTooltip name="TraceKeyboardExtendedTooltip" id="231"/>
 									<Events>
-										<Event name="OnChange">TraceKeyboardOnChange</Event>
+										<Event name="OnChange">ТрассировкаКлавиатурыПриИзменении</Event>
 									</Events>
 								</CheckBoxField>
 								<CommandBar name="PanelEventLog" id="253">
