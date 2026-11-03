@@ -472,7 +472,7 @@
 									<ContextMenu name="EditorThemeContextMenu" id="160"/>
 									<ExtendedTooltip name="EditorThemeExtendedTooltip" id="161"/>
 									<Events>
-										<Event name="OnChange">EditorThemeOnChange</Event>
+										<Event name="OnChange">ТемаРедактораПриИзменении</Event>
 									</Events>
 								</InputField>
 								<InputField name="Position" id="183">
@@ -619,7 +619,7 @@
 													<ContextMenu name="LineNumberContextMenu" id="181"/>
 													<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
 													<Events>
-														<Event name="OnChange">PositionOnChange</Event>
+														<Event name="OnChange">ПозицияПриИзменении</Event>
 													</Events>
 												</InputField>
 												<InputField name="Column" id="177">
@@ -629,7 +629,7 @@
 													<ContextMenu name="ColumnContextMenu" id="178"/>
 													<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
 													<Events>
-														<Event name="OnChange">PositionOnChange</Event>
+														<Event name="OnChange">ПозицияПриИзменении</Event>
 													</Events>
 												</InputField>
 											</ChildItems>
@@ -715,7 +715,7 @@
 											<ContextMenu name="ReadOnlyModeContextMenu" id="14"/>
 											<ExtendedTooltip name="ReadOnlyModeExtendedTooltip" id="15"/>
 											<Events>
-												<Event name="OnChange">ReadOnlyModeOnChange</Event>
+												<Event name="OnChange">ТолькоЧтениеПриИзменении</Event>
 											</Events>
 										</CheckBoxField>
 									</ChildItems>

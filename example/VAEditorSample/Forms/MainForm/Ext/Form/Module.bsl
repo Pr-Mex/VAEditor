@@ -60,21 +60,21 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ReadOnlyModeOnChange(Item)
+Процедура ТолькоЧтениеПриИзменении(Item)
 
 	VanessaEditor().setReadOnly(ReadOnlyMode);
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура EditorThemeOnChange(Item)
+Процедура ТемаРедактораПриИзменении(Item)
 
 	VanessaEditor().setTheme(EditorTheme);
 
 КонецПроцедуры
 
 &НаКлиенте
-Процедура PositionOnChange(Item)
+Процедура ПозицияПриИзменении(Item)
 
 	VanessaEditor().setPosition(LineNumber, Column);
 	VanessaEditor().revealLine(LineNumber);
