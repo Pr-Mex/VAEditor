@@ -58,6 +58,11 @@ import { VanessaEditor } from "./vanessa-editor";
 import { VanessaDiffEditor } from "./vanessa-diff-editor";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
 import { language as gherkin } from './languages/turbo-gherkin/configuration';
+// Остальные языки страницы: BSL (.bsl/.os) и xBSL (.xbsl). Регистрация явная —
+// раньше bsl подключался побочным эффектом импорта diff-редактора, и
+// зависимость была неочевидной.
+import "./languages/bsl/contribution";
+import "./languages/xbsl/contribution";
 import { initPage } from "./common";
 import { applyUiEnvironment } from "./ui-interface";
 import { applyEditorVersion } from "./version";
