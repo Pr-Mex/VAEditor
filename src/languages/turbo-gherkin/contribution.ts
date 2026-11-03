@@ -10,6 +10,7 @@ monaco.languages.onLanguage(language.id, () => {
   monaco.languages.registerCodeActionProvider(language.id, provider);
   monaco.languages.registerCompletionItemProvider(language.id, provider);
   monaco.languages.registerFoldingRangeProvider(language.id, provider);
+  monaco.languages.registerDocumentFormattingEditProvider(language.id, provider);
   monaco.languages.registerHoverProvider(language.id, provider);
   monaco.languages.registerLinkProvider(language.id, provider);
   monaco.languages.setTokensProvider(language.id, provider);

@@ -8,6 +8,7 @@ import { WorkerModel } from './model';
 import { getLineHover } from './hover';
 import { checkSyntax } from './syntax';
 import { setStepList, updateStepLabels } from './steplist';
+import { getFormattingEdits, DEFAULT_FORMAT_OPTIONS } from './format';
 
 const context: IWorkerContext = {
   matcher: undefined,
@@ -22,6 +23,7 @@ const context: IWorkerContext = {
     soundHint: "Sound",
   },
   sppr: false,
+  commentCharacter: DEFAULT_FORMAT_OPTIONS.commentCharacter,
 }
 
 const contentMap = new Map<string, WorkerModel>();
@@ -74,6 +76,8 @@ function provide(msg: any) {
       return getLinkData(context, model, msg);
     case MessageType.CheckSyntax:
       return checkSyntax(context, model, msg);
+    case MessageType.FormatDocument:
+      return getFormattingEdits(context, model, msg);
   }
 }
 
@@ -107,6 +111,9 @@ export function process(msg: WorkerMessage) {
     case MessageType.SetSPPR:
       context.sppr = msg.sppr;
       context.matcher?.setSPPR(context.sppr)
+      break;
+    case MessageType.SetLineComment:
+      context.commentCharacter = msg.character;
       break;
       case MessageType.SetMessages:
       setMessages(context, msg);

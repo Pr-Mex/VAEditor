@@ -7,7 +7,7 @@ import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
 import { process } from './worker';
-import { language, GherkinLanguage } from './configuration';
+import { language, GherkinLanguage, setLineComment, DEFAULT_LINE_COMMENT } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
@@ -147,6 +147,7 @@ function isRequest(type: MessageType): boolean {
     case MessageType.GetLinkData:
     case MessageType.GetCompletions:
     case MessageType.CheckSyntax:
+    case MessageType.FormatDocument:
       return true;
   }
   return false;
@@ -245,6 +246,7 @@ export class VanessaGherkinProvider {
   private _sppr: boolean = false;
   private _matcher: KeywordMatcher;
   private _locale: string;
+  private _commentCharacter: string = DEFAULT_LINE_COMMENT;
 
   public get metatags(): string[] {
     return this._metatags;
@@ -302,6 +304,16 @@ export class VanessaGherkinProvider {
     send({ type: MessageType.SetSPPR, sppr: arg });
     this._sppr = arg;
     this.matcher?.setSPPR(arg);
+  }
+
+  // Символ комментария строки (#1452): '#' (по умолчанию) или '//'.
+  public setLineComment = (arg: string): void => {
+    this._commentCharacter = setLineComment(arg);
+    send({ type: MessageType.SetLineComment, character: this._commentCharacter });
+  }
+
+  public get lineComment(): string {
+    return this._commentCharacter;
   }
 
   public setMessages = (arg: string): void => {
@@ -462,6 +474,32 @@ export class VanessaGherkinProvider {
 
   public resolveCompletionItem(item, token) {
     return item;
+  }
+
+  // Форматирование документа (#2044, #1630). Monaco вызывает этот провайдер
+  // по Shift+Alt+F и сам показывает «Форматировать документ» в палитре команд.
+  public provideDocumentFormattingEdits(
+    model: monaco.editor.ITextModel,
+    options: monaco.languages.FormattingOptions,
+    token: monaco.CancellationToken,
+  ): monaco.languages.ProviderResult<monaco.languages.TextEdit[]> {
+    return postMessage<monaco.languages.TextEdit[]>(model, {
+      type: MessageType.FormatDocument,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
+      tabSize: options ? options.tabSize : undefined,
+      insertSpaces: options ? options.insertSpaces : undefined,
+    }).then(edits => (edits || []).map(edit => ({
+      // Из воркера диапазон приходит простым объектом: собираем Range заново,
+      // чтобы Monaco не пришлось угадывать тип.
+      range: new monaco.Range(
+        edit.range.startLineNumber,
+        edit.range.startColumn,
+        edit.range.endLineNumber,
+        edit.range.endColumn,
+      ),
+      text: edit.text,
+    })));
   }
 
   public checkSyntax(m: monaco.editor.ITextModel, manager?: ISyntaxManager) {
