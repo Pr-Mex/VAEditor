@@ -131,12 +131,12 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура InsertText(Command)
+Процедура ВставитьТекст(Command)
 	VanessaEditor().insertText(MessageText);
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ReplaceText(Command)
+Процедура ЗаменитьТекст(Command)
 
 	Map = New Map;
 	Map.Insert("startLineNumber", LineNumber);
@@ -148,7 +148,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ShowError(Command)
+Процедура ПоказатьОшибку(Command)
 
 	VanessaEditor().setRuntimeProgress("error", CurrentStep);
 	VanessaEditor().showRuntimeError(CurrentStep, 0, ErrorCode, ErrorText);
@@ -169,7 +169,7 @@ Var KeyCodeMap;
 #Region FormActiond
 
 &НаКлиенте
-Процедура EditorAction(Command)
+Процедура ДействиеРедактора(Command)
 
 	Map = New Map;
 	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
@@ -235,7 +235,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ShowMessage(Command)
+Процедура ПоказатьСообщение(Command)
 	VanessaEditor().showMessage(MessageText);
 КонецПроцедуры
 
@@ -366,7 +366,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура ClearEditorEvents(Command)
+Процедура ОчиститьЖурналСобытий(Command)
 	EventLog.Clear();
 КонецПроцедуры
 
@@ -484,7 +484,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура SetProgress(Command)
+Процедура УстановитьПрогресс(Command)
 	Map = New Map;
 	For Each Row In CompleteSteps Do
 		Steps = Map.Get(Row.codeWidget);
@@ -500,7 +500,7 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура CleanRuntimeProgress(Command)
+Процедура ОчиститьПрогресс(Command)
 	VanessaEditor().clearRuntimeProgress();
 КонецПроцедуры
 
@@ -899,7 +899,7 @@ Var KeyCodeMap;
 КонецФункции
 
 &НаКлиенте
-Процедура ShowSubcode(Command)
+Процедура ПоказатьПодсценарий(Command)
 
 	Cоntent =
 		"Функционал: Проверка формирования отчета Allure
@@ -938,12 +938,12 @@ Var KeyCodeMap;
 КонецПроцедуры
 
 &НаКлиенте
-Процедура RunSubcode(Command)
+Процедура ЗапуститьПодсценарий(Command)
 	AttachIdleHandler("СледующийШагВыполнения", 1, False);
 КонецПроцедуры
 
 &НаКлиенте
-Процедура StopSubcode(Command)
+Процедура ОстановитьПодсценарий(Command)
 	DetachIdleHandler("СледующийШагВыполнения");
 КонецПроцедуры
 

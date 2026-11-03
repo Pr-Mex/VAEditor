@@ -518,22 +518,22 @@
 											<Representation>Compact</Representation>
 											<ExtendedTooltip name="GroupEditTextExtendedTooltip" id="324"/>
 											<ChildItems>
-												<Button name="InsertText" id="321">
+												<Button name="ВставитьТекст" id="321">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.InsertText</CommandName>
-													<ExtendedTooltip name="InsertTextExtendedTooltip" id="322"/>
+													<CommandName>Form.Command.ВставитьТекст</CommandName>
+													<ExtendedTooltip name="ВставитьТекстExtendedTooltip" id="322"/>
 												</Button>
-												<Button name="ReplaceText" id="325">
+												<Button name="ЗаменитьТекст" id="325">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.ReplaceText</CommandName>
-													<ExtendedTooltip name="ReplaceTextExtendedTooltip" id="326"/>
+													<CommandName>Form.Command.ЗаменитьТекст</CommandName>
+													<ExtendedTooltip name="ЗаменитьТекстExtendedTooltip" id="326"/>
 												</Button>
 											</ChildItems>
 										</ButtonGroup>
-										<Button name="ShowMessage" id="225">
+										<Button name="ПоказатьСообщение" id="225">
 											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.ShowMessage</CommandName>
-											<ExtendedTooltip name="ShowMessageExtendedTooltip" id="226"/>
+											<CommandName>Form.Command.ПоказатьСообщение</CommandName>
+											<ExtendedTooltip name="ПоказатьСообщениеExtendedTooltip" id="226"/>
 										</Button>
 									</ChildItems>
 								</CommandBar>
@@ -1046,16 +1046,16 @@
 														<CommandName>Form.Item.CompleteSteps.StandardCommand.Delete</CommandName>
 														<ExtendedTooltip name="CompleteStepsDeleteExtendedTooltip" id="115"/>
 													</Button>
-													<Button name="CompleteStepsSetProgress" id="342">
+													<Button name="CompleteStepsУстановитьПрогресс" id="342">
 														<Type>CommandBarButton</Type>
-														<CommandName>Form.Command.SetProgress</CommandName>
+														<CommandName>Form.Command.УстановитьПрогресс</CommandName>
 														<Title>
 															<v8:item>
 																<v8:lang>ru</v8:lang>
 																<v8:content>Установить</v8:content>
 															</v8:item>
 														</Title>
-														<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
+														<ExtendedTooltip name="CompleteStepsУстановитьПрогрессExtendedTooltip" id="343"/>
 													</Button>
 													<Button name="CompleteStepsПолучитьПрогресс" id="344">
 														<Type>CommandBarButton</Type>
@@ -1152,7 +1152,7 @@
 										</InputField>
 									</ChildItems>
 								</UsualGroup>
-								<CommandBar name="CleanRuntimeProgressBar" id="154">
+								<CommandBar name="ОчиститьПрогрессBar" id="154">
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
@@ -1165,18 +1165,18 @@
 											<v8:content>Очистка прогресса выполнения</v8:content>
 										</v8:item>
 									</ToolTip>
-									<ExtendedTooltip name="CleanRuntimeProgressBarExtendedTooltip" id="155"/>
+									<ExtendedTooltip name="ОчиститьПрогрессBarExtendedTooltip" id="155"/>
 									<ChildItems>
-										<Button name="ShowError" id="349">
+										<Button name="ПоказатьОшибку" id="349">
 											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.ShowError</CommandName>
-											<ExtendedTooltip name="ShowErrorExtendedTooltip" id="350"/>
+											<CommandName>Form.Command.ПоказатьОшибку</CommandName>
+											<ExtendedTooltip name="ПоказатьОшибкуExtendedTooltip" id="350"/>
 										</Button>
-										<Button name="CleanRuntimeProgress" id="152">
+										<Button name="ОчиститьПрогресс" id="152">
 											<Type>CommandBarButton</Type>
 											<OnlyInAllActions>true</OnlyInAllActions>
-											<CommandName>Form.Command.CleanRuntimeProgress</CommandName>
-											<ExtendedTooltip name="CleanRuntimeProgressExtendedTooltip" id="153"/>
+											<CommandName>Form.Command.ОчиститьПрогресс</CommandName>
+											<ExtendedTooltip name="ОчиститьПрогрессExtendedTooltip" id="153"/>
 										</Button>
 									</ChildItems>
 								</CommandBar>
@@ -1195,10 +1195,10 @@
 									</ToolTip>
 									<ExtendedTooltip name="GroupSubcodeExtendedTooltip" id="363"/>
 									<ChildItems>
-										<Button name="ShowSubcode" id="358">
+										<Button name="ПоказатьПодсценарий" id="358">
 											<Type>CommandBarButton</Type>
 											<CommandName>Form.Command.SubcodeExample</CommandName>
-											<ExtendedTooltip name="ShowSubcodeExtendedTooltip" id="359"/>
+											<ExtendedTooltip name="ПоказатьПодсценарийExtendedTooltip" id="359"/>
 										</Button>
 										<ButtonGroup name="GroupSubcodeRun" id="368">
 											<Title>
@@ -1216,27 +1216,27 @@
 											<Representation>Compact</Representation>
 											<ExtendedTooltip name="GroupSubcodeRunExtendedTooltip" id="369"/>
 											<ChildItems>
-												<Button name="RunSubcode" id="364">
+												<Button name="ЗапуститьПодсценарий" id="364">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.RunSubcode</CommandName>
+													<CommandName>Form.Command.ЗапуститьПодсценарий</CommandName>
 													<Title>
 														<v8:item>
 															<v8:lang>ru</v8:lang>
 															<v8:content>Запустить</v8:content>
 														</v8:item>
 													</Title>
-													<ExtendedTooltip name="RunSubcodeExtendedTooltip" id="365"/>
+													<ExtendedTooltip name="ЗапуститьПодсценарийExtendedTooltip" id="365"/>
 												</Button>
-												<Button name="StopSubcode" id="366">
+												<Button name="ОстановитьПодсценарий" id="366">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.StopSubcode</CommandName>
+													<CommandName>Form.Command.ОстановитьПодсценарий</CommandName>
 													<Title>
 														<v8:item>
 															<v8:lang>ru</v8:lang>
 															<v8:content>Остановить</v8:content>
 														</v8:item>
 													</Title>
-													<ExtendedTooltip name="StopSubcodeExtendedTooltip" id="367"/>
+													<ExtendedTooltip name="ОстановитьПодсценарийExtendedTooltip" id="367"/>
 												</Button>
 											</ChildItems>
 										</ButtonGroup>
@@ -2589,7 +2589,7 @@
 			<Action>ПолучитьТекст</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="SetProgress" id="1">
+		<Command name="УстановитьПрогресс" id="1">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
@@ -2614,10 +2614,10 @@
 				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>SetProgress</Action>
+			<Action>УстановитьПрогресс</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="CleanRuntimeProgress" id="6">
+		<Command name="ОчиститьПрогресс" id="6">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
@@ -2634,7 +2634,7 @@
 				<xr:Ref>StdPicture.SpreadsheetDeletePageBreak</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>CleanRuntimeProgress</Action>
+			<Action>ОчиститьПрогресс</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="ПолучитьПозицию" id="7">
@@ -2690,7 +2690,7 @@
 				<xr:Ref>StdPicture.MoveLeft</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="EditRedo" id="10">
@@ -2711,7 +2711,7 @@
 				<xr:Ref>StdPicture.MoveRight</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="LoadStepsEn" id="11">
@@ -2759,7 +2759,7 @@
 			</ToolTip>
 			<Action>LoadStepsAll</Action>
 		</Command>
-		<Command name="ShowMessage" id="14">
+		<Command name="ПоказатьСообщение" id="14">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -2776,7 +2776,7 @@
 				<xr:Ref>0:78da2c47-172f-4d57-ab52-a06e40548136</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ShowMessage</Action>
+			<Action>ПоказатьСообщение</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="ClearEditorEvens" id="15">
@@ -2792,7 +2792,7 @@
 					<v8:content>Очистить журнал событий</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ClearEditorEvents</Action>
+			<Action>ОчиститьЖурналСобытий</Action>
 		</Command>
 		<Command name="EditReplace" id="16">
 			<Title>
@@ -2812,7 +2812,7 @@
 				<xr:Ref>StdPicture.Replace</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="EditFind" id="17">
 			<Title>
@@ -2832,7 +2832,7 @@
 				<xr:Ref>StdPicture.Find</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="EditFindNext" id="18">
 			<Title>
@@ -2851,7 +2851,7 @@
 				<xr:Ref>StdPicture.FindNext</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="EditFindPrevious" id="19">
 			<Title>
@@ -2870,7 +2870,7 @@
 				<xr:Ref>StdPicture.FindPrevious</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewFoldAll" id="20">
 			<Title>
@@ -2889,7 +2889,7 @@
 				<xr:Ref>StdPicture.CollapseAll</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfoldAll" id="21">
 			<Title>
@@ -2908,7 +2908,7 @@
 				<xr:Ref>StdPicture.ExpandAll</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewZoomIn" id="22">
 			<Title>
@@ -2927,7 +2927,7 @@
 				<xr:Ref>-16</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewZoomOut" id="23">
 			<Title>
@@ -2946,7 +2946,7 @@
 				<xr:Ref>-15</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewZoomReset" id="24">
 			<Title>
@@ -2961,7 +2961,7 @@
 					<v8:content>Сбросить масштаб (Ctrl+0)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfold1" id="25">
 			<Title>
@@ -2976,7 +2976,7 @@
 					<v8:content>Развернуть до уровня 1</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfold2" id="26">
 			<Title>
@@ -2991,7 +2991,7 @@
 					<v8:content>Развернуть до уровня 2</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ClipboardPaste" id="27">
 			<Title>
@@ -3006,7 +3006,7 @@
 					<v8:content>Вставить (Ctrl+V)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ClipboardCut" id="28">
 			<Title>
@@ -3021,7 +3021,7 @@
 					<v8:content>Вырезать (Ctrl+X)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ClipboardCopy" id="29">
 			<Title>
@@ -3036,7 +3036,7 @@
 					<v8:content>Копировать (Ctrl+C)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfold3" id="30">
 			<Title>
@@ -3051,9 +3051,9 @@
 					<v8:content>Развернуть до уровня 3</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
-		<Command name="InsertText" id="31">
+		<Command name="ВставитьТекст" id="31">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3070,10 +3070,10 @@
 				<xr:Ref>StdPicture.Rename</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>InsertText</Action>
+			<Action>ВставитьТекст</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="ReplaceText" id="32">
+		<Command name="ЗаменитьТекст" id="32">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3086,7 +3086,7 @@
 					<v8:content>Заменить текст</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ReplaceText</Action>
+			<Action>ЗаменитьТекст</Action>
 		</Command>
 		<Command name="LoadKeywordsRu" id="33">
 			<Title>
@@ -3178,7 +3178,7 @@
 			</ToolTip>
 			<Action>ПолучитьПрогресс</Action>
 		</Command>
-		<Command name="ShowError" id="37">
+		<Command name="ПоказатьОшибку" id="37">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3191,7 +3191,7 @@
 					<v8:content>Показать ошибку</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ShowError</Action>
+			<Action>ПоказатьОшибку</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="SubcodeExample" id="38">
@@ -3211,10 +3211,10 @@
 				<xr:Ref>StdPicture.ExternalDataSourceFunction</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ShowSubcode</Action>
+			<Action>ПоказатьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="RunSubcode" id="39">
+		<Command name="ЗапуститьПодсценарий" id="39">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3231,10 +3231,10 @@
 				<xr:Ref>StdPicture.GenerateReport</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>RunSubcode</Action>
+			<Action>ЗапуститьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="StopSubcode" id="40">
+		<Command name="ОстановитьПодсценарий" id="40">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
@@ -3251,7 +3251,7 @@
 				<xr:Ref>StdPicture.Stop</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>StopSubcode</Action>
+			<Action>ОстановитьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="NormalizeIndentation" id="41">
