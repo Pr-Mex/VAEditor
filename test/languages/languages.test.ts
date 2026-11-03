@@ -153,8 +153,8 @@ describe('Подсветка xBSL', function () {
     expect(typeAt(XBSL_LANGUAGE_ID, 'х = а ? б : в', 5)).to.equal('operator');
   });
 
-  it('Аннотация и директива импорта', () => {
-    expect(typeAt(XBSL_LANGUAGE_ID, '@Наименование', 1)).to.equal('annotation');
+  it('Аннотация и директива импорта — keyword, как директивы в BSL', () => {
+    expect(typeAt(XBSL_LANGUAGE_ID, '@Наименование', 1)).to.equal('keyword');
     expect(typeAt(XBSL_LANGUAGE_ID, '#требуется модуль.sbsl', 1)).to.equal('keyword');
   });
 

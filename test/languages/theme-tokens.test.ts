@@ -4,8 +4,8 @@ import { XBSL_LANGUAGE_ID, language as xbslLanguage } from '../../src/languages/
 let expect = require('chai').expect;
 
 // Цвет токена задаёт тема, а не грамматика: Monarch отдаёт имя токена
-// ('annotation'), тема ищет правило по префиксу имени с учётом языка
-// ('annotation.xbsl' → правило 'annotation'). Если имя разойдётся с правилами
+// ('keyword'), тема ищет правило по префиксу имени с учётом языка
+// ('keyword.xbsl' → правило 'keyword'). Если имя разойдётся с правилами
 // темы, ошибки не будет — просто текст останется цветом обычного текста, и
 // заметить это можно только глазами. Поэтому свойство проверяется тестом.
 //
@@ -18,7 +18,8 @@ const BUILTIN_THEMES: { [name: string]: any } = {
 };
 
 // Токены, которым встроенная тема обязана дать свой цвет.
-const COLORED = ['comment', 'keyword', 'number', 'string', 'regexp', 'delimiter', 'annotation', 'type'];
+const COLORED = ['comment', 'keyword', 'number', 'string', 'regexp', 'delimiter', 'type'];
+
 
 // Токены, которые по стандарту Monaco остаются цветом текста: правил для
 // идентификаторов и операторов в темах нет, это не ошибка грамматики.
@@ -57,10 +58,10 @@ describe('Цвета токенов берутся из встроенных т�
     });
   });
 
-  it('xBSL: аннотация и пространство имён отдают токены с цветом темы', () => {
+  it('xBSL: аннотация идёт как keyword, пространство имён — как type', () => {
     const roots = tokenRoots(XBSL_LANGUAGE_ID,
       '@Глобально\nметод Тест()\nзнч с: Стд::Строка\n// комментарий\nзнч н = 1\nзнч т = "текст"');
-    expect(roots).to.include('annotation');
+    expect(roots).to.include('keyword');
     expect(roots).to.include('type');
   });
 
