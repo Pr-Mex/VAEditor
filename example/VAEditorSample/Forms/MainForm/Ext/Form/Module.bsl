@@ -3,7 +3,7 @@ Var KeyCodeMap;
 
 #Region FormEvents
 
-&AtServer
+&НаСервере
 Процедура OnCreateAtServer(Cancel, StandardProcessing)
 
 	// Макеты отдаём на клиент адресами во временном хранилище: распаковка идёт
@@ -16,8 +16,8 @@ Var KeyCodeMap;
 	KeywordsTemplateURL = PutToTempStorage(DataObject.GetTemplate("Keywords"));
 
 	ErrorCode = New UUID;
-	ErrorText = "Runtime error info";
-	MessageText = "Hello, world!";
+	ErrorText = "Информация об ошибке выполнения";
+	MessageText = "Привет, мир!";
 	RuntimeStatus = "complete";
 	EditorTheme = "vs";
 	ShowMinimap = True;
@@ -86,7 +86,7 @@ Var KeyCodeMap;
 
 	Arg = VanessaEditor().getPosition();
 	UserMessage = New UserMessage;
-	UserMessage.Text = "Position: "
+	UserMessage.Text = "Позиция: "
 		+ "lineNumber = " + Format(Arg.lineNumber, "NG=") + ","
 		+ "codeWidget = " + Format(Arg.codeWidget, "NG=") + ","
 		+ "column = " + Format(Arg.column, "NG=");
@@ -116,7 +116,7 @@ Var KeyCodeMap;
 Процедура ПолучитьТекущийШаг(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = "Current step: " + VanessaEditor().getRuntimeProgress("current");
+	UserMessage.Text = "Текущий шаг: " + VanessaEditor().getRuntimeProgress("current");
 	UserMessage.Message();
 
 КонецПроцедуры
@@ -125,7 +125,7 @@ Var KeyCodeMap;
 Процедура ПолучитьПрогресс(Command)
 
 	UserMessage = New UserMessage;
-	UserMessage.Text = "Steps " + RuntimeStatus + ": " + VanessaEditor().getRuntimeProgress(RuntimeStatus);
+	UserMessage.Text = "Шаги " + RuntimeStatus + ": " + VanessaEditor().getRuntimeProgress(RuntimeStatus);
 	UserMessage.Message();
 
 КонецПроцедуры
@@ -577,9 +577,9 @@ Var KeyCodeMap;
 	Map.Insert("filterText", Text);
 	Map.Insert("insertText", Text);
 	Map.Insert("sortText", Text);
-	Map.Insert("documentation", "New step, created by user");
+	Map.Insert("documentation", "Новый шаг, созданный пользователем");
 	Map.Insert("kind", 0);
-	Map.Insert("section", "Custom user step");
+	Map.Insert("section", "Пользовательский шаг");
 
 	Array = New Array;
 	Array.Add(Map);
@@ -817,11 +817,11 @@ Var KeyCodeMap;
 	KeyMod = New Array;
 	CmdList.Add(New Structure("eventId,keyCode,keyMod", "F11", "F11", KeyMod));
 
-	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Create new step!"));
-	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Ignore this error"));
+	CmdList.Add(New Structure("eventId, title", "CREATE_STEP", "Создать новый шаг!"));
+	CmdList.Add(New Structure("eventId, title", "IGNORE_ERROR", "Игнорировать эту ошибку"));
 
-	CmdList.Add(New Structure("eventId, errorLink", "ERROR_DATA", "Details"));
-	CmdList.Add(New Structure("eventId, errorLink", "ERROR_COPY", "Copy error"));
+	CmdList.Add(New Structure("eventId, errorLink", "ERROR_DATA", "Подробности"));
+	CmdList.Add(New Structure("eventId, errorLink", "ERROR_COPY", "Копировать ошибку"));
 
 	Return JsonDump(CmdList);
 
@@ -831,8 +831,8 @@ Var KeyCodeMap;
 Функция GetErrorLinks()
 
 	Links = New Array;
-	Links.Add(New Structure("id, title", "ERROR_DATA", "Details"));
-	Links.Add(New Structure("id, title", "ERROR_COPY", "Copy error"));
+	Links.Add(New Structure("id, title", "ERROR_DATA", "Подробности"));
+	Links.Add(New Structure("id, title", "ERROR_COPY", "Копировать ошибку"));
 	Return JsonDump(Links);
 
 КонецФункции
@@ -843,8 +843,8 @@ Var KeyCodeMap;
 	Var Provider, Editor;
 
 	MsgStructure = New Structure;
-	MsgStructure.Insert("syntaxMsg", "Syntax error: step not found");
-	MsgStructure.Insert("soundHint", "Sound text");
+	MsgStructure.Insert("syntaxMsg", "Синтаксическая ошибка: шаг не найден");
+	MsgStructure.Insert("soundHint", "Текст звукового сигнала");
 	MessagesJSON = JsonDump(MsgStructure);
 
 	Provider = DefaultView().VanessaGherkinProvider;
