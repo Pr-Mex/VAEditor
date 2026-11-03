@@ -66,9 +66,9 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
   tokenizer: {
     root: [
       // Директивы препроцессора и области: #Если, #КонецЕсли, #Область.
-      [/^\s*#[А-Яа-яЁёA-Za-z_]+/, 'keyword'],
+      [/^\s*#[А-Яа-яЁёA-Za-z_]+/, 'annotation'],
       // Директивы компиляции: &НаСервере, &НаКлиенте.
-      [/&[А-Яа-яЁёA-Za-z_]+/, 'keyword'],
+      [/&[А-Яа-яЁёA-Za-z_]+/, 'annotation'],
       [/[А-Яа-яЁёA-Za-z_][А-Яа-яЁёA-Za-z_0-9]*/, {
         cases: {
           '@keywords': 'keyword',

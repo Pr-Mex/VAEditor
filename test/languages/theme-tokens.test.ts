@@ -1,7 +1,7 @@
 import { vs, vs_dark, hc_black, hc_light } from 'monaco-editor/esm/vs/editor/standalone/common/themes.js';
 import { BSL_LANGUAGE_ID, language as bslLanguage } from '../../src/languages/bsl/configuration';
 import { XBSL_LANGUAGE_ID, language as xbslLanguage } from '../../src/languages/xbsl/configuration';
-import { CANONICAL_1C_THEME, XBSL_THEME } from '../../src/themes';
+import { BSL_THEME, CANONICAL_1C_THEME, XBSL_THEME } from '../../src/themes';
 let expect = require('chai').expect;
 
 // Цвет токена задаёт тема, а не грамматика: Monarch отдаёт имя токена
@@ -128,6 +128,28 @@ describe('Цвета токенов берутся из встроенных т�
     expect(roots).to.include('function');
     expect(roots).to.include('variable');
     expect(roots).to.include('type');
+  });
+
+  it('Тема bsl задаёт классическую раскраску кода 1С', () => {
+    // Как в онлайн-раскрасках кода 1С: идентификаторы синие, ключевые слова и
+    // знаки операций красные, директивы коричневые, комментарии зелёные,
+    // строки и числа чёрные.
+    const rules = BSL_THEME.rules;
+    expect(ruleForeground(rules, '')).to.equal('0000FF');
+    expect(ruleForeground(rules, 'identifier')).to.equal('0000FF');
+    expect(ruleForeground(rules, 'keyword')).to.equal('FF0000');
+    expect(ruleForeground(rules, 'annotation')).to.equal('A52A2A');
+    expect(ruleForeground(rules, 'operator')).to.equal('FF0000');
+    expect(ruleForeground(rules, 'delimiter')).to.equal('FF0000');
+    expect(ruleForeground(rules, 'comment')).to.equal('008000');
+    expect(ruleForeground(rules, 'string')).to.equal('000000');
+    expect(ruleForeground(rules, 'number')).to.equal('000000');
+  });
+
+  it('BSL: директивы & и # отдаются как annotation', () => {
+    const roots = tokenRoots(BSL_LANGUAGE_ID, '&НаСервере\n#Область Тест\nПроцедура А()');
+    expect(roots).to.include('annotation');
+    expect(roots).to.include('keyword');
   });
 
   it('Тема xbsl задаёт палитру 1С:Элемент', () => {

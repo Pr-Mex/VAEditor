@@ -27,12 +27,50 @@ export const CANONICAL_1C_THEME: monaco.editor.IStandaloneThemeData = {
     { token: 'tag', foreground: 'e7c547' },
     { token: 'string', foreground: '963200' },
     { token: 'keyword', foreground: 'ff0000' },
+    // Директивы &НаСервере и #Область в Конфигураторе выделены так же, как
+    // ключевые слова, поэтому в этой теме у них тот же цвет.
+    { token: 'annotation', foreground: 'ff0000' },
   ],
   colors: {
     'editor.background': '#ffffff',
     'editor.foreground': '#5c6773',
     'editorIndentGuide.background': '#ecebec',
     'editorIndentGuide.activeBackground': '#e0e0e0',
+  },
+};
+
+// Классическая раскраска кода 1С — та, что дают онлайн-раскраски кода
+// (softonit.ru/free/highlights1c, voblachke.ru/color1c): идентификаторы синие,
+// ключевые слова и знаки операций красные, директивы &НаКлиенте и #Область
+// коричневые, комментарии зелёные, литералы (строки и числа) чёрные.
+// Это не палитра Конфигуратора (она в теме '1c') и не палитра 1С:Элемент
+// (тема 'xbsl') — три разных оформления, которые выбираются в демо.
+export const BSL_THEME_ID = 'bsl';
+
+export const BSL_THEME: monaco.editor.IStandaloneThemeData = {
+  base: 'vs',
+  inherit: true,
+  rules: [
+    // Пустое правило задаёт цвет обычного текста: в этой раскраске
+    // идентификаторы синие, а не чёрные.
+    { token: '', foreground: '0000ff' },
+    { token: 'identifier', foreground: '0000ff' },
+    { token: 'type', foreground: '0000ff' },
+    { token: 'keyword', foreground: 'ff0000' },
+    { token: 'annotation', foreground: 'a52a2a' },
+    { token: 'operator', foreground: 'ff0000' },
+    { token: 'delimiter', foreground: 'ff0000' },
+    { token: 'comment', foreground: '008000' },
+    { token: 'string', foreground: '000000' },
+    { token: 'string.escape', foreground: '000000' },
+    { token: 'number', foreground: '000000' },
+    { token: 'regexp', foreground: '000000' },
+  ],
+  colors: {
+    'editor.background': '#ffffff',
+    'editor.foreground': '#0000ff',
+    'editorIndentGuide.background': '#d3d3d3',
+    'editorIndentGuide.activeBackground': '#939393',
   },
 };
 
