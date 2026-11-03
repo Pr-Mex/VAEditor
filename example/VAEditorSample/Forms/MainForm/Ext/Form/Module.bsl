@@ -1,10 +1,10 @@
-﻿&AtClient
+﻿&НаКлиенте
 Var KeyCodeMap;
 
 #Region FormEvents
 
 &AtServer
-Procedure OnCreateAtServer(Cancel, StandardProcessing)
+Процедура OnCreateAtServer(Cancel, StandardProcessing)
 
 	// Макеты отдаём на клиент адресами во временном хранилище: распаковка идёт
 	// на клиенте (см. LoadEditor). В клиент-серверном варианте каталог,
@@ -25,16 +25,16 @@ Procedure OnCreateAtServer(Cancel, StandardProcessing)
 	TabSize = 4;
 	Column = 1;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure OnOpen(Cancel)
+&НаКлиенте
+Процедура OnOpen(Cancel)
 	KeyCodeMap = GetKeyCodeMap();
 	LoadEditor();
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadFile(Command)
+&НаКлиенте
+Процедура LoadFile(Command)
 
 	Breakpoints.Clear();
 	Problems.Clear();
@@ -48,41 +48,41 @@ Procedure LoadFile(Command)
 		VanessaEditor().setContent(Text);
 	EndIf;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure GetValue(Command)
+&НаКлиенте
+Процедура GetValue(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor().getContent();
 	UserMessage.Message();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ReadOnlyModeOnChange(Item)
+&НаКлиенте
+Процедура ReadOnlyModeOnChange(Item)
 
 	VanessaEditor().setReadOnly(ReadOnlyMode);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure EditorThemeOnChange(Item)
+&НаКлиенте
+Процедура EditorThemeOnChange(Item)
 
 	VanessaEditor().setTheme(EditorTheme);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure PositionOnChange(Item)
+&НаКлиенте
+Процедура PositionOnChange(Item)
 
 	VanessaEditor().setPosition(LineNumber, Column);
 	VanessaEditor().revealLine(LineNumber);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure GetPosition(Command)
+&НаКлиенте
+Процедура GetPosition(Command)
 
 	Arg = VanessaEditor().getPosition();
 	UserMessage = New UserMessage;
@@ -92,51 +92,51 @@ Procedure GetPosition(Command)
 		+ "column = " + Format(Arg.column, "NG=");
 	UserMessage.Message();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure GetLineContent(Command)
+&НаКлиенте
+Процедура GetLineContent(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor().getLineContent(lineNumber);
 	UserMessage.Message();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure GetSelectedContent(Command)
+&НаКлиенте
+Процедура GetSelectedContent(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = VanessaEditor().getSelectedContent();
 	UserMessage.Message();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure GetCurrentStep(Command)
+&НаКлиенте
+Процедура GetCurrentStep(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = "Current step: " + VanessaEditor().getRuntimeProgress("current");
 	UserMessage.Message();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure GetProgress(Command)
+&НаКлиенте
+Процедура GetProgress(Command)
 
 	UserMessage = New UserMessage;
 	UserMessage.Text = "Steps " + RuntimeStatus + ": " + VanessaEditor().getRuntimeProgress(RuntimeStatus);
 	UserMessage.Message();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure InsertText(Command)
+&НаКлиенте
+Процедура InsertText(Command)
 	VanessaEditor().insertText(MessageText);
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ReplaceText(Command)
+&НаКлиенте
+Процедура ReplaceText(Command)
 
 	Map = New Map;
 	Map.Insert("startLineNumber", LineNumber);
@@ -145,31 +145,31 @@ Procedure ReplaceText(Command)
 	Map.Insert("endColumn", Column);
 	VanessaEditor().insertText(MessageText, JsonDump(Map));
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ShowError(Command)
+&НаКлиенте
+Процедура ShowError(Command)
 
 	VanessaEditor().setRuntimeProgress("error", CurrentStep);
 	VanessaEditor().showRuntimeError(CurrentStep, 0, ErrorCode, ErrorText);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
+&НаКлиенте
+Процедура ActionsSelection(Item, SelectedRow, Field, StandardProcessing)
 
 	Data = Items.Actions.CurrentData;
 	If Data = Undefined Then Return; EndIf;
 	VanessaEditor().editor.trigger("", Data.Id);
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
 #Region FormActiond
 
-&AtClient
-Procedure EditorAction(Command)
+&НаКлиенте
+Процедура EditorAction(Command)
 
 	Map = New Map;
 	Map.Insert("ClipboardCut", "editor.action.clipboardCutAction");
@@ -195,52 +195,52 @@ Procedure EditorAction(Command)
 	Map.Insert("ViewZoomReset", "editor.action.fontZoomReset");
 	VanessaEditor().editor.trigger("", Map[Command.Name]);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadStepsAll(Command)
+&НаКлиенте
+Процедура LoadStepsAll(Command)
 
 	GherkinProvider().setStepList(VanessaStepList("en"), True);
 	GherkinProvider().setStepList(VanessaStepList("ru"), False);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadStepsEn(Command)
+&НаКлиенте
+Процедура LoadStepsEn(Command)
 
 	GherkinProvider().setStepList(VanessaStepList("en"), True);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadStepsRu(Command)
+&НаКлиенте
+Процедура LoadStepsRu(Command)
 
 	GherkinProvider().setStepList(VanessaStepList("ru"), True);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadKeywordsAll(Command)
+&НаКлиенте
+Процедура LoadKeywordsAll(Command)
 	GherkinProvider().setKeywords(GetKeywords());
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadKeywordsEn(Command)
+&НаКлиенте
+Процедура LoadKeywordsEn(Command)
 	GherkinProvider().setKeywords(GetKeywords("en"));
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure LoadKeywordsRu(Command)
+&НаКлиенте
+Процедура LoadKeywordsRu(Command)
 	GherkinProvider().setKeywords(GetKeywords("ru"));
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ShowMessage(Command)
+&НаКлиенте
+Процедура ShowMessage(Command)
 	VanessaEditor().showMessage(MessageText);
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Function GetKeyCodeMap()
+&НаКлиенте
+Функция GetKeyCodeMap()
 
 	Map = New Map;
 	Map.Insert(0, "Unknown");
@@ -358,31 +358,31 @@ Function GetKeyCodeMap()
 	Map.Insert(112, "MAX_VALUE");
 	Return Map;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Procedure TraceKeyboardOnChange(Item)
+&НаКлиенте
+Процедура TraceKeyboardOnChange(Item)
 	VanessaEditor().traceKeyboard = TraceKeyboard;
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ClearEditorEvents(Command)
+&НаКлиенте
+Процедура ClearEditorEvents(Command)
 	EventLog.Clear();
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
 #Region Breakpoints
 
-&AtClient
-Procedure BreakpointsOnChange(Item)
+&НаКлиенте
+Процедура BreakpointsOnChange(Item)
 
 	DecorateBreakpoints(VanessaEditor());
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
+&НаКлиенте
+Процедура BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
 
 	Breakpoints.Sort("codeWidget,lineNumber");
 
@@ -395,10 +395,10 @@ Procedure BreakpointsBeforeEditEnd(Item, NewRow, CancelEdit, Cancel)
 	//	Value = Row.Value;
 	//EndDo;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure BreakpointsOnActivateRow(Item)
+&НаКлиенте
+Процедура BreakpointsOnActivateRow(Item)
 
 	If Item.CurrentData = Undefined Then
 		Return;
@@ -408,10 +408,10 @@ Procedure BreakpointsOnActivateRow(Item)
 		VanessaEditor().revealLine(Item.CurrentData.lineNumber);
 	EndIf;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure UpdateBreakpoints(Json)
+&НаКлиенте
+Процедура UpdateBreakpoints(Json)
 
 	BreakpointsPacket = JsonLoad(Json);
 
@@ -426,10 +426,10 @@ Procedure UpdateBreakpoints(Json)
 		Sleep();
 	EndIf;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure DecorateBreakpoints(Editor)
+&НаКлиенте
+Процедура DecorateBreakpoints(Editor)
 
 	BreakpointsPacket = New Array;
 
@@ -441,21 +441,21 @@ Procedure DecorateBreakpoints(Editor)
 
 	Editor.decorateBreakpoints(JsonDump(BreakpointsPacket));
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
 #Region Problems
 
-&AtClient
-Procedure ProblemsOnChange(Item)
+&НаКлиенте
+Процедура ProblemsOnChange(Item)
 
 	DecorateProblems();
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure DecorateProblems()
+&НаКлиенте
+Процедура DecorateProblems()
 
 	ProblemsPacket = New Array;
 
@@ -471,20 +471,20 @@ Procedure DecorateProblems()
 
 	VanessaEditor().decorateProblems(JsonDump(ProblemsPacket));
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
 #Region RuntimeProgress
 
-&AtClient
-Procedure CurrentStepOnChange(Item)
+&НаКлиенте
+Процедура CurrentStepOnChange(Item)
 	VanessaEditor().setCurrentProgress(CurrentStep);
 	VanessaEditor().revealLine(CurrentStep);
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure SetProgress(Command)
+&НаКлиенте
+Процедура SetProgress(Command)
 	Map = New Map;
 	For Each Row In CompleteSteps Do
 		Steps = Map.Get(Row.codeWidget);
@@ -497,19 +497,19 @@ Procedure SetProgress(Command)
 	For each KeyValue In Map Do
 		VanessaEditor().setRuntimeProgress(RuntimeStatus, JsonDump(KeyValue.Value), KeyValue.Key, InlineView);
 	EndDo;
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure CleanRuntimeProgress(Command)
+&НаКлиенте
+Процедура CleanRuntimeProgress(Command)
 	VanessaEditor().clearRuntimeProgress();
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
 #Region Json
 
-&AtClient
-Function JsonLoad(Json, ReadToMap = False)
+&НаКлиенте
+Функция JsonLoad(Json, ReadToMap = False)
 
 	JSONReader = New JSONReader;
 	JSONReader.SetString(Json);
@@ -517,27 +517,27 @@ Function JsonLoad(Json, ReadToMap = False)
 	JSONReader.Close();
 	Return Value;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function JsonDump(Value)
+&НаКлиенте
+Функция JsonDump(Value)
 
 	JSONWriter = New JSONWriter;
 	JSONWriter.SetString();
 	WriteJSON(JSONWriter, Value);
 	Return JSONWriter.Close();
 
-EndFunction
+КонецФункции
 
 #EndRegion
 
 #Region Utils
 
-Procedure Sleep(Delay = 1)
+Процедура Sleep(Delay = 1)
 
 	RunApp("timeout " + Delay, , True);
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
@@ -545,8 +545,8 @@ EndProcedure
 
 #Region Public
 
-&AtClient
-Procedure AppendEventLog(Event, Data)
+&НаКлиенте
+Процедура AppendEventLog(Event, Data)
 
 	EventRecord = EventLog.Insert(0);
 	EventRecord.Date = CurrentDate();
@@ -554,10 +554,10 @@ Procedure AppendEventLog(Event, Data)
 	EventRecord.Data = Data;
 	Items.EventLog.CurrentRow = EventLog.IndexOf(EventRecord);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Function GetKeyInfo(Data)
+&НаКлиенте
+Функция GetKeyInfo(Data)
 
 	res = "";
 	If Data.metaKey Then res = res + "Win+"; EndIf;
@@ -566,10 +566,10 @@ Function GetKeyInfo(Data)
 	If Data.shiftKey Then res = res + "Shift+"; EndIf;
 	Return res + KeyCodeMap[Data.keyCode] + " (" + Data.keyCode + ")";
 
-EndFunction
+КонецФункции
 
-&AtClient
-Procedure CreateStep(Editor, lineNumber)
+&НаКлиенте
+Процедура CreateStep(Editor, lineNumber)
 
 	Text = VanessaEditor().getLineContent(lineNumber);
 
@@ -586,10 +586,10 @@ Procedure CreateStep(Editor, lineNumber)
 
 	GherkinProvider().setStepList(JsonDump(Array), False);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
+&НаКлиенте
+Процедура VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 
 	If Event = "UPDATE_BREAKPOINTS" Then
 		UpdateBreakpoints(Arg);
@@ -612,14 +612,14 @@ Procedure VanessaEditorOnReceiveEventHandler(Editor, Event, Arg)
 		AppendEventLog(Event, Arg);
 	EndIf;
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
 #Region Public
 
-&AtClient
-Procedure LoadEditor()
+&НаКлиенте
+Процедура LoadEditor()
 
 	If Not ValueIsFilled(EditorTemplateURL) Then
 		Return;
@@ -628,10 +628,10 @@ Procedure LoadEditor()
 	EditorDirectory = ExtractTemplates(GetFromTempStorage(EditorTemplateURL));
 	VanessaEditorURL = EditorDirectory + "/index.html?localeCode=" + Left(CurrentSystemLanguage(), 2) + "#";
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Function ExtractTemplates(BinaryData)
+&НаКлиенте
+Функция ExtractTemplates(BinaryData)
 
 	Directory = GetTempFileName();
 	DeleteFiles(Directory);
@@ -644,10 +644,10 @@ Function ExtractTemplates(BinaryData)
 
 	Return Directory;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function TemplateText(BinaryData, EntryBaseName = "")
+&НаКлиенте
+Функция TemplateText(BinaryData, EntryBaseName = "")
 
 	// EntryBaseName = "" — берётся первый файл архива.
 	Directory = ExtractTemplates(BinaryData);
@@ -665,14 +665,14 @@ Function TemplateText(BinaryData, EntryBaseName = "")
 
 	Return Result;
 
-EndFunction
+КонецФункции
 
 #EndRegion
 
 #Region Private
 
-&AtClient
-Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
+&НаКлиенте
+Процедура VanessaEditorOnClick(Item, EventData, StandardProcessing)
 
 	Element = EventData.Element;
 	If Lower(Element.tagName) = "body" Then
@@ -697,10 +697,10 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 		Message(Element.title);
 	EndIf;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure FillEditorActions(Editor)
+&НаКлиенте
+Процедура FillEditorActions(Editor)
 
 	TextJSON = Editor.getActions();
 	JSONReader = New JSONReader;
@@ -711,10 +711,10 @@ Procedure FillEditorActions(Editor)
 	EndDo;
 	Actions.Sort("Id");
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Function GetKeywords(Language = "")
+&НаКлиенте
+Функция GetKeywords(Language = "")
 
 	JsonText = TemplateText(GetFromTempStorage(KeywordsTemplateURL));
 
@@ -729,22 +729,10 @@ Function GetKeywords(Language = "")
 
 	Return JsonDump(Keyrords);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function GetElements()
-
-	Map = New Map;
-	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
-	Map.Insert("ИмяКнопки", "ФормаЗаписать");
-	Map.Insert("ИмяТаблицы", "Номенклатура");
-	Map.Insert("ИмяРеквизита", "Количество");
-	Return JsonDump(Map);
-
-EndFunction
-
-&AtClient
-Function GetVariables()
+&НаКлиенте
+Функция GetElements()
 
 	Map = New Map;
 	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
@@ -753,10 +741,22 @@ Function GetVariables()
 	Map.Insert("ИмяРеквизита", "Количество");
 	Return JsonDump(Map);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function GetMetatags()
+&НаКлиенте
+Функция GetVariables()
+
+	Map = New Map;
+	Map.Insert("ИмяКоманды", "ЗаписатьИЗакрыть");
+	Map.Insert("ИмяКнопки", "ФормаЗаписать");
+	Map.Insert("ИмяТаблицы", "Номенклатура");
+	Map.Insert("ИмяРеквизита", "Количество");
+	Return JsonDump(Map);
+
+КонецФункции
+
+&НаКлиенте
+Функция GetMetatags()
 
 	words = "
 		|try
@@ -774,10 +774,10 @@ Function GetMetatags()
 
 	Return JsonDump(Metatags);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function GetDirectives()
+&НаКлиенте
+Функция GetDirectives()
 
 	Map = New Map;
 	Map.Insert("if", StrSplit("Если,If", ","));
@@ -785,17 +785,17 @@ Function GetDirectives()
 	Map.Insert("endif", StrSplit("КонецЕсли,EndIf", ","));
 	Return JsonDump(Map);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function VanessaStepList(Language)
+&НаКлиенте
+Функция VanessaStepList(Language)
 
 	Return TemplateText(GetFromTempStorage(StepListTemplateURL), Language);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function GetCommands()
+&НаКлиенте
+Функция GetCommands()
 
 	CmdList = New Array;
 
@@ -825,20 +825,20 @@ Function GetCommands()
 
 	Return JsonDump(CmdList);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function GetErrorLinks()
+&НаКлиенте
+Функция GetErrorLinks()
 
 	Links = New Array;
 	Links.Add(New Structure("id, title", "ERROR_DATA", "Details"));
 	Links.Add(New Structure("id, title", "ERROR_COPY", "Copy error"));
 	Return JsonDump(Links);
 
-EndFunction
+КонецФункции
 
-&AtClient
-Procedure VanessaEditorDocumentComplete(Item)
+&НаКлиенте
+Процедура VanessaEditorDocumentComplete(Item)
 
 	Var Provider, Editor;
 
@@ -875,31 +875,31 @@ Procedure VanessaEditorDocumentComplete(Item)
 	УсловныеОператоры = ЗаписьJSON.Закрыть();
 	Provider.setKeypairs(УсловныеОператоры);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Function DefaultView()
+&НаКлиенте
+Функция DefaultView()
 
 	Return Items.VanessaEditor.Document.defaultView;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function VanessaEditor()
+&НаКлиенте
+Функция VanessaEditor()
 
 	Return DefaultView().VanessaEditor;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Function GherkinProvider()
+&НаКлиенте
+Функция GherkinProvider()
 
 	Return DefaultView().VanessaGherkinProvider;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Procedure ShowSubcode(Command)
+&НаКлиенте
+Процедура ShowSubcode(Command)
 
 	Cоntent =
 		"Функционал: Проверка формирования отчета Allure
@@ -935,20 +935,20 @@ Procedure ShowSubcode(Command)
 	VanessaEditor().showRuntimeCode(11, Cоntent1);
 	VanessaEditor().showRuntimeCode(12, Cоntent2);
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure RunSubcode(Command)
+&НаКлиенте
+Процедура RunSubcode(Command)
 	AttachIdleHandler("NextRuntimeStep", 1, False);
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure StopSubcode(Command)
+&НаКлиенте
+Процедура StopSubcode(Command)
 	DetachIdleHandler("NextRuntimeStep");
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure NextRuntimeStep()
+&НаКлиенте
+Процедура NextRuntimeStep()
 	Pos = VanessaEditor().nextRuntimeProgress();
 	If Pos = Undefined Then
 		RuntimePosition = Undefined;
@@ -957,17 +957,17 @@ Procedure NextRuntimeStep()
 		RuntimePosition = "(" + Format(Pos.lineNumber, "NG=") + ", " + Pos.codeWidget + ")";
 		RuntimeCode = VanessaEditor().getLineContent(Pos.lineNumber, Pos.codeWidget);
 	EndIf;
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure ShowMinimapOnChange(Item)
+&НаКлиенте
+Процедура ShowMinimapOnChange(Item)
 
 	Элементы.VanessaEditor.Документ.defaultView.VanessaTabs.showMinimap = ShowMinimap;
 
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Function GetMarkdownText()
+&НаКлиенте
+Функция GetMarkdownText()
 
 	Try
 		TextDocument = New TextDocument;
@@ -977,10 +977,10 @@ Function GetMarkdownText()
 		return Undefined;
 	EndTry;
 
-EndFunction
+КонецФункции
 
-&AtClient
-Procedure EditorTypeOnChange(Item)
+&НаКлиенте
+Процедура EditorTypeOnChange(Item)
 
 	View = DefaultView();
 
@@ -1049,7 +1049,7 @@ Procedure EditorTypeOnChange(Item)
 		DiffEditor.setSideBySide(EditorType = SideBySide);
 	EndIf;
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 &НаКлиенте
@@ -1059,20 +1059,20 @@ EndProcedure
 
 КонецПроцедуры
 
-&AtClient
-Procedure TabSizeOnChange(Item)
+&НаКлиенте
+Процедура TabSizeOnChange(Item)
 	VanessaEditor().setTabSize(TabSize);
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure InsertSpacesOnChange(Item)
+&НаКлиенте
+Процедура InsertSpacesOnChange(Item)
 	VanessaEditor().setInsertSpaces(InsertSpaces);
-EndProcedure
+КонецПроцедуры
 
-&AtClient
-Procedure NormalizeIndentation(Command)
+&НаКлиенте
+Процедура NormalizeIndentation(Command)
 	VanessaEditor().normalizeIndentation();
-EndProcedure
+КонецПроцедуры
 
 &НаКлиенте
 Процедура Whitespaces(Команда)
@@ -1081,13 +1081,13 @@ EndProcedure
 
 КонецПроцедуры
 
-&AtClient
-Procedure Autotest(Command)
+&НаКлиенте
+Процедура Autotest(Command)
 
 	Position = StrFind(FormName, ".", SearchDirection.FromEnd);
 	OpenForm(Left(FormName, Position) + "Autotest");
 
-EndProcedure
+КонецПроцедуры
 
 #EndRegion
 
