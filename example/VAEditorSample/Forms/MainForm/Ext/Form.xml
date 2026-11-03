@@ -55,13 +55,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group file</v8:content>
+						<v8:content>Файл</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group file</v8:content>
+						<v8:content>Файл</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -83,13 +83,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group clipboard</v8:content>
+						<v8:content>Буфер обмена</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group clipboard</v8:content>
+						<v8:content>Буфер обмена</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -116,13 +116,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group edit</v8:content>
+						<v8:content>Редактирование</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group edit</v8:content>
+						<v8:content>Редактирование</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -144,13 +144,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group find</v8:content>
+						<v8:content>Поиск</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group find</v8:content>
+						<v8:content>Поиск</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -182,13 +182,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group fold</v8:content>
+						<v8:content>Сворачивание</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group fold</v8:content>
+						<v8:content>Сворачивание</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -225,13 +225,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Zoom</v8:content>
+						<v8:content>Масштаб</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Zoom</v8:content>
+						<v8:content>Масштаб</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Picture>
@@ -268,7 +268,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Body</v8:content>
+					<v8:content>Основное</v8:content>
 				</v8:item>
 			</Title>
 			<Group>Horizontal</Group>
@@ -308,13 +308,13 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Group pages</v8:content>
+							<v8:content>Страницы</v8:content>
 						</v8:item>
 					</Title>
 					<ToolTip>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Group pages</v8:content>
+							<v8:content>Страницы</v8:content>
 						</v8:item>
 					</ToolTip>
 					<PagesRepresentation>TabsOnRightHorizontal</PagesRepresentation>
@@ -330,7 +330,7 @@
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page content</v8:content>
+									<v8:content>Содержимое</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageContentExtendedTooltip" id="174"/>
@@ -831,7 +831,7 @@
 							<Title>
 								<v8:item>
 									<v8:lang>en</v8:lang>
-									<v8:content>Right side</v8:content>
+									<v8:content>Правая часть</v8:content>
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
@@ -841,11 +841,11 @@
 							<ToolTip>
 								<v8:item>
 									<v8:lang>en</v8:lang>
-									<v8:content>Right side</v8:content>
+									<v8:content>Правая часть</v8:content>
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page runtime</v8:content>
+									<v8:content>Выполнение</v8:content>
 								</v8:item>
 							</ToolTip>
 							<Width>25</Width>
@@ -1266,7 +1266,7 @@
 							<Title>
 								<v8:item>
 									<v8:lang>en</v8:lang>
-									<v8:content>Left side</v8:content>
+									<v8:content>Левая часть</v8:content>
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
@@ -1276,7 +1276,7 @@
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page breakpoints</v8:content>
+									<v8:content>Точки останова</v8:content>
 								</v8:item>
 							</ToolTip>
 							<Width>7</Width>
@@ -1423,7 +1423,7 @@
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page problems</v8:content>
+									<v8:content>Проблемы</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageProblemsРасширеннаяПодсказка" id="201"/>
@@ -1672,7 +1672,7 @@
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page actions</v8:content>
+									<v8:content>Действия</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageActionsExtendedTooltip" id="261"/>
