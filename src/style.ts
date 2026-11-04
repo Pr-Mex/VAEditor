@@ -1,6 +1,11 @@
 export class StyleManager {
   private lineHeight: number = 0;
 
+  // Тема, выбранная приложением вручную (поле «Тема» в демо, EditorTheme в VA),
+  // не перебивается автоопределением по интерфейсу платформы: иначе ручной
+  // выбор «отскакивал» бы при каждом обновлении палитры формы.
+  public static themePinned = false;
+
   constructor(
     public editor: monaco.editor.IStandaloneCodeEditor
   ) {
@@ -15,6 +20,12 @@ export class StyleManager {
   static set theme(theme: string) {
     document.body.dataset.theme = theme;
     monaco.editor.setTheme(theme);
+  }
+
+  // Тема по интерфейсу платформы: применяется, только пока тему не выбрали вручную.
+  static applyPlatformTheme(theme: string): void {
+    if (StyleManager.themePinned) return;
+    StyleManager.theme = theme;
   }
 
   private updateLineHeight() {

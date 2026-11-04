@@ -751,6 +751,16 @@ export class VanessaTabs {
   public tab = (index: number) => this.tabStack[index];
   public select = (index: number) => this.tabStack[index].select();
   public set theme(arg: string) { StyleManager.theme = arg; }
+  // Настройки отступов и режима чтения в режиме вкладок: применяем ко всем
+  // вкладкам, иначе после переключения вкладки возвращаются прежние значения.
+  public setTabSize = (arg: number) => this.forEachEditor(e => e.getModel()?.updateOptions({ tabSize: arg }));
+  public setInsertSpaces = (arg: boolean) => this.forEachEditor(e => e.getModel()?.updateOptions({ insertSpaces: arg }));
+  public setDetectIndentation = (arg: boolean) => this.forEachEditor(e => e.setDetectIndentation?.(arg));
+  public setReadOnly = (arg: boolean) => this.forEachEditor(e => e.setReadOnly?.(arg));
+  public normalizeIndentation = () => this.forEachEditor(e => e.normalizeIndentation?.());
+  private forEachEditor(callback: (editor: any) => void) {
+    this.tabStack.forEach(tab => { if (tab.editor) callback(tab.editor); });
+  }
   public get version(): string { return version }
   public get options(): string {
     const o = monaco.editor.EditorOptions;

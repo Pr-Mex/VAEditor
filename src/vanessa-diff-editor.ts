@@ -1,6 +1,5 @@
 import * as monaco from "monaco-editor";
 import * as dom from 'monaco-editor/esm/vs/base/browser/dom';
-import "./languages/bsl/contribution";
 import "./languages/turbo-gherkin/contribution";
 import { language as gherkin } from './languages/turbo-gherkin/configuration'
 import { IVanessaEditor, EventsManager, createModel, VanessaEditorEvent, disposeModel, VAEditorType } from "./common";

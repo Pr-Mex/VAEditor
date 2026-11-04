@@ -32,6 +32,8 @@ declare global {
     REQUEST_IMAGE = "REQUEST_IMAGE",
     PRESS_CTRL_S = "PRESS_CTRL_S",
     PRESS_ESCAPE = "PRESS_ESCAPE",
+    SHOW_STEP_IN_TREE = "SHOW_STEP_IN_TREE",
+    OPEN_STEP_AS_FEATURE = "OPEN_STEP_AS_FEATURE",
   }
 
   /** Точка останова, передаваемая в `setBreakpoints` / `decorateBreakpoints` как JSON-массив. */
@@ -292,6 +294,12 @@ declare global {
     insertText(text: string, arg?: string): void;
     /** Нормализовать отступы. */
     normalizeIndentation(): void;
+    /** Отформатировать документ (то же, что Shift+Alt+F). */
+    formatDocument(): void;
+    /** Показать шаг под курсором в дереве библиотеки шагов (событие `SHOW_STEP_IN_TREE`). */
+    showStepInTree(): void;
+    /** Открыть исходную фичу шага под курсором (событие `OPEN_STEP_AS_FEATURE`). */
+    openStepAsFeature(): void;
     /** Прогнать проверку синтаксиса. */
     checkSyntax(): void;
     /** Показать всплывающее сообщение под курсором. */
@@ -404,6 +412,16 @@ declare global {
     nextDiff(): void;
     /** Тема (`vs`, `vs-dark` и т.д.). */
     theme: string;
+    /** Размер табуляции — применяется ко всем вкладкам. */
+    setTabSize(arg: number): void;
+    /** Использовать пробелы вместо табов — все вкладки. */
+    setInsertSpaces(arg: boolean): void;
+    /** Автоопределение отступов — все вкладки. */
+    setDetectIndentation(arg: boolean): void;
+    /** Только для чтения — все вкладки. */
+    setReadOnly(arg: boolean): void;
+    /** Нормализовать отступы — все вкладки. */
+    normalizeIndentation(): void;
     /** Версия VAEditor. */
     readonly version: string;
     /** Опции редактора (Monaco IEditorOptions) как JSON-строка. */
@@ -467,6 +485,8 @@ declare global {
     setKeypairs(arg: string): void;
     /** Установить мета-теги (`try`/`except`) из JSON-массива. */
     setMetatags(arg: string): void;
+    /** Символ комментария строки: `#` (по умолчанию) или `//` (#1452). */
+    setLineComment(arg: string): void;
     /** Включить режим СППР (директивы препроцессора). */
     setSPPR(arg: boolean): void;
     /** Установить локализованные сообщения. */

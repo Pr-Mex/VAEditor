@@ -6,7 +6,11 @@ name: onec-linux
 
 on:
   push:
-    branches: [onec-linux, onec-no-execute]
+    # Полный прогон в WebView платформы — на мерже в master/develop и вручную.
+    # На каждый pull_request эту джобу не запускаем: она тянет дистрибутив
+    # платформы, требует секрет KEY_1CV8T и идёт десятки минут, а быстрый ответ
+    # на PR даёт build-linux (сборка + headless-тесты, полторы минуты).
+    branches: [master, develop, onec-linux, onec-no-execute]
   workflow_dispatch:
 
 jobs:
@@ -271,3 +275,28 @@ jobs:
             echo '::error::автотест не дошёл до конца'
             exit 1
           fi
+
+      # Логи прогона лежат вне рабочего каталога (/tmp): без копирования после
+      # красного прогона остаются только строки лога шага, а разбирать нужно
+      # вывод клиента, конфигуратора и лог загрузки конфигурации.
+      - name: Собрать логи прогона
+        if: always()
+        run: |
+          mkdir -p artifacts
+          for f in /tmp/client.log /tmp/client-out.log /tmp/create.log /tmp/load.log /tmp/epf.log; do
+            if [ -f "$f" ]; then cp "$f" artifacts/; fi
+          done
+          ls -la artifacts
+
+      - name: Артефакты прогона
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: onec-linux-run
+          if-no-files-found: ignore
+          path: |
+            artifacts/
+            autotest-result.txt
+            success.txt
+            page-loaded.txt
+            client-started.txt

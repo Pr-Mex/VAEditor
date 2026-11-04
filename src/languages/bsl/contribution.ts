@@ -1,7 +1,7 @@
-import { conf, language as monarchLanguage } from "./configuration";
+import { BSL_LANGUAGE_ID, conf, language as monarchLanguage } from "./configuration";
 
 const language: monaco.languages.ILanguageExtensionPoint = {
-  id: "bsl",
+  id: BSL_LANGUAGE_ID,
   extensions: [".bsl", ".os"],
 };
 

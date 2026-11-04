@@ -192,6 +192,27 @@ jobs:
             createinfobase.log
             loadconfig.log
 
+      # Диагностика красного прогона: после падения нужны не только строки лога,
+      # но и собранная страница (её можно открыть локально) и файлы автотеста.
+      # Скриншот тут недоступен: у клиента 1С на хостинговом раннере нет
+      # интерактивной сессии. Дамп окон X есть в onec-linux.yml (там Xvfb).
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vaeditor-failure
+          if-no-files-found: ignore
+          path: |
+            dist/
+            client.log
+            client-out.log
+            autotest-result.txt
+            success.txt
+            page-loaded.txt
+            client-started.txt
+            *.error.txt
+            *.log
+
       - name: Draft release
         if: github.ref == 'refs/heads/master' && success()
         uses: softprops/action-gh-release@v2

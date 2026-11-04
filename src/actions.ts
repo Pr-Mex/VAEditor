@@ -1,6 +1,7 @@
 import { VanessaEditor } from "./vanessa-editor";
 import { VanessaEditorEvent, IVanessaAction } from "./common";
 import { VanessaGherkinProvider } from "./languages/turbo-gherkin/provider";
+import { getStepContext } from "./languages/turbo-gherkin/step-context";
 import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
 import { IOpenerService } from 'monaco-editor/esm/vs/platform/opener/common/opener';
 
@@ -55,10 +56,41 @@ export class ActionManager {
         return originalOpen(target, options);
       };
     }
+    this.registerStepCommands();
   }
 
   public dispose(): void {
     this.editor = null;
+  }
+
+  // Команды навигации по библиотеке шагов (#1453). Вызываются из 1С через
+  // VanessaEditor.trigger(source, 'vanessa.showStepInTree') или из палитры
+  // команд; контекст шага уходит в VA событием.
+  public registerStepCommands() {
+    this.addStepCommand('vanessa.showStepInTree', 'Показать шаг в дереве', VanessaEditorEvent.SHOW_STEP_IN_TREE);
+    this.addStepCommand('vanessa.openStepAsFeature', 'Открыть шаг как фичу', VanessaEditorEvent.OPEN_STEP_AS_FEATURE);
+  }
+
+  private addStepCommand(id: string, label: string, event: VanessaEditorEvent) {
+    this.editor.addAction({
+      id: id,
+      label: label,
+      run: (editor) => {
+        const position = editor.getPosition();
+        if (!position) return;
+        const provider = VanessaGherkinProvider.instance;
+        const context = getStepContext(
+          provider ? provider.matcher : undefined,
+          editor.getModel().getLineContent(position.lineNumber),
+          position.lineNumber,
+        );
+        // Строка без шага (комментарий, описание фичи) — событие не шлём:
+        // в дереве нечего показывать.
+        if (!context) return;
+        context.filepath = this.owner.filepath;
+        this.owner.fireEvent(event, JSON.stringify(context));
+      }
+    });
   }
 
   get actions(): any {

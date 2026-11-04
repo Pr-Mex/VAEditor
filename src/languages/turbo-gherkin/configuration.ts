@@ -6,9 +6,14 @@ export const language: monaco.languages.ILanguageExtensionPoint = {
   extensions: [".feature"],
 };
 
+// Символ комментария строки по умолчанию — `#`: так в стандартном Gherkin,
+// в VS Code и в остальных редакторах фич (#1452). Прежний `//` остаётся
+// доступным как настройка: часть баз Vanessa пишет им.
+export const DEFAULT_LINE_COMMENT = "#";
+
 export const conf: monaco.languages.LanguageConfiguration = {
   comments: {
-    lineComment: "//"
+    lineComment: DEFAULT_LINE_COMMENT
   },
   autoClosingPairs: [
     { open: "\"", close: "\"", notIn: ["string"] },
@@ -21,6 +26,17 @@ export const conf: monaco.languages.LanguageConfiguration = {
     { open: "<", close: ">" },
   ]
 };
+
+// Токенизатор понимает оба маркера сразу (см. tokenizer.whitespace), поэтому
+// переключение символа не требует пересборки провайдера: достаточно отдать
+// Monaco новую конфигурацию языка — из неё берёт маркер действие
+// «закомментировать строку».
+export function setLineComment(character: string): string {
+  const value = character === "//" ? "//" : DEFAULT_LINE_COMMENT;
+  conf.comments.lineComment = value;
+  monaco.languages.setLanguageConfiguration(language.id, conf);
+  return value;
+}
 
 export class GherkinLanguage {
 

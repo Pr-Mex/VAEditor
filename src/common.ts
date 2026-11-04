@@ -40,6 +40,10 @@ export enum VanessaEditorEvent {
   REQUEST_IMAGE = "REQUEST_IMAGE",
   PRESS_CTRL_S = "PRESS_CTRL_S",
   PRESS_ESCAPE = "PRESS_ESCAPE",
+  // Навигация по библиотеке шагов (#1453): редактор сообщает, какой шаг стоит
+  // под курсором, а дерево библиотеки и открытие исходной фичи — на стороне VA.
+  SHOW_STEP_IN_TREE = "SHOW_STEP_IN_TREE",
+  OPEN_STEP_AS_FEATURE = "OPEN_STEP_AS_FEATURE",
 }
 
 export interface VanessaEditorMessage {

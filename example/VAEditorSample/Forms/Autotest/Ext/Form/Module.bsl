@@ -25,11 +25,23 @@ Procedure OnOpen(Cancel)
 	// Параметр запуска — путь к файлу обработки, поэтому режим определяется не
 	// по префиксу "autotest", а по самому факту автозапуска: форма открыта
 	// приложением, значит это прогон автотестов.
-	WriteMarker("client-started.txt");
+	Если ЭтоАвтозапуск() Тогда
+		WriteMarker("client-started.txt");
+	КонецЕсли;
 
 	LoadTestPage();
 
 EndProcedure
+
+&AtClient
+Функция ЭтоАвтозапуск()
+
+	// Автозапуск — это прогон в CI: обработку открывают с параметром запуска
+	// (/C путь к файлу). Пользователь запускает обработку без параметра, и тогда
+	// результат прогона нужно показать, а не закрывать клиент.
+	Возврат ЗначениеЗаполнено(ПараметрЗапуска);
+
+КонецФункции
 
 &AtClient
 Procedure WriteMarker(FileName)
@@ -139,9 +151,9 @@ Procedure VanessaEditorURLDocumentComplete(Item)
 	// Параметр запуска — путь к файлу обработки, поэтому режим определяется не
 	// по префиксу "autotest", а по факту автозапуска: любой запуск, кроме
 	// отладочной пробы probeenv, считается прогоном автотестов.
-	If Not StrStartsWith(ПараметрЗапуска, "probeenv") Then
+	Если ЭтоАвтозапуск() Тогда
 		WriteMarker("page-loaded.txt");
-	EndIf;
+	КонецЕсли;
 
 	// Внешний API для результатов (раньше — AppVeyor) не используется: страница
 	// сама сообщает о конце прогона кликом по AutotestResult.
@@ -163,19 +175,45 @@ Procedure VanessaEditorOnClick(Item, EventData, StandardProcessing)
 		Exit(False);
 	EndIf;
 
-	If Not StrStartsWith(ПараметрЗапуска, "probeenv") And EventData.Element.id = "AutotestResult" Then
-		Result = Items.VanessaEditor.Document.defaultView.mochaResults;
-		// Отчёт пишем всегда: без него не понять, упали тесты или клик не дошёл.
-		TextWriter = New TextWriter(CurrentPath + "autotest-result.txt");
-		TextWriter.WriteLine("passes=" + Result.passes + " failures=" + Result.failures);
-		TextWriter.WriteLine(Items.VanessaEditor.Document.defaultView.mochaFailures);
-		TextWriter.Close();
-		If Result.failures = 0 Then
-			TextWriter = New TextWriter(CurrentPath + "success.txt");
-			TextWriter.WriteLine(CurrentUniversalDateInMilliseconds());
-			TextWriter.Close();
-		EndIf;
-		Exit(False);
+	If EventData.Element.id <> "AutotestResult" Then
+		Return;
 	EndIf;
 
+	// Интерактивный прогон: клиент не закрываем, иначе результат не увидеть.
+	Если Не ЭтоАвтозапуск() Тогда
+		ПоказатьРезультатПрогона();
+		Return;
+	КонецЕсли;
+
+	Result = Items.VanessaEditor.Document.defaultView.mochaResults;
+	// Отчёт пишем всегда: без него не понять, упали тесты или клик не дошёл.
+	TextWriter = New TextWriter(CurrentPath + "autotest-result.txt", TextEncoding.UTF8);
+	TextWriter.WriteLine("passes=" + Result.passes + " failures=" + Result.failures);
+	TextWriter.WriteLine(Items.VanessaEditor.Document.defaultView.mochaFailures);
+	TextWriter.Close();
+	If Result.failures = 0 Then
+		TextWriter = New TextWriter(CurrentPath + "success.txt");
+		TextWriter.WriteLine(CurrentUniversalDateInMilliseconds());
+		TextWriter.Close();
+	EndIf;
+	Exit(False);
+
 EndProcedure
+
+&AtClient
+Процедура ПоказатьРезультатПрогона()
+
+	// Итог прогона — сообщением: страница с отчётом остаётся открытой,
+	// а сводка видна и без прокрутки встроенного браузера.
+	Результат = Items.VanessaEditor.Document.defaultView.mochaResults;
+	Текст = "Автотесты: пройдено " + Результат.passes + ", провалено " + Результат.failures;
+	Провалы = Items.VanessaEditor.Document.defaultView.mochaFailures;
+	Если ЗначениеЗаполнено(Провалы) Тогда
+		Текст = Текст + Символы.ПС + Провалы;
+	КонецЕсли;
+
+	Сообщение = Новый СообщениеПользователю;
+	Сообщение.Текст = Текст;
+	Сообщение.Сообщить();
+
+КонецПроцедуры

@@ -31,6 +31,7 @@ export interface IWorkerContext {
   variables: Record<string, IVariable>;
   messages: IWorkerMessages;
   sppr: boolean;
+  commentCharacter: string;
 }
 
 export interface IVanessaModel
@@ -103,6 +104,8 @@ export enum MessageType {
   GetLinkData,
   CheckSyntax,
   SetSPPR,
+  SetLineComment,
+  FormatDocument,
 }
 
 export function type2str(type: MessageType) {
@@ -126,6 +129,8 @@ export function type2str(type: MessageType) {
     case MessageType.GetLinkData: return "GetLinkData";
     case MessageType.CheckSyntax: return "CheckSyntax";
     case MessageType.SetSPPR: return "SetSPPR";
+    case MessageType.SetLineComment: return "SetLineComment";
+    case MessageType.FormatDocument: return "FormatDocument";
   }
 }
 
@@ -149,6 +154,8 @@ export type WorkerMessage =
   | { id?: number, type: MessageType.GetLinkData, versionId: number, uri: string, key: string }
   | { id?: number, type: MessageType.CheckSyntax, versionId: number, uri: string }
   | { id?: number, type: MessageType.SetSPPR, sppr: boolean }
+  | { id?: number, type: MessageType.SetLineComment, character: string }
+  | { id?: number, type: MessageType.FormatDocument, versionId: number, uri: string, tabSize: number, insertSpaces: boolean }
   ;
 
 export interface IWorkerModel {

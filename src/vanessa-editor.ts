@@ -15,7 +15,7 @@ const $ = dom.$;
 export class VanessaEditor implements IVanessaEditor {
 
   // 1C:Enterprise interaction call.
-  public setTheme = (arg: string) => StyleManager.theme = arg;
+  public setTheme = (arg: string) => { StyleManager.themePinned = true; StyleManager.theme = arg; };
   public setValue = (value: string, filename: string) => { this.runtimeManager.clear(); const old = this.editor.getModel(); this.editor.setModel(createModel(value, filename)); disposeModel(old); }
   public getContent = (codeWidget: string = "") => this.runtimeManager.getContent(codeWidget);
   public setContent = (arg: string) => { this.runtimeManager.clear(); this.editor.setValue(arg); }
@@ -73,6 +73,15 @@ export class VanessaEditor implements IVanessaEditor {
   public setInsertSpaces = (arg: boolean) => this.editor.getModel().updateOptions({ insertSpaces: arg });
   public setDetectIndentation = (arg: boolean) => this.editor.updateOptions({ detectIndentation: arg });
   public normalizeIndentation = () => this.syntaxManager?.normalizeIndentation();
+  // Форматирование документа (#2044, #1630): то же, что Shift+Alt+F.
+  public formatDocument = () => {
+    const action = this.editor.getAction('editor.action.formatDocument');
+    if (action) action.run();
+  };
+  // Навигация по библиотеке шагов (#1453): VA вызывает эти методы со своих
+  // кнопок, редактор отвечает событиями SHOW_STEP_IN_TREE / OPEN_STEP_AS_FEATURE.
+  public showStepInTree = () => this.editor.trigger('vanessa', 'vanessa.showStepInTree', undefined);
+  public openStepAsFeature = () => this.editor.trigger('vanessa', 'vanessa.openStepAsFeature', undefined);
 
   public checkSyntax = () => { if (this.syntaxManager) this.syntaxManager.checkSyntax(); }
   public get enableSyntaxCheck(): boolean { return this.syntaxManager !== null; }

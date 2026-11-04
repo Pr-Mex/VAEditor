@@ -7,13 +7,14 @@ import { TokenizationRegistry, ITokenizationSupport } from 'monaco-editor/esm/vs
 import { compile } from 'monaco-editor/esm/vs/editor/standalone/common/monarch/monarchCompile';
 import { MessageType, IVanessaModel, ISyntaxDecorations, WorkerMessage, ISyntaxManager, ISpprDirect } from './common';
 import { process } from './worker';
-import { language, GherkinLanguage } from './configuration';
+import { language, GherkinLanguage, setLineComment, DEFAULT_LINE_COMMENT } from './configuration';
 import { VanessaEditor } from "../../vanessa-editor";
 import { IVanessaAction } from "../../common";
 import { KeywordMatcher } from './matcher';
 import { ActionManager } from '../../actions';
 import { VACodeError, VAQuickAction } from './quickfix';
 import { workerUrl, setWorkerDelivery } from '../../worker-source';
+import { BSL_THEME, BSL_THEME_ID, CANONICAL_1C_THEME, CANONICAL_1C_THEME_ID, PLATFORM_85_THEME, PLATFORM_85_THEME_ID, TAXI_THEME, TAXI_THEME_ID, XBSL_THEME, XBSL_THEME_ID } from '../../themes';
 
 // Воркер встраивается в страницу как base64 (InlineWorkerSourcePlugin):
 // отдельный файл рядом со страницей встроенный WebKit/WebView2 по file://
@@ -147,6 +148,7 @@ function isRequest(type: MessageType): boolean {
     case MessageType.GetLinkData:
     case MessageType.GetCompletions:
     case MessageType.CheckSyntax:
+    case MessageType.FormatDocument:
       return true;
   }
   return false;
@@ -245,6 +247,7 @@ export class VanessaGherkinProvider {
   private _sppr: boolean = false;
   private _matcher: KeywordMatcher;
   private _locale: string;
+  private _commentCharacter: string = DEFAULT_LINE_COMMENT;
 
   public get metatags(): string[] {
     return this._metatags;
@@ -304,6 +307,16 @@ export class VanessaGherkinProvider {
     this.matcher?.setSPPR(arg);
   }
 
+  // Символ комментария строки (#1452): '#' (по умолчанию) или '//'.
+  public setLineComment = (arg: string): void => {
+    this._commentCharacter = setLineComment(arg);
+    send({ type: MessageType.SetLineComment, character: this._commentCharacter });
+  }
+
+  public get lineComment(): string {
+    return this._commentCharacter;
+  }
+
   public setMessages = (arg: string): void => {
     send({ type: MessageType.SetMessages, data: arg });
   }
@@ -337,27 +350,15 @@ export class VanessaGherkinProvider {
   public setSuggestWidgetWidth = (arg: any) => ActionManager.setSuggestWidgetWidth(arg);
 
   private createTheme1C() {
-    monaco.editor.defineTheme('1c', {
-      base: 'vs',
-      inherit: true,
-      rules: [
-        { token: '', foreground: '000000' },
-        { token: 'invalid', foreground: 'ff3333' },
-        { token: 'variable', foreground: '5c6773' },
-        { token: 'constant', foreground: 'f08c36' },
-        { token: 'comment', foreground: '007f00' },
-        { token: 'number', foreground: '0000ff' },
-        { token: 'tag', foreground: 'e7c547' },
-        { token: 'string', foreground: '963200' },
-        { token: 'keyword', foreground: 'ff0000' },
-      ],
-      colors: {
-        'editor.background': '#ffffff',
-        'editor.foreground': '#5c6773',
-        'editorIndentGuide.background': '#ecebec',
-        'editorIndentGuide.activeBackground': '#e0e0e0',
-      },
-    });
+    monaco.editor.defineTheme(CANONICAL_1C_THEME_ID, CANONICAL_1C_THEME);
+    // Классическая раскраска кода 1С (онлайн-раскраски) и палитра xBSL
+    // (1С:Элемент) — отдельные темы, их цвета отличаются от палитры
+    // Конфигуратора, см. src/themes.ts.
+    monaco.editor.defineTheme(BSL_THEME_ID, BSL_THEME);
+    monaco.editor.defineTheme(XBSL_THEME_ID, XBSL_THEME);
+    // Оформление под интерфейс формы: «Такси» и «Версия 8.5» (см. src/themes.ts).
+    monaco.editor.defineTheme(TAXI_THEME_ID, TAXI_THEME);
+    monaco.editor.defineTheme(PLATFORM_85_THEME_ID, PLATFORM_85_THEME);
   }
 
   public provideCodeActions(model: monaco.editor.ITextModel
@@ -462,6 +463,32 @@ export class VanessaGherkinProvider {
 
   public resolveCompletionItem(item, token) {
     return item;
+  }
+
+  // Форматирование документа (#2044, #1630). Monaco вызывает этот провайдер
+  // по Shift+Alt+F и сам показывает «Форматировать документ» в палитре команд.
+  public provideDocumentFormattingEdits(
+    model: monaco.editor.ITextModel,
+    options: monaco.languages.FormattingOptions,
+    token: monaco.CancellationToken,
+  ): monaco.languages.ProviderResult<monaco.languages.TextEdit[]> {
+    return postMessage<monaco.languages.TextEdit[]>(model, {
+      type: MessageType.FormatDocument,
+      versionId: model.getVersionId(),
+      uri: model.uri.toString(),
+      tabSize: options ? options.tabSize : undefined,
+      insertSpaces: options ? options.insertSpaces : undefined,
+    }).then(edits => (edits || []).map(edit => ({
+      // Из воркера диапазон приходит простым объектом: собираем Range заново,
+      // чтобы Monaco не пришлось угадывать тип.
+      range: new monaco.Range(
+        edit.range.startLineNumber,
+        edit.range.startColumn,
+        edit.range.endLineNumber,
+        edit.range.endColumn,
+      ),
+      text: edit.text,
+    })));
   }
 
   public checkSyntax(m: monaco.editor.ITextModel, manager?: ISyntaxManager) {

@@ -1,24 +1,43 @@
 import LanguageConfiguration = monaco.languages.LanguageConfiguration;
 import IMonarchLanguage = monaco.languages.IMonarchLanguage;
 
+// Идентификатор языка вынесен отдельно: по нему регистрируется язык, включается
+// подсветка и им же пользуется всё, что рисует BSL-текст. Раньше строка "bsl"
+// была продублирована в двух файлах.
+export const BSL_LANGUAGE_ID = "bsl";
+
 export const conf: LanguageConfiguration = {
   comments: {
-    lineComment: "//"
+    lineComment: "//",
+    blockComment: ["/*", "*/"],
   },
   autoClosingPairs: [
     { open: "\"", close: "\"", notIn: ["string"] },
-    { open: "'", close: "'", notIn: ["string"] },
-    { open: "<", close: ">", notIn: ["string"] },
-    { open: "$", close: "$" },
+    { open: "(", close: ")" },
+    { open: "[", close: "]" },
   ],
   surroundingPairs: [
     { open: "\"", close: "\"" },
-    { open: "'", close: "'" },
-    { open: "<", close: ">" },
+    { open: "(", close: ")" },
+    { open: "[", close: "]" },
   ]
 };
 
+// Грамматика встроенного языка 1С. Три вещи, которые легко сломать:
+//
+// 1. Строка в BSL может занимать несколько строк (текст запроса пишут как
+//    "ВЫБРАТЬ ... |ИЗ ..."), поэтому состояние @string живёт до закрывающей
+//    кавычки, а не до конца строки.
+// 2. `|` — не кавычка. Это разделитель строк текста запроса ВНУТРИ строки.
+//    Раньше он открывал строковое состояние, и всё после него красилось как
+//    строка.
+// 3. Литерал даты пишется в одинарных кавычках ('20240101') и не является
+//    строкой.
+//
+// Ключевые слова отдаются как keyword (раньше — metatag), чтобы цвет брался из
+// того же правила темы, что и в остальных языках.
 export const language: IMonarchLanguage = <IMonarchLanguage>{
+  defaultToken: '',
   ignoreCase: true,
 
   keywords: [
@@ -31,7 +50,9 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
     'Do', 'КонецЦикла', 'EndDo', 'НЕ', 'NOT', 'И', 'AND', 'ИЛИ', 'OR', 'Новый',
     'New', 'Процедура', 'Procedure', 'Функция', 'Function', 'Перем', 'Var',
     'Экспорт', 'Export', 'Знач', 'Val', 'Неопределено', 'Выполнить',
-    'Истина', 'Ложь', 'True', 'False', 'Undefined'
+    'Истина', 'Ложь', 'True', 'False', 'Undefined',
+    // Асинхронность и метки (платформа 8.3.20+).
+    'Асинх', 'Async', 'Ждать', 'Await', 'Перейти', 'Goto',
   ],
 
   brackets: [
@@ -42,80 +63,53 @@ export const language: IMonarchLanguage = <IMonarchLanguage>{
   operators: ['=', '<=', '>=', '<>', '<', '>', '+', '-', '*', '/', '%'],
   symbols: /[=><!~?:&+\-*\/\^%]+/,
 
-  escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
-
   tokenizer: {
     root: [
-      [/[a-zA-Z\u0410-\u044F_][a-zA-Z\u0410-\u044F_0-9]*/, { cases: { '@keywords': 'metatag', '@default': 'identifier' } }],
-      // whitespace
-      { include: '@whitespace' },
-      // delimiters and operators
-      [/}/, {
+      // Директивы препроцессора и области: #Если, #КонецЕсли, #Область.
+      [/^\s*#[А-Яа-яЁёA-Za-z_]+/, 'annotation'],
+      // Директивы компиляции: &НаСервере, &НаКлиенте.
+      [/&[А-Яа-яЁёA-Za-z_]+/, 'annotation'],
+      [/[А-Яа-яЁёA-Za-z_][А-Яа-яЁёA-Za-z_0-9]*/, {
         cases: {
-          '$S2==interpolatedstring': { token: 'string.quote', next: '@pop' },
-          '$S2==litinterpstring': { token: 'string.quote', next: '@pop' },
-          '@default': '@brackets'
+          '@keywords': 'keyword',
+          '@default': 'identifier',
         }
       }],
-      [/^\s*#.*$/, 'key'],
-      [/^\s*&.*$/, 'key'],
+      { include: '@whitespace' },
+      // Литерал даты: '20240101' или '20240101120000'.
+      [/'[0-9]{8}([0-9]{6})?'/, 'number'],
+      // Строка: закрывающая кавычка может быть и на следующих строках.
+      [/"/, { token: 'string', next: '@string' }],
+      // Числа.
+      [/[0-9]+\.[0-9]+([eE][\-+]?\d+)?/, 'number.float'],
+      [/[0-9]+/, 'number'],
+      [/[;,.]/, 'delimiter'],
       [/[()\[\]]/, '@brackets'],
       [/@symbols/, {
         cases: {
-          '@operators': 'delimiter',
-          '@default': ''
+          '@operators': 'operator',
+          '@default': 'delimiter',
         }
       }],
-      // numbers
-      [/[0-9_]*\.[0-9_]+([eE][\-+]?\d+)?[fFdD]?/, 'number.float'],
-      [/[0-9_]+/, 'number'],
-      // delimiter: after number because of .\d floats
-      [/[;,.]/, 'delimiter'],
-      // strings
-      [/"([^"\\]|\\.)*$/, 'string.invalid'],
-      [/["|]/, { token: 'string.quote', next: '@string' }],
-      [/\$\@"/, { token: 'string.quote', next: '@litinterpstring' }],
-      [/\@"/, { token: 'string.quote', next: '@litstring' }],
-      [/\$"/, { token: 'string.quote', next: '@interpolatedstring' }],
-      // characters
-      [/'[^\\']'/, 'string'],
-      [/(')(@escapes)(')/, ['string', 'string.escape', 'string']],
-      [/'/, 'string.invalid']
     ],
-    comment: [
-      [/\/\/.*$/, 'comment'],
-    ],
-    string: [
-      [/[^\\"]+/, 'string'],
-      [/@escapes/, 'string.escape'],
-      [/\\./, 'string.escape.invalid'],
-      [/"/, { token: 'string.quote', next: '@pop' }],
-      [/\|.*"/, { token: 'string.quote', next: '@pop' }],
-    ],
-    litstring: [
-      [/[^"]+/, 'string'],
-      [/""/, 'string.escape'],
-      [/"/, { token: 'string.quote', next: '@pop' }]
-    ],
-    litinterpstring: [
-      [/[^"{]+/, 'string'],
-      [/""/, 'string.escape'],
-      [/{{/, 'string.escape'],
-      [/}}/, 'string.escape'],
-      [/{/, { token: 'string.quote', next: 'root.litinterpstring' }],
-      [/"/, { token: 'string.quote', next: '@pop' }]
-    ],
-    interpolatedstring: [
-      [/[^\\"{]+/, 'string'],
-      [/@escapes/, 'string.escape'],
-      [/\\./, 'string.escape.invalid'],
-      [/{{/, 'string.escape'],
-      [/}}/, 'string.escape'],
-      [/{/, { token: 'string.quote', next: 'root.interpolatedstring' }],
-      [/"/, { token: 'string.quote', next: '@pop' }]
-    ],
+
     whitespace: [
+      [/[ \t\r\n]+/, ''],
       [/\/\/.*$/, 'comment'],
+      [/\/\*/, 'comment', '@blockComment'],
+    ],
+
+    blockComment: [
+      [/[^*\/]+/, 'comment'],
+      [/\*\//, 'comment', '@pop'],
+      [/[*\/]/, 'comment'],
+    ],
+
+    string: [
+      [/""/, 'string.escape'],
+      [/[^"]+/, 'string'],
+      [/"/, 'string', '@pop'],
     ],
   },
 };
+

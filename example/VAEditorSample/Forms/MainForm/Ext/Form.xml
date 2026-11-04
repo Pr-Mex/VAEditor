@@ -2,37 +2,80 @@
 <Form xmlns="http://v8.1c.ru/8.3/xcf/logform" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:dcscor="http://v8.1c.ru/8.1/data-composition-system/core" xmlns:dcsset="http://v8.1c.ru/8.1/data-composition-system/settings" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4">
 	<AutoCommandBar name="FormCommandBar" id="-1">
 		<ChildItems>
-			<Button name="FormAutotest" id="412">
+			<Button name="FormАвтотест" id="412">
 				<Type>CommandBarButton</Type>
 				<DefaultButton>true</DefaultButton>
-				<CommandName>Form.Command.Autotest</CommandName>
-				<ExtendedTooltip name="FormAutotestExtendedTooltip" id="413"/>
+				<CommandName>Form.Command.Автотест</CommandName>
+				<ExtendedTooltip name="FormАвтотестExtendedTooltip" id="413"/>
 			</Button>
-			<ButtonGroup name="FormGroupFile" id="192">
+			<ButtonGroup name="ГруппаДемонстрация" id="600">
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group file</v8:content>
+						<v8:content>Демонстрация возможностей</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group file</v8:content>
+						<v8:content>Демонстрация возможностей редактора</v8:content>
+					</v8:item>
+				</ToolTip>
+				<Representation>Compact</Representation>
+				<ExtendedTooltip name="ГруппаДемонстрацияExtendedTooltip" id="601"/>
+				<ChildItems>
+					<Button name="КнопкаФорматироватьДокумент" id="602">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ФорматироватьДокумент</CommandName>
+						<ExtendedTooltip name="КнопкаФорматироватьДокументExtendedTooltip" id="603"/>
+					</Button>
+					<Button name="КнопкаСимволКомментария" id="604">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ПереключитьСимволКомментария</CommandName>
+						<ExtendedTooltip name="КнопкаСимволКомментарияExtendedTooltip" id="605"/>
+					</Button>
+					<Button name="КнопкаПоказатьШагВДереве" id="606">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ПоказатьШагВДереве</CommandName>
+						<ExtendedTooltip name="КнопкаПоказатьШагВДеревеExtendedTooltip" id="607"/>
+					</Button>
+					<Button name="КнопкаОткрытьШагКакФичу" id="608">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ОткрытьШагКакФичу</CommandName>
+						<ExtendedTooltip name="КнопкаОткрытьШагКакФичуExtendedTooltip" id="609"/>
+					</Button>
+					<Button name="КнопкаПоказатьЯзыки" id="610">
+						<Type>CommandBarButton</Type>
+						<CommandName>Form.Command.ПоказатьЯзыки</CommandName>
+						<ExtendedTooltip name="КнопкаПоказатьЯзыкиExtendedTooltip" id="611"/>
+					</Button>
+				</ChildItems>
+			</ButtonGroup>
+			<ButtonGroup name="FormGroupFile" id="192">
+				<Title>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Файл</v8:content>
+					</v8:item>
+				</Title>
+				<ToolTip>
+					<v8:item>
+						<v8:lang>ru</v8:lang>
+						<v8:content>Файл</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
 				<ExtendedTooltip name="FormGroupFileExtendedTooltip" id="193"/>
 				<ChildItems>
-					<Button name="LoadFile" id="6">
+					<Button name="ЗагрузитьФайл" id="6">
 						<Type>CommandBarButton</Type>
-						<CommandName>Form.Command.LoadFile</CommandName>
-						<ExtendedTooltip name="LoadFileExtendedTooltip" id="7"/>
+						<CommandName>Form.Command.ЗагрузитьФайл</CommandName>
+						<ExtendedTooltip name="ЗагрузитьФайлExtendedTooltip" id="7"/>
 					</Button>
-					<Button name="GetValue" id="8">
+					<Button name="ПолучитьТекст" id="8">
 						<Type>CommandBarButton</Type>
-						<CommandName>Form.Command.GetValue</CommandName>
-						<ExtendedTooltip name="GetValueExtendedTooltip" id="9"/>
+						<CommandName>Form.Command.ПолучитьТекст</CommandName>
+						<ExtendedTooltip name="ПолучитьТекстExtendedTooltip" id="9"/>
 					</Button>
 				</ChildItems>
 			</ButtonGroup>
@@ -40,13 +83,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group clipboard</v8:content>
+						<v8:content>Буфер обмена</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group clipboard</v8:content>
+						<v8:content>Буфер обмена</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -73,13 +116,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group edit</v8:content>
+						<v8:content>Редактирование</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group edit</v8:content>
+						<v8:content>Редактирование</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -101,13 +144,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group find</v8:content>
+						<v8:content>Поиск</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group find</v8:content>
+						<v8:content>Поиск</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -139,13 +182,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group fold</v8:content>
+						<v8:content>Сворачивание</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Form group fold</v8:content>
+						<v8:content>Сворачивание</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Representation>Compact</Representation>
@@ -182,13 +225,13 @@
 				<Title>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Zoom</v8:content>
+						<v8:content>Масштаб</v8:content>
 					</v8:item>
 				</Title>
 				<ToolTip>
 					<v8:item>
 						<v8:lang>ru</v8:lang>
-						<v8:content>Zoom</v8:content>
+						<v8:content>Масштаб</v8:content>
 					</v8:item>
 				</ToolTip>
 				<Picture>
@@ -225,7 +268,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Body</v8:content>
+					<v8:content>Основное</v8:content>
 				</v8:item>
 			</Title>
 			<Group>Horizontal</Group>
@@ -237,11 +280,11 @@
 					<Title>
 						<v8:item>
 							<v8:lang>en</v8:lang>
-							<v8:content>Center</v8:content>
+							<v8:content>По центру</v8:content>
 						</v8:item>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Center</v8:content>
+							<v8:content>По центру</v8:content>
 						</v8:item>
 					</Title>
 					<Group>Vertical</Group>
@@ -255,8 +298,8 @@
 							<ContextMenu name="VanessaEditorContextMenu" id="2"/>
 							<ExtendedTooltip name="VanessaEditorExtendedTooltip" id="3"/>
 							<Events>
-								<Event name="DocumentComplete">VanessaEditorDocumentComplete</Event>
-								<Event name="OnClick">VanessaEditorOnClick</Event>
+								<Event name="DocumentComplete">РедакторVanessaЗавершениеДокумента</Event>
+								<Event name="OnClick">РедакторVanessaПриНажатии</Event>
 							</Events>
 						</HTMLDocumentField>
 					</ChildItems>
@@ -265,13 +308,13 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Group pages</v8:content>
+							<v8:content>Страницы</v8:content>
 						</v8:item>
 					</Title>
 					<ToolTip>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Group pages</v8:content>
+							<v8:content>Страницы</v8:content>
 						</v8:item>
 					</ToolTip>
 					<PagesRepresentation>TabsOnRightHorizontal</PagesRepresentation>
@@ -281,13 +324,13 @@
 							<Title>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Content</v8:content>
+									<v8:content>Содержимое</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page content</v8:content>
+									<v8:content>Содержимое</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageContentExtendedTooltip" id="174"/>
@@ -303,7 +346,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Single</v8:content>
+														<v8:content>Одно окно</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">0</Value>
@@ -342,7 +385,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Tabs</v8:content>
+														<v8:content>Вкладки</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:decimal">3</Value>
@@ -352,7 +395,7 @@
 									<ContextMenu name="EditorTypeКонтекстноеМеню" id="398"/>
 									<ExtendedTooltip name="EditorTypeРасширеннаяПодсказка" id="399"/>
 									<Events>
-										<Event name="OnChange">EditorTypeOnChange</Event>
+										<Event name="OnChange">ТипРедактораПриИзменении</Event>
 									</Events>
 								</RadioButtonField>
 								<InputField name="EditorTheme" id="159">
@@ -367,10 +410,49 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>1C:Enterprise</v8:content>
+														<v8:content>BSL: классическая раскраска кода</v8:content>
 													</v8:item>
 												</Presentation>
-												<Value xsi:type="xs:string">1c</Value>
+												<Value xsi:type="xs:string">bsl</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>xBSL: как в 1С:Элемент</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">xbsl</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>Такси: как в интерфейсе формы</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">taxi</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
+														<v8:content>8.5: как в интерфейсе формы</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">85</Value>
 											</xr:Value>
 										</xr:Item>
 										<xr:Item>
@@ -406,6 +488,19 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
+														<v8:content>1С: как в Конфигураторе</v8:content>
+													</v8:item>
+												</Presentation>
+												<Value xsi:type="xs:string">1c</Value>
+											</xr:Value>
+										</xr:Item>
+										<xr:Item>
+											<xr:Presentation/>
+											<xr:CheckState>0</xr:CheckState>
+											<xr:Value xsi:type="FormChoiceListDesTimeValue">
+												<Presentation>
+													<v8:item>
+														<v8:lang>ru</v8:lang>
 														<v8:content>High Contrast Dark</v8:content>
 													</v8:item>
 												</Presentation>
@@ -416,7 +511,7 @@
 									<ContextMenu name="EditorThemeContextMenu" id="160"/>
 									<ExtendedTooltip name="EditorThemeExtendedTooltip" id="161"/>
 									<Events>
-										<Event name="OnChange">EditorThemeOnChange</Event>
+										<Event name="OnChange">ТемаРедактораПриИзменении</Event>
 									</Events>
 								</InputField>
 								<InputField name="Position" id="183">
@@ -435,13 +530,13 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group text</v8:content>
+											<v8:content>Текст</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group text</v8:content>
+											<v8:content>Текст</v8:content>
 										</v8:item>
 									</ToolTip>
 									<ExtendedTooltip name="GroupTextExtendedTooltip" id="320"/>
@@ -450,34 +545,34 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group edit text</v8:content>
+													<v8:content>Редактирование текста</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group edit text</v8:content>
+													<v8:content>Редактирование текста</v8:content>
 												</v8:item>
 											</ToolTip>
 											<Representation>Compact</Representation>
 											<ExtendedTooltip name="GroupEditTextExtendedTooltip" id="324"/>
 											<ChildItems>
-												<Button name="InsertText" id="321">
+												<Button name="ВставитьТекст" id="321">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.InsertText</CommandName>
-													<ExtendedTooltip name="InsertTextExtendedTooltip" id="322"/>
+													<CommandName>Form.Command.ВставитьТекст</CommandName>
+													<ExtendedTooltip name="ВставитьТекстExtendedTooltip" id="322"/>
 												</Button>
-												<Button name="ReplaceText" id="325">
+												<Button name="ЗаменитьТекст" id="325">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.ReplaceText</CommandName>
-													<ExtendedTooltip name="ReplaceTextExtendedTooltip" id="326"/>
+													<CommandName>Form.Command.ЗаменитьТекст</CommandName>
+													<ExtendedTooltip name="ЗаменитьТекстExtendedTooltip" id="326"/>
 												</Button>
 											</ChildItems>
 										</ButtonGroup>
-										<Button name="ShowMessage" id="225">
+										<Button name="ПоказатьСообщение" id="225">
 											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.ShowMessage</CommandName>
-											<ExtendedTooltip name="ShowMessageExtendedTooltip" id="226"/>
+											<CommandName>Form.Command.ПоказатьСообщение</CommandName>
+											<ExtendedTooltip name="ПоказатьСообщениеExtendedTooltip" id="226"/>
 										</Button>
 									</ChildItems>
 								</CommandBar>
@@ -485,13 +580,13 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group visual</v8:content>
+											<v8:content>Отображение</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group visual</v8:content>
+											<v8:content>Отображение</v8:content>
 										</v8:item>
 									</ToolTip>
 									<Representation>None</Representation>
@@ -502,13 +597,13 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Indentation</v8:content>
+													<v8:content>Отступы</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group indentation</v8:content>
+													<v8:content>Отступы группы</v8:content>
 												</v8:item>
 											</ToolTip>
 											<Group>Vertical</Group>
@@ -520,7 +615,7 @@
 													<ContextMenu name="TabSizeContextMenu" id="405"/>
 													<ExtendedTooltip name="TabSizeExtendedTooltip" id="406"/>
 													<Events>
-														<Event name="OnChange">TabSizeOnChange</Event>
+														<Event name="OnChange">РазмерТабуляцииПриИзменении</Event>
 													</Events>
 												</InputField>
 												<CheckBoxField name="InsertSpaces" id="407">
@@ -530,13 +625,13 @@
 													<ContextMenu name="InsertSpacesContextMenu" id="408"/>
 													<ExtendedTooltip name="InsertSpacesExtendedTooltip" id="409"/>
 													<Events>
-														<Event name="OnChange">InsertSpacesOnChange</Event>
+														<Event name="OnChange">ВставлятьПробелыПриИзменении</Event>
 													</Events>
 												</CheckBoxField>
-												<Button name="NormalizeIndentation" id="410">
+												<Button name="ВыровнятьОтступы" id="410">
 													<Type>UsualButton</Type>
-													<CommandName>Form.Command.NormalizeIndentation</CommandName>
-													<ExtendedTooltip name="NormalizeIndentationExtendedTooltip" id="411"/>
+													<CommandName>Form.Command.ВыровнятьОтступы</CommandName>
+													<ExtendedTooltip name="ВыровнятьОтступыExtendedTooltip" id="411"/>
 												</Button>
 											</ChildItems>
 										</UsualGroup>
@@ -544,13 +639,13 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Cursor position</v8:content>
+													<v8:content>Позиция курсора</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group position</v8:content>
+													<v8:content>Позиция группы</v8:content>
 												</v8:item>
 											</ToolTip>
 											<Group>Vertical</Group>
@@ -563,7 +658,7 @@
 													<ContextMenu name="LineNumberContextMenu" id="181"/>
 													<ExtendedTooltip name="LineNumberExtendedTooltip" id="182"/>
 													<Events>
-														<Event name="OnChange">PositionOnChange</Event>
+														<Event name="OnChange">ПозицияПриИзменении</Event>
 													</Events>
 												</InputField>
 												<InputField name="Column" id="177">
@@ -573,7 +668,7 @@
 													<ContextMenu name="ColumnContextMenu" id="178"/>
 													<ExtendedTooltip name="ColumnExtendedTooltip" id="179"/>
 													<Events>
-														<Event name="OnChange">PositionOnChange</Event>
+														<Event name="OnChange">ПозицияПриИзменении</Event>
 													</Events>
 												</InputField>
 											</ChildItems>
@@ -584,13 +679,13 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Panel position</v8:content>
+											<v8:content>Положение панели</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Panel position</v8:content>
+											<v8:content>Положение панели</v8:content>
 										</v8:item>
 									</ToolTip>
 									<ExtendedTooltip name="PanelPositionExtendedTooltip" id="187"/>
@@ -599,32 +694,32 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group position buttons</v8:content>
+													<v8:content>Кнопки положения</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group position buttons</v8:content>
+													<v8:content>Кнопки положения</v8:content>
 												</v8:item>
 											</ToolTip>
 											<Representation>Compact</Representation>
 											<ExtendedTooltip name="GroupPositionButtonsExtendedTooltip" id="228"/>
 											<ChildItems>
-												<Button name="GetPosition" id="188">
+												<Button name="ПолучитьПозицию" id="188">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetPosition</CommandName>
-													<ExtendedTooltip name="GetPositionExtendedTooltip" id="189"/>
+													<CommandName>Form.Command.ПолучитьПозицию</CommandName>
+													<ExtendedTooltip name="ПолучитьПозициюExtendedTooltip" id="189"/>
 												</Button>
-												<Button name="GetLineContent" id="190">
+												<Button name="ПолучитьСтроку" id="190">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetLineContent</CommandName>
-													<ExtendedTooltip name="GetLineContentExtendedTooltip" id="191"/>
+													<CommandName>Form.Command.ПолучитьСтроку</CommandName>
+													<ExtendedTooltip name="ПолучитьСтрокуExtendedTooltip" id="191"/>
 												</Button>
-												<Button name="GetSelectedContent" id="338">
+												<Button name="ПолучитьВыделенныйТекст" id="338">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetSelectedContent</CommandName>
-													<ExtendedTooltip name="GetSelectedContentExtendedTooltip" id="339"/>
+													<CommandName>Form.Command.ПолучитьВыделенныйТекст</CommandName>
+													<ExtendedTooltip name="ПолучитьВыделенныйТекстExtendedTooltip" id="339"/>
 												</Button>
 											</ChildItems>
 										</ButtonGroup>
@@ -634,11 +729,11 @@
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>State:</v8:content>
+											<v8:content>Состояние:</v8:content>
 										</v8:item>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>State:</v8:content>
+											<v8:content>Состояние:</v8:content>
 										</v8:item>
 									</Title>
 									<Group>Vertical</Group>
@@ -659,7 +754,7 @@
 											<ContextMenu name="ReadOnlyModeContextMenu" id="14"/>
 											<ExtendedTooltip name="ReadOnlyModeExtendedTooltip" id="15"/>
 											<Events>
-												<Event name="OnChange">ReadOnlyModeOnChange</Event>
+												<Event name="OnChange">ТолькоЧтениеПриИзменении</Event>
 											</Events>
 										</CheckBoxField>
 									</ChildItems>
@@ -668,13 +763,13 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group provider</v8:content>
+											<v8:content>Провайдер</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group provider</v8:content>
+											<v8:content>Провайдер</v8:content>
 										</v8:item>
 									</ToolTip>
 									<ExtendedTooltip name="GroupProviderExtendedTooltip" id="219"/>
@@ -683,13 +778,13 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Load step list</v8:content>
+													<v8:content>Загрузка списка шагов</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group steps</v8:content>
+													<v8:content>Шаги</v8:content>
 												</v8:item>
 											</ToolTip>
 											<Picture>
@@ -698,20 +793,20 @@
 											</Picture>
 											<ExtendedTooltip name="GroupStepsРасширеннаяПодсказка" id="211"/>
 											<ChildItems>
-												<Button name="LoadStepsAll" id="216">
+												<Button name="ЗагрузитьШагиВсе" id="216">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadStepsAll</CommandName>
-													<ExtendedTooltip name="LoadStepsAllРасширеннаяПодсказка" id="217"/>
+													<CommandName>Form.Command.ЗагрузитьШагиВсе</CommandName>
+													<ExtendedTooltip name="ЗагрузитьШагиВсеРасширеннаяПодсказка" id="217"/>
 												</Button>
-												<Button name="LoadStepsEn" id="212">
+												<Button name="ЗагрузитьШагиАнгл" id="212">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadStepsEn</CommandName>
-													<ExtendedTooltip name="LoadStepsEnРасширеннаяПодсказка" id="213"/>
+													<CommandName>Form.Command.ЗагрузитьШагиАнгл</CommandName>
+													<ExtendedTooltip name="ЗагрузитьШагиАнглРасширеннаяПодсказка" id="213"/>
 												</Button>
-												<Button name="LoadStepsRu" id="214">
+												<Button name="ЗагрузитьШагиРус" id="214">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadStepsRu</CommandName>
-													<ExtendedTooltip name="LoadStepsRuРасширеннаяПодсказка" id="215"/>
+													<CommandName>Form.Command.ЗагрузитьШагиРус</CommandName>
+													<ExtendedTooltip name="ЗагрузитьШагиРусРасширеннаяПодсказка" id="215"/>
 												</Button>
 											</ChildItems>
 										</Popup>
@@ -719,31 +814,31 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Load keywords</v8:content>
+													<v8:content>Загрузка ключевых слов</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group keywords</v8:content>
+													<v8:content>Ключевые слова</v8:content>
 												</v8:item>
 											</ToolTip>
 											<ExtendedTooltip name="GroupKeywordsExtendedTooltip" id="328"/>
 											<ChildItems>
-												<Button name="LoadKeywordsAll" id="333">
+												<Button name="ЗагрузитьКлючевыеСловаВсе" id="333">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadKeywordsAll</CommandName>
-													<ExtendedTooltip name="LoadKeywordsAllExtendedTooltip" id="334"/>
+													<CommandName>Form.Command.ЗагрузитьКлючевыеСловаВсе</CommandName>
+													<ExtendedTooltip name="ЗагрузитьКлючевыеСловаВсеExtendedTooltip" id="334"/>
 												</Button>
-												<Button name="LoadKeywordsEn" id="329">
+												<Button name="ЗагрузитьКлючевыеСловаАнгл" id="329">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadKeywordsEn</CommandName>
-													<ExtendedTooltip name="LoadKeywordsEnExtendedTooltip" id="330"/>
+													<CommandName>Form.Command.ЗагрузитьКлючевыеСловаАнгл</CommandName>
+													<ExtendedTooltip name="ЗагрузитьКлючевыеСловаАнглExtendedTooltip" id="330"/>
 												</Button>
-												<Button name="LoadKeywordsRu" id="331">
+												<Button name="ЗагрузитьКлючевыеСловаРус" id="331">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.LoadKeywordsRu</CommandName>
-													<ExtendedTooltip name="LoadKeywordsRuExtendedTooltip" id="332"/>
+													<CommandName>Form.Command.ЗагрузитьКлючевыеСловаРус</CommandName>
+													<ExtendedTooltip name="ЗагрузитьКлючевыеСловаРусExtendedTooltip" id="332"/>
 												</Button>
 											</ChildItems>
 										</Popup>
@@ -756,7 +851,7 @@
 									<ContextMenu name="ShowMinimapContextMenu" id="392"/>
 									<ExtendedTooltip name="ShowMinimapExtendedTooltip" id="393"/>
 									<Events>
-										<Event name="OnChange">ShowMinimapOnChange</Event>
+										<Event name="OnChange">МиниКартаПриИзменении</Event>
 									</Events>
 								</CheckBoxField>
 								<CheckBoxField name="UseDebugger" id="394">
@@ -766,7 +861,7 @@
 									<ContextMenu name="UseDebuggerКонтекстноеМеню" id="395"/>
 									<ExtendedTooltip name="UseDebuggerРасширеннаяПодсказка" id="396"/>
 									<Events>
-										<Event name="OnChange">UseDebuggerOnChange</Event>
+										<Event name="OnChange">ИспользоватьОтладчикПриИзменении</Event>
 									</Events>
 								</CheckBoxField>
 							</ChildItems>
@@ -775,21 +870,21 @@
 							<Title>
 								<v8:item>
 									<v8:lang>en</v8:lang>
-									<v8:content>Right side</v8:content>
+									<v8:content>Правая часть</v8:content>
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Runtime</v8:content>
+									<v8:content>Выполнение</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
 								<v8:item>
 									<v8:lang>en</v8:lang>
-									<v8:content>Right side</v8:content>
+									<v8:content>Правая часть</v8:content>
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page runtime</v8:content>
+									<v8:content>Выполнение</v8:content>
 								</v8:item>
 							</ToolTip>
 							<Width>25</Width>
@@ -799,7 +894,7 @@
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>Current step:</v8:content>
+											<v8:content>Текущий шаг:</v8:content>
 										</v8:item>
 									</Title>
 									<Group>Horizontal</Group>
@@ -812,7 +907,7 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Step</v8:content>
+													<v8:content>Шаг</v8:content>
 												</v8:item>
 											</Title>
 											<SpinButton>true</SpinButton>
@@ -820,22 +915,22 @@
 											<ContextMenu name="CurrentStepContextMenu" id="144"/>
 											<ExtendedTooltip name="CurrentStepExtendedTooltip" id="145"/>
 											<Events>
-												<Event name="OnChange">CurrentStepOnChange</Event>
+												<Event name="OnChange">ТекущийШагПриИзменении</Event>
 											</Events>
 										</InputField>
 										<CommandBar name="CurrentStepBar" id="150">
 											<Title>
 												<v8:item>
 													<v8:lang>en</v8:lang>
-													<v8:content>Current step bar</v8:content>
+													<v8:content>Полоса текущего шага</v8:content>
 												</v8:item>
 											</Title>
 											<ExtendedTooltip name="CurrentStepBarExtendedTooltip" id="151"/>
 											<ChildItems>
-												<Button name="GetCurrentStep" id="340">
+												<Button name="ПолучитьТекущийШаг" id="340">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.GetCurrentStep</CommandName>
-													<ExtendedTooltip name="GetCurrentStepExtendedTooltip" id="341"/>
+													<CommandName>Form.Command.ПолучитьТекущийШаг</CommandName>
+													<ExtendedTooltip name="ПолучитьТекущийШагExtendedTooltip" id="341"/>
 												</Button>
 											</ChildItems>
 										</CommandBar>
@@ -846,7 +941,7 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Status</v8:content>
+											<v8:content>Статус</v8:content>
 										</v8:item>
 									</Title>
 									<ListChoiceMode>true</ListChoiceMode>
@@ -858,7 +953,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Complete</v8:content>
+														<v8:content>Завершено</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">complete</Value>
@@ -871,7 +966,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Pending</v8:content>
+														<v8:content>Ожидание</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">pending</Value>
@@ -884,7 +979,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Disabled</v8:content>
+														<v8:content>Отключено</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">disabled</Value>
@@ -897,7 +992,7 @@
 												<Presentation>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Error</v8:content>
+														<v8:content>Ошибка</v8:content>
 													</v8:item>
 												</Presentation>
 												<Value xsi:type="xs:string">error</Value>
@@ -936,7 +1031,7 @@
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>Complete steps</v8:content>
+											<v8:content>Пройденные шаги</v8:content>
 										</v8:item>
 									</Title>
 									<CommandSet>
@@ -964,13 +1059,13 @@
 												<Title>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Complete steps group</v8:content>
+														<v8:content>Группа пройденных шагов</v8:content>
 													</v8:item>
 												</Title>
 												<ToolTip>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Complete steps group</v8:content>
+														<v8:content>Группа пройденных шагов</v8:content>
 													</v8:item>
 												</ToolTip>
 												<Representation>Compact</Representation>
@@ -990,27 +1085,27 @@
 														<CommandName>Form.Item.CompleteSteps.StandardCommand.Delete</CommandName>
 														<ExtendedTooltip name="CompleteStepsDeleteExtendedTooltip" id="115"/>
 													</Button>
-													<Button name="CompleteStepsSetProgress" id="342">
+													<Button name="CompleteStepsУстановитьПрогресс" id="342">
 														<Type>CommandBarButton</Type>
-														<CommandName>Form.Command.SetProgress</CommandName>
+														<CommandName>Form.Command.УстановитьПрогресс</CommandName>
 														<Title>
 															<v8:item>
 																<v8:lang>ru</v8:lang>
-																<v8:content>Set</v8:content>
+																<v8:content>Установить</v8:content>
 															</v8:item>
 														</Title>
-														<ExtendedTooltip name="CompleteStepsSetProgressExtendedTooltip" id="343"/>
+														<ExtendedTooltip name="CompleteStepsУстановитьПрогрессExtendedTooltip" id="343"/>
 													</Button>
-													<Button name="CompleteStepsGetProgress" id="344">
+													<Button name="CompleteStepsПолучитьПрогресс" id="344">
 														<Type>CommandBarButton</Type>
-														<CommandName>Form.Command.GetProgress</CommandName>
+														<CommandName>Form.Command.ПолучитьПрогресс</CommandName>
 														<Title>
 															<v8:item>
 																<v8:lang>ru</v8:lang>
-																<v8:content>Get</v8:content>
+																<v8:content>Получить</v8:content>
 															</v8:item>
 														</Title>
-														<ExtendedTooltip name="CompleteStepsGetProgressExtendedTooltip" id="345"/>
+														<ExtendedTooltip name="CompleteStepsПолучитьПрогрессExtendedTooltip" id="345"/>
 													</Button>
 												</ChildItems>
 											</ButtonGroup>
@@ -1018,13 +1113,13 @@
 												<Title>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Complete steps subcode</v8:content>
+														<v8:content>Подсценарий пройденных шагов</v8:content>
 													</v8:item>
 												</Title>
 												<ToolTip>
 													<v8:item>
 														<v8:lang>ru</v8:lang>
-														<v8:content>Complete steps subcode</v8:content>
+														<v8:content>Подсценарий пройденных шагов</v8:content>
 													</v8:item>
 												</ToolTip>
 												<ExtendedTooltip name="CompleteStepsSubcodeExtendedTooltip" id="361"/>
@@ -1076,7 +1171,7 @@
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group error</v8:content>
+											<v8:content>Ошибка выполнения</v8:content>
 										</v8:item>
 									</ToolTip>
 									<Representation>None</Representation>
@@ -1096,31 +1191,31 @@
 										</InputField>
 									</ChildItems>
 								</UsualGroup>
-								<CommandBar name="CleanRuntimeProgressBar" id="154">
+								<CommandBar name="ОчиститьПрогрессBar" id="154">
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>Clean runtime progress bar</v8:content>
+											<v8:content>Очистка прогресса выполнения</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>Clean runtime progress bar</v8:content>
+											<v8:content>Очистка прогресса выполнения</v8:content>
 										</v8:item>
 									</ToolTip>
-									<ExtendedTooltip name="CleanRuntimeProgressBarExtendedTooltip" id="155"/>
+									<ExtendedTooltip name="ОчиститьПрогрессBarExtendedTooltip" id="155"/>
 									<ChildItems>
-										<Button name="ShowError" id="349">
+										<Button name="ПоказатьОшибку" id="349">
 											<Type>CommandBarButton</Type>
-											<CommandName>Form.Command.ShowError</CommandName>
-											<ExtendedTooltip name="ShowErrorExtendedTooltip" id="350"/>
+											<CommandName>Form.Command.ПоказатьОшибку</CommandName>
+											<ExtendedTooltip name="ПоказатьОшибкуExtendedTooltip" id="350"/>
 										</Button>
-										<Button name="CleanRuntimeProgress" id="152">
+										<Button name="ОчиститьПрогресс" id="152">
 											<Type>CommandBarButton</Type>
 											<OnlyInAllActions>true</OnlyInAllActions>
-											<CommandName>Form.Command.CleanRuntimeProgress</CommandName>
-											<ExtendedTooltip name="CleanRuntimeProgressExtendedTooltip" id="153"/>
+											<CommandName>Form.Command.ОчиститьПрогресс</CommandName>
+											<ExtendedTooltip name="ОчиститьПрогрессExtendedTooltip" id="153"/>
 										</Button>
 									</ChildItems>
 								</CommandBar>
@@ -1128,59 +1223,59 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group subcode</v8:content>
+											<v8:content>Подсценарий</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Group subcode</v8:content>
+											<v8:content>Подсценарий</v8:content>
 										</v8:item>
 									</ToolTip>
 									<ExtendedTooltip name="GroupSubcodeExtendedTooltip" id="363"/>
 									<ChildItems>
-										<Button name="ShowSubcode" id="358">
+										<Button name="ПоказатьПодсценарий" id="358">
 											<Type>CommandBarButton</Type>
 											<CommandName>Form.Command.SubcodeExample</CommandName>
-											<ExtendedTooltip name="ShowSubcodeExtendedTooltip" id="359"/>
+											<ExtendedTooltip name="ПоказатьПодсценарийExtendedTooltip" id="359"/>
 										</Button>
 										<ButtonGroup name="GroupSubcodeRun" id="368">
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group subcode run</v8:content>
+													<v8:content>Запуск подсценария</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Group subcode run</v8:content>
+													<v8:content>Запуск подсценария</v8:content>
 												</v8:item>
 											</ToolTip>
 											<Representation>Compact</Representation>
 											<ExtendedTooltip name="GroupSubcodeRunExtendedTooltip" id="369"/>
 											<ChildItems>
-												<Button name="RunSubcode" id="364">
+												<Button name="ЗапуститьПодсценарий" id="364">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.RunSubcode</CommandName>
+													<CommandName>Form.Command.ЗапуститьПодсценарий</CommandName>
 													<Title>
 														<v8:item>
 															<v8:lang>ru</v8:lang>
-															<v8:content>Run</v8:content>
+															<v8:content>Запустить</v8:content>
 														</v8:item>
 													</Title>
-													<ExtendedTooltip name="RunSubcodeExtendedTooltip" id="365"/>
+													<ExtendedTooltip name="ЗапуститьПодсценарийExtendedTooltip" id="365"/>
 												</Button>
-												<Button name="StopSubcode" id="366">
+												<Button name="ОстановитьПодсценарий" id="366">
 													<Type>CommandBarButton</Type>
-													<CommandName>Form.Command.StopSubcode</CommandName>
+													<CommandName>Form.Command.ОстановитьПодсценарий</CommandName>
 													<Title>
 														<v8:item>
 															<v8:lang>ru</v8:lang>
-															<v8:content>Stop</v8:content>
+															<v8:content>Остановить</v8:content>
 														</v8:item>
 													</Title>
-													<ExtendedTooltip name="StopSubcodeExtendedTooltip" id="367"/>
+													<ExtendedTooltip name="ОстановитьПодсценарийExtendedTooltip" id="367"/>
 												</Button>
 											</ChildItems>
 										</ButtonGroup>
@@ -1198,7 +1293,7 @@
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Code</v8:content>
+											<v8:content>Код</v8:content>
 										</v8:item>
 									</Title>
 									<ContextMenu name="RuntimeCodeContextMenu" id="377"/>
@@ -1210,17 +1305,17 @@
 							<Title>
 								<v8:item>
 									<v8:lang>en</v8:lang>
-									<v8:content>Left side</v8:content>
+									<v8:content>Левая часть</v8:content>
 								</v8:item>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Breakpoints</v8:content>
+									<v8:content>Точки останова</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page breakpoints</v8:content>
+									<v8:content>Точки останова</v8:content>
 								</v8:item>
 							</ToolTip>
 							<Width>7</Width>
@@ -1239,7 +1334,7 @@
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>Breakpoints</v8:content>
+											<v8:content>Точки останова</v8:content>
 										</v8:item>
 									</Title>
 									<CommandSet>
@@ -1316,9 +1411,9 @@
 										<ExtendedTooltip name="BreakpointsSearchControlExtendedTooltip" id="30"/>
 									</SearchControlAddition>
 									<Events>
-										<Event name="BeforeEditEnd">BreakpointsBeforeEditEnd</Event>
-										<Event name="OnActivateRow">BreakpointsOnActivateRow</Event>
-										<Event name="OnChange">BreakpointsOnChange</Event>
+										<Event name="BeforeEditEnd">ТочкиОстановаПередОкончаниемРедактирования</Event>
+										<Event name="OnActivateRow">ТочкиОстановаПриАктивизацииСтроки</Event>
+										<Event name="OnChange">ТочкиОстановаПриИзменении</Event>
 									</Events>
 									<ChildItems>
 										<CheckBoxField name="BreakpointsEnable" id="385">
@@ -1361,13 +1456,13 @@
 							<Title>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Problems</v8:content>
+									<v8:content>Проблемы</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page problems</v8:content>
+									<v8:content>Проблемы</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageProblemsРасширеннаяПодсказка" id="201"/>
@@ -1383,7 +1478,7 @@
 									<Title>
 										<v8:item>
 											<v8:lang>en</v8:lang>
-											<v8:content>Problems</v8:content>
+											<v8:content>Проблемы</v8:content>
 										</v8:item>
 									</Title>
 									<CommandSet>
@@ -1455,20 +1550,20 @@
 										<ExtendedTooltip name="ProblemsSearchControlExtendedTooltip" id="68"/>
 									</SearchControlAddition>
 									<Events>
-										<Event name="OnChange">ProblemsOnChange</Event>
+										<Event name="OnChange">ПроблемыПриИзменении</Event>
 									</Events>
 									<ChildItems>
 										<ColumnGroup name="ProblemsGroupNumbewr" id="202">
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Problems group numbewr</v8:content>
+													<v8:content>Номера проблем</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Problems group numbewr</v8:content>
+													<v8:content>Номера проблем</v8:content>
 												</v8:item>
 											</ToolTip>
 											<ExtendedTooltip name="ProblemsGroupNumbewrРасширеннаяПодсказка" id="203"/>
@@ -1495,7 +1590,7 @@
 																<Presentation>
 																	<v8:item>
 																		<v8:lang>ru</v8:lang>
-																		<v8:content>Hint</v8:content>
+																		<v8:content>Подсказка</v8:content>
 																	</v8:item>
 																</Presentation>
 																<Value xsi:type="xs:string">Hint</Value>
@@ -1508,7 +1603,7 @@
 																<Presentation>
 																	<v8:item>
 																		<v8:lang>ru</v8:lang>
-																		<v8:content>Info</v8:content>
+																		<v8:content>Информация</v8:content>
 																	</v8:item>
 																</Presentation>
 																<Value xsi:type="xs:string">Info</Value>
@@ -1521,7 +1616,7 @@
 																<Presentation>
 																	<v8:item>
 																		<v8:lang>ru</v8:lang>
-																		<v8:content>Warning</v8:content>
+																		<v8:content>Предупреждение</v8:content>
 																	</v8:item>
 																</Presentation>
 																<Value xsi:type="xs:string">Warning</Value>
@@ -1534,7 +1629,7 @@
 																<Presentation>
 																	<v8:item>
 																		<v8:lang>ru</v8:lang>
-																		<v8:content>Error</v8:content>
+																		<v8:content>Ошибка</v8:content>
 																	</v8:item>
 																</Presentation>
 																<Value xsi:type="xs:string">Error</Value>
@@ -1550,13 +1645,13 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Problems group message</v8:content>
+													<v8:content>Сообщения проблем</v8:content>
 												</v8:item>
 											</Title>
 											<ToolTip>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Problems group message</v8:content>
+													<v8:content>Сообщения проблем</v8:content>
 												</v8:item>
 											</ToolTip>
 											<ExtendedTooltip name="ProblemsGroupMessageРасширеннаяПодсказка" id="205"/>
@@ -1572,13 +1667,13 @@
 													<Title>
 														<v8:item>
 															<v8:lang>ru</v8:lang>
-															<v8:content>Problems group code</v8:content>
+															<v8:content>Код проблем</v8:content>
 														</v8:item>
 													</Title>
 													<ToolTip>
 														<v8:item>
 															<v8:lang>ru</v8:lang>
-															<v8:content>Problems group code</v8:content>
+															<v8:content>Код проблем</v8:content>
 														</v8:item>
 													</ToolTip>
 													<Group>Horizontal</Group>
@@ -1610,13 +1705,13 @@
 							<Title>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Actions</v8:content>
+									<v8:content>Действия</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page actions</v8:content>
+									<v8:content>Действия</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageActionsExtendedTooltip" id="261"/>
@@ -1662,7 +1757,7 @@
 										<ExtendedTooltip name="ActionsSearchControlExtendedTooltip" id="274"/>
 									</SearchControlAddition>
 									<Events>
-										<Event name="Selection">ActionsSelection</Event>
+										<Event name="Selection">ДействияВыбор</Event>
 									</Events>
 									<ChildItems>
 										<InputField name="Actionsid" id="275">
@@ -1685,13 +1780,13 @@
 							<Title>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Events</v8:content>
+									<v8:content>События</v8:content>
 								</v8:item>
 							</Title>
 							<ToolTip>
 								<v8:item>
 									<v8:lang>ru</v8:lang>
-									<v8:content>Page events</v8:content>
+									<v8:content>Страница событий</v8:content>
 								</v8:item>
 							</ToolTip>
 							<ExtendedTooltip name="PageEventsExtendedTooltip" id="233"/>
@@ -1703,20 +1798,20 @@
 									<ContextMenu name="TraceKeyboardContextMenu" id="230"/>
 									<ExtendedTooltip name="TraceKeyboardExtendedTooltip" id="231"/>
 									<Events>
-										<Event name="OnChange">TraceKeyboardOnChange</Event>
+										<Event name="OnChange">ТрассировкаКлавиатурыПриИзменении</Event>
 									</Events>
 								</CheckBoxField>
 								<CommandBar name="PanelEventLog" id="253">
 									<Title>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Panel event log</v8:content>
+											<v8:content>Журнал событий панели</v8:content>
 										</v8:item>
 									</Title>
 									<ToolTip>
 										<v8:item>
 											<v8:lang>ru</v8:lang>
-											<v8:content>Panel event log</v8:content>
+											<v8:content>Журнал событий панели</v8:content>
 										</v8:item>
 									</ToolTip>
 									<ExtendedTooltip name="PanelEventLogExtendedTooltip" id="254"/>
@@ -1784,7 +1879,7 @@
 											<Title>
 												<v8:item>
 													<v8:lang>ru</v8:lang>
-													<v8:content>Info</v8:content>
+													<v8:content>Информация</v8:content>
 												</v8:item>
 											</Title>
 											<EditMode>EnterOnInput</EditMode>
@@ -1805,7 +1900,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Object</v8:content>
+					<v8:content>Объект</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1817,7 +1912,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Vanessa editor URL</v8:content>
+					<v8:content>URL редактора Vanessa</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1832,11 +1927,11 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Content did change</v8:content>
+					<v8:content>Содержимое изменено</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Content did change</v8:content>
+					<v8:content>Содержимое изменено</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1847,11 +1942,11 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Read only mode</v8:content>
+					<v8:content>Только чтение</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Read only mode</v8:content>
+					<v8:content>Только чтение</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1862,11 +1957,11 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Emulate breakpoint update delay</v8:content>
+					<v8:content>Задержка обновления точек останова</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Emulate breakpoint update delay</v8:content>
+					<v8:content>Задержка обновления точек останова</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1877,7 +1972,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Problems</v8:content>
+					<v8:content>Проблемы</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1888,7 +1983,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Severity</v8:content>
+							<v8:content>Важность</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -1903,7 +1998,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Message</v8:content>
+							<v8:content>Сообщение</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -1918,7 +2013,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Code</v8:content>
+							<v8:content>Код</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -1933,7 +2028,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Source</v8:content>
+							<v8:content>Источник</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -1948,7 +2043,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Line number</v8:content>
+							<v8:content>Номер строки</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -1966,11 +2061,11 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Complete steps</v8:content>
+					<v8:content>Пройденные шаги</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Complete steps</v8:content>
+					<v8:content>Пройденные шаги</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -1981,7 +2076,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>en</v8:lang>
-							<v8:content>Line number</v8:content>
+							<v8:content>Номер строки</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -1997,7 +2092,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Code widget</v8:content>
+							<v8:content>Виджет кода</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2014,7 +2109,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Current step</v8:content>
+					<v8:content>Текущий шаг</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2030,11 +2125,11 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Theme</v8:content>
+					<v8:content>Тема</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Editor theme</v8:content>
+					<v8:content>Тема редактора</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2049,7 +2144,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Line number</v8:content>
+					<v8:content>Номер строки</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2065,7 +2160,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Column</v8:content>
+					<v8:content>Колонка</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2081,7 +2176,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Position</v8:content>
+					<v8:content>Позиция</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2096,7 +2191,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Message</v8:content>
+					<v8:content>Сообщение</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2111,7 +2206,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Trace keyboard</v8:content>
+					<v8:content>Трассировка клавиатуры</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2122,7 +2217,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Event log</v8:content>
+					<v8:content>Журнал событий</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2133,7 +2228,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Type</v8:content>
+							<v8:content>Тип</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2148,7 +2243,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Data</v8:content>
+							<v8:content>Данные</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2163,7 +2258,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Date</v8:content>
+							<v8:content>Дата</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2179,7 +2274,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Actions</v8:content>
+					<v8:content>Действия</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2190,7 +2285,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Id</v8:content>
+							<v8:content>Идентификатор</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2205,7 +2300,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Label</v8:content>
+							<v8:content>Заголовок</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2222,7 +2317,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Runtime status</v8:content>
+					<v8:content>Статус выполнения</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2237,7 +2332,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Text</v8:content>
+					<v8:content>Текст</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2252,7 +2347,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Code</v8:content>
+					<v8:content>Код</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2267,7 +2362,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Position</v8:content>
+					<v8:content>Позиция</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2282,7 +2377,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Runtime code</v8:content>
+					<v8:content>Код выполнения</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2297,7 +2392,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Breakpoints</v8:content>
+					<v8:content>Точки останова</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2308,7 +2403,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Line number</v8:content>
+							<v8:content>Номер строки</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2324,7 +2419,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Code widget</v8:content>
+							<v8:content>Виджет кода</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2339,7 +2434,7 @@
 					<Title>
 						<v8:item>
 							<v8:lang>ru</v8:lang>
-							<v8:content>Enable</v8:content>
+							<v8:content>Включена</v8:content>
 						</v8:item>
 					</Title>
 					<Type>
@@ -2352,7 +2447,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Show minimap</v8:content>
+					<v8:content>Показывать мини-карту</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2363,7 +2458,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Editor type</v8:content>
+					<v8:content>Тип редактора</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2379,7 +2474,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Use debugger</v8:content>
+					<v8:content>Использовать отладчик</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2390,7 +2485,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Tab size</v8:content>
+					<v8:content>Размер табуляции</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2406,7 +2501,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Insert Spaces</v8:content>
+					<v8:content>Вставлять пробелы</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2417,7 +2512,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Editor template URL</v8:content>
+					<v8:content>URL макета редактора</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2432,7 +2527,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Step list template URL</v8:content>
+					<v8:content>URL макета списка шагов</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2447,7 +2542,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Keywords template URL</v8:content>
+					<v8:content>URL макета ключевых слов</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2471,7 +2566,7 @@
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Inline</v8:content>
+					<v8:content>Встроенный</v8:content>
 				</v8:item>
 			</Title>
 			<Type>
@@ -2484,21 +2579,21 @@
 		</Attribute>
 	</Attributes>
 	<Commands>
-		<Command name="LoadFile" id="2">
+		<Command name="ЗагрузитьФайл" id="2">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Load file</v8:content>
+					<v8:content>Загрузить файл</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load file</v8:content>
+					<v8:content>Загрузить файл</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load file</v8:content>
+					<v8:content>Загрузить файл</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Shortcut>Ctrl+O</Shortcut>
@@ -2506,127 +2601,127 @@
 				<xr:Ref>StdPicture.OpenFile</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>LoadFile</Action>
+			<Action>ЗагрузитьФайл</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="GetValue" id="3">
+		<Command name="ПолучитьТекст" id="3">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Get value</v8:content>
+					<v8:content>Получить текст</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get value</v8:content>
+					<v8:content>Получить текст</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get value</v8:content>
+					<v8:content>Получить текст</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.RestoreValues</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>GetValue</Action>
+			<Action>ПолучитьТекст</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="SetProgress" id="1">
+		<Command name="УстановитьПрогресс" id="1">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Send complete steps</v8:content>
+					<v8:content>Отправить пройденные шаги</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Set progress</v8:content>
+					<v8:content>Установить прогресс</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Send complete steps</v8:content>
+					<v8:content>Отправить пройденные шаги</v8:content>
 				</v8:item>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Set progress</v8:content>
+					<v8:content>Установить прогресс</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.BusinessProcessStart</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>SetProgress</Action>
+			<Action>УстановитьПрогресс</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="CleanRuntimeProgress" id="6">
+		<Command name="ОчиститьПрогресс" id="6">
 			<Title>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Clean runtime progress</v8:content>
+					<v8:content>Очистить прогресс</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>en</v8:lang>
-					<v8:content>Clean runtime progress</v8:content>
+					<v8:content>Очистить прогресс</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.SpreadsheetDeletePageBreak</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>CleanRuntimeProgress</Action>
+			<Action>ОчиститьПрогресс</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="GetPosition" id="7">
+		<Command name="ПолучитьПозицию" id="7">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get position</v8:content>
+					<v8:content>Получить позицию</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get position</v8:content>
+					<v8:content>Получить позицию</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.Next</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>GetPosition</Action>
+			<Action>ПолучитьПозицию</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="GetLineContent" id="8">
+		<Command name="ПолучитьСтроку" id="8">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get line content</v8:content>
+					<v8:content>Получить строку</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get line content</v8:content>
+					<v8:content>Получить строку</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetLineContent</Action>
+			<Action>ПолучитьСтроку</Action>
 		</Command>
 		<Command name="EditUndo" id="9">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Undo</v8:content>
+					<v8:content>Отменить</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Edit undo</v8:content>
+					<v8:content>Отменить (Ctrl+Z)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Shortcut>Ctrl+Z</Shortcut>
@@ -2634,20 +2729,20 @@
 				<xr:Ref>StdPicture.MoveLeft</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 			<Representation>Picture</Representation>
 		</Command>
 		<Command name="EditRedo" id="10">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Redo</v8:content>
+					<v8:content>Повторить</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Edit redo</v8:content>
+					<v8:content>Повторить (Ctrl+Y)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Shortcut>Ctrl+Y</Shortcut>
@@ -2655,100 +2750,100 @@
 				<xr:Ref>StdPicture.MoveRight</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 			<Representation>Picture</Representation>
 		</Command>
-		<Command name="LoadStepsEn" id="11">
+		<Command name="ЗагрузитьШагиАнгл" id="11">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>English</v8:content>
+					<v8:content>Английский</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load steps en</v8:content>
+					<v8:content>Загрузить шаги (en)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadStepsEn</Action>
+			<Action>ЗагрузитьШагиАнгл</Action>
 		</Command>
-		<Command name="LoadStepsRu" id="12">
+		<Command name="ЗагрузитьШагиРус" id="12">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Russian</v8:content>
+					<v8:content>Русский</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load steps ru</v8:content>
+					<v8:content>Загрузить шаги (ru)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadStepsRu</Action>
+			<Action>ЗагрузитьШагиРус</Action>
 		</Command>
-		<Command name="LoadStepsAll" id="13">
+		<Command name="ЗагрузитьШагиВсе" id="13">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>EN + RU</v8:content>
+					<v8:content>АНГ + РУС</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load steps all</v8:content>
+					<v8:content>Загрузить шаги (все)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadStepsAll</Action>
+			<Action>ЗагрузитьШагиВсе</Action>
 		</Command>
-		<Command name="ShowMessage" id="14">
+		<Command name="ПоказатьСообщение" id="14">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Show message</v8:content>
+					<v8:content>Показать сообщение</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Show message</v8:content>
+					<v8:content>Показать сообщение</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>0:78da2c47-172f-4d57-ab52-a06e40548136</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ShowMessage</Action>
+			<Action>ПоказатьСообщение</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="ClearEditorEvens" id="15">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Clear Event log</v8:content>
+					<v8:content>Очистить журнал</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Clear editor evens</v8:content>
+					<v8:content>Очистить журнал событий</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ClearEditorEvents</Action>
+			<Action>ОчиститьЖурналСобытий</Action>
 		</Command>
 		<Command name="EditReplace" id="16">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Replace</v8:content>
+					<v8:content>Заменить</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Edit replace</v8:content>
+					<v8:content>Заменить (Ctrl+H)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Shortcut>Ctrl+H</Shortcut>
@@ -2756,19 +2851,19 @@
 				<xr:Ref>StdPicture.Replace</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="EditFind" id="17">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Find</v8:content>
+					<v8:content>Найти</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Edit find</v8:content>
+					<v8:content>Поиск (Ctrl+F)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Shortcut>Ctrl+F</Shortcut>
@@ -2776,136 +2871,136 @@
 				<xr:Ref>StdPicture.Find</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="EditFindNext" id="18">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Find next</v8:content>
+					<v8:content>Найти далее</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Edit find next</v8:content>
+					<v8:content>Найти далее (Ctrl+F3)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.FindNext</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="EditFindPrevious" id="19">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Find previous</v8:content>
+					<v8:content>Найти назад</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Edit find previous</v8:content>
+					<v8:content>Найти назад (Ctrl+Shift+F3)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.FindPrevious</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewFoldAll" id="20">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Fold all</v8:content>
+					<v8:content>Свернуть всё</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View fold all</v8:content>
+					<v8:content>Свернуть всё (Ctrl+K, Ctrl+0)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.CollapseAll</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfoldAll" id="21">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Unfold all</v8:content>
+					<v8:content>Развернуть всё</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View unfold all</v8:content>
+					<v8:content>Развернуть всё (Ctrl+K, Ctrl+J)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.ExpandAll</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewZoomIn" id="22">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Zoom in</v8:content>
+					<v8:content>Увеличить</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View zoom in</v8:content>
+					<v8:content>Увеличить (Ctrl+=)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>-16</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewZoomOut" id="23">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Zoom out</v8:content>
+					<v8:content>Уменьшить</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View zoom out</v8:content>
+					<v8:content>Уменьшить (Ctrl+-)</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>-15</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewZoomReset" id="24">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Reset zoom</v8:content>
+					<v8:content>Сбросить масштаб</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View zoom reset</v8:content>
+					<v8:content>Сбросить масштаб (Ctrl+0)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfold1" id="25">
 			<Title>
@@ -2917,10 +3012,10 @@
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View unfold1</v8:content>
+					<v8:content>Развернуть до уровня 1</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfold2" id="26">
 			<Title>
@@ -2932,55 +3027,55 @@
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View unfold2</v8:content>
+					<v8:content>Развернуть до уровня 2</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ClipboardPaste" id="27">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Paste</v8:content>
+					<v8:content>Вставить</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Clipboard paste</v8:content>
+					<v8:content>Вставить (Ctrl+V)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ClipboardCut" id="28">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Cut</v8:content>
+					<v8:content>Вырезать</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Clipboard cut</v8:content>
+					<v8:content>Вырезать (Ctrl+X)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ClipboardCopy" id="29">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Copy</v8:content>
+					<v8:content>Копировать</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Clipboard copy</v8:content>
+					<v8:content>Копировать (Ctrl+C)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
 		<Command name="ViewUnfold3" id="30">
 			<Title>
@@ -2992,241 +3087,321 @@
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>View unfold3</v8:content>
+					<v8:content>Развернуть до уровня 3</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>EditorAction</Action>
+			<Action>ДействиеРедактора</Action>
 		</Command>
-		<Command name="InsertText" id="31">
+		<Command name="ВставитьТекст" id="31">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Insert text</v8:content>
+					<v8:content>Вставить текст</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Insert text</v8:content>
+					<v8:content>Вставить текст</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.Rename</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>InsertText</Action>
+			<Action>ВставитьТекст</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="ReplaceText" id="32">
+		<Command name="ЗаменитьТекст" id="32">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Replace text</v8:content>
+					<v8:content>Заменить текст</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Replace text</v8:content>
+					<v8:content>Заменить текст</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ReplaceText</Action>
+			<Action>ЗаменитьТекст</Action>
 		</Command>
-		<Command name="LoadKeywordsRu" id="33">
+		<Command name="ЗагрузитьКлючевыеСловаРус" id="33">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Russian</v8:content>
+					<v8:content>Русский</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load keywords ru</v8:content>
+					<v8:content>Загрузить ключевые слова (ru)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadKeywordsRu</Action>
+			<Action>ЗагрузитьКлючевыеСловаРус</Action>
 		</Command>
-		<Command name="LoadKeywordsEn" id="34">
+		<Command name="ЗагрузитьКлючевыеСловаАнгл" id="34">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>English</v8:content>
+					<v8:content>Английский</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load keywords en</v8:content>
+					<v8:content>Загрузить ключевые слова (en)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadKeywordsEn</Action>
+			<Action>ЗагрузитьКлючевыеСловаАнгл</Action>
 		</Command>
-		<Command name="LoadKeywordsAll" id="35">
+		<Command name="ЗагрузитьКлючевыеСловаВсе" id="35">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>EN+RU</v8:content>
+					<v8:content>АНГ+РУС</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Load keywords all</v8:content>
+					<v8:content>Загрузить ключевые слова (все)</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>LoadKeywordsAll</Action>
+			<Action>ЗагрузитьКлючевыеСловаВсе</Action>
 		</Command>
-		<Command name="GetSelectedContent" id="4">
+		<Command name="ПолучитьВыделенныйТекст" id="4">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Selected content</v8:content>
+					<v8:content>Выделенный текст</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get selected content</v8:content>
+					<v8:content>Получить выделенный текст</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetSelectedContent</Action>
+			<Action>ПолучитьВыделенныйТекст</Action>
 		</Command>
-		<Command name="GetCurrentStep" id="5">
+		<Command name="ПолучитьТекущийШаг" id="5">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get current step</v8:content>
+					<v8:content>Получить текущий шаг</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get current step</v8:content>
+					<v8:content>Получить текущий шаг</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetCurrentStep</Action>
+			<Action>ПолучитьТекущийШаг</Action>
 		</Command>
-		<Command name="GetProgress" id="36">
+		<Command name="ПолучитьПрогресс" id="36">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get progress</v8:content>
+					<v8:content>Получить прогресс</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Get progress</v8:content>
+					<v8:content>Получить прогресс</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>GetProgress</Action>
+			<Action>ПолучитьПрогресс</Action>
 		</Command>
-		<Command name="ShowError" id="37">
+		<Command name="ПоказатьОшибку" id="37">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Show error</v8:content>
+					<v8:content>Показать ошибку</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Show error</v8:content>
+					<v8:content>Показать ошибку</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>ShowError</Action>
+			<Action>ПоказатьОшибку</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
 		<Command name="SubcodeExample" id="38">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Subcode example</v8:content>
+					<v8:content>Пример подсценария</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Subcode example</v8:content>
+					<v8:content>Пример подсценария</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.ExternalDataSourceFunction</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>ShowSubcode</Action>
+			<Action>ПоказатьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="RunSubcode" id="39">
+		<Command name="ЗапуститьПодсценарий" id="39">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Run subcode</v8:content>
+					<v8:content>Запустить подсценарий</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Run subcode</v8:content>
+					<v8:content>Запустить подсценарий</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.GenerateReport</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>RunSubcode</Action>
+			<Action>ЗапуститьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="StopSubcode" id="40">
+		<Command name="ОстановитьПодсценарий" id="40">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Stop subcode</v8:content>
+					<v8:content>Остановить подсценарий</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Stop subcode</v8:content>
+					<v8:content>Остановить подсценарий</v8:content>
 				</v8:item>
 			</ToolTip>
 			<Picture>
 				<xr:Ref>StdPicture.Stop</xr:Ref>
 				<xr:LoadTransparent>true</xr:LoadTransparent>
 			</Picture>
-			<Action>StopSubcode</Action>
+			<Action>ОстановитьПодсценарий</Action>
 			<Representation>TextPicture</Representation>
 		</Command>
-		<Command name="NormalizeIndentation" id="41">
+		<Command name="ВыровнятьОтступы" id="41">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Normalize indentation</v8:content>
+					<v8:content>Выровнять отступы</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Normalize indentation</v8:content>
+					<v8:content>Выровнять отступы</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>NormalizeIndentation</Action>
+			<Action>ВыровнятьОтступы</Action>
 		</Command>
-		<Command name="Autotest" id="42">
+		<Command name="Автотест" id="42">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Autotest</v8:content>
+					<v8:content>Автотест</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Autotest</v8:content>
+					<v8:content>Автотест</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>Autotest</Action>
+			<Action>Автотест</Action>
+		</Command>
+		<Command name="ФорматироватьДокумент" id="43">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Форматировать документ</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Выровнять таблицы и отступы фичи (Shift+Alt+F)</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ФорматироватьДокумент</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ПереключитьСимволКомментария" id="44">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Символ комментария</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Переключить символ комментария строки: # или //</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ПереключитьСимволКомментария</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ПоказатьШагВДереве" id="45">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Шаг в дереве</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Отправить в 1С шаг под курсором (событие SHOW_STEP_IN_TREE)</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ПоказатьШагВДереве</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ОткрытьШагКакФичу" id="46">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Шаг как фича</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Запросить открытие фичи-источника шага (событие OPEN_STEP_AS_FEATURE)</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ОткрытьШагКакФичу</Action>
+			<Representation>TextPicture</Representation>
+		</Command>
+		<Command name="ПоказатьЯзыки" id="47">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Языки: Gherkin, BSL, xBSL</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Открыть вкладки с подсветкой трёх языков и diff по BSL</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ПоказатьЯзыки</Action>
+			<Representation>TextPicture</Representation>
 		</Command>
 	</Commands>
 </Form>
