@@ -73,6 +73,8 @@ export class VanessaDiffEditor implements IVanessaEditor {
       // держим прежний UX; drop извне в поле 1С не нужен (неогороженные API).
       stickyScroll: { enabled: false },
       dropIntoEditor: { enabled: false },
+      // Как в vanessa-editor.ts: в WebKit 1С paste-as падает на clipboardData.items.
+      pasteAs: { enabled: false },
     });
     this.editor.setModel(model);
     this.eventsManager = new EventsManager(this);
