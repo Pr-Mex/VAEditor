@@ -153,6 +153,10 @@ export class VanessaEditor implements IVanessaEditor {
     // Drop файлов извне в текст: путь читает dataTransfer.items/Blob.arrayBuffer
     // без guard'ов (Safari 11.1/14) — в поле 1С не нужен, выкл.
     dropIntoEditor: { enabled: false },
+    // Paste-as (0.52.2) читает clipboardData.items через for..of: в WebKit 1С
+    // items отсутствует или не итерируем → TypeError, reject и красный баннер.
+    // В gherkin не нужен — вставку отдаём нативному обработчику.
+    pasteAs: { enabled: false },
   };
 
   constructor(
