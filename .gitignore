@@ -22,3 +22,5 @@ env-probe.txt
 /tools/agent-run.ps1
 /bin
 /oscript
+/p1c
+/p1c-src
