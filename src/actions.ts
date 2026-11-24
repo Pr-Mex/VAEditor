@@ -42,7 +42,7 @@ export class ActionManager {
       const originalOpen = service.open.bind(service);
       service.open = (target: any, options: any) => {
         if (typeof (target) == "string") {
-          if (/^\s*(https?:\/\/|e1cib\/)/.test(target)) {
+          if (/^\s*(https?:\/\/|e1cib\/|vamxl:)/.test(target)) {
             activeOwner.fireEvent(VanessaEditorEvent.ON_HREF_CLICK, target);
             return { catch: () => { } };
           }

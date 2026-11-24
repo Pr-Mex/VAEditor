@@ -8,6 +8,9 @@ export interface VAStepInfo {
   documentation: string;
   kind: number;
   section: string;
+  // 0-based индексы параметров, которые являются именами макетов (mxl/json).
+  // Поле присылает 1С; старые версии EPF его не передают.
+  params?: number[];
 }
 
 export interface VAStepData {
@@ -19,6 +22,7 @@ export interface VAStepData {
   sortText: string,
   section: string,
   kind: number,
+  params?: number[],
 }
 
 export function updateStepLabels(ctx: IWorkerContext) {
@@ -48,6 +52,7 @@ export function setStepList(ctx: IWorkerContext, msg: { list: string, clear: boo
       sortText: e.sortText,
       section: e.section,
       kind: e.kind,
+      params: e.params,
     };
     ctx.steplist[step.snippet] = data;
   });

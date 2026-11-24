@@ -1,5 +1,6 @@
-import { IWorkerContext, IWorkerModel } from "./common";
+import { IWorkerContext, IWorkerModel, VAToken } from "./common";
 import { KeywordMatcher } from "./matcher";
+import { VAWordType, VAStepLine } from "./stepline";
 
 let imports = {};
 
@@ -156,6 +157,46 @@ export function getLinkData(
   }
 }
 
+// Возвращает позиции (0-based индексы открывающих кавычек) параметров-макетов
+// в строке шага. 1С присылает в реестре шагов номера таких параметров; ссылку
+// получает только сам параметр, а не совпавшее по тексту значение в другом месте.
+function getMxlParameterStarts(
+  ctx: IWorkerContext,
+  model: IWorkerModel,
+  lineNumber: number,
+  line: string,
+): Record<number, boolean> {
+  const result: Record<number, boolean> = {};
+  if (line.indexOf('"') < 0 && line.indexOf("'") < 0) return result;
+  const token = model.getLineToken(lineNumber);
+  if (!token || token.token !== VAToken.Operator) return result;
+  if (!ctx.matcher.step || !ctx.matcher.step.test(line)) return result;
+  const stepLine = new VAStepLine(ctx.matcher, line);
+  if (stepLine.invalid) return result;
+  const step = ctx.steplist[stepLine.snippet];
+  if (!step) return result;
+  const params = step.params;
+  if (!params || !Array.isArray(params)) return result;
+  const parameters = stepLine.parameters;
+  params.forEach(index => {
+    if (index === null || index === undefined) return;
+    if (String(index).trim() === "") return;
+    const paramIndex = Number(index);
+    if (!isFinite(paramIndex)) return;
+    if (paramIndex < 0 || paramIndex >= parameters.length) return;
+    const word = parameters[paramIndex];
+    // Ссылкой может стать только значение в кавычках.
+    if (word.type !== VAWordType.Parameter) return;
+    const text = word.text.substring(1, word.text.length - 1);
+    if (text.length === 0) return;
+    const first = text.charAt(0);
+    const last = text.charAt(text.length - 1);
+    if ((first === "<" && last === ">") || (first === "[" && last === "]")) return;
+    result[word.start] = true;
+  });
+  return result;
+}
+
 export function getHiperlinks(
   ctx: IWorkerContext,
   model: IWorkerModel,
@@ -175,6 +216,7 @@ export function getHiperlinks(
     let matches = undefined;
     let regexp = new RegExp(pattern.source, "g");
     let line: string = model.getLineContent(lineNumber);
+    const mxlStarts = getMxlParameterStarts(ctx, model, lineNumber, line);
     while ((matches = regexp.exec(line)) !== null) {
       let range = {
         startLineNumber: lineNumber,
@@ -184,7 +226,11 @@ export function getHiperlinks(
       };
       let param = matches[0].substring(1, matches[0].length - 1);
       let e1cib = /^e1cib\/\S+$/;
-      if (e1cib.test(param)) {
+      if (mxlStarts[matches.index]) {
+        // В фиче кавычка внутри значения удваивается обратным слешем.
+        const mxlName = param.replace(/\\"/g, '"').replace(/\\'/g, "'").replace(/\\\\/g, '\\');
+        result.push({ range: range, url: "vamxl:" + mxlName });
+      } else if (e1cib.test(param)) {
         result.push({ range: range, url: trimQuotes(matches[0]) });
       } else if (lineNumber > pos.lineNumber) {
         let pattern = /^([A-Za-zЀ-ӿ][A-Za-z0-9Ѐ-ӿ]*)(\.[A-Za-zЀ-ӿ][A-Za-z0-9Ѐ-ӿ]*)*$/;

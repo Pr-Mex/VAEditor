@@ -12,6 +12,9 @@ export enum VAWordType {
 export interface VAStepWord {
   type: VAWordType,
   text: string,
+  // 0-based позиция слова в строке. Нужна для построения диапазона ссылки
+  // на параметр-макет (vamxl:).
+  start: number,
 }
 
 function stepDecoration(
@@ -76,7 +79,7 @@ export class VAStepLine {
       let type: VAWordType = undefined;
       for (let i = 1; i <= 4; ++i)
         if (match[i]) { type = i; break }
-      this._words.push({ type, text: match[0] });
+      this._words.push({ type, text: match[0], start: this._keyword.length + match.index });
     }
   }
 
@@ -118,6 +121,14 @@ export class VAStepLine {
       }
       return w.text
     }).join("");
+  }
+
+  // Параметры шага в порядке следования с позициями в строке. Индексы
+  // совпадают с номерами параметров в реестре шагов 1С.
+  public get parameters(): VAStepWord[] {
+    return this._words.filter(
+      w => w.type === VAWordType.Numerical || w.type === VAWordType.Parameter
+    );
   }
 
   private get params(): string[] {
