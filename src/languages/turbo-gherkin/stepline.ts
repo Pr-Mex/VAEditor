@@ -67,20 +67,33 @@ export class VAStepLine {
   private _keyword: string;
   private _words: VAStepWord[] = [];
 
+  // Разбирает произвольный текст шага на слова. Нужен для строк условий
+  // "Если <шаг> тогда", где перед текстом шага стоит ключевое слово условия.
+  public static parseWords(
+    matcher: KeywordMatcher,
+    text: string,
+    offset: number = 0,
+  ): VAStepWord[] {
+    const words: VAStepWord[] = [];
+    const tokens = [matcher.tokens.word, matcher.tokens.param, matcher.tokens.number, /./];
+    const source = tokens.map((reg: RegExp) => "(" + reg.source + ")").join("|");
+    const regexp = new RegExp(source, "gui");
+    let match = undefined;
+    while ((match = regexp.exec(text)) != undefined) {
+      let type: VAWordType = undefined;
+      for (let i = 1; i <= 4; ++i)
+        if (match[i]) { type = i; break }
+      words.push({ type, text: match[0], start: offset + match.index });
+    }
+    return words;
+  }
+
   constructor(matcher: KeywordMatcher, line: string) {
     let match = line.match(matcher.step);
     if (!match) return;
     this._keyword = match[0];
     const steptext = line.substring(match[0].length);
-    const tokens = [matcher.tokens.word, matcher.tokens.param, matcher.tokens.number, /./];
-    const source = tokens.map((reg: RegExp) => "(" + reg.source + ")").join("|");
-    const regexp = new RegExp(source, "gui");
-    while ((match = regexp.exec(steptext)) != undefined) {
-      let type: VAWordType = undefined;
-      for (let i = 1; i <= 4; ++i)
-        if (match[i]) { type = i; break }
-      this._words.push({ type, text: match[0], start: this._keyword.length + match.index });
-    }
+    this._words = VAStepLine.parseWords(matcher, steptext, this._keyword.length);
   }
 
   public get invalid(): boolean {
