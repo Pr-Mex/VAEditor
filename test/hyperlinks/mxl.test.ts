@@ -51,6 +51,24 @@ const steps = [
     section: '',
     params: [0],
   },
+  {
+    filterText: 'таблица "ИмяТаблицы" равна макету "ИмяМакета" тогда',
+    insertText: 'Если таблица "ИмяТаблицы" равна макету "ИмяМакета" тогда',
+    sortText: 'Если таблица "ИмяТаблицы" равна макету "ИмяМакета" тогда',
+    documentation: '',
+    kind: 0,
+    section: '',
+    params: [1],
+  },
+  {
+    filterText: 'сравнить "ИмяТаблицы" с макетами "Макет1" и "Макет2"',
+    insertText: 'И сравнить "ИмяТаблицы" с макетами "Макет1" и "Макет2"',
+    sortText: 'И сравнить "ИмяТаблицы" с макетами "Макет1" и "Макет2"',
+    documentation: '',
+    kind: 0,
+    section: '',
+    params: [1, 2],
+  },
 ];
 
 const content = [
@@ -67,6 +85,10 @@ const content = [
   '  | "Макет в таблице" |',
   '  И в поле "ПолеМакета" я ввожу текст из макета "Макет в тексте"',
   '  И видимость элементов формы равна макету "Макет видимости"',
+  '  Если таблица "ТаблицаУсловия" равна макету "Макет условия" тогда',
+  '  Если таблица "ТаблицаВУсловии" содержит строки из макета "Макет в условии" тогда',
+  '  ИначеЕсли сравнить "ТаблицаВИначеЕсли" с макетами "Макет А" и "Макет Б" тогда',
+  '  Если неизвестный шаг "Макет неизвестного шага" тогда',
   '  """',
   '  И табличный документ "ReportSpreadsheetDocument" равен макету "Макет в многострочном тексте" по шаблону',
   '  """',
@@ -81,6 +103,7 @@ describe('Гиперссылки на макеты mxl', function () {
 
   before((done) => {
     provider = initGherkinProvider();
+    provider.setKeypairs(JSON.stringify({ if: ['then'], 'Если': ['Тогда'], 'ИначеЕсли': ['Тогда'] }));
     provider.setStepList(JSON.stringify(steps));
     model = monaco.editor.createModel(content, language.id);
     const promise = provider.provideLinks(model, undefined) as Promise<ILinksList>;
@@ -88,8 +111,11 @@ describe('Гиперссылки на макеты mxl', function () {
   });
 
   after(() => {
-    // Возвращаем общий список шагов: тест не должен влиять на соседние файлы.
-    if (provider) provider.setStepList(JSON.stringify(ruSteps), true);
+    // Возвращаем общий список шагов и пары условий: тест не должен влиять на соседние файлы.
+    if (provider) {
+      provider.setKeypairs(JSON.stringify({ if: ['then'], 'Если': ['Тогда'] }));
+      provider.setStepList(JSON.stringify(ruSteps), true);
+    }
   });
 
   it('Ссылка стоит на параметрах-макетах', () => {
@@ -99,6 +125,10 @@ describe('Гиперссылки на макеты mxl', function () {
       'vamxl:Макет таблицы',
       'vamxl:Макет в тексте',
       'vamxl:Макет видимости',
+      'vamxl:Макет условия',
+      'vamxl:Макет в условии',
+      'vamxl:Макет А',
+      'vamxl:Макет Б',
     ]);
   });
 
@@ -109,6 +139,42 @@ describe('Гиперссылки на макеты mxl', function () {
     expect(mxl.range.startLineNumber).to.equal(6);
     expect(mxl.range.startColumn).to.equal(start + 2);
     expect(mxl.range.endColumn).to.equal(start + 'Плановые и фактические затраты переделов'.length + 2);
+  });
+
+  function expectMxlLink(url: string, value: string) {
+    const link = result.links.filter(l => String(l.url || '') === url)[0];
+    expect(link).to.not.equal(undefined);
+    const lines = content.split('\n');
+    const lineIndex = lines.findIndex(line => line.indexOf(value) >= 0);
+    const line = lines[lineIndex];
+    const start = line.indexOf('"' + value + '"');
+    expect(link.range.startLineNumber).to.equal(lineIndex + 1);
+    expect(link.range.startColumn).to.equal(start + 2);
+    expect(link.range.endColumn).to.equal(start + value.length + 2);
+  }
+
+  it('Ссылка в зарегистрированном шаге условия', () => {
+    expectMxlLink('vamxl:Макет условия', 'Макет условия');
+    const urls = result.links.map(l => String(l.url || ''));
+    expect(urls.some(url => url === 'vamxl:ТаблицаУсловия')).to.equal(false);
+  });
+
+  it('Ссылка в обычном шаге внутри условия', () => {
+    expectMxlLink('vamxl:Макет в условии', 'Макет в условии');
+    const urls = result.links.map(l => String(l.url || ''));
+    expect(urls.some(url => url === 'vamxl:ТаблицаВУсловии')).to.equal(false);
+  });
+
+  it('Ссылки в ИначеЕсли и несколько параметров-макетов', () => {
+    expectMxlLink('vamxl:Макет А', 'Макет А');
+    expectMxlLink('vamxl:Макет Б', 'Макет Б');
+    const urls = result.links.map(l => String(l.url || ''));
+    expect(urls.some(url => url === 'vamxl:ТаблицаВИначеЕсли')).to.equal(false);
+  });
+
+  it('Незарегистрированный шаг в условии не получает ссылку', () => {
+    const urls = result.links.map(l => String(l.url || ''));
+    expect(urls.some(url => url === 'vamxl:Макет неизвестного шага')).to.equal(false);
   });
 
   it('Первый параметр и шаг без params ссылкой не становятся', () => {
