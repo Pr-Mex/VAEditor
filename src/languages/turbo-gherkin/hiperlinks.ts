@@ -1,6 +1,8 @@
 import { IWorkerContext, IWorkerModel, VAToken } from "./common";
 import { KeywordMatcher } from "./matcher";
 import { VAWordType, VAStepLine } from "./stepline";
+import type { VAStepWord } from "./stepline";
+import type { VAStepData } from "./steplist";
 
 let imports = {};
 
@@ -157,6 +159,28 @@ export function getLinkData(
   }
 }
 
+// Возвращает текст шага внутри строки условия "Если <шаг> тогда"
+// и позицию этого текста в исходной строке.
+function getConditionStep(
+  ctx: IWorkerContext,
+  line: string,
+): { text: string; start: number } {
+  const keypairs = ctx.matcher.keypairs;
+  if (!keypairs) return undefined;
+  for (const regexp of keypairs) {
+    const match = line.match(regexp);
+    if (match === null) continue;
+    const text = match[2];
+    if (!text) continue;
+    // Группа 1 содержит текст шага (group 2) и завершающий пробел,
+    // поэтому берём последнее вхождение group 2 — оно и есть текст шага.
+    const start = (match.index || 0) + match[1].lastIndexOf(text);
+    if (start < 0) continue;
+    return { text, start };
+  }
+  return undefined;
+}
+
 // Возвращает позиции (0-based индексы открывающих кавычек) параметров-макетов
 // в строке шага. 1С присылает в реестре шагов номера таких параметров; ссылку
 // получает только сам параметр, а не совпавшее по тексту значение в другом месте.
@@ -170,14 +194,33 @@ function getMxlParameterStarts(
   if (line.indexOf('"') < 0 && line.indexOf("'") < 0) return result;
   const token = model.getLineToken(lineNumber);
   if (!token || token.token !== VAToken.Operator) return result;
-  if (!ctx.matcher.step || !ctx.matcher.step.test(line)) return result;
-  const stepLine = new VAStepLine(ctx.matcher, line);
-  if (stepLine.invalid) return result;
-  const step = ctx.steplist[stepLine.snippet];
-  if (!step) return result;
+
+  let step: VAStepData = undefined;
+  let parameters: VAStepWord[] = undefined;
+
+  if (ctx.matcher.step && ctx.matcher.step.test(line)) {
+    const stepLine = new VAStepLine(ctx.matcher, line);
+    if (!stepLine.invalid) {
+      step = ctx.steplist[stepLine.snippet];
+      if (step) parameters = stepLine.parameters;
+    }
+  }
+
+  if (!step) {
+    // Строка условия: шаг может быть зарегистрирован как целиком
+    // ("Если ... тогда"), так и обычным шагом без "тогда".
+    const condition = getConditionStep(ctx, line);
+    if (!condition) return result;
+    step = ctx.steplist[ctx.matcher.getSnippet(condition.text)];
+    if (!step) step = ctx.steplist[ctx.matcher.getSnippet(line)];
+    if (!step) return result;
+    parameters = VAStepLine.parseWords(ctx.matcher, condition.text, condition.start)
+      .filter(word => word.type === VAWordType.Numerical || word.type === VAWordType.Parameter);
+  }
+
+  if (!parameters) return result;
   const params = step.params;
   if (!params || !Array.isArray(params)) return result;
-  const parameters = stepLine.parameters;
   params.forEach(index => {
     if (index === null || index === undefined) return;
     if (String(index).trim() === "") return;
