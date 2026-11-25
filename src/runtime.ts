@@ -526,7 +526,7 @@ export class RuntimeManager {
       zoneIds.forEach(id => changeAccessor.removeZone(id))
     );
     this.codeWidgets = {};
-    this.updateBreakpoints();
+    if (zoneIds.length) this.updateBreakpoints();
   }
 
   public clearStack(): void {
